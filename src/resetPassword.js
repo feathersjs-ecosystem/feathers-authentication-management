@@ -1,0 +1,72 @@
+
+/* eslint-env node */
+
+const errors = require('feathers-errors');
+const debug = require('debug')('verify-reset:resetPassword');
+
+const {
+  getUserData,
+  ensureObjPropsValid,
+  ensureValuesAreStrings,
+  sanitizeUserForClient,
+  hashPassword,
+  notifier
+} = require('./helpers');
+
+module.exports.resetPwdWithLongToken = function (options, resetToken, password) {
+  return Promise.resolve()
+    .then(() => {
+      ensureValuesAreStrings(resetToken, password);
+
+      return resetPassword(options, { resetToken }, { resetToken }, password);
+    });
+};
+
+module.exports.resetPwdWithShortToken = function (options, resetShortToken, findUser, password) {
+  return Promise.resolve()
+    .then(() => {
+      ensureValuesAreStrings(resetShortToken, password);
+      ensureObjPropsValid(findUser, options.userPropsForShortToken);
+
+      return resetPassword(options, findUser, { resetShortToken }, password);
+    });
+};
+
+function resetPassword (options, query, tokens, password) {
+  debug('resetPassword', query, tokens, password);
+  const users = options.app.service(options.service);
+  const usersIdName = users.id;
+
+  return Promise.all([
+    users.find({ query })
+      .then(data => getUserData(data, ['isVerified', 'resetNotExpired'])),
+    hashPassword(options.app, password)
+  ])
+    .then(([user, hashedPassword]) => {
+      if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
+        return patchUser(user, {
+          resetToken: null,
+          resetShortToken: null,
+          resetExpires: null
+        })
+          .then(() => {
+            throw new errors.BadRequest('Invalid token. Get for a new one. (verify-reset)',
+              { errors: { $className: 'badParam' } });
+          });
+      }
+
+      return patchUser(user, {
+        password: hashedPassword,
+        resetToken: null,
+        resetShortToken: null,
+        resetExpires: null
+      })
+        .then(user1 => notifier(options.notifier, 'resetPwd', user1))
+        .then(user1 => sanitizeUserForClient(user1));
+    });
+
+  function patchUser (user, patchToUser) {
+    return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure
+      .then(() => Object.assign(user, patchToUser));
+  }
+}
