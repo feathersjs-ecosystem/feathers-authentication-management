@@ -1,12 +1,12 @@
-## feathers-service-verify-reset
-Adds sign up verification, forgotten password reset, and other capabilities to local
-[`feathers-authentication`](http://docs.feathersjs.com/authentication/local.html).
+## feathers-authentication-management
 
 [![Build Status](https://travis-ci.org/feathersjs/feathers-authentication-management.png?branch=master)](https://travis-ci.org/feathersjs/feathers-authentication-management)
 [![Code Climate](https://codeclimate.com/github/feathersjs/feathers-authentication-management/badges/gpa.svg)](https://codeclimate.com/github/feathersjs/feathers-authentication-management)
 [![Test Coverage](https://codeclimate.com/github/feathersjs/feathers-authentication-management/badges/coverage.svg)](https://codeclimate.com/github/feathersjs/feathers-authentication-management/coverage)
 [![Dependency Status](https://img.shields.io/david/feathersjs/feathers-authentication-management.svg?style=flat-square)](https://david-dm.org/feathersjs/feathers-authentication-management)
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
+
+> Refactoring of feathers-service-verify-reset. **WORK IN PROGRESS. Not ready for use.**
 
 > Adds sign up verification, forgotten password reset, and other capabilities to local
 [`feathers-authentication`](http://docs.feathersjs.com/authentication/local.html).
