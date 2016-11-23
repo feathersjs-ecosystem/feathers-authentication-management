@@ -42,7 +42,7 @@ module.exports = function identityChange (options, identifyUser, password, chang
         verifyExpires: Date.now() + options.delay,
         verifyToken: longToken,
         verifyShortToken: shortToken,
-        verifyChange: changeIdentifyUser,
+        verifyChange: changeIdentifyUser
       };
 
       return patchUser(user1, patchToUser);

@@ -17,7 +17,7 @@ module.exports = function passwordChange (options, identifyUser, oldPassword, pa
   debug('passwordChange', oldPassword, password);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
-  
+
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(oldPassword, password);

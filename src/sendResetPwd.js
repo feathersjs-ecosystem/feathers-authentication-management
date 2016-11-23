@@ -12,7 +12,7 @@ const {
   notifier
 } = require('./helpers');
 
-module.exports = function sendResetPwd(options, identifyUser, notifierOptions) {
+module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
   debug('sendResetPwd');
   const users = options.app.service(options.service);
   const usersIdName = users.id;

@@ -35,7 +35,7 @@ function verifySignup (options, query, tokens) {
   debug('verifySignup', query, tokens);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
-  
+
   return users.find({ query })
     .then(data => getUserData(data, ['isNotVerified', 'verifyNotExpired']))
     .then(user => {
@@ -46,21 +46,21 @@ function verifySignup (options, query, tokens) {
               { errors: { $className: 'badParam' } });
           });
       }
-  
+
       return eraseVerifyProps(user, user.verifyExpires > Date.now(), user.verifyChanges || {})
         .then(user1 => notifier(options.notifier, 'verifySignup', user1))
         .then(user1 => sanitizeUserForClient(user1));
     });
-  
-  function eraseVerifyProps(user, isVerified, verifyChanges = {}) {
+
+  function eraseVerifyProps (user, isVerified, verifyChanges = {}) {
     const patchToUser = Object.assign({}, verifyChanges, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,
       verifyExpires: null,
-      verifyChanges: {},
+      verifyChanges: {}
     });
-    
+
     return patchUser(user, patchToUser);
   }
 
