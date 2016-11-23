@@ -87,7 +87,10 @@ const usersDb = [
             value: { username },
           })
             .then(() => {
+              console.log('1');
               assert.fail(true, false, 'test unexpectedly succeeded');
+              
+              done();
             })
             .catch(err => {
               assert.equal(err.message, 'Values already taken.');
