@@ -22,13 +22,13 @@ module.exports.resetPwdWithLongToken = function (options, resetToken, password) 
     });
 };
 
-module.exports.resetPwdWithShortToken = function (options, resetShortToken, findUser, password) {
+module.exports.resetPwdWithShortToken = function (options, resetShortToken, identifyUser, password) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(resetShortToken, password);
-      ensureObjPropsValid(findUser, options.userPropsForShortToken);
+      ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-      return resetPassword(options, findUser, { resetShortToken }, password);
+      return resetPassword(options, identifyUser, { resetShortToken }, password);
     });
 };
 

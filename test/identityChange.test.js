@@ -18,7 +18,7 @@ const usersDb = [
   { _id: 'b', email: 'b', plainPassword: 'bb', isVerified: true },
 ];
 
-describe('emailChange - setup', () => {
+describe('identityChange - setup', () => {
   it('encode passwords', function (done) {
     this.timeout(9000);
 
@@ -50,7 +50,7 @@ describe('emailChange - setup', () => {
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`emailChange ${pagination} ${idType}`, () => {
+    describe(`identityChange ${pagination} ${idType}`, () => {
       const ifNonPaginated = pagination === 'non-paginated';
 
       describe('standard', () => {
@@ -73,12 +73,12 @@ describe('emailChange - setup', () => {
           const user = clone(db[i]);
           const email = 'b@b';
 
-          verifyReset.create({
-            action: 'emailChange', value: { password: user.plainPassword, email },
-          }, { user }, (err, user) => {
+          verifyReset.create({ action: 'identityChange',
+            value: { user: { email: user.email }, password: user.plainPassword, change: { email } },
+          }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.equal(db[i].email, email);
+            assert.equal(db[i].email, user.email);
 
             done();
           });
@@ -90,12 +90,12 @@ describe('emailChange - setup', () => {
           const user = clone(db[i]);
           const email = 'a@a';
 
-          verifyReset.create({
-            action: 'emailChange', value: { password: user.plainPassword, email },
-          }, { user }, (err, user) => {
+          verifyReset.create({ action: 'identityChange',
+            value: { user: { email: user.email }, password: user.plainPassword, change: { email } },
+          }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
             assert.strictEqual(user.isVerified, false, 'isVerified not false');
-            assert.equal(db[i].email, email);
+            assert.equal(db[i].email, user.email);
 
             done();
           });
@@ -107,9 +107,9 @@ describe('emailChange - setup', () => {
           const user = clone(db[i]);
           const email = 'a@a';
 
-          verifyReset.create({
-            action: 'emailChange', value: { password: 'ghghghg', email },
-          }, { user }, (err, user) => {
+          verifyReset.create({ action: 'identityChange',
+            value: { user: { email: user.email }, password: 'ghghghg', change: { email } },
+          }, {}, (err, user) => {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
 
@@ -118,7 +118,7 @@ describe('emailChange - setup', () => {
         });
       });
 
-      describe('with email', () => {
+      describe('with notification', () => {
         var db;
         var app;
         var users;
@@ -138,32 +138,40 @@ describe('emailChange - setup', () => {
         it('updates verified user', function (done) {
           this.timeout(9000);
           const i = 1;
-          const paramsUser = clone(db[i]);
-          const oldEmail = db[i].email;
+          const user = clone(db[i]);
           const email = 'b@b';
-          const emailUser = clone(db[i]);
-          emailUser.newEmail = email;
   
-          verifyReset.create(
-            { action: 'emailChange', value: { password: paramsUser.plainPassword, email } },
-            { user: paramsUser },
-            (err, user) => {
+          verifyReset.create({ action: 'identityChange', value: {
+              user: { email: user.email }, password: user.plainPassword, change: { email } }
+          },
+            {},
+            (err, user1) => {
+              const dbi = db[i];
+              
               assert.strictEqual(err, null, 'err code set');
-              assert.strictEqual(user.isVerified, true, 'isVerified not true');
-              assert.equal(db[i].email, email);
-  
+              assert.strictEqual(user1.isVerified, true, 'isVerified not true');
+              assert.equal(dbi.email, user.email);
+              assert.deepEqual(dbi.verifyChange, { email });
+
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
-                  'emailChange',
-                  Object.assign(
-                    sanitizeUserForEmail(db[i]),
-                    { email: oldEmail, newEmail: email }
+                  'identityChange',
+                  Object.assign({},
+                    sanitizeUserForEmail(user),
+                    extractProps(
+                      db[i], 'verifyExpires', 'verifyToken', 'verifyShortToken', 'verifyChange'
+                    )
                   ),
-                  {},
-                  email,
+                  {}
                 ],
               );
+  
+              assert.strictEqual(dbi.isVerified, true, 'isVerified not false');
+              assert.isString(dbi.verifyToken, 'verifyToken not String');
+              assert.equal(dbi.verifyToken.length, 30, 'verify token wrong length');
+              assert.equal(dbi.verifyShortToken.length, 6, 'verify short token wrong length');
+              assert.match(dbi.verifyShortToken, /^[0-9]+$/);
   
               done();
             });
@@ -201,6 +209,14 @@ function sanitizeUserForEmail(user) {
   delete user1.password;
 
   return user1;
+}
+
+function extractProps(obj, ...rest) {
+  const res = {};
+  rest.forEach(key => {
+    res[key] = obj[key];
+  });
+  return res;
 }
 
 function clone(obj) {

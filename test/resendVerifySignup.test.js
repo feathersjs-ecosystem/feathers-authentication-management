@@ -375,8 +375,7 @@ const usersDb = [
                 [
                   'resendVerifySignup',
                   sanitizeUserForEmail(db[i]),
-                  { transport: 'email' },
-                  ''
+                  { transport: 'email' }
                 ]);
       
               done();

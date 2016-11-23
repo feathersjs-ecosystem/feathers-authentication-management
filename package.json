@@ -32,7 +32,6 @@
   },
   "scripts": {
     "prepublish": "npm run compile",
-    "publish": "git push origin --tags && git push origin",
     "publish-dflt": "git push origin --tags && npm run changelog && git push origin",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
@@ -44,7 +43,12 @@
     "mocha": "mocha --opts mocha.opts",
     "coverage": "istanbul cover _mocha -- --opts mocha.opts",
     "test": "npm run compile && npm run lint && npm run coverage",
-    "start": "npm run compile && node example/app"
+    "start": "npm run compile && node example/app",
+    "test:build": "npm run compile && npm run mocha:build",
+    "mocha:build": "mocha test/  --reporter spec --compilers js:babel-core/register",
+    "test:buildx": "npm run compile && npm run mocha:buildx",
+    "mocha:buildx": "mocha testx/  --reporter spec --compilers js:babel-core/register",
+    "publish": "git push origin --tags && git push origin"
   },
   "semistandard": {
     "sourceType": "module",

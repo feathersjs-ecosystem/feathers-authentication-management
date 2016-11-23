@@ -117,7 +117,7 @@ const usersDb = [
         });
       });
 
-      describe('with email', () => {
+      describe('with notification', () => {
         var db;
         var app;
         var users;
@@ -161,8 +161,7 @@ const usersDb = [
                 [
                   'resetPwd',
                   Object.assign({}, sanitizeUserForEmail(db[i])),
-                  {},
-                  ''
+                  {}
                 ]);
         
               done();

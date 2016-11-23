@@ -43,7 +43,7 @@ const usersDb = [
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
@@ -61,7 +61,7 @@ const usersDb = [
 
         it('error on unverified user', (done) => {
           const email = 'a';
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
 
@@ -71,7 +71,7 @@ const usersDb = [
 
         it('error on email not found', (done) => {
           const email = 'x';
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
 
@@ -82,7 +82,7 @@ const usersDb = [
         it('user is sanitized', (done) => {
           const email = 'b';
 
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -98,7 +98,7 @@ const usersDb = [
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {})
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {})
           .then(user => {
             assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
 
@@ -138,7 +138,7 @@ const usersDb = [
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
@@ -177,7 +177,7 @@ const usersDb = [
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: email }, {}, (err, user) => {
+          verifyReset.create({ action: 'sendResetPwd', value: { email } }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
@@ -222,7 +222,7 @@ const usersDb = [
   
           verifyReset.create({
               action: 'sendResetPwd',
-              value: email,
+              value: { email },
               notifierOptions: { transport: 'sms' }
             },
             {},
@@ -241,8 +241,7 @@ const usersDb = [
                 [
                   'sendResetPwd',
                   sanitizeUserForEmail(db[i]),
-                  { transport: 'sms' },
-                  ''
+                  { transport: 'sms' }
                 ]);
 
             done();

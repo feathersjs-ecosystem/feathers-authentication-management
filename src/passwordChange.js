@@ -6,22 +6,24 @@ const debug = require('debug')('verify-reset:passwordChange');
 
 const {
   ensureValuesAreStrings,
+  ensureObjPropsValid,
   sanitizeUserForClient,
   hashPassword,
   comparePasswords,
   notifier
 } = require('./helpers');
 
-module.exports = function passwordChange (options, user, oldPassword, password) {
+module.exports = function passwordChange (options, identifyUser, oldPassword, password) {
   debug('passwordChange', oldPassword, password);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
-
+  
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(oldPassword, password);
+      ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-      return users.find({ query: { email: user.email } })
+      return users.find({ query: identifyUser })
         .then(data => (Array.isArray(data) ? data[0] : data.data[0]));
     })
     .then(user1 => Promise.all([

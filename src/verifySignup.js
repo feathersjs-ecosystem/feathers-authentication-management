@@ -21,13 +21,13 @@ module.exports.verifySignupWithLongToken = function (options, verifyToken) {
     });
 };
 
-module.exports.verifySignupWithShortToken = function (options, verifyShortToken, findUser) {
+module.exports.verifySignupWithShortToken = function (options, verifyShortToken, identifyUser) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(verifyShortToken);
-      ensureObjPropsValid(findUser, options.userPropsForShortToken);
+      ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-      return verifySignup(options, findUser, { verifyShortToken });
+      return verifySignup(options, identifyUser, { verifyShortToken });
     });
 };
 
@@ -35,31 +35,34 @@ function verifySignup (options, query, tokens) {
   debug('verifySignup', query, tokens);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
-
+  
   return users.find({ query })
     .then(data => getUserData(data, ['isNotVerified', 'verifyNotExpired']))
     .then(user => {
       if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
-        return patchUser(user, {
-          verifyToken: null,
-          verifyShortToken: null,
-          verifyExpires: null
-        })
+        return eraseVerifyProps(user, user.isVerified)
           .then(() => {
             throw new errors.BadRequest('Invalid token. Get for a new one. (verify-reset)',
               { errors: { $className: 'badParam' } });
           });
       }
-
-      return patchUser(user, {
-        isVerified: user.verifyExpires > Date.now(),
-        verifyToken: null,
-        verifyShortToken: null,
-        verifyExpires: null
-      })
+  
+      return eraseVerifyProps(user, user.verifyExpires > Date.now(), user.verifyChanges || {})
         .then(user1 => notifier(options.notifier, 'verifySignup', user1))
         .then(user1 => sanitizeUserForClient(user1));
     });
+  
+  function eraseVerifyProps(user, isVerified, verifyChanges = {}) {
+    const patchToUser = Object.assign({}, verifyChanges, {
+      isVerified,
+      verifyToken: null,
+      verifyShortToken: null,
+      verifyExpires: null,
+      verifyChanges: {},
+    });
+    
+    return patchUser(user, patchToUser);
+  }
 
   function patchUser (user, patchToUser) {
     return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure

@@ -4,16 +4,16 @@
 const errors = require('feathers-errors');
 const debug = require('debug')('verify-reset:checkUniqueness');
 
-module.exports = function checkUniqueness (options, uniques, ownId, meta) {
-  debug('checkUniqueness', uniques, ownId, meta);
+module.exports = function checkUniqueness (options, identifyUser, ownId, meta) {
+  debug('checkUniqueness', identifyUser, ownId, meta);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
 
-  const keys = Object.keys(uniques).filter(
-    key => uniques[key] !== undefined && uniques[key] !== null);
+  const keys = Object.keys(identifyUser).filter(
+    key => identifyUser[key] !== undefined && identifyUser[key] !== null);
 
   return Promise.all(
-    keys.map(prop => users.find({ query: { [prop]: uniques[prop].trim() } })
+    keys.map(prop => users.find({ query: { [prop]: identifyUser[prop].trim() } })
       .then(data => {
         const items = Array.isArray(data) ? data : data.data;
         const isNotUnique = items.length > 1 ||

@@ -38,7 +38,7 @@ const usersDb = [
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           verifyResetService({
-            userPropsForShortToken: ['email', 'username']
+            identifyUserProps: ['email', 'username']
           }).call(app); // define and attach verifyReset service
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
@@ -192,7 +192,7 @@ const usersDb = [
       });
 
 
-      describe('with email', () => {
+      describe('with notification', () => {
         var db;
         var app;
         var users;
@@ -207,7 +207,7 @@ const usersDb = [
           spyNotifier = new SpyOn(notifier);
 
           verifyResetService({
-            // maybe reset userPropsForShortToken
+            // maybe reset identifyUserProps
             notifier: spyNotifier.callWith,
             testMode: true
           }).call(app);
@@ -240,8 +240,7 @@ const usersDb = [
                 [
                   'resetPwd',
                   Object.assign({}, sanitizeUserForEmail(db[i])),
-                  {},
-                  ''
+                  {}
                 ]);
         
               done();

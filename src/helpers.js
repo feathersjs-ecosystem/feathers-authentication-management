@@ -144,13 +144,11 @@ const sanitizeUserForEmail = user => {
   return user1;
 };
 
-const notifier = (optionsNotifier, type, user, notifierOptions, newEmail) => {
+const notifier = (optionsNotifier, type, user, notifierOptions) => {
   debug('notifier', type);
 
   return Promise.resolve().then(() => {
-    const user1 = Object.assign({}, user, newEmail ? { newEmail } : {});
-    const promise =
-      optionsNotifier(type, sanitizeUserForEmail(user1), notifierOptions || {}, newEmail || '');
+    const promise = optionsNotifier(type, sanitizeUserForEmail(user), notifierOptions || {});
 
     return promise && typeof promise.then === 'function' ? promise.then(() => user) : user;
   });

@@ -12,18 +12,20 @@ const {
   notifier
 } = require('./helpers');
 
-// {email}, {verifyToken}, {verifyShortToken},
-// {email, verifyToken, verifyShortToken}
-module.exports = function resendVerifySignup (options, emailOrToken, notifierOptions) {
-  debug('resendVerifySignup', emailOrToken);
+// {email}, {cellphone}, {verifyToken}, {verifyShortToken},
+// {email, cellphone, verifyToken, verifyShortToken}
+module.exports = function resendVerifySignup (options, identifyUser, notifierOptions) {
+  debug('resendVerifySignup', identifyUser);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
 
   return Promise.resolve()
     .then(() => {
-      ensureObjPropsValid(emailOrToken, ['email', 'verifyToken', 'verifyShortToken']);
+      ensureObjPropsValid(identifyUser,
+        options.identifyUserProps.concat('verifyToken', 'verifyShortToken')
+      );
 
-      return emailOrToken;
+      return identifyUser;
     })
     .then(query =>
       Promise.all([

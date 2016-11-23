@@ -75,16 +75,54 @@ The present wrapper `authenticate` may have to change for authenticate 1.0
 =================================
 
 Migration
+- options.userPropsForShortToken renamed options.identifyUserProps.
+It contains all fields uniquely identifying the user.
+These will mainly be communications (email, cellphone, facebook) but also username.
+- The names in options.identifyUserProps need to be 'unique' columns in the DB.
+This repo uses DB failures to catch duplicate keys,
+because `.verifyChange` values makes catching potential duplicates difficult.
+- user item should have a `primaryCommunication` prop for the notifier.
 - hooks.restrictToVerified renamed hooks.isVerified
 - options.userNotifier renamed options.notifier
 - notifier must return a promise
-- resendVerifySignup no longer allows string param as email ?!?
-- verifyReset parms removed: unique, resend, verify, forgot, reset, password, email
-- options.service added. default '/users'
-- service accessed by require(reponame)
-- hooks accessed by require('reponame/lib/hooks')
+- notifier(p1, p2, p3) now, not (p1, p2, p3, newEmail). Contents of changes in verifyChange.
+- notifier 'emailChange' is now 'identityChange'
+- resendVerifySignup no longer allows a string param to be the email ?!?
+- verifyReset param `actions` removed: unique, resend, verify, forgot, reset, password, email
+- options.service added. default '/users' ** Does this satisfy needs e.g. signin by organization?**
+- service accessed by require(repo-name) now, not require(repo-name).service.
+- hooks still accessed by require('repo-name').hooks.
 - hooks.addVerification options.len removed. use options.longTokenLen
-- user needs to add for verifyReset:
+
+
+- wrapper sendResetPwd(identifyUser, notifierOptions) now, not (email, notifierOptions)
+- wrapper passwordChange(identifyUser, oldPassword, password) now, not (user, oldPassword, password)
+- wrapper identityChange(identifyUser, password, changeIdentifyUser) now, not (user, password, email)
+
+
+- service changed from
+    verifyReset.create({
+      action: 'passwordChange',
+      value: { oldPassword: plainPassword, password: plainNewPassword },
+    }, { user: paramsUser }, cb)
+to
+    verifyReset.create({
+      action: 'passwordChange',
+      value: { user: { email }, oldPassword: plainPassword, password: plainNewPassword },
+    }, {}, cb)
+- service changed from
+    verifyReset.create({
+      action: 'passwordChange',
+      value: { password: plainPassword, email: newEmail },
+    }, { user: paramsUser }, cb)
+to
+    verifyReset.create({
+      action: 'identityChange',
+      value: { user: { email }, password: plainPassword, change: { email: newEmail } },
+    }, {}, cb)
+
+
+- user needs to add these hooks for the verifyReset service:
   for feathers-authenticate < v1.0
     const isAction = (...args) => hook => args.includes(hook.data.action);
     before: {
@@ -101,5 +139,3 @@ Migration
         hooks.iff(isAction('passwordChange', 'emailChange'), auth.populateUser()),
       ],
     },
-
-- options.service added. default '/users'

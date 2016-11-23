@@ -26,6 +26,7 @@ module.exports.addVerification = (options1) => (hook) => {
       hook.data.verifyExpires = Date.now() + ourOptions.delay;
       hook.data.verifyToken = longToken;
       hook.data.verifyShortToken = shortToken;
+      hook.data.verifyChange = {};
 
       return hook;
     })
@@ -55,6 +56,7 @@ module.exports.removeVerification = (ifReturnTokens) => (hook) => {
   if (hook.params.provider && user) { // noop if initiated by server
     delete user.verifyExpires;
     delete user.resetExpires;
+    delete user.verifyChange;
     if (!ifReturnTokens) {
       delete user.verifyToken;
       delete user.verifyShortToken;

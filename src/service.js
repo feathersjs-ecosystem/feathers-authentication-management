@@ -10,7 +10,7 @@ const { verifySignupWithLongToken, verifySignupWithShortToken } = require('./ver
 const sendResetPwd = require('./sendResetPwd');
 const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPassword');
 const passwordChange = require('./passwordChange');
-const emailChange = require('./emailChange');
+const identityChange = require('./identityChange');
 const { helpersInit } = require('./helpers');
 const { hooksInit } = require('./hooks');
 
@@ -23,7 +23,7 @@ let options = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  userPropsForShortToken: ['email']
+  identifyUserProps: ['email']
 };
 
 /**
@@ -38,10 +38,10 @@ let options = {
  *      'sendResetPwd'          from sendResetPwd API call
  *      'resetPwd'              from resetPwdLong and resetPwdShort API calls
  *      'passwordChange'        from passwordChange API call
- *      'emailChange'           from emailChange API call
+ *      'identityChange'        from identityChange API call
  *    user            user's item, minus password.
  *    notifierOptions notifierOptions option from resendVerifySignup and sendResetPwd API calls
- *    newEmail        the new email address from emailChange API call
+ *    newEmail        the new email address from identityChange API call
  *
  *    notifier needs to handle at least the resendVerifySignup and sendResetPwd notifications.
  *
@@ -55,11 +55,11 @@ let options = {
  *    - Duration for sign up email verification token in ms. Default is 5 days.
  * options1.resetDelay
  *    - Duration for password reset token in ms. Default is 2 hours.
- * options1.userPropsForShortToken
+ * options1.identifyUserProps
  *    - A 6-digit short token is more susceptible to brute force attack than a 30-char token.
  *    Therefore the verifySignupShort and resetPwdShort API calls require the user be identified
  *    using a find-query-like object. To prevent this itself from being an attack vector,
- *    userPropsForShortToken is an array of valid properties allowed in that query object.
+ *    identifyUserProps is an array of valid properties allowed in that query object.
  *    The default is ['email']. You may change it to ['email', 'username'] if you want to
  *    identify users by {email} or {username} or {email, username}.
  *
@@ -115,7 +115,7 @@ let options = {
  * verifyReset.create({ action: 'verifySignupShort',
  *   value: {
  *     token, // compares to .verifyTokenShort
- *     user: {} // identify user, e.g. {email: 'a@a.com'}. See options1.userPropsForShortToken.
+ *     user: {} // identify user, e.g. {email: 'a@a.com'}. See options1.identifyUserProps.
  *   }
  * }, {}, cb)
  *
@@ -138,7 +138,7 @@ let options = {
  *   value: {
  *     token, // compares to .resetTokenShort
  *     password, // new password
- *     user: {} // identify user, e.g. {email: 'a@a.com'}. See options1.userPropsForShortToken.
+ *     user: {} // identify user, e.g. {email: 'a@a.com'}. See options1.identifyUserProps.
  *   },
  * }, {}, cb)
  *
@@ -151,7 +151,7 @@ let options = {
  * }, { user }, cb)
  *
  * // change email
- * verifyReset.create({ action: 'emailChange',
+ * verifyReset.create({ action: 'identityChange',
  *   value: {
  *     password, // current password for verification
  *     email, // new email
@@ -212,7 +212,7 @@ let options = {
  * verifyReset.passwordChange(oldPassword, password, user, cb)
  *
  * // change email
- * verifyReset.emailChange(password, email, user, cb)
+ * verifyReset.identityChange(password, email, user, cb)
  *
  * // Authenticate user and log on if user is verified.
  * verifyReset.authenticate(email, password, cb)
@@ -312,7 +312,7 @@ let options = {
  * New tokens must be acquired for another attempt.
  * - API params are verified to be strings. If the param is an object, the values of its props are
  * verified to be strings.
- * - options1.userPropsForShortToken restricts the prop names allowed in param objects.
+ * - options1.identifyUserProps restricts the prop names allowed in param objects.
  *
  * (D) CONFIGURABLE:
  * The length of the "30-char" token is configurable.
@@ -409,11 +409,13 @@ module.exports = function (options1 = {}) {
             break;
           case 'passwordChange':
             promise = passwordChange(
-              options, params.user, data.value.oldPassword, data.value.password
+              options, data.value.user, data.value.oldPassword, data.value.password
             );
             break;
-          case 'emailChange':
-            promise = emailChange(options, params.user, data.value.password, data.value.email);
+          case 'identityChange':
+            promise = identityChange(
+              options, data.value.user, data.value.password, data.value.change
+            );
             break;
           default:
             promise = Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,

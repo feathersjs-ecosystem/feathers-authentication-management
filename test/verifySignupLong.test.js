@@ -111,7 +111,7 @@ const usersDb = [
         });
       });
 
-      describe('with email', () => {
+      describe('with notification', () => {
         var db;
         var app;
         var users;
@@ -152,8 +152,7 @@ const usersDb = [
                 [
                   'verifySignup',
                   Object.assign({}, sanitizeUserForEmail(db[i])),
-                  {},
-                  ''
+                  {}
                 ]);
         
               done();

@@ -5,24 +5,24 @@ const debug = require('debug')('verify-reset:sendResetPwd');
 
 const {
   getUserData,
-  ensureValuesAreStrings,
+  ensureObjPropsValid,
   sanitizeUserForClient,
   getLongToken,
   getShortToken,
   notifier
 } = require('./helpers');
 
-module.exports = function sendResetPwd (options, email, notifierOptions) {
+module.exports = function sendResetPwd(options, identifyUser, notifierOptions) {
   debug('sendResetPwd');
   const users = options.app.service(options.service);
   const usersIdName = users.id;
 
   return Promise.resolve()
     .then(() => {
-      ensureValuesAreStrings(email);
+      ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
       return Promise.all([
-        users.find({ query: { email } })
+        users.find({ query: identifyUser })
           .then(data => getUserData(data, ['isVerified'])),
         getLongToken(options.longTokenLen),
         getShortToken(options.shortTokenLen, options.shortTokenDigits)

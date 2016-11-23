@@ -87,8 +87,8 @@ describe('passwordChange - setup', () => {
 
           verifyReset.create({
             action: 'passwordChange',
-            value: { oldPassword: user.plainPassword, password: user.plainNewPassword },
-          }, { user: paramsUser }, (err, user) => {
+            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
+          }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -108,8 +108,8 @@ describe('passwordChange - setup', () => {
 
           verifyReset.create({
             action: 'passwordChange',
-            value: { oldPassword: user.plainPassword, password: user.plainNewPassword },
-          }, { user: paramsUser }, (err, user) => {
+            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
+          }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
 
             assert.strictEqual(user.isVerified, false, 'isVerified not false');
@@ -127,8 +127,8 @@ describe('passwordChange - setup', () => {
 
           verifyReset.create({
             action: 'passwordChange',
-            value: { oldPassword: 'fdfgfghghj', password: user.plainNewPassword },
-          }, { user }, (err, user) => {
+            value: { user: { email: user.email }, oldPassword: 'fdfgfghghj', password: user.plainNewPassword },
+          }, {}, (err, user) => {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
 
@@ -137,7 +137,7 @@ describe('passwordChange - setup', () => {
         });
       });
 
-      describe('with email', () => {
+      describe('with notification', () => {
         var db;
         var app;
         var users;
@@ -164,23 +164,22 @@ describe('passwordChange - setup', () => {
   
           verifyReset.create({
               action: 'passwordChange',
-              value: { oldPassword: user.plainPassword, password: user.plainNewPassword },
+              value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
             },
-            { user: paramsUser },
+            {},
             (err, user) => {
               assert.strictEqual(err, null, 'err code set');
       
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
       
               assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
-  
+              
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
                   'passwordChange',
                   sanitizeUserForEmail(db[i]),
-                  {},
-                  ''
+                  {}
                 ]);
   
               done();
