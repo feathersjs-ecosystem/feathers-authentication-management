@@ -96,8 +96,8 @@ because `.verifyChange` values makes catching potential duplicates difficult.
 
 
 - wrapper `sendResetPwd(identifyUser, notifierOptions)` now, not `(email, notifierOptions)`
-- wrapper `passwordChange(identifyUser, oldPassword, password)` now, not `(user, oldPassword, password)`
-- wrapper `identityChange(identifyUser, password, changeIdentifyUser)` now, not `(user, password, email)`
+- wrapper `passwordChange(oldPassword, password, identifyUser)` now, not `(oldPassword, password, user)`
+- wrapper `identityChange(password, changesIdentifyUser, identifyUser)` now, not `emailChange(password, email, user)`
 
 
 - service changed from
@@ -125,7 +125,7 @@ to
 ```javascript
     verifyReset.create({
       action: 'identityChange',
-      value: { user: { email }, password: plainPassword, change: { email: newEmail } },
+      value: { user: { email }, password: plainPassword, changes: { email, cellphone } },
     }, {}, cb)
 ```
 

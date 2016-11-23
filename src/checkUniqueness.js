@@ -4,6 +4,7 @@
 const errors = require('feathers-errors');
 const debug = require('debug')('verify-reset:checkUniqueness');
 
+// This module is usually called from the UI to check username, email, etc. are unique.
 module.exports = function checkUniqueness (options, identifyUser, ownId, meta) {
   debug('checkUniqueness', identifyUser, ownId, meta);
   const users = options.app.service(options.service);

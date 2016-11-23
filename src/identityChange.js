@@ -13,16 +13,16 @@ const {
   notifier
 } = require('./helpers');
 
-module.exports = function identityChange (options, identifyUser, password, changeIdentifyUser) {
+module.exports = function identityChange (options, identifyUser, password, changesIdentifyUser) {
   // note this call does not update the authenticated user info in hooks.params.user.
-  debug('identityChange', password, changeIdentifyUser);
+  debug('identityChange', password, changesIdentifyUser);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
 
   return Promise.resolve()
     .then(() => {
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
-      ensureObjPropsValid(changeIdentifyUser, options.identifyUserProps);
+      ensureObjPropsValid(changesIdentifyUser, options.identifyUserProps);
 
       return users.find({ query: identifyUser })
         .then(data => (Array.isArray(data) ? data[0] : data.data[0]));
@@ -42,12 +42,12 @@ module.exports = function identityChange (options, identifyUser, password, chang
         verifyExpires: Date.now() + options.delay,
         verifyToken: longToken,
         verifyShortToken: shortToken,
-        verifyChange: changeIdentifyUser
+        verifyChanges: changesIdentifyUser
       };
 
       return patchUser(user1, patchToUser);
     })
-    .then(user1 => notifier(options.notifier, 'identityChange', user1, null, changeIdentifyUser))
+    .then(user1 => notifier(options.notifier, 'identityChange', user1, null))
     .then(user1 => sanitizeUserForClient(user1));
 
   function patchUser (user1, patchToUser) {

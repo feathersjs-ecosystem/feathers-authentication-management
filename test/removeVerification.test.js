@@ -19,6 +19,7 @@ describe('hook:remove verification', () => {
         isVerified: true,
         verifyToken: '000',
         verifyExpires: Date.now(),
+        verifyChanges: {},
         resetToken: '000',
         resetExpires: Date.now(),
       },
@@ -35,6 +36,7 @@ describe('hook:remove verification', () => {
     assert.notProperty(user, 'verifyExpires');
     assert.notProperty(user, 'resetToken');
     assert.notProperty(user, 'resetExpires');
+    assert.notProperty(user, 'verifyChanges');
   });
 
   it('works with unverified used', () => {
@@ -49,6 +51,7 @@ describe('hook:remove verification', () => {
     assert.notProperty(user, 'verifyExpires');
     assert.notProperty(user, 'resetToken');
     assert.notProperty(user, 'resetExpires');
+    assert.notProperty(user, 'verifyChanges');
   });
 
   it('works if addVerification not run', () => {
@@ -68,6 +71,7 @@ describe('hook:remove verification', () => {
     assert.property(user, 'verifyExpires');
     assert.property(user, 'resetToken');
     assert.property(user, 'resetExpires');
+    assert.property(user, 'verifyChanges');
   });
 
   it('throws with damaged hook', () => {

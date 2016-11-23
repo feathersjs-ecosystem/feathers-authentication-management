@@ -37,7 +37,7 @@ function verifySignup (options, query, tokens) {
   const usersIdName = users.id;
 
   return users.find({ query })
-    .then(data => getUserData(data, ['isNotVerified', 'verifyNotExpired']))
+    .then(data => getUserData(data, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']))
     .then(user => {
       if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
         return eraseVerifyProps(user, user.isVerified)
@@ -52,8 +52,8 @@ function verifySignup (options, query, tokens) {
         .then(user1 => sanitizeUserForClient(user1));
     });
 
-  function eraseVerifyProps (user, isVerified, verifyChanges = {}) {
-    const patchToUser = Object.assign({}, verifyChanges, {
+  function eraseVerifyProps (user, isVerified, verifyChanges) {
+    const patchToUser = Object.assign({}, verifyChanges || {}, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,

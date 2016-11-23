@@ -87,6 +87,13 @@ const getUserData = (data, checks) => {
     throw new errors.BadRequest('User is already verified.',
       { errors: { $className: 'isNotVerified' } });
   }
+  
+  if (checks.includes('isNotVerifiedOrHasVerifyChanges') &&
+    user.isVerified && !Object.keys(user.verifyChanges || {}).length
+  ) {
+    throw new errors.BadRequest('User is already verified & not awaiting changes.',
+      { errors: { $className: 'isNotVerified' } });
+  }
 
   if (checks.indexOf('isVerified') !== -1 && !user.isVerified) {
     throw new errors.BadRequest('User is not verified.',
@@ -131,6 +138,7 @@ const sanitizeUserForClient = user => {
   delete user1.verifyExpires;
   delete user1.verifyToken;
   delete user1.verifyShortToken;
+  delete user1.verifyChanges;
   delete user1.resetExpires;
   delete user1.resetToken;
   delete user1.resetShortToken;

@@ -17,6 +17,8 @@ const usersDb = [
   { _id: 'b', email: 'b', username: 'bb', isVerified: false, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { _id: 'c', email: 'c', username: 'cc', isVerified: false, verifyToken: '111', verifyShortToken: '11199', verifyExpires: now - 200000 },
   { _id: 'd', email: 'd', username: 'dd', isVerified: true, verifyToken: '222', verifyShortToken: '22299', verifyExpires: now - 200000 },
+  { _id: 'e', email: 'e', username: 'ee', isVerified: true, verifyToken: '800', verifyShortToken: '80099', verifyExpires: now + 200000,
+    verifyChanges: { cellphone: '800' } },
 ];
 
 // Tests
@@ -42,7 +44,7 @@ const usersDb = [
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
 
-        it('verifies valid token', (done) => {
+        it('verifies valid token if not verified', (done) => {
           const verifyShortToken = '00099';
           const i = 0;
 
@@ -57,7 +59,31 @@ const usersDb = [
             assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
             assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
             assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
+            assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
 
+            done();
+          });
+        });
+  
+        it('verifies valid token if verifyChanges', (done) => {
+          const verifyShortToken = '80099';
+          const i = 4;
+    
+          verifyReset.create({ action: 'verifySignupShort', value: {
+            token: verifyShortToken, user: { email: db[i].email },
+          } }, {}, (err, user) => {
+            assert.strictEqual(err, null, 'err code set');
+      
+            assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
+      
+            assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
+            assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
+            assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
+            assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
+            assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
+  
+            assert.strictEqual(db[i].cellphone, '800', 'cellphone wrong');
+      
             done();
           });
         });
@@ -75,6 +101,7 @@ const usersDb = [
             assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
             assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
             assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
+            assert.strictEqual(user.verifyChanges, undefined, 'verifyChanges not undefined');
 
             done();
           });
@@ -222,7 +249,9 @@ const usersDb = [
               
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
+              assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
               assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
+              assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
               
               assert.deepEqual(
                 spyNotifier.result()[0].args,

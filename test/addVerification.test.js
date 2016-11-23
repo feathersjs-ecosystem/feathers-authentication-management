@@ -35,6 +35,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime());
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -59,6 +60,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -83,6 +85,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/); // small chance of false negative
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -105,6 +108,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -125,6 +129,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -145,6 +150,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 7, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })
@@ -165,6 +171,7 @@ describe('hook:addVerification', () => {
           assert.equal(user.verifyShortToken.length, 9, 'verify short token wrong length');
           assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+          assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
           done();
         })

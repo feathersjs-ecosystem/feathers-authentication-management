@@ -51,7 +51,7 @@ const verifyResetServiceFake = function () {
 
 // Tests
 
-describe('wrapper - instantiate', () => {
+describe('client - instantiate', () => {
   it('exists', () => {
     assert.isFunction(VerifyReset);
   });
@@ -64,14 +64,14 @@ describe('wrapper - instantiate', () => {
     const verifyReset = new VerifyReset(app);
 
     ['checkUnique', 'resendVerifySignup', 'verifySignupLong', 'verifySignupShort', 'sendResetPwd',
-      'resetPwdLong', 'resetPwdShort', 'passwordChange', 'emailChange',
+      'resetPwdLong', 'resetPwdShort', 'passwordChange', 'identityChange',
     ].forEach(method => {
       assert.isFunction(verifyReset[method], `${method} is not a function`);
     });
   });
 });
 
-describe('wrapper - callback methods', () => {
+describe('client - callback methods', () => {
   var app;
   var verifyReset;
 
@@ -164,25 +164,20 @@ describe('wrapper - callback methods', () => {
   });
 
   it('passwordChange', (done) => {
-    const user = { _id: 'a', email: 'a', password: 'ahjhjhjkhj', isVerified: false };
-
-    verifyReset.passwordChange('12345678', 'password', user, () => {
-      assert.deepEqual(spyParams, { user });
+    verifyReset.passwordChange('12345678', 'password', { email: 'a' }, () => {
       assert.deepEqual(spyData, {
-        action: 'passwordChange', value: { oldPassword: '12345678', password: 'password' },
+        action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
       });
       
       done();
     });
   });
 
-  it('emailChange', (done) => {
-    const user = { _id: 'a', email: 'a', password: 'ahjhjhjkhj', isVerified: false };
-
-    verifyReset.emailChange('12345678', 'b@b.com', user, () => {
-      assert.deepEqual(spyParams, { user });
+  it('identityChange', (done) => {
+    verifyReset.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' }, () => {
       assert.deepEqual(spyData, {
-        action: 'emailChange', value: { password: '12345678', email: 'b@b.com' },
+        action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
+          changes: { email: 'b@b.com' } },
       });
       
       done();
@@ -213,7 +208,7 @@ describe('wrapper - callback methods', () => {
   });
 });
 
-describe('wrapper - promise methods', () => {
+describe('client - promise methods', () => {
   var app;
   var verifyReset;
   
@@ -313,27 +308,22 @@ describe('wrapper - promise methods', () => {
   });
   
   it('passwordChange', (done) => {
-    const user = { _id: 'a', email: 'a', password: 'ahjhjhjkhj', isVerified: false };
-    
-    verifyReset.passwordChange('12345678', 'password', user)
+    verifyReset.passwordChange('12345678', 'password', { email: 'a' })
       .then(() => {
-        assert.deepEqual(spyParams, { user });
         assert.deepEqual(spyData, {
-          action: 'passwordChange', value: { oldPassword: '12345678', password: 'password' },
+          action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
         });
         
         done();
       });
   });
   
-  it('emailChange', (done) => {
-    const user = { _id: 'a', email: 'a', password: 'ahjhjhjkhj', isVerified: false };
-    
-    verifyReset.emailChange('12345678', 'b@b.com', user)
+  it('identityChange', (done) => {
+    verifyReset.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' })
       .then(() => {
-        assert.deepEqual(spyParams, { user });
         assert.deepEqual(spyData, {
-          action: 'emailChange', value: { password: '12345678', email: 'b@b.com' },
+          action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
+            changes: { email: 'b@b.com' } },
         });
         
         done();

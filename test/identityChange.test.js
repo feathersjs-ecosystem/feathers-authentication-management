@@ -74,7 +74,7 @@ describe('identityChange - setup', () => {
           const email = 'b@b';
 
           verifyReset.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: user.plainPassword, change: { email } },
+            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
           }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -91,7 +91,7 @@ describe('identityChange - setup', () => {
           const email = 'a@a';
 
           verifyReset.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: user.plainPassword, change: { email } },
+            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
           }, {}, (err, user) => {
             assert.strictEqual(err, null, 'err code set');
             assert.strictEqual(user.isVerified, false, 'isVerified not false');
@@ -108,7 +108,7 @@ describe('identityChange - setup', () => {
           const email = 'a@a';
 
           verifyReset.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: 'ghghghg', change: { email } },
+            value: { user: { email: user.email }, password: 'ghghghg', changes: { email } },
           }, {}, (err, user) => {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
@@ -142,7 +142,7 @@ describe('identityChange - setup', () => {
           const email = 'b@b';
   
           verifyReset.create({ action: 'identityChange', value: {
-              user: { email: user.email }, password: user.plainPassword, change: { email } }
+              user: { email: user.email }, password: user.plainPassword, changes: { email } }
           },
             {},
             (err, user1) => {
@@ -151,7 +151,7 @@ describe('identityChange - setup', () => {
               assert.strictEqual(err, null, 'err code set');
               assert.strictEqual(user1.isVerified, true, 'isVerified not true');
               assert.equal(dbi.email, user.email);
-              assert.deepEqual(dbi.verifyChange, { email });
+              assert.deepEqual(dbi.verifyChanges, { email });
 
               assert.deepEqual(
                 spyNotifier.result()[0].args,
@@ -160,7 +160,7 @@ describe('identityChange - setup', () => {
                   Object.assign({},
                     sanitizeUserForEmail(user),
                     extractProps(
-                      db[i], 'verifyExpires', 'verifyToken', 'verifyShortToken', 'verifyChange'
+                      db[i], 'verifyExpires', 'verifyToken', 'verifyShortToken', 'verifyChanges'
                     )
                   ),
                   {}
