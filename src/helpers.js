@@ -138,7 +138,7 @@ const sanitizeUserForClient = user => {
   return user1;
 };
 
-const sanitizeUserForEmail = user => {
+const sanitizeUserForNotifier = user => {
   const user1 = Object.assign({}, user);
   delete user1.password;
   return user1;
@@ -148,7 +148,7 @@ const notifier = (optionsNotifier, type, user, notifierOptions) => {
   debug('notifier', type);
 
   return Promise.resolve().then(() => {
-    const promise = optionsNotifier(type, sanitizeUserForEmail(user), notifierOptions || {});
+    const promise = optionsNotifier(type, sanitizeUserForNotifier(user), notifierOptions || {});
 
     return promise && typeof promise.then === 'function' ? promise.then(() => user) : user;
   });
@@ -166,6 +166,6 @@ module.exports = {
   ensureObjPropsValid,
   ensureValuesAreStrings,
   sanitizeUserForClient,
-  sanitizeUserForEmail,
+  sanitizeUserForNotifier,
   notifier
 };
