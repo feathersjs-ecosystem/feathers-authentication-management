@@ -85,6 +85,7 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
   };
 }
 
+
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = AuthManagement;
 }
