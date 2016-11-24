@@ -1,8 +1,15 @@
 engines:
-  # ... CONFIG CONTENT ...
   duplication:
     enabled: true
-    # ... CONFIG CONTENT ...
-    checks:
-      Similar code:
-        enabled: false
+    config:
+      languages:
+      - javascript
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - src/**
+exclude_paths:
+- test/
