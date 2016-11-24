@@ -5,7 +5,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const AuthManagement = require('../lib/client');
+const AuthManagement = require('../src/client');
 
 // user DB
 

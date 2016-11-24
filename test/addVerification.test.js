@@ -4,8 +4,8 @@
 one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
-const verifyReset = require('../lib/index');
-const hooks = require('../lib/index').hooks;
+const verifyReset = require('../src/index');
+const hooks = require('../src/index').hooks;
 
 const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
 

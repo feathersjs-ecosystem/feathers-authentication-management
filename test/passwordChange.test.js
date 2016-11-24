@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('feathers-authentication').hooks;
 
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../lib/index');
+const verifyResetService = require('../src/index');
 const SpyOn = require('./../test/helpers/basicSpy');
 
 // user DB

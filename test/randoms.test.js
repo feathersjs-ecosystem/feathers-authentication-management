@@ -1,7 +1,7 @@
 
 const assert = require('chai').assert;
-const randomDigits = require('../lib/helpers').randomDigits;
-const randomBytes = require('../lib/helpers').randomBytes;
+const randomDigits = require('../src/helpers').randomDigits;
+const randomBytes = require('../src/helpers').randomBytes;
 
 describe('randomDigits', () => {
   it('correct length', () => {

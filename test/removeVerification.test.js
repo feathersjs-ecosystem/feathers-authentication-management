@@ -3,7 +3,7 @@
 /* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
-const hooks = require('../lib/index').hooks;
+const hooks = require('../src/index').hooks;
 
 var hookIn;
 

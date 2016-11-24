@@ -5,7 +5,7 @@ no-unused-vars: 0, object-property-newline: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../lib/index');
+const verifyResetService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB

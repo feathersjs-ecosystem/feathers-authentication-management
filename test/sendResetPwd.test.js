@@ -5,7 +5,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../lib/index');
+const verifyResetService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 const defaultResetDelay = 1000 * 60 * 60 * 2; // 2 hours

@@ -7,7 +7,7 @@ const util = require('util');
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../lib/index');
+const verifyResetService = require('../src/index');
 const SpyOn = require('./../test/helpers/basicSpy');
 
 const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
