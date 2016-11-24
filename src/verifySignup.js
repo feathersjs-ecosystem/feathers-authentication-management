@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:verifySignup');
+const debug = require('debug')('authManagement:verifySignup');
 
 const {
   getUserData,
@@ -42,7 +42,7 @@ function verifySignup (options, query, tokens) {
       if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
         return eraseVerifyProps(user, user.isVerified)
           .then(() => {
-            throw new errors.BadRequest('Invalid token. Get for a new one. (verify-reset)',
+            throw new errors.BadRequest('Invalid token. Get for a new one. (authManagement)',
               { errors: { $className: 'badParam' } });
           });
       }

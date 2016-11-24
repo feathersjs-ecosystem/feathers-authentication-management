@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:checkUniqueness');
+const debug = require('debug')('authManagement:checkUniqueness');
 
 // This module is usually called from the UI to check username, email, etc. are unique.
 module.exports = function checkUniqueness (options, identifyUser, ownId, meta) {

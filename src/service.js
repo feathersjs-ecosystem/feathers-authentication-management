@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:main');
+const debug = require('debug')('authManagement:main');
 
 const checkUniqueness = require('./checkUniqueness');
 const resendVerifySignup = require('./resendVerifySignup');

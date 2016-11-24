@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const auth = require('feathers-authentication').hooks;
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:helpers');
+const debug = require('debug')('authManagement:helpers');
 
 let options = {};
 
@@ -72,7 +72,8 @@ const getShortToken = (len, ifDigits) => {
 
 const getUserData = (data, checks) => {
   if (Array.isArray(data) ? data.length === 0 : data.total === 0) {
-    throw new errors.BadRequest('User not found.', { errors: { $className: 'badParams' } });
+    throw new errors.BadRequest('User not found.',
+      { errors: { $className: 'badParams' } });
   }
 
   const users = Array.isArray(data) ? data : data.data;
@@ -83,7 +84,7 @@ const getUserData = (data, checks) => {
       { errors: { $className: 'badParams' } });
   }
 
-  if (checks.indexOf('isNotVerified') !== -1 && user.isVerified) {
+  if (checks.includes('isNotVerified') && user.isVerified) {
     throw new errors.BadRequest('User is already verified.',
       { errors: { $className: 'isNotVerified' } });
   }
@@ -92,20 +93,20 @@ const getUserData = (data, checks) => {
     user.isVerified && !Object.keys(user.verifyChanges || {}).length
   ) {
     throw new errors.BadRequest('User is already verified & not awaiting changes.',
-      { errors: { $className: 'isNotVerified' } });
+      { errors: { $className: 'nothingToVerify' } });
   }
 
-  if (checks.indexOf('isVerified') !== -1 && !user.isVerified) {
+  if (checks.includes('isVerified') && !user.isVerified) {
     throw new errors.BadRequest('User is not verified.',
       { errors: { $className: 'isVerified' } });
   }
 
-  if (checks.indexOf('verifyNotExpired') !== -1 && user.verifyExpires < Date.now()) {
+  if (checks.includes('verifyNotExpired') && user.verifyExpires < Date.now()) {
     throw new errors.BadRequest('Verification token has expired.',
       { errors: { $className: 'verifyExpired' } });
   }
 
-  if (checks.indexOf('resetNotExpired') !== -1 && user.resetExpires < Date.now()) {
+  if (checks.includes('resetNotExpired') && user.resetExpires < Date.now()) {
     throw new errors.BadRequest('Password reset token has expired.',
       { errors: { $className: 'resetExpired' } });
   }
@@ -115,18 +116,18 @@ const getUserData = (data, checks) => {
 
 const ensureObjPropsValid = (obj, props, allowNone) => {
   const keys = Object.keys(obj);
-  const valid = keys.every(key => props.indexOf(key) !== -1 && typeof obj[key] === 'string');
+  const valid = keys.every(key => props.includes(key) && typeof obj[key] === 'string');
   if (!valid || (keys.length === 0 && !allowNone)) {
-    throw new errors.BadRequest(
-      'User info is not valid. (verify-reset)', { errors: { $className: 'badParams' } }
+    throw new errors.BadRequest('User info is not valid. (authManagement)',
+      { errors: { $className: 'badParams' } }
     );
   }
 };
 
 const ensureValuesAreStrings = (...rest) => {
   if (!rest.every(str => typeof str === 'string')) {
-    throw new errors.BadRequest(
-      'Expected string value. (verify-reset)', { errors: { $className: 'badParams' } }
+    throw new errors.BadRequest('Expected string value. (authManagement)',
+      { errors: { $className: 'badParams' } }
     );
   }
 };

@@ -1,7 +1,7 @@
 
 /* eslint-env node */
 
-const debug = require('debug')('verify-reset:sendResetPwd');
+const debug = require('debug')('authManagement:sendResetPwd');
 
 const {
   getUserData,

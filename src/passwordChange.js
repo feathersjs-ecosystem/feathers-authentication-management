@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:passwordChange');
+const debug = require('debug')('authManagement:passwordChange');
 
 const {
   ensureValuesAreStrings,

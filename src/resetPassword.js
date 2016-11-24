@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 const errors = require('feathers-errors');
-const debug = require('debug')('verify-reset:resetPassword');
+const debug = require('debug')('authManagement:resetPassword');
 
 const {
   getUserData,
@@ -50,7 +50,7 @@ function resetPassword (options, query, tokens, password) {
           resetExpires: null
         })
           .then(() => {
-            throw new errors.BadRequest('Invalid token. Get for a new one. (verify-reset)',
+            throw new errors.BadRequest('Invalid token. Get for a new one. (authManagement)',
               { errors: { $className: 'badParam' } });
           });
       }

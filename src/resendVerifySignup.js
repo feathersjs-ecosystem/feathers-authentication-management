@@ -1,7 +1,7 @@
 
 /* eslint-env node */
 
-const debug = require('debug')('verify-reset:resendVerifySignup');
+const debug = require('debug')('authManagement:resendVerifySignup');
 
 const {
   getUserData,
