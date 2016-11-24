@@ -2,58 +2,58 @@
 /* global module: 0 */
 // Wrapper for client interface to feathers-authenticate-management
 
-function VerifyReset (app) { // eslint-disable-line no-unused-vars
-  if (!(this instanceof VerifyReset)) {
-    return new VerifyReset(app);
+function AuthManagement (app) { // eslint-disable-line no-unused-vars
+  if (!(this instanceof AuthManagement)) {
+    return new AuthManagement(app);
   }
 
-  const verifyReset = app.service('verifyReset');
+  const authManagement = app.service('authManagement');
 
-  this.checkUnique = (identifyUser, ownId, ifErrMsg, cb) => verifyReset.create({
+  this.checkUnique = (identifyUser, ownId, ifErrMsg, cb) => authManagement.create({
     action: 'checkUnique',
     value: identifyUser,
     ownId,
     meta: { noErrMsg: ifErrMsg }
   }, {}, cb);
 
-  this.resendVerifySignup = (identifyUser, notifierOptions, cb) => verifyReset.create({
+  this.resendVerifySignup = (identifyUser, notifierOptions, cb) => authManagement.create({
     action: 'resendVerifySignup',
     value: identifyUser,
     notifierOptions
   }, {}, cb);
 
-  this.verifySignupLong = (verifyToken, cb) => verifyReset.create({
+  this.verifySignupLong = (verifyToken, cb) => authManagement.create({
     action: 'verifySignupLong',
     value: verifyToken
   }, {}, cb);
 
-  this.verifySignupShort = (verifyShortToken, identifyUser, cb) => verifyReset.create({
+  this.verifySignupShort = (verifyShortToken, identifyUser, cb) => authManagement.create({
     action: 'verifySignupShort',
     value: { user: identifyUser, token: verifyShortToken }
   }, {}, cb);
 
-  this.sendResetPwd = (identifyUser, notifierOptions, cb) => verifyReset.create({
+  this.sendResetPwd = (identifyUser, notifierOptions, cb) => authManagement.create({
     action: 'sendResetPwd',
     value: identifyUser,
     notifierOptions
   }, {}, cb);
 
-  this.resetPwdLong = (resetToken, password, cb) => verifyReset.create({
+  this.resetPwdLong = (resetToken, password, cb) => authManagement.create({
     action: 'resetPwdLong',
     value: { token: resetToken, password }
   }, {}, cb);
 
-  this.resetPwdShort = (resetShortToken, identifyUser, password, cb) => verifyReset.create({
+  this.resetPwdShort = (resetShortToken, identifyUser, password, cb) => authManagement.create({
     action: 'resetPwdShort',
     value: { user: identifyUser, token: resetShortToken, password }
   }, {}, cb);
 
-  this.passwordChange = (oldPassword, password, identifyUser, cb) => verifyReset.create({
+  this.passwordChange = (oldPassword, password, identifyUser, cb) => authManagement.create({
     action: 'passwordChange',
     value: { user: identifyUser, oldPassword, password }
   }, {}, cb);
 
-  this.identityChange = (password, changesIdentifyUser, identifyUser, cb) => verifyReset.create({
+  this.identityChange = (password, changesIdentifyUser, identifyUser, cb) => authManagement.create({
     action: 'identityChange',
     value: { user: identifyUser, password, changes: changesIdentifyUser }
   }, {}, cb);
@@ -86,5 +86,5 @@ function VerifyReset (app) { // eslint-disable-line no-unused-vars
 }
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = VerifyReset;
+  module.exports = AuthManagement;
 }
