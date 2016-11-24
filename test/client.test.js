@@ -5,8 +5,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../lib/index');
-const VerifyReset = require('../lib/client');
+const AuthManagement = require('../lib/client');
 
 // user DB
 
@@ -23,9 +22,9 @@ var spyAuthenticateEmail;
 var spyAuthenticatePassword;
 
 const verifyResetServiceFake = function () {
-  return function verifyReset() { // 'function' needed as we use 'this'
+  return function authManagement() { // 'function' needed as we use 'this'
     const app = this;
-    const path = 'verifyReset';
+    const path = 'authManagement';
 
     app.use(path, {
       create(data, params1, cb) {
@@ -53,36 +52,22 @@ const verifyResetServiceFake = function () {
 
 describe('client - instantiate', () => {
   it('exists', () => {
-    assert.isFunction(VerifyReset);
-  });
-
-  it('has expected methods', () => {
-    const db = clone(usersDb);
-    const app = feathersStubs.app();
-    const users = feathersStubs.users(app, db);
-    verifyResetService().call(app);
-    const verifyReset = new VerifyReset(app);
-
-    ['checkUnique', 'resendVerifySignup', 'verifySignupLong', 'verifySignupShort', 'sendResetPwd',
-      'resetPwdLong', 'resetPwdShort', 'passwordChange', 'identityChange',
-    ].forEach(method => {
-      assert.isFunction(verifyReset[method], `${method} is not a function`);
-    });
+    assert.isFunction(AuthManagement);
   });
 });
-
+/*
 describe('client - callback methods', () => {
   var app;
-  var verifyReset;
+  var authManagement;
 
   beforeEach(() => {
     app = feathersStubs.app();
     verifyResetServiceFake().call(app);
-    verifyReset = new VerifyReset(app);
+    authManagement = new AuthManagement(app);
   });
 
   it('checkUnique', (done) => {
-    verifyReset.checkUnique({ username: 'john a' }, null, true, () => {
+    authManagement.checkUnique({ username: 'john a' }, null, true, () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'checkUnique', value: { username: 'john a' }, ownId: null, meta: { noErrMsg: true },
@@ -93,7 +78,7 @@ describe('client - callback methods', () => {
   });
 
   it('resendVerify', (done) => {
-    verifyReset.resendVerifySignup('a@a.com', { a: 'a' }, () => {
+    authManagement.resendVerifySignup('a@a.com', { a: 'a' }, () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'resendVerifySignup',
@@ -106,7 +91,7 @@ describe('client - callback methods', () => {
   });
 
   it('verifySignupLong', (done) => {
-    verifyReset.verifySignupLong('000', () => {
+    authManagement.verifySignupLong('000', () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, { action: 'verifySignupLong', value: '000' });
   
@@ -115,7 +100,7 @@ describe('client - callback methods', () => {
   });
   
   it('verifySignupShort', (done) => {
-    verifyReset.verifySignupShort('000', { email: 'a@a.com' }, () => {
+    authManagement.verifySignupShort('000', { email: 'a@a.com' }, () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'verifySignupShort',
@@ -127,7 +112,7 @@ describe('client - callback methods', () => {
   });
   
   it('sendResetPwd', (done) => {
-    verifyReset.sendResetPwd('a@a.com', { a: 'a' }, () => {
+    authManagement.sendResetPwd('a@a.com', { a: 'a' }, () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'sendResetPwd',
@@ -140,7 +125,7 @@ describe('client - callback methods', () => {
   });
   
   it('resetPwdLong', (done) => {
-    verifyReset.resetPwdLong('000', '12345678', () => {
+    authManagement.resetPwdLong('000', '12345678', () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'resetPwdLong',
@@ -152,7 +137,7 @@ describe('client - callback methods', () => {
   });
   
   it('resetPwdShort', (done) => {
-    verifyReset.resetPwdShort('000', { email: 'a@a.com' }, '12345678', () => {
+    authManagement.resetPwdShort('000', { email: 'a@a.com' }, '12345678', () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'resetPwdShort',
@@ -164,7 +149,7 @@ describe('client - callback methods', () => {
   });
 
   it('passwordChange', (done) => {
-    verifyReset.passwordChange('12345678', 'password', { email: 'a' }, () => {
+    authManagement.passwordChange('12345678', 'password', { email: 'a' }, () => {
       assert.deepEqual(spyData, {
         action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
       });
@@ -174,7 +159,7 @@ describe('client - callback methods', () => {
   });
 
   it('identityChange', (done) => {
-    verifyReset.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' }, () => {
+    authManagement.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' }, () => {
       assert.deepEqual(spyData, {
         action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
           changes: { email: 'b@b.com' } },
@@ -185,7 +170,7 @@ describe('client - callback methods', () => {
   });
 
   it('authenticate is verified', (done) => {
-    verifyReset.authenticate('ok', 'bb', (err, user) => {
+    authManagement.authenticate('ok', 'bb', (err, user) => {
       assert.equal(spyAuthenticateEmail, 'ok');
       assert.equal(spyAuthenticatePassword, 'bb');
 
@@ -197,7 +182,7 @@ describe('client - callback methods', () => {
   });
 
   it('authenticate is not verified', (done) => {
-    verifyReset.authenticate('bad', '12345678', (err, user) => {
+    authManagement.authenticate('bad', '12345678', (err, user) => {
       assert.equal(spyAuthenticateEmail, 'bad');
       assert.equal(spyAuthenticatePassword, '12345678');
 
@@ -207,19 +192,19 @@ describe('client - callback methods', () => {
     });
   });
 });
-
+*/
 describe('client - promise methods', () => {
   var app;
-  var verifyReset;
+  var authManagement;
   
   beforeEach(() => {
     app = feathersStubs.app();
     verifyResetServiceFake().call(app);
-    verifyReset = new VerifyReset(app);
+    authManagement = new AuthManagement(app);
   });
   
   it('checkUnique', (done) => {
-    verifyReset.checkUnique({ username: 'john a' }, null, true)
+    authManagement.checkUnique({ username: 'john a' }, null, true)
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -231,7 +216,7 @@ describe('client - promise methods', () => {
   });
   
   it('resendVerify', (done) => {
-    verifyReset.resendVerifySignup('a@a.com', { b: 'b' })
+    authManagement.resendVerifySignup('a@a.com', { b: 'b' })
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -245,7 +230,7 @@ describe('client - promise methods', () => {
   });
   
   it('verifySignupLong', (done) => {
-    verifyReset.verifySignupLong('000')
+    authManagement.verifySignupLong('000')
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, { action: 'verifySignupLong', value: '000' });
@@ -255,7 +240,7 @@ describe('client - promise methods', () => {
   });
   
   it('verifySignupShort', (done) => {
-    verifyReset.verifySignupShort('000', { email: 'a@a.com' })
+    authManagement.verifySignupShort('000', { email: 'a@a.com' })
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -268,7 +253,7 @@ describe('client - promise methods', () => {
   });
   
   it('sendResetPwd', (done) => {
-    verifyReset.sendResetPwd('a@a.com', { b: 'b' })
+    authManagement.sendResetPwd('a@a.com', { b: 'b' })
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -282,7 +267,7 @@ describe('client - promise methods', () => {
   });
   
   it('resetPwdLong', (done) => {
-    verifyReset.resetPwdLong('000', '12345678')
+    authManagement.resetPwdLong('000', '12345678')
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -295,7 +280,7 @@ describe('client - promise methods', () => {
   });
   
   it('resetPwdShort', (done) => {
-    verifyReset.resetPwdShort('000', { email: 'a@a.com' }, '12345678')
+    authManagement.resetPwdShort('000', { email: 'a@a.com' }, '12345678')
       .then(() => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
@@ -308,7 +293,7 @@ describe('client - promise methods', () => {
   });
   
   it('passwordChange', (done) => {
-    verifyReset.passwordChange('12345678', 'password', { email: 'a' })
+    authManagement.passwordChange('12345678', 'password', { email: 'a' })
       .then(() => {
         assert.deepEqual(spyData, {
           action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
@@ -319,7 +304,7 @@ describe('client - promise methods', () => {
   });
   
   it('identityChange', (done) => {
-    verifyReset.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' })
+    authManagement.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' })
       .then(() => {
         assert.deepEqual(spyData, {
           action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
@@ -331,7 +316,7 @@ describe('client - promise methods', () => {
   });
   
   it('authenticate is verified', (done) => {
-    verifyReset.authenticate('ok', 'bb')
+    authManagement.authenticate('ok', 'bb')
       .then(user => {
         assert.equal(spyAuthenticateEmail, 'ok');
         assert.equal(spyAuthenticatePassword, 'bb');
@@ -343,7 +328,7 @@ describe('client - promise methods', () => {
   });
   
   it('authenticate is not verified', (done) => {
-    verifyReset.authenticate('bad', '12345678')
+    authManagement.authenticate('bad', '12345678')
       .catch(err => {
         assert.equal(spyAuthenticateEmail, 'bad');
         assert.equal(spyAuthenticatePassword, '12345678');

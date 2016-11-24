@@ -93,12 +93,11 @@ because `.verifyChange` values makes catching potential duplicates difficult.
 - service accessed by `require(repo-name)` now, not `require(repo-name).service`.
 - hooks still accessed by `require('repo-name').hooks`.
 - `hooks.addVerification`'s `options.len` removed. use `options.longTokenLen`
-
-
 - wrapper `sendResetPwd(identifyUser, notifierOptions)` now, not `(email, notifierOptions)`
 - wrapper `passwordChange(oldPassword, password, identifyUser)` now, not `(oldPassword, password, user)`
 - wrapper `identityChange(password, changesIdentifyUser, identifyUser)` now, not `emailChange(password, email, user)`
-
+- neither the service nor the wrappers support callbacks.
+Callbacks for services are being removed from feathers in early 2017 with the Buzzard release.
 
 - service changed from
 ```javascript

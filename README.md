@@ -175,7 +175,7 @@ The service may be called on the client using
 - [Vue 2.0 (docs todo)](#vue)
 
 ### <a name="methods"> Using Feathers' method calls
-Method calls return a Promise unless a callback is provided.
+Method calls return a Promise.
 
 ```javascript
 const authManagement = app.service('authManagement');
@@ -185,18 +185,18 @@ authManagement.create({ action: 'checkUnique',
   value: identifyUser, // e.g. {email, username}. Props with null or undefined are ignored.
   ownId, // excludes your current user from the search
   meta: { noErrMsg }, // if return an error.message if not unique
-}, {}, cb)
+})
 
 // resend sign up verification notification
 authManagement.create({ action: 'resendVerifySignup',
   value: identifyUser, // {email}, {token: verifyToken}
   notifierOptions: {}, // options passed to options.notifier, e.g. {prefersTransport: 'cellphone'}
-}, {}, cb)
+})
 
 // sign up or identityChange verification with long token
 authManagement.create({ action: 'verifySignupLong',
   value: verifyToken, // compares to .verifyToken
-}, {}, cb)
+})
 
 // sign up or identityChange verification with short token
 authManagement.create({ action: 'verifySignupShort',
@@ -204,13 +204,13 @@ authManagement.create({ action: 'verifySignupShort',
     user, // identify user, e.g. {email: 'a@a.com'}. See options.identityUserProps.
     token, // compares to .verifyTokenShort
   }
-}, {}, cb)
+})
 
 // send forgotten password notification
 authManagement.create({ action: 'sendResetPwd',
   value: identifyUser, // {email}, {token: verifyToken}
   notifierOptions, // options passed to options.notifier, e.g. {prefersTransport: 'email'}
-}, {}, cb)
+})
 
 // forgotten password verification with long token
 authManagement.create({ action: 'resetPwdLong',
@@ -218,7 +218,7 @@ authManagement.create({ action: 'resetPwdLong',
     token, // compares to .resetToken
     password, // new password
   },
-}, {}, cb)
+})
 
 // forgotten password verification with short token
 authManagement.create({ action: 'resetPwdShort',
@@ -227,7 +227,7 @@ authManagement.create({ action: 'resetPwdShort',
     token, // compares to .resetTokenShort
     password, // new password
   },
-}, {}, cb)
+})
 
 // change password
 authManagement.create({ action: 'passwordChange',
@@ -236,7 +236,7 @@ authManagement.create({ action: 'passwordChange',
     oldPassword, // old password for verification
     password, // new password
   },
-}, {}, cb)
+})
 
 // change communications
 authManagement.create({ action: 'identityChange',
@@ -245,7 +245,7 @@ authManagement.create({ action: 'identityChange',
     password, // current password for verification
     changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
   },
-}, {}, cb)
+})
 
 // Authenticate user and log on if user is verified.
 var cbCalled = false;
@@ -266,7 +266,7 @@ app.authenticate({ type: 'local', email, password })
 ````
 
 ### <a name="wrappers"> Provided service wrappers
-The wrappers return a Promise unless a callback is provided.
+The wrappers return a Promise.
 
 ```javascript`
 <script src=".../feathers-authentication-management/lib/client.js"></script>
@@ -276,34 +276,34 @@ const app = feathers() ...
 const authManagement = new AuthManagement(app);
 
 // check props are unique in the users items
-authManagement.checkUnique(identifyUser, ownId, ifErrMsg, cb)
+authManagement.checkUnique(identifyUser, ownId, ifErrMsg)
 
 // resend sign up verification notification
-authManagement.resendVerifySignup(identifyUser, notifierOptions, cb)
+authManagement.resendVerifySignup(identifyUser, notifierOptions)
 
 // sign up or identityChange verification with long token
-authManagement.verifySignupLong(verifyToken, cb)
+authManagement.verifySignupLong(verifyToken)
 
 // sign up or identityChange verification with short token
-authManagement.verifySignupShort(verifyShortToken, identifyUser, cb)
+authManagement.verifySignupShort(verifyShortToken, identifyUser)
 
 // send forgotten password notification
-authManagement.sendResetPwd(identifyUser, notifierOptions, cb)
+authManagement.sendResetPwd(identifyUser, notifierOptions)
 
 // forgotten password verification with long token
-authManagement.resetPwdLong(resetToken, password, cb)
+authManagement.resetPwdLong(resetToken, password)
 
 // forgotten password verification with short token
-authManagement.resetPwdShort(resetShortToken, identifyUser, password, cb)
+authManagement.resetPwdShort(resetShortToken, identifyUser, password)
 
 // change password
-authManagement.passwordChange(oldPassword, password, identifyUser, cb)
+authManagement.passwordChange(oldPassword, password, identifyUser)
 
 // change identity
-authManagement.identityChange(password, changesIdentifyUser, identifyUser, cb)
+authManagement.identityChange(password, changesIdentifyUser, identifyUser)
 
 // Authenticate user and log on if user is verified. v0.x only.
-authManagement.authenticate(email, password, cb)
+authManagement.authenticate(email, password)
 ```
 
 ### <a name="fetch"> HTTP fetch (docs to complete)
