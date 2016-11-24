@@ -42,23 +42,25 @@ const usersDb = [
           verifyResetService().call(app); // define and attach verifyReset service
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
-
+  
         it('verifies valid token if not verified', (done) => {
           const verifyToken = '000';
           const i = 0;
-
-          verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
+    
+          verifyReset.create({ action: 'verifySignupLong', value: verifyToken })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-
+        
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
               assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
               assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
               assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
-
+        
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -67,12 +69,10 @@ const usersDb = [
           const verifyToken = '800';
           const i = 4;
     
-          verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-        
+          verifyReset.create({ action: 'verifySignupLong', value: verifyToken })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-        
+  
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
               assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
@@ -80,7 +80,11 @@ const usersDb = [
               assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
   
               assert.strictEqual(db[i].cellphone, '800', 'cellphone wrong');
-        
+  
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -89,16 +93,18 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
+          verifyReset.create({ action: 'verifySignupLong', value: verifyToken })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
               assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
               assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
               assert.strictEqual(user.verifyChanges, undefined, 'verifyChanges not undefined');
-              
+  
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -107,31 +113,43 @@ const usersDb = [
           const verifyToken = '222';
           verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
             (err, user) => {
+
+            })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
 
         it('error on expired token', (done) => {
           const verifyToken = '111';
-          verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
-            (err, user) => {
+          verifyReset.create({ action: 'verifySignupLong', value: verifyToken })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
 
         it('error on token not found', (done) => {
           const verifyToken = '999';
-          verifyReset.create({ action: 'verifySignupLong', value: verifyToken }, {},
-            (err, user) => {
+          verifyReset.create({ action: 'verifySignupLong', value: verifyToken })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
@@ -160,13 +178,10 @@ const usersDb = [
           const i = 0;
     
           verifyReset.create({
-              action: 'verifySignupLong',
-              value: verifyToken
-            },
-            {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-        
+            action: 'verifySignupLong',
+            value: verifyToken
+          })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
         
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
@@ -181,6 +196,10 @@ const usersDb = [
                   {}
                 ]);
         
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });

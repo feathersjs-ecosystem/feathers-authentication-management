@@ -84,19 +84,20 @@ describe('passwordChange - setup', () => {
           const user = clone(db[i]);
           const paramsUser = clone(user);
           delete paramsUser.password;
-
+  
           verifyReset.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
-          }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, true, 'isVerified not true');
-
-            assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.strictEqual(user.isVerified, true, 'isVerified not true');
+              assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('updates unverified user', function (done) {
@@ -109,31 +110,36 @@ describe('passwordChange - setup', () => {
           verifyReset.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
-          }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, false, 'isVerified not false');
-
-            assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'isVerified not false');
+              assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('error on wrong password', function (done) {
           this.timeout(9000);
           const i = 0;
           const user = clone(db[i]);
-
+  
           verifyReset.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: 'fdfgfghghj', password: user.plainNewPassword },
-          }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch( err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
       });
 
@@ -165,15 +171,10 @@ describe('passwordChange - setup', () => {
           verifyReset.create({
               action: 'passwordChange',
               value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
-            },
-            {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-      
+            })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
-      
               assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
-              
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -181,9 +182,12 @@ describe('passwordChange - setup', () => {
                   sanitizeUserForEmail(db[i]),
                   {}
                 ]);
-  
               done();
-          });
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
       });
     });

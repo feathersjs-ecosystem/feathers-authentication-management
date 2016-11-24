@@ -42,28 +42,28 @@ const usersDb = [
           }).call(app); // define and attach verifyReset service
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
-
+  
         it('verifies valid token', (done) => {
           const resetShortToken = '00099';
           const i = 0;
-
+    
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email }
-          } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-
-            assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
-            assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
-            assert.strictEqual(db[i].resetShortToken, null, 'resetShortToken not null');
-            assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
-
-            assert.isString(db[i].password, 'password not a string');
-            assert.equal(db[i].password.length, 60, 'password wrong length');
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
+              assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
+              assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
+              assert.strictEqual(db[i].resetShortToken, null, 'resetShortToken not null');
+              assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
+              assert.isString(db[i].password, 'password not a string');
+              assert.equal(db[i].password.length, 60, 'password wrong length');
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('user is sanitized', (done) => {
@@ -72,17 +72,18 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { username: db[i].username }
-          } }, {}, (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
+          } })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
               assert.strictEqual(user.resetShortToken, undefined, 'resetShortToken not undefined');
               assert.strictEqual(user.resetExpires, undefined, 'resetExpires not undefined');
-
               assert.isString(db[i].password, 'password not a string');
               assert.equal(db[i].password.length, 60, 'password wrong length');
-
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -93,19 +94,20 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email, username: db[i].username }
-          } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
-            assert.strictEqual(user.resetShortToken, undefined, 'resetShortToken not undefined');
-            assert.strictEqual(user.resetExpires, undefined, 'resetExpires not undefined');
-
-            assert.isString(db[i].password, 'password not a string');
-            assert.equal(db[i].password.length, 60, 'password wrong length');
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, true, 'isVerified not true');
+              assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
+              assert.strictEqual(user.resetShortToken, undefined, 'resetShortToken not undefined');
+              assert.strictEqual(user.resetExpires, undefined, 'resetExpires not undefined');
+              assert.isString(db[i].password, 'password not a string');
+              assert.equal(db[i].password.length, 60, 'password wrong length');
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('requires user ident', (done) => {
@@ -114,12 +116,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: {}
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
 
         it('throws on non-configured user ident', (done) => {
@@ -128,12 +134,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email, resetShortToken }
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
 
         it('error on unverified user', (done) => {
@@ -142,12 +152,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: db[i].email }, password
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
 
         it('error on expired token', (done) => {
@@ -156,22 +170,30 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { username: db[i].username }, password }
-          }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
 
         it('error on user not found', (done) => {
           const resetShortToken = '999';
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: '999' }, password
-          } }, {}, (err, user) => {
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
@@ -182,12 +204,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: db[i].email }, password
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
       });
 
@@ -220,21 +246,18 @@ const usersDb = [
     
           verifyReset.create({
               action: 'resetPwdShort',
-              value: { token: resetShortToken, user: { email: db[i].email }, password } },
-            {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-        
+              value: { token: resetShortToken, user: { email: db[i].email }, password } })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-        
+  
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
               assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
-        
+  
               const hash = db[i].password;
               assert.isString(hash, 'password not a string');
               assert.equal(hash.length, 60, 'password wrong length');
-        
+  
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -242,7 +265,11 @@ const usersDb = [
                   Object.assign({}, sanitizeUserForEmail(db[i])),
                   {}
                 ]);
-        
+  
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });

@@ -46,78 +46,66 @@ const usersDb = [
           it('verifyReset::create exists', () => {
             assert.isFunction(verifyReset.create);
           });
-
+  
           it('updates unverified user', (done) => {
             const i = 0;
-
-            verifyReset.create({ action: 'resendVerifySignup', value: values[0] }, {}, (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
-              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-              assert.isString(db[i].verifyToken, 'verifyToken not String');
-              assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
-              assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
-              assert.match(db[i].verifyShortToken, /^[0-9]+$/);
-              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-              done();
-            });
+    
+            verifyReset.create({ action: 'resendVerifySignup', value: values[0] })
+              .then(user => {
+                assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
+                assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
+                assert.isString(db[i].verifyToken, 'verifyToken not String');
+                assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
+                assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
+                assert.match(db[i].verifyShortToken, /^[0-9]+$/);
+                aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
+                done();
+              })
+              .catch(err => {
+                assert.strictEqual(err, null, 'err code set');
+                done();
+              });
           });
-
+  
           it('sanitizes user', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[1] }, {}, (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
-              assert.strictEqual(user.isVerified, false, 'isVerified not false');
-              assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
-              assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
-              assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
-
-              done();
-            });
+            verifyReset.create({ action: 'resendVerifySignup', value: values[1] })
+              .then(user => {
+                assert.strictEqual(user.isVerified, false, 'isVerified not false');
+                assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
+                assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
+                assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
+                done();
+              })
+              .catch(err => {
+                assert.strictEqual(err, null, 'err code set');
+                done();
+              });
           });
 
           it('error on verified user', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[2] }, {}, (err, user) => {
-              assert.isString(err.message);
-              assert.isNotFalse(err.message);
-
-              done();
-            });
+            verifyReset.create({ action: 'resendVerifySignup', value: values[2] })
+              .then(user => {
+                assert.fail(true, false);
+                done();
+              })
+              .catch(err => {
+                assert.isString(err.message);
+                assert.isNotFalse(err.message);
+                done();
+              });
           });
 
           it('error on email not found', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[3] }, {}, (err, user) => {
-              assert.isString(err.message);
-              assert.isNotFalse(err.message);
-
-              done();
-            });
-          });
-
-          it('works as Promise', (done) => {
-            const i = 0;
-
-            verifyReset.create({ action: 'resendVerifySignup', value: values[0] }, {})
-            .then(user => {
-              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-              assert.isString(db[i].verifyToken, 'verifyToken not String');
-              assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
-              assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
-              assert.match(db[i].verifyShortToken, /^[0-9]+$/);
-              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-              done();
-            })
-            .catch(err => {
-              assert.fail(true, false, 'unexpected catch');
-
-              done();
-            });
+            verifyReset.create({ action: 'resendVerifySignup', value: values[3] })
+              .then(user => {
+                assert.fail(true, false);
+                done();
+              })
+              .catch(err => {
+                assert.isString(err.message);
+                assert.isNotFalse(err.message);
+                done();
+              });
           });
         });
       }
@@ -163,20 +151,21 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-            assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-            assert.isString(db[i].verifyToken, 'verifyToken not String');
-            assert.equal(db[i].verifyToken.length, 20, 'verify token wrong length');
-            assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
-            assert.match(db[i].verifyShortToken, /^[0-9]+$/);
-            aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-            done();
-          });
+          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
+              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
+              assert.isString(db[i].verifyToken, 'verifyToken not String');
+              assert.equal(db[i].verifyToken.length, 20, 'verify token wrong length');
+              assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
+              assert.match(db[i].verifyShortToken, /^[0-9]+$/);
+              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
       });
 
@@ -201,20 +190,21 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-            assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-            assert.isString(db[i].verifyToken, 'verifyToken not String');
-            assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
-            assert.equal(db[i].verifyShortToken.length, 8, 'verify short token wrong length');
-            assert.match(db[i].verifyShortToken, /^[0-9]+$/);
-            aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-            done();
-          });
+          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
+              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
+              assert.isString(db[i].verifyToken, 'verifyToken not String');
+              assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
+              assert.equal(db[i].verifyShortToken.length, 8, 'verify short token wrong length');
+              assert.match(db[i].verifyShortToken, /^[0-9]+$/);
+              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
       });
 
@@ -240,20 +230,21 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-            assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-            assert.isString(db[i].verifyToken, 'verifyToken not String');
-            assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
-            assert.equal(db[i].verifyShortToken.length, 9, 'verify short token wrong length');
-            assert.notMatch(db[i].verifyShortToken, /^[0-9]+$/);
-            aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-            done();
-          });
+          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
+              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
+              assert.isString(db[i].verifyToken, 'verifyToken not String');
+              assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
+              assert.equal(db[i].verifyShortToken.length, 9, 'verify short token wrong length');
+              assert.notMatch(db[i].verifyShortToken, /^[0-9]+$/);
+              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
       });
 
@@ -274,27 +265,28 @@ const usersDb = [
           }).call(app); // define and attach verifyReset service
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
-
+  
         it('verifies when correct', (done) => {
           const verifyToken = '000';
           const i = 0;
-
+    
           verifyReset.create({ action: 'resendVerifySignup', value: {
             verifyToken, email: 'a'
-          } }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-
-            assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-
-            assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
-            assert.isString(db[i].verifyToken, 'verifyToken not String');
-            assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
-            assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
-            assert.notMatch(db[i].verifyShortToken, /^[0-9]+$/);
-            aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
+              assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
+              assert.isString(db[i].verifyToken, 'verifyToken not String');
+              assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
+              assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
+              assert.notMatch(db[i].verifyShortToken, /^[0-9]+$/);
+              aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('fails when incorrect', (done) => {
@@ -303,12 +295,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resendVerifySignup', value: {
             verifyToken, email: 'a', username: 'Doexxxxxxx'
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
 
         it('fails when hacks attempted', (done) => {
@@ -317,12 +313,16 @@ const usersDb = [
 
           verifyReset.create({ action: 'resendVerifySignup', value: {
             username: 'Doe'
-          } }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
       });
 
@@ -356,20 +356,15 @@ const usersDb = [
               action: 'resendVerifySignup',
               value: { email },
               notifierOptions: { transport: 'email' }
-            },
-            {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-  
+            })
+            .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
-  
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
               assert.isString(db[i].verifyToken, 'verifyToken not String');
               assert.equal(db[i].verifyToken.length, 30, 'verify token wrong length');
               assert.equal(db[i].verifyShortToken.length, 6, 'verify short token wrong length');
               assert.match(db[i].verifyShortToken, /^[0-9]+$/);
               aboutEqualDateTime(db[i].verifyExpires, makeDateTime());
-
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -377,7 +372,10 @@ const usersDb = [
                   sanitizeUserForEmail(db[i]),
                   { transport: 'email' }
                 ]);
-      
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });

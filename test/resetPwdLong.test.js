@@ -45,20 +45,19 @@ const usersDb = [
           const resetToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
+          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
               assert.strictEqual(db[i].resetShortToken, null, 'resetShortToken not null');
               assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
-
               assert.isString(db[i].password, 'password not a string');
               assert.equal(db[i].password.length, 60, 'password wrong length');
-
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -67,18 +66,18 @@ const usersDb = [
           const resetToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-
+          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
               assert.strictEqual(user.resetShortToken, undefined, 'resetShortToken not undefined');
               assert.strictEqual(user.resetExpires, undefined, 'resetExpires not undefined');
-
               assert.isString(db[i].password, 'password not a string');
               assert.equal(db[i].password.length, 60, 'password wrong length');
-
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
@@ -87,31 +86,43 @@ const usersDb = [
           const resetToken = '222';
           verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
             (err, user) => {
+
+            })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
 
         it('error on expired token', (done) => {
           const resetToken = '111';
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
-            (err, user) => {
+          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
 
         it('error on token not found', (done) => {
           const resetToken = '999';
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
-            (err, user) => {
+          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-
               done();
             });
         });
@@ -140,12 +151,10 @@ const usersDb = [
           const i = 0;
     
           verifyReset.create({
-              action: 'resetPwdLong',
-              value: { token: resetToken, password } },
-            {},
-            (err, user) => {
-              assert.strictEqual(err, null, 'err code set');
-        
+            action: 'resetPwdLong',
+            value: { token: resetToken, password } }
+          )
+            .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
         
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
@@ -164,6 +173,10 @@ const usersDb = [
                   {}
                 ]);
         
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });

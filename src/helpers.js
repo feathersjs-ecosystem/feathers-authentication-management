@@ -88,7 +88,7 @@ const getUserData = (data, checks) => {
     throw new errors.BadRequest('User is already verified.',
       { errors: { $className: 'isNotVerified' } });
   }
-  
+
   if (checks.includes('isNotVerifiedOrHasVerifyChanges') &&
     user.isVerified && !Object.keys(user.verifyChanges || {}).length
   ) {

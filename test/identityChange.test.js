@@ -72,16 +72,19 @@ describe('identityChange - setup', () => {
           const i = 1;
           const user = clone(db[i]);
           const email = 'b@b';
-
+  
           verifyReset.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
-          }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-            assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.equal(db[i].email, user.email);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.strictEqual(user.isVerified, true, 'isVerified not true');
+              assert.equal(db[i].email, user.email);
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              done();
+            });
         });
 
         it('updates unverified user', function (done) {
@@ -89,16 +92,19 @@ describe('identityChange - setup', () => {
           const i = 0;
           const user = clone(db[i]);
           const email = 'a@a';
-
+  
           verifyReset.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
-          }, {}, (err, user) => {
-            assert.strictEqual(err, null, 'err code set');
-            assert.strictEqual(user.isVerified, false, 'isVerified not false');
-            assert.equal(db[i].email, user.email);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.strictEqual(user.isVerified, false, 'isVerified not false');
+              assert.equal(db[i].email, user.email);
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
+              cone();
+            });
         });
 
         it('error on wrong password', function (done) {
@@ -106,15 +112,19 @@ describe('identityChange - setup', () => {
           const i = 0;
           const user = clone(db[i]);
           const email = 'a@a';
-
+  
           verifyReset.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: 'ghghghg', changes: { email } },
-          }, {}, (err, user) => {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-
-            done();
-          });
+          })
+            .then(user => {
+              assert.fail(true, false);
+              done();
+            })
+            .catch(err => {
+              assert.isString(err.message);
+              assert.isNotFalse(err.message);
+              done();
+            });
         });
       });
 
@@ -134,25 +144,23 @@ describe('identityChange - setup', () => {
           verifyResetService({ notifier: spyNotifier.callWith }).call(app); // attach verifyReset
           verifyReset = app.service('verifyReset'); // get handle to verifyReset
         });
-
+  
         it('updates verified user', function (done) {
           this.timeout(9000);
           const i = 1;
           const user = clone(db[i]);
           const email = 'b@b';
-  
+    
           verifyReset.create({ action: 'identityChange', value: {
-              user: { email: user.email }, password: user.plainPassword, changes: { email } }
-          },
-            {},
-            (err, user1) => {
+            user: { email: user.email }, password: user.plainPassword, changes: { email } }
+          })
+            .then(user1 => {
               const dbi = db[i];
-              
-              assert.strictEqual(err, null, 'err code set');
+        
               assert.strictEqual(user1.isVerified, true, 'isVerified not true');
               assert.equal(dbi.email, user.email);
               assert.deepEqual(dbi.verifyChanges, { email });
-
+        
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -166,13 +174,17 @@ describe('identityChange - setup', () => {
                   {}
                 ],
               );
-  
+        
               assert.strictEqual(dbi.isVerified, true, 'isVerified not false');
               assert.isString(dbi.verifyToken, 'verifyToken not String');
               assert.equal(dbi.verifyToken.length, 30, 'verify token wrong length');
               assert.equal(dbi.verifyShortToken.length, 6, 'verify short token wrong length');
               assert.match(dbi.verifyShortToken, /^[0-9]+$/);
-  
+        
+              done();
+            })
+            .catch(err => {
+              assert.strictEqual(err, null, 'err code set');
               done();
             });
         });
