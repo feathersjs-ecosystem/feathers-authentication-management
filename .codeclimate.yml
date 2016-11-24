@@ -1,0 +1,8 @@
+engines:
+  # ... CONFIG CONTENT ...
+  duplication:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    checks:
+      Similar code:
+        enabled: false
