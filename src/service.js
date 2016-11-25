@@ -12,9 +12,10 @@ const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPasswo
 const passwordChange = require('./passwordChange');
 const identityChange = require('./identityChange');
 
-let optionsDefault = {
+const optionsDefault = {
   app: null,
   service: '/users', // need exactly this for test suite
+  path: 'authManagement',
   notifier: () => Promise.resolve(),
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
@@ -28,7 +29,6 @@ module.exports = function (options1 = {}) {
   debug('service being configured.');
   const options = Object.assign({}, optionsDefault, options1);
 
-  // create a closure for the .configure() function so its bound to options
   return function () {
     return authManagement(options, this);
   };
@@ -38,7 +38,7 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
   debug('service initialized');
   options.app = app;
 
-  options.app.use('authManagement', {
+  options.app.use(options.path, {
     create (data) {
       debug(`service called. action=${data.action}`);
 
@@ -64,6 +64,8 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
         case 'identityChange':
           return identityChange(
             options, data.value.user, data.value.password, data.value.changes);
+        case 'options':
+          return Promise.resolve(options);
         default:
           return Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,
             { errors: { $className: 'badParams' } }));

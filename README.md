@@ -111,7 +111,9 @@ app.configure(authentication)
 ```
 
 `options` are:
-- service: Path of the service for user information, e.g. `/user` (default) or `/organization`.
+- service: Path of the service for user items, e.g. `/user` (default) or `/organization`.
+- path: The path to associate with this server. Default `authManagement`.
+ See [Multiple services](#multi) for more information.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
    - type: type of notification
      - 'resendVerifySignup'    From resendVerifySignup API call
@@ -180,6 +182,8 @@ The service may be called on the client using
 Method calls return a Promise.
 
 ```javascript
+import authManagementService from 'feathers-authentication-management';
+app.configure(authManagementService(options))
 const authManagement = app.service('authManagement');
 
 // check props are unique in the users items

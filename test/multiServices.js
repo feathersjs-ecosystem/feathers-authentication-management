@@ -6,14 +6,28 @@ const feathers = require('feathers');
 const hooks = require('feathers-hooks');
 const authManagement = require('../src/index');
 
-const userAuthManagementOptions = {
+const optionsDefault = {
+  app: null,
+  service: '/users', // need exactly this for test suite
+  path: 'authManagement',
+  notifier: () => Promise.resolve(),
+  longTokenLen: 15, // token's length will be twice this
+  shortTokenLen: 6,
+  shortTokenDigits: true,
+  resetDelay: 1000 * 60 * 60 * 2, // 2 hours
+  delay: 1000 * 60 * 60 * 24 * 5, // 5 days
+  identifyUserProps: ['email']
+};
+
+const userMgntOptions = {
   service: '/users',
   notifier: () => Promise.resolve(),
   shortTokenLen: 8,
 };
 
-const organizationAuthManagementOptions = {
+const orgMgntOptions = {
   service: '/organizations',
+  path: 'authManagement/org',
   notifier: () => Promise.resolve(),
   shortTokenLen: 10,
 };
@@ -28,7 +42,7 @@ function user() {
   const app = this;
   
   app.use('/users', {
-    before: { create: authManagement.hooks.addVerification(userAuthManagementOptions) },
+    before: { create: authManagement.hooks.addVerification(userMgntOptions) },
     create: data => Promise.resolve(data)
   });
 }
@@ -37,63 +51,139 @@ function organization() {
   const app = this;
   
   app.use('/organizations', {
-    before: { create: authManagement.hooks.addVerification(organizationAuthManagementOptions) },
+    before: { create: authManagement.hooks.addVerification(orgMgntOptions) },
     create: data => Promise.resolve(data)
   });
 }
 
 describe('multiple services', () => {
-  it('can configure 1 service', (done) => {
-    const app = feathers()
-      .configure(hooks())
-      .configure(authManagement(userAuthManagementOptions))
-      .configure(services);
-    const user = app.service('/users');
+  describe('can configure 1 service', () => {
+    var app;
     
-    user.create({ username: 'John Doe' })
-      .then(result => {
-        assert.equal(result.username, 'John Doe');
-        assert.equal(result.verifyShortToken.length, 8);
+    beforeEach(() => {
+      app = feathers()
+        .configure(hooks())
+        .configure(authManagement(userMgntOptions))
+        .configure(services);
+    });
+    
+    it('can create an item', (done) => {
+      const user = app.service('/users');
+    
+      user.create({ username: 'John Doe' })
+        .catch(err => {
+          console.log(err);
+          done();
+        })
+        .then(result => {
+          assert.equal(result.username, 'John Doe');
+          assert.equal(result.verifyShortToken.length, 8);
         
-        done();
-      })
-      .catch(err => {
-        console.log(err);
-        done();
-      });
+          done();
+        });
+    });
     
+    it('can call service', (done) => {
+      const userMgnt = app.service('authManagement');
+      
+      const options = userMgnt.create({ action: 'options' })
+        .catch(err => console.log(err))
+        .then(options => {
+          assert.property(options, 'app');
+          assert.property(options, 'notifier');
+          delete options.app;
+          delete options.notifier;
+          
+          const expected = Object.assign({}, optionsDefault, userMgntOptions);
+          delete expected.app;
+          delete expected.notifier;
+          
+          assert.deepEqual(options, expected);
+
+          done();
+        });
+    });
   });
   
-  it('can configure 2 services', (done) => {
-    const app = feathers()
-      .configure(hooks())
-      .configure(authManagement(userAuthManagementOptions))
-      .configure(authManagement(organizationAuthManagementOptions))
-      .configure(services);
-    const user = app.service('/users');
-    const organization = app.service('/organizations');
+  describe('can configure 2 services', () => {
+    var app;
+  
+    beforeEach(() => {
+      app = feathers()
+        .configure(hooks())
+        .configure(authManagement(userMgntOptions))
+        .configure(authManagement(orgMgntOptions))
+        .configure(services);
+    });
     
-    user.create({ username: 'John Doe' })
-      .catch(err => {
-        console.log(err);
-        done();
-      })
-      .then(result => {
-        assert.equal(result.username, 'John Doe');
-        assert.equal(result.verifyShortToken.length, 8);
+    it('can create items', (done) => {
+      const user = app.service('/users');
+      const organization = app.service('/organizations');
+    
+      // create a user item
+      user.create({ username: 'John Doe' })
+        .catch(err => {
+          console.log(err);
+          done();
+        })
+        .then(result => {
+          assert.equal(result.username, 'John Doe');
+          assert.equal(result.verifyShortToken.length, 8);
         
-        organization.create({ organization: 'Black Ice' })
-          .catch(err => {
-            console.log(err);
-            done();
-          })
-          .then(result => {
-            assert.equal(result.organization, 'Black Ice');
-            assert.equal(result.verifyShortToken.length, 10);
+          // create an organization item
+          organization.create({ organization: 'Black Ice' })
+            .catch(err => {
+              console.log(err);
+              done();
+            })
+            .then(result => {
+              assert.equal(result.organization, 'Black Ice');
+              assert.equal(result.verifyShortToken.length, 10);
             
-            done();
-          });
+              done();
+            });
         
-      });
+        });
+    });
+  
+    it('can call services', (done) => {
+      const userMgnt = app.service('authManagement');
+      const orgMgnt = app.service('authManagement/org');
+  
+      // call the user instance
+      userMgnt.create({ action: 'options' })
+        .catch(err => console.log(err))
+        .then(options => {
+          assert.property(options, 'app');
+          assert.property(options, 'notifier');
+          delete options.app;
+          delete options.notifier;
+      
+          const expected = Object.assign({}, optionsDefault, userMgntOptions);
+          delete expected.app;
+          delete expected.notifier;
+      
+          assert.deepEqual(options, expected);
+  
+          // call the organization instance
+          orgMgnt.create({ action: 'options' })
+            .catch(err => console.log(err))
+            .then(options => {
+              assert.property(options, 'app');
+              assert.property(options, 'notifier');
+              delete options.app;
+              delete options.notifier;
+      
+              const expected = Object.assign({}, optionsDefault, orgMgntOptions);
+              delete expected.app;
+              delete expected.notifier;
+      
+              assert.deepEqual(options, expected);
+      
+              done();
+            })
+        });
+        
+    });
   });
 });
