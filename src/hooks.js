@@ -3,19 +3,24 @@
 
 const errors = require('feathers-errors');
 const utils = require('feathers-hooks-common/lib/utils');
-
 const { getLongToken, getShortToken } = require('./helpers');
 
-let options = {};
-
-module.exports.hooksInit = (options1) => {
-  options = options1;
+let optionsDefault = {
+  app: null,
+  service: '/users', // need exactly this for test suite
+  notifier: () => Promise.resolve(),
+  longTokenLen: 15, // token's length will be twice this
+  shortTokenLen: 6,
+  shortTokenDigits: true,
+  resetDelay: 1000 * 60 * 60 * 2, // 2 hours
+  delay: 1000 * 60 * 60 * 24 * 5, // 5 days
+  identifyUserProps: ['email']
 };
 
-module.exports.addVerification = (options1) => (hook) => {
+module.exports.addVerification = (options) => (hook) => {
   utils.checkContext(hook, 'before', 'create');
 
-  const ourOptions = Object.assign({}, options, options1);
+  const ourOptions = Object.assign({}, optionsDefault, options);
 
   return Promise.all([
     getLongToken(ourOptions.longTokenLen),

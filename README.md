@@ -93,6 +93,7 @@ Leaving it a pure API server, lets it be used with both native and browser clien
         - [Dispatching authentication](#reduxAuth)
     - [Vue 2.0 {to do}](#vue)
 - [Hooks](#hooks)
+- [Multiple services](#multi)
 - [Database](#database)
 - [Routing](#routing)
 - [Security](#security)
@@ -103,13 +104,14 @@ Leaving it a pure API server, lets it be used with both native and browser clien
 ## <a name="service"> The Service
 
 ```javascript
+import authManagement from 'feathers-authentication-management';
 app.configure(authentication)
-  .configure(verifyReset({ options }))
+  .configure(authManagement({ options }))
   .configure(user);
 ```
 
 `options` are:
-- service: Name of the service for `user` or `organization` items.
+- service: Path of the service for user information, e.g. `/user` (default) or `/organization`.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
    - type: type of notification
      - 'resendVerifySignup'    From resendVerifySignup API call
@@ -380,7 +382,8 @@ const verifyHooks = require('feathers-authentication-management').hooks;
 module.exports.before = {
   create: [
     auth.hashPassword(),
-    verifyHooks.addVerification() // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
+    // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
+    verifyHooks.addVerification(options) // options as in .configure(authManagement({ options }))
   ]
 };
 module.exports.after = {
@@ -391,7 +394,7 @@ module.exports.after = {
   ]
 };
 ```
-
+ .configure(authManagement({ options }))
 A hook is provided to ensure the user's email addr is verified:
 
 ```javascript
@@ -405,6 +408,38 @@ export.before = {
     verify.isVerified()
   ]
 };
+```
+
+## <a name="multi"> Multiple services
+
+We have considered till now situations where authentication was based on users.
+`feathers-authorization` however allows users to sign in with group or organization
+credentials as well as user ones.
+
+You can configure `feathers-authentication-management` to handle such situations.
+Here new items are created for `users` and `organizations` under differing options. 
+
+```javascript
+const authManagement = require('feathers-authorization-management');
+
+const userAuthManagementOptions = {
+  service: '/users',
+  shortTokenLen: 8,
+};
+
+const organizationAuthManagementOptions = {
+  service: '/organizations',
+  shortTokenLen: 10,
+};
+
+user.before({ create: authManagement.hooks.addVerification(userAuthManagementOptions) });
+organization.before({ create: authManagement.hooks.addVerification(organizationAuthManagementOptions) });
+
+app.configure(authManagement(userAuthManagementOptions))
+   .configure(authManagement(organizationAuthManagementOptions))
+
+user.create({ username: 'John Doe' });
+organization.create({ organization: 'Black Ice' });
 ```
 
 ## <a name="database"> Database

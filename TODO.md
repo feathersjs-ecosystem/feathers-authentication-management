@@ -92,6 +92,8 @@ because `.verifyChange` values makes catching potential duplicates difficult.
 - `options.service` added. default '/users' ** Does this satisfy needs e.g. signin by organization?**
 - service accessed by `require(repo-name)` now, not `require(repo-name).service`.
 - hooks still accessed by `require('repo-name').hooks`.
+- `hooks.addVerification` now *requires* the same options as used with .configure(authManagement({ options })).
+This allows `addVerification` to be used with multiple authManagement configurations.
 - `hooks.addVerification`'s `options.len` removed. use `options.longTokenLen`
 - wrapper `sendResetPwd(identifyUser, notifierOptions)` now, not `(email, notifierOptions)`
 - wrapper `passwordChange(oldPassword, password, identifyUser)` now, not `(oldPassword, password, user)`

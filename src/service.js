@@ -11,7 +11,6 @@ const sendResetPwd = require('./sendResetPwd');
 const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPassword');
 const passwordChange = require('./passwordChange');
 const identityChange = require('./identityChange');
-const { hooksInit } = require('./hooks');
 
 let optionsDefault = {
   app: null,
@@ -27,11 +26,9 @@ let optionsDefault = {
 
 module.exports = function (options1 = {}) {
   debug('service being configured.');
+  const options = Object.assign({}, optionsDefault, options1);
 
-  const options = Object.assign(optionsDefault, options1);
-  hooksInit(options);
-
-  // create a closure for the service so its bound to options
+  // create a closure for the .configure() function so its bound to options
   return function () {
     return authManagement(options, this);
   };
@@ -67,8 +64,6 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
         case 'identityChange':
           return identityChange(
             options, data.value.user, data.value.password, data.value.changes);
-        case 'options':
-          return options;
         default:
           return Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,
             { errors: { $className: 'badParams' } }));
