@@ -5,30 +5,19 @@ const errors = require('feathers-errors');
 const utils = require('feathers-hooks-common/lib/utils');
 const { getLongToken, getShortToken } = require('./helpers');
 
-let optionsDefault = {
-  app: null,
-  service: '/users', // need exactly this for test suite
-  notifier: () => Promise.resolve(),
-  longTokenLen: 15, // token's length will be twice this
-  shortTokenLen: 6,
-  shortTokenDigits: true,
-  resetDelay: 1000 * 60 * 60 * 2, // 2 hours
-  delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ['email']
-};
-
-module.exports.addVerification = (options) => (hook) => {
+module.exports.addVerification = path => hook => {
   utils.checkContext(hook, 'before', 'create');
 
-  const ourOptions = Object.assign({}, optionsDefault, options);
-
-  return Promise.all([
-    getLongToken(ourOptions.longTokenLen),
-    getShortToken(ourOptions.shortTokenLen, ourOptions.shortTokenDigits)
-  ])
-    .then(([longToken, shortToken]) => {
+  return Promise.resolve()
+    .then(() => hook.app.service(path || 'authManagement').create({ action: 'options' }))
+    .then(options => Promise.all([
+      options,
+      getLongToken(options.longTokenLen),
+      getShortToken(options.shortTokenLen, options.shortTokenDigits)
+    ]))
+    .then(([options, longToken, shortToken]) => {
       hook.data.isVerified = false;
-      hook.data.verifyExpires = Date.now() + ourOptions.delay;
+      hook.data.verifyExpires = Date.now() + options.delay;
       hook.data.verifyToken = longToken;
       hook.data.verifyShortToken = shortToken;
       hook.data.verifyChanges = {};
@@ -38,7 +27,7 @@ module.exports.addVerification = (options) => (hook) => {
     .catch(err => { throw new errors.GeneralError(err); });
 };
 
-module.exports.isVerified = () => (hook) => {
+module.exports.isVerified = () => hook => {
   utils.checkContext(hook, 'before');
 
   if (!hook.params.user || !hook.params.user.isVerified) {
@@ -46,9 +35,9 @@ module.exports.isVerified = () => (hook) => {
   }
 };
 
-module.exports.removeVerification = (ifReturnTokens) => (hook) => {
+module.exports.removeVerification = ifReturnTokens => (hook) => {
   utils.checkContext(hook, 'after');
-  const user = (hook.result || {});
+  const user = hook.result || {};
 
   if (!('isVerified' in user) && hook.method === 'create') {
     /* eslint-disable no-console */

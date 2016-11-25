@@ -387,7 +387,7 @@ module.exports.before = {
   create: [
     auth.hashPassword(),
     // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
-    verifyHooks.addVerification(options) // options as in .configure(authManagement({ options }))
+    verifyHooks.addVerification()
   ]
 };
 module.exports.after = {
@@ -416,35 +416,13 @@ export.before = {
 
 ## <a name="multi"> Multiple services
 
-We have considered till now situations where authentication was based on users.
-`feathers-authorization` however allows users to sign in with group or organization
+We have considered until now situations where authentication was based on a user item.
+`feathers-authorization` however allows users to sign in with group and organization
 credentials as well as user ones.
 
-You can configure `feathers-authentication-management` to handle such situations.
-Here new items are created for `users` and `organizations` under differing options. 
+You can easily configure `feathers-authentication-management` to handle such situations.
+Please refer to `test/multiInstances.test.js`. 
 
-```javascript
-const authManagement = require('feathers-authorization-management');
-
-const userAuthManagementOptions = {
-  service: '/users',
-  shortTokenLen: 8,
-};
-
-const organizationAuthManagementOptions = {
-  service: '/organizations',
-  shortTokenLen: 10,
-};
-
-user.before({ create: authManagement.hooks.addVerification(userAuthManagementOptions) });
-organization.before({ create: authManagement.hooks.addVerification(organizationAuthManagementOptions) });
-
-app.configure(authManagement(userAuthManagementOptions))
-   .configure(authManagement(organizationAuthManagementOptions))
-
-user.create({ username: 'John Doe' });
-organization.create({ organization: 'Black Ice' });
-```
 
 ## <a name="database"> Database
 

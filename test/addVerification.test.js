@@ -4,31 +4,43 @@
  one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
-const authManagement = require('../src/index');
+const feathersStubs = require('./../test/helpers/feathersStubs');
+const authManagementService = require('../src/index');
 const hooks = require('../src/index').hooks;
 
 const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
 
 var hookIn;
-var options;
 
 describe('hook:addVerification', () => {
   beforeEach(() => {
+    const app = feathersStubs.app();
+    authManagementService().call(app); // define and attach authManagement service
+    
     hookIn = {
       type: 'before',
       method: 'create',
       data: { email: 'a@a.com', password: '0000000000' },
+      app,
     };
-    options = {};
-    authManagement();
   });
   
   describe('basics', () => {
     it('works with no options', (done) => {
+      const app = feathersStubs.app();
+      authManagementService().call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
       hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
-          
+  
           assert.strictEqual(user.isVerified, false, 'isVerified not false');
           assert.isString(user.verifyToken, 'verifyToken not String');
           assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
@@ -36,7 +48,7 @@ describe('hook:addVerification', () => {
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime());
           assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-          
+  
           done();
         })
         .catch(() => {
@@ -47,21 +59,30 @@ describe('hook:addVerification', () => {
     });
     
     it('delay option works', (done) => {
-      options = { delay: 1000 * 60 * 60 * 24 * 15 }; // 5 days}
+      const options = { delay: 1000 * 60 * 60 * 24 * 5 }; // 5 days}
       
-      hooks.addVerification(options)(hookIn)
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
-          
+  
           assert.strictEqual(user.isVerified, false, 'isVerified not false');
           assert.isString(user.verifyToken, 'verifyToken not String');
           assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
           assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-          assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
           assert.match(user.verifyShortToken, /^[0-9]+$/);
           aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
           assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-          
+  
           done();
         })
         .catch(() => {
@@ -74,8 +95,19 @@ describe('hook:addVerification', () => {
   
   describe('long token', () => {
     it('length option works', (done) => {
-      options = { longTokenLen: 10 };
-      hooks.addVerification(options)(hookIn)
+      const options = { longTokenLen: 10 };
+  
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
           
@@ -99,8 +131,19 @@ describe('hook:addVerification', () => {
   
   describe('shortToken', () => {
     it('produces digit short token', (done) => {
-      options = { shortTokenDigits: true };
-      hooks.addVerification(options)(hookIn)
+      const options = { shortTokenDigits: true };
+      
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
           
@@ -120,8 +163,19 @@ describe('hook:addVerification', () => {
     });
     
     it('produces alpha short token', (done) => {
-      options = { shortTokenDigits: false };
-      hooks.addVerification(options)(hookIn)
+      const options = { shortTokenDigits: false };
+      
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
           
@@ -141,8 +195,19 @@ describe('hook:addVerification', () => {
     });
     
     it('length option works with digits', (done) => {
-      options = { shortTokenLen: 7 };
-      hooks.addVerification(options)(hookIn)
+      const options = { shortTokenLen: 7 };
+      
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
           
@@ -162,8 +227,19 @@ describe('hook:addVerification', () => {
     });
     
     it('length option works with alpha', (done) => {
-      options = { shortTokenLen: 9, shortTokenDigits: false };
-      hooks.addVerification(options)(hookIn)
+      const options = { shortTokenLen: 9, shortTokenDigits: false };
+  
+      const app = feathersStubs.app();
+      authManagementService(options).call(app); // define and attach authManagement service
+  
+      hookIn = {
+        type: 'before',
+        method: 'create',
+        data: { email: 'a@a.com', password: '0000000000' },
+        app,
+      };
+      
+      hooks.addVerification()(hookIn)
         .then(hook => {
           const user = hook.data;
           

@@ -27,7 +27,7 @@ const userMgntOptions = {
 
 const orgMgntOptions = {
   service: '/organizations',
-  path: 'authManagement/org',
+  path: 'authManagement/org', // *** specify path for this instance of service
   notifier: () => Promise.resolve(),
   shortTokenLen: 10,
 };
@@ -42,7 +42,7 @@ function user() {
   const app = this;
   
   app.use('/users', {
-    before: { create: authManagement.hooks.addVerification(userMgntOptions) },
+    before: { create: authManagement.hooks.addVerification() },
     create: data => Promise.resolve(data)
   });
 }
@@ -51,7 +51,7 @@ function organization() {
   const app = this;
   
   app.use('/organizations', {
-    before: { create: authManagement.hooks.addVerification(orgMgntOptions) },
+    before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
     create: data => Promise.resolve(data)
   });
 }
@@ -147,8 +147,8 @@ describe('multiple services', () => {
     });
   
     it('can call services', (done) => {
-      const userMgnt = app.service('authManagement');
-      const orgMgnt = app.service('authManagement/org');
+      const userMgnt = app.service('authManagement'); // *** the default
+      const orgMgnt = app.service('authManagement/org'); // *** which one
   
       // call the user instance
       userMgnt.create({ action: 'options' })

@@ -75,6 +75,7 @@ The present wrapper `authenticate` may have to change for authenticate 1.0
 =================================
 
 Migration
+- the service uses the `authManagement` path now, not `verifyReset`.
 - `options.userPropsForShortToken` renamed `options.identifyUserProps`.
 It contains all fields uniquely identifying the user.
 These will mainly be communications (email, cellphone, facebook) but also username.
@@ -92,9 +93,8 @@ because `.verifyChange` values makes catching potential duplicates difficult.
 - `options.service` added. default '/users' ** Does this satisfy needs e.g. signin by organization?**
 - service accessed by `require(repo-name)` now, not `require(repo-name).service`.
 - hooks still accessed by `require('repo-name').hooks`.
-- `hooks.addVerification` now *requires* the same options as used with .configure(authManagement({ options })).
-This allows `addVerification` to be used with multiple instances of authManagement configurations.
-- `hooks.addVerification`'s `options.len` removed. use `options.longTokenLen`
+- `hooks.addVerification` takes a service path as a param now, not an option object.
+It gets the proper options using the path. See `test/multiInstance.test.js`.
 - wrapper `sendResetPwd(identifyUser, notifierOptions)` now, not `(email, notifierOptions)`
 - wrapper `passwordChange(oldPassword, password, identifyUser)` now, not `(oldPassword, password, user)`
 - wrapper `identityChange(password, changesIdentifyUser, identifyUser)` now, not `emailChange(password, email, user)`
@@ -110,7 +110,7 @@ Callbacks for services are being removed from feathers in early 2017 with the Bu
 ```
 to
 ```javascript
-    verifyReset.create({
+    authManagement.create({
       action: 'passwordChange',
       value: { user: { email }, oldPassword: plainPassword, password: plainNewPassword },
     }, {}, cb)
@@ -124,14 +124,14 @@ to
 ```
 to
 ```javascript
-    verifyReset.create({
+    authManagement.create({
       action: 'identityChange',
       value: { user: { email }, password: plainPassword, changes: { email, cellphone } },
     }, {}, cb)
 ```
 
 
-- user needs to add these hooks for the verifyReset service:
+- user needs to add these hooks for the authManagement service:
   for feathers-authenticate < v1.0
 ```javascript
     const isAction = (...args) => hook => args.includes(hook.data.action);
