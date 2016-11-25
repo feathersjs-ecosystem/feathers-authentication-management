@@ -8,12 +8,6 @@ const auth = require('feathers-authentication').hooks;
 const errors = require('feathers-errors');
 const debug = require('debug')('authManagement:helpers');
 
-let options = {};
-
-const helpersInit = options1 => {
-  options = options1;
-};
-
 const hashPassword = (app1, password) => {
   const hook = {
     type: 'before',
@@ -49,11 +43,9 @@ const randomDigits = len => {
   return str.substr(2, len);
 };
 
-const getLongToken = len => randomBytes(len || options.longTokenLen);
+const getLongToken = len => randomBytes(len);
 
 const getShortToken = (len, ifDigits) => {
-  len = len || options.shortTokenLen;
-
   if (ifDigits) {
     return Promise.resolve(randomDigits(len));
   }
@@ -164,7 +156,6 @@ const notifier = (optionsNotifier, type, user, notifierOptions) => {
 };
 
 module.exports = {
-  helpersInit,
   hashPassword,
   comparePasswords,
   randomBytes: (...args) => randomBytes(...args), // for testing, make safe from hacking

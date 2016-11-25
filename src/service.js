@@ -11,7 +11,6 @@ const sendResetPwd = require('./sendResetPwd');
 const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPassword');
 const passwordChange = require('./passwordChange');
 const identityChange = require('./identityChange');
-const { helpersInit } = require('./helpers');
 const { hooksInit } = require('./hooks');
 
 let optionsDefault = {
@@ -30,7 +29,6 @@ module.exports = function (options1 = {}) {
   debug('service being configured.');
 
   const options = Object.assign(optionsDefault, options1);
-  helpersInit(options);
   hooksInit(options);
 
   // create a closure for the service so its bound to options
