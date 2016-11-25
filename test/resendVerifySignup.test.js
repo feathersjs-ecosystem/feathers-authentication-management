@@ -40,7 +40,7 @@ const usersDb = [
             app = feathersStubs.app();
             users = feathersStubs.users(app, db, ifNonPaginated, idType);
             verifyResetService().call(app); // define and attach verifyReset service
-            verifyReset = app.service('verifyReset'); // get handle to verifyReset
+            verifyReset = app.service('authManagement'); // get handle to verifyReset
           });
 
           it('verifyReset::create exists', () => {
@@ -144,7 +144,7 @@ const usersDb = [
           verifyResetService({
             longTokenLen: 10,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('can change', (done) => {
@@ -183,7 +183,7 @@ const usersDb = [
             longTokenLen: 15, // need to reset this
             shortTokenLen: 8,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('can change', (done) => {
@@ -223,7 +223,7 @@ const usersDb = [
             shortTokenLen: 9,
             shortTokenDigits: false,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('can change', (done) => {
@@ -263,7 +263,7 @@ const usersDb = [
             shortTokenLen: 6,
             shortTokenDigits: false,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
   
         it('verifies when correct', (done) => {
@@ -345,7 +345,7 @@ const usersDb = [
             shortTokenDigits: true, // need to reset this
             notifier: spyNotifier.callWith
           }).call(app);
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
   
         it('is called', (done) => {

@@ -36,7 +36,7 @@ const usersDb = [
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', (done) => {
@@ -123,7 +123,7 @@ const usersDb = [
             shortTokenLen: 9,
             shortTokenDigits: true,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', (done) => {
@@ -165,7 +165,7 @@ const usersDb = [
             shortTokenLen: 9,
             shortTokenDigits: false,
           }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', (done) => {
@@ -211,7 +211,7 @@ const usersDb = [
             shortTokenDigits: true,
             notifier: spyNotifier.callWith,
           }).call(app);
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('is called', (done) => {

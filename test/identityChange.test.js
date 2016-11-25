@@ -64,7 +64,7 @@ describe('identityChange - setup', () => {
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', function (done) {
@@ -142,7 +142,7 @@ describe('identityChange - setup', () => {
           spyNotifier = new SpyOn(notifier);
 
           verifyResetService({ notifier: spyNotifier.callWith }).call(app); // attach verifyReset
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
   
         it('updates verified user', function (done) {
@@ -156,11 +156,11 @@ describe('identityChange - setup', () => {
           })
             .then(user1 => {
               const dbi = db[i];
-        
+  
               assert.strictEqual(user1.isVerified, true, 'isVerified not true');
               assert.equal(dbi.email, user.email);
               assert.deepEqual(dbi.verifyChanges, { email });
-        
+              
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [

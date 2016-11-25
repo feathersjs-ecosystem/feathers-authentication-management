@@ -27,52 +27,54 @@ let optionsDefault = {
 };
 
 module.exports = function (options1 = {}) {
-  debug('service configured.');
+  debug('service being configured.');
 
-  // create a closure for options so service can be configured for multiple options.service.
-  return (() => {
-    const options = Object.assign(optionsDefault, options1);
-    helpersInit(options);
-    hooksInit(options);
+  const options = Object.assign(optionsDefault, options1);
+  helpersInit(options);
+  hooksInit(options);
 
-    return verifyReset;
-
-    function verifyReset () { // 'function' needed as we use 'this'
-      debug('service initialized');
-      options.app = this;
-
-      options.app.use('verifyReset', {
-        create (data, params, cb) {
-          debug(`service called. action=${data.action}`);
-
-          switch (data.action) {
-            case 'checkUnique':
-              return checkUniqueness(options, data.value, data.ownId || null, data.meta || {});
-            case 'resendVerifySignup':
-              return resendVerifySignup(options, data.value, data.notifierOptions);
-            case 'verifySignupLong':
-              return verifySignupWithLongToken(options, data.value);
-            case 'verifySignupShort':
-              return verifySignupWithShortToken(options, data.value.token, data.value.user);
-            case 'sendResetPwd':
-              return sendResetPwd(options, data.value, data.notifierOptions);
-            case 'resetPwdLong':
-              return resetPwdWithLongToken(options, data.value.token, data.value.password);
-            case 'resetPwdShort':
-              return resetPwdWithShortToken(
-                options, data.value.token, data.value.user, data.value.password);
-            case 'passwordChange':
-              return passwordChange(
-                options, data.value.user, data.value.oldPassword, data.value.password);
-            case 'identityChange':
-              return identityChange(
-                options, data.value.user, data.value.password, data.value.changes);
-            default:
-              return Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,
-                { errors: { $className: 'badParams' } }));
-          }
-        }
-      });
-    }
-  })();
+  // create a closure for the service so its bound to options
+  return function () {
+    return authManagement(options, this);
+  };
 };
+
+function authManagement (options, app) { // 'function' needed as we use 'this'
+  debug('service initialized');
+  options.app = app;
+
+  options.app.use('authManagement', {
+    create (data) {
+      debug(`service called. action=${data.action}`);
+
+      switch (data.action) {
+        case 'checkUnique':
+          return checkUniqueness(options, data.value, data.ownId || null, data.meta || {});
+        case 'resendVerifySignup':
+          return resendVerifySignup(options, data.value, data.notifierOptions);
+        case 'verifySignupLong':
+          return verifySignupWithLongToken(options, data.value);
+        case 'verifySignupShort':
+          return verifySignupWithShortToken(options, data.value.token, data.value.user);
+        case 'sendResetPwd':
+          return sendResetPwd(options, data.value, data.notifierOptions);
+        case 'resetPwdLong':
+          return resetPwdWithLongToken(options, data.value.token, data.value.password);
+        case 'resetPwdShort':
+          return resetPwdWithShortToken(
+            options, data.value.token, data.value.user, data.value.password);
+        case 'passwordChange':
+          return passwordChange(
+            options, data.value.user, data.value.oldPassword, data.value.password);
+        case 'identityChange':
+          return identityChange(
+            options, data.value.user, data.value.password, data.value.changes);
+        case 'options':
+          return options;
+        default:
+          return Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,
+            { errors: { $className: 'badParams' } }));
+      }
+    }
+  });
+}

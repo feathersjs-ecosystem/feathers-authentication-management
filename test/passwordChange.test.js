@@ -75,7 +75,7 @@ describe('passwordChange - setup', () => {
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', function (done) {
@@ -157,7 +157,7 @@ describe('passwordChange - setup', () => {
           spyNotifier = new SpyOn(notifier);
 
           verifyResetService({ notifier: spyNotifier.callWith }).call(app); // attach verifyReset
-          verifyReset = app.service('verifyReset'); // get handle to verifyReset
+          verifyReset = app.service('authManagement'); // get handle to verifyReset
         });
 
         it('updates verified user', function (done) {
