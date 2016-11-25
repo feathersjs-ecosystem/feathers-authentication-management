@@ -5,7 +5,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 const defaultResetDelay = 1000 * 60 * 60 * 2; // 2 hours
@@ -29,21 +29,21 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService().call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', (done) => {
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
   
@@ -64,7 +64,7 @@ const usersDb = [
 
         it('error on unverified user', (done) => {
           const email = 'a';
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -78,7 +78,7 @@ const usersDb = [
 
         it('error on email not found', (done) => {
           const email = 'x';
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -93,7 +93,7 @@ const usersDb = [
         it('user is sanitized', (done) => {
           const email = 'b';
 
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
@@ -112,25 +112,25 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 10,
             shortTokenLen: 9,
             shortTokenDigits: true,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', (done) => {
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
   
@@ -154,25 +154,25 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 10,
             shortTokenLen: 9,
             shortTokenDigits: false,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', (done) => {
           const email = 'b';
           const i = 1;
 
-          verifyReset.create({ action: 'sendResetPwd', value: { email } })
+          authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
   
@@ -197,7 +197,7 @@ const usersDb = [
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
@@ -205,20 +205,20 @@ const usersDb = [
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({
+          authManagementService({
             longTokenLen: 15,
             shortTokenLen: 6,
             shortTokenDigits: true,
             notifier: spyNotifier.callWith,
           }).call(app);
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('is called', (done) => {
           const email = 'b';
           const i = 1;
   
-          verifyReset.create({
+          authManagement.create({
             action: 'sendResetPwd',
             value: { email },
             notifierOptions: { transport: 'sms' }

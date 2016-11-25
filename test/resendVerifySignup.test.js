@@ -7,7 +7,7 @@ const util = require('util');
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./../test/helpers/basicSpy');
 
 const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
@@ -33,24 +33,24 @@ const usersDb = [
           var db;
           var app;
           var users;
-          var verifyReset;
+          var authManagement;
 
           beforeEach(() => {
             db = clone(usersDb);
             app = feathersStubs.app();
             users = feathersStubs.users(app, db, ifNonPaginated, idType);
-            verifyResetService().call(app); // define and attach verifyReset service
-            verifyReset = app.service('authManagement'); // get handle to verifyReset
+            authManagementService().call(app); // define and attach authManagement service
+            authManagement = app.service('authManagement'); // get handle to authManagement
           });
 
-          it('verifyReset::create exists', () => {
-            assert.isFunction(verifyReset.create);
+          it('authManagement::create exists', () => {
+            assert.isFunction(authManagement.create);
           });
   
           it('updates unverified user', (done) => {
             const i = 0;
     
-            verifyReset.create({ action: 'resendVerifySignup', value: values[0] })
+            authManagement.create({ action: 'resendVerifySignup', value: values[0] })
               .then(user => {
                 assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
                 assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -68,7 +68,7 @@ const usersDb = [
           });
   
           it('sanitizes user', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[1] })
+            authManagement.create({ action: 'resendVerifySignup', value: values[1] })
               .then(user => {
                 assert.strictEqual(user.isVerified, false, 'isVerified not false');
                 assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
@@ -83,7 +83,7 @@ const usersDb = [
           });
 
           it('error on verified user', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[2] })
+            authManagement.create({ action: 'resendVerifySignup', value: values[2] })
               .then(user => {
                 assert.fail(true, false);
                 done();
@@ -96,7 +96,7 @@ const usersDb = [
           });
 
           it('error on email not found', (done) => {
-            verifyReset.create({ action: 'resendVerifySignup', value: values[3] })
+            authManagement.create({ action: 'resendVerifySignup', value: values[3] })
               .then(user => {
                 assert.fail(true, false);
                 done();
@@ -135,23 +135,23 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 10,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('can change', (done) => {
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+          authManagement.create({ action: 'resendVerifySignup', value: { verifyToken } })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -173,24 +173,24 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 8,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('can change', (done) => {
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+          authManagement.create({ action: 'resendVerifySignup', value: { verifyToken } })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -212,25 +212,25 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 9,
             shortTokenDigits: false,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('can change', (done) => {
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: { verifyToken } })
+          authManagement.create({ action: 'resendVerifySignup', value: { verifyToken } })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -252,25 +252,25 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 6,
             shortTokenDigits: false,
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('verifies when correct', (done) => {
           const verifyToken = '000';
           const i = 0;
     
-          verifyReset.create({ action: 'resendVerifySignup', value: {
+          authManagement.create({ action: 'resendVerifySignup', value: {
             verifyToken, email: 'a'
           } })
             .then(user => {
@@ -293,7 +293,7 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: {
+          authManagement.create({ action: 'resendVerifySignup', value: {
             verifyToken, email: 'a', username: 'Doexxxxxxx'
           } })
             .then(user => {
@@ -311,7 +311,7 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resendVerifySignup', value: {
+          authManagement.create({ action: 'resendVerifySignup', value: {
             username: 'Doe'
           } })
             .then(user => {
@@ -331,7 +331,7 @@ const usersDb = [
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
@@ -339,20 +339,20 @@ const usersDb = [
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({
+          authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 6, // need to reset this
             shortTokenDigits: true, // need to reset this
             notifier: spyNotifier.callWith
           }).call(app);
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('is called', (done) => {
           const email = 'a';
           const i = 0;
   
-          verifyReset.create({
+          authManagement.create({
               action: 'resendVerifySignup',
               value: { email },
               notifierOptions: { transport: 'email' }

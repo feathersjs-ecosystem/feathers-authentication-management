@@ -4,7 +4,7 @@
 one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
-const verifyReset = require('../src/index');
+const authManagement = require('../src/index');
 const hooks = require('../src/index').hooks;
 
 const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
@@ -20,7 +20,7 @@ describe('hook:addVerification', () => {
       data: { email: 'a@a.com', password: '0000000000' },
     };
     options = {};
-    verifyReset();
+    authManagement();
   });
 
   describe('basics', () => {

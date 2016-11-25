@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('feathers-authentication').hooks;
 
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./../test/helpers/basicSpy');
 
 // user DB
@@ -68,14 +68,14 @@ describe('passwordChange - setup', () => {
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService().call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', function (done) {
@@ -85,7 +85,7 @@ describe('passwordChange - setup', () => {
           const paramsUser = clone(user);
           delete paramsUser.password;
   
-          verifyReset.create({
+          authManagement.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
           })
@@ -107,7 +107,7 @@ describe('passwordChange - setup', () => {
           const paramsUser = clone(user);
           delete paramsUser.password;
 
-          verifyReset.create({
+          authManagement.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
           })
@@ -127,7 +127,7 @@ describe('passwordChange - setup', () => {
           const i = 0;
           const user = clone(db[i]);
   
-          verifyReset.create({
+          authManagement.create({
             action: 'passwordChange',
             value: { user: { email: user.email }, oldPassword: 'fdfgfghghj', password: user.plainNewPassword },
           })
@@ -148,7 +148,7 @@ describe('passwordChange - setup', () => {
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
@@ -156,8 +156,8 @@ describe('passwordChange - setup', () => {
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({ notifier: spyNotifier.callWith }).call(app); // attach verifyReset
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService({ notifier: spyNotifier.callWith }).call(app); // attach authManagement
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', function (done) {
@@ -168,7 +168,7 @@ describe('passwordChange - setup', () => {
           delete paramsUser.password;
   
   
-          verifyReset.create({
+          authManagement.create({
               action: 'passwordChange',
               value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
             })

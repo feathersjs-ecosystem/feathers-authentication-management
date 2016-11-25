@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('feathers-authentication').hooks;
 
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./../test/helpers/basicSpy');
 
 // user DB
@@ -57,14 +57,14 @@ describe('identityChange - setup', () => {
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService().call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('updates verified user', function (done) {
@@ -73,7 +73,7 @@ describe('identityChange - setup', () => {
           const user = clone(db[i]);
           const email = 'b@b';
   
-          verifyReset.create({ action: 'identityChange',
+          authManagement.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
           })
             .then(user => {
@@ -93,7 +93,7 @@ describe('identityChange - setup', () => {
           const user = clone(db[i]);
           const email = 'a@a';
   
-          verifyReset.create({ action: 'identityChange',
+          authManagement.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
           })
             .then(user => {
@@ -113,7 +113,7 @@ describe('identityChange - setup', () => {
           const user = clone(db[i]);
           const email = 'a@a';
   
-          verifyReset.create({ action: 'identityChange',
+          authManagement.create({ action: 'identityChange',
             value: { user: { email: user.email }, password: 'ghghghg', changes: { email } },
           })
             .then(user => {
@@ -133,7 +133,7 @@ describe('identityChange - setup', () => {
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
@@ -141,8 +141,8 @@ describe('identityChange - setup', () => {
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({ notifier: spyNotifier.callWith }).call(app); // attach verifyReset
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService({ notifier: spyNotifier.callWith }).call(app); // attach authManagement
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('updates verified user', function (done) {
@@ -151,7 +151,7 @@ describe('identityChange - setup', () => {
           const user = clone(db[i]);
           const email = 'b@b';
     
-          verifyReset.create({ action: 'identityChange', value: {
+          authManagement.create({ action: 'identityChange', value: {
             user: { email: user.email }, password: user.plainPassword, changes: { email } }
           })
             .then(user1 => {

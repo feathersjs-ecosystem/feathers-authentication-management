@@ -6,7 +6,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 const assert = require('chai').assert;
 
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 
 // user DB
 
@@ -26,18 +26,18 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService().call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('returns a promise', () => {
-          const res = verifyReset.create({
+          const res = authManagement.create({
             action: 'checkUnique',
             value: { username: 'john a' },
           })
@@ -51,7 +51,7 @@ const usersDb = [
         it('handles empty query', function (done) {
           this.timeout(9000);
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: {},
           })
@@ -66,7 +66,7 @@ const usersDb = [
         it('handles empty query returning nothing', function (done) {
           this.timeout(9000);
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username: 'hjhjhj' },
           })
@@ -82,7 +82,7 @@ const usersDb = [
           this.timeout(9000);
           const username = 'john a';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username },
           })
@@ -104,7 +104,7 @@ const usersDb = [
           this.timeout(9000);
           const username = 'john a';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username },
             meta: { noErrMsg: true },
@@ -124,7 +124,7 @@ const usersDb = [
           this.timeout(9000);
           const username = 'john b';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username },
           })
@@ -144,7 +144,7 @@ const usersDb = [
           const username = 'john a';
           const email = 'a';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username, email },
           })
@@ -164,7 +164,7 @@ const usersDb = [
           const username = 'john a';
           const email = 'b';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username, email },
           })
@@ -182,7 +182,7 @@ const usersDb = [
         it('ignores null & undefined queries', function (done) {
           this.timeout(9000);
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username: undefined, email: null },
           })
@@ -198,7 +198,7 @@ const usersDb = [
           this.timeout(9000);
           const username = 'john a';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username },
             ownId: 'a',
@@ -215,7 +215,7 @@ const usersDb = [
           this.timeout(9000);
           const username = 'john b';
 
-          verifyReset.create({
+          authManagement.create({
             action: 'checkUnique',
             value: { username },
             ownId: 'b',

@@ -5,7 +5,7 @@ no-unused-vars: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB
@@ -30,24 +30,24 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
         const password = '123456';
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService({
+          authManagementService({
             identifyUserProps: ['email', 'username']
-          }).call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          }).call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('verifies valid token', (done) => {
           const resetShortToken = '00099';
           const i = 0;
     
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email }
           } })
             .then(user => {
@@ -70,7 +70,7 @@ const usersDb = [
           const resetShortToken = '00099';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { username: db[i].username }
           } })
             .then(user => {
@@ -92,7 +92,7 @@ const usersDb = [
           const resetShortToken = '00099';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email, username: db[i].username }
           } })
             .then(user => {
@@ -114,7 +114,7 @@ const usersDb = [
           const resetShortToken = '00099';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: {}
           } })
             .then(user => {
@@ -132,7 +132,7 @@ const usersDb = [
           const resetShortToken = '00099';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email, resetShortToken }
           } })
             .then(user => {
@@ -150,7 +150,7 @@ const usersDb = [
           const resetShortToken = '22299';
           const i = 3;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: db[i].email }, password
           } })
             .then(user => {
@@ -168,7 +168,7 @@ const usersDb = [
           const resetShortToken = '11199';
           const i = 2;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { username: db[i].username }, password }
           })
             .then(user => {
@@ -184,7 +184,7 @@ const usersDb = [
 
         it('error on user not found', (done) => {
           const resetShortToken = '999';
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: '999' }, password
           } })
             .then(user => {
@@ -202,7 +202,7 @@ const usersDb = [
           const resetShortToken = '999';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdShort', value: {
+          authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, user: { email: db[i].email }, password
           } })
             .then(user => {
@@ -223,7 +223,7 @@ const usersDb = [
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
         const password = '123456';
 
         beforeEach(() => {
@@ -232,19 +232,19 @@ const usersDb = [
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({
+          authManagementService({
             // maybe reset identifyUserProps
             notifier: spyNotifier.callWith,
             testMode: true
           }).call(app);
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('verifies valid token', (done) => {
           const resetShortToken = '00099';
           const i = 0;
     
-          verifyReset.create({
+          authManagement.create({
               action: 'resetPwdShort',
               value: { token: resetShortToken, user: { email: db[i].email }, password } })
             .then(user => {

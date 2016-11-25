@@ -5,7 +5,7 @@ no-unused-vars: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
-const verifyResetService = require('../src/index');
+const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB
@@ -30,22 +30,22 @@ const usersDb = [
         var db;
         var app;
         var users;
-        var verifyReset;
+        var authManagement;
         const password = '123456';
 
         beforeEach(() => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          verifyResetService().call(app); // define and attach verifyReset service
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService().call(app); // define and attach authManagement service
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
 
         it('verifies valid token', (done) => {
           const resetToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
@@ -66,7 +66,7 @@ const usersDb = [
           const resetToken = '000';
           const i = 0;
 
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.resetToken, undefined, 'resetToken not undefined');
@@ -84,7 +84,7 @@ const usersDb = [
 
         it('error on unverified user', (done) => {
           const resetToken = '222';
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
             (err, user) => {
 
             })
@@ -101,7 +101,7 @@ const usersDb = [
 
         it('error on expired token', (done) => {
           const resetToken = '111';
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -115,7 +115,7 @@ const usersDb = [
 
         it('error on token not found', (done) => {
           const resetToken = '999';
-          verifyReset.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -133,7 +133,7 @@ const usersDb = [
         var app;
         var users;
         var spyNotifier;
-        var verifyReset;
+        var authManagement;
         const password = '123456';
 
         beforeEach(() => {
@@ -142,15 +142,15 @@ const usersDb = [
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           spyNotifier = new SpyOn(notifier);
 
-          verifyResetService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
-          verifyReset = app.service('authManagement'); // get handle to verifyReset
+          authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
+          authManagement = app.service('authManagement'); // get handle to authManagement
         });
   
         it('verifies valid token', (done) => {
           const resetToken = '000';
           const i = 0;
     
-          verifyReset.create({
+          authManagement.create({
             action: 'resetPwdLong',
             value: { token: resetToken, password } }
           )

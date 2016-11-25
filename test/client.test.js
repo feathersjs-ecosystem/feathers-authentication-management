@@ -14,7 +14,7 @@ const usersDb = [
   { _id: 'b', email: 'ok', password: 'bb', isVerified: true },
 ];
 
-// Fake for verifyResetService service
+// Fake for authManagementService service
 
 var spyData = null;
 var spyParams = null;
