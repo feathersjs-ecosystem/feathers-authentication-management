@@ -6,10 +6,10 @@
 [![Dependency Status](https://img.shields.io/david/feathersjs/feathers-authentication-management.svg?style=flat-square)](https://david-dm.org/feathersjs/feathers-authentication-management)
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
 
-> Refactoring of feathers-service-verify-reset. **WORK IN PROGRESS. Almost ready for use.**
-
 > Adds sign up verification, forgotten password reset, and other capabilities to local
 [`feathers-authentication`](http://docs.feathersjs.com/authentication/local.html).
+
+This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
 
 ## Multiple communication channels:
 
