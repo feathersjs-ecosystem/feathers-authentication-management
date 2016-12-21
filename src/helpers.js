@@ -125,7 +125,7 @@ const ensureValuesAreStrings = (...rest) => {
 };
 
 const sanitizeUserForClient = user => {
-  const user1 = Object.assign({}, user);
+  const user1 = cloneUserObject(user);
 
   delete user1.password;
   delete user1.verifyExpires;
@@ -140,9 +140,37 @@ const sanitizeUserForClient = user => {
 };
 
 const sanitizeUserForNotifier = user => {
-  const user1 = Object.assign({}, user);
+  const user1 = cloneUserObject(user);
   delete user1.password;
   return user1;
+};
+
+/**
+ * Returns new object with values cloned from original user object.
+ * Some objects (like Sequelize model instances) contain circular references
+ * and cause TypeError when trying to JSON.stringify() them. They may contain
+ * custom toJSON() method which allows to serialize them safely.
+ * Object.assign() does not clone original toJSON(), so the purpose of this method
+ * is to use result of custom toJSON() (if accessible) for Object.assign(),
+ * but only in case of serialization failure.
+ *
+ * @param {Object?} user - Object to clone
+ * @returns {Object} Cloned user object
+ */
+const cloneUserObject = user => {
+  let user1 = user;
+
+  if (typeof user.toJSON === 'function') {
+    try {
+      JSON.stringify(Object.assign({}, user1));
+    } catch (e) {
+      debug('User object is not serializable');
+
+      user1 = user1.toJSON();
+    }
+  }
+
+  return Object.assign({}, user1);
 };
 
 const notifier = (optionsNotifier, type, user, notifierOptions) => {
