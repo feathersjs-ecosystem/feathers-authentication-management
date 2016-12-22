@@ -7,7 +7,7 @@
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
 
 > Adds sign up verification, forgotten password reset, and other capabilities to local
-[`feathers-authentication`](http://docs.feathersjs.com/authentication/local.html).
+[`feathers-authentication`](https://docs.feathersjs.com/v/auk/authentication/management.html).
 
 This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
 
@@ -34,7 +34,7 @@ provide much of the infrastructure necessary to implement such a scenario.
 
 ## Documentation
 
-Refer to [Feathersjs documentation](https://docs.feathersjs.com).
+Refer to [Feathersjs documentation](https://docs.feathersjs.com/v/auk/authentication/management.html).
 
 `feathers-authentication-management` is part of the `Auk` release of Feathersjs.
 
