@@ -1,8 +1,16 @@
 # Change Log
 
-## [Unreleased](https://github.com/feathersjs/feathers-authentication-management/tree/HEAD)
+## [v0.1.6](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.6) (2016-12-30)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.5...v0.1.6)
 
-[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.2...HEAD)
+## [v0.1.5](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.5) (2016-12-30)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.4...v0.1.5)
+
+## [v0.1.4](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.4) (2016-12-30)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.3...v0.1.4)
+
+## [v0.1.3](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.3) (2016-12-30)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.2...v0.1.3)
 
 **Closed issues:**
 
