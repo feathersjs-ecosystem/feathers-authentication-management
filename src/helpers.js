@@ -125,7 +125,7 @@ const ensureValuesAreStrings = (...rest) => {
 };
 
 const sanitizeUserForClient = user => {
-  const user1 = cloneUserObject(user);
+  const user1 = cloneObject(user);
 
   delete user1.password;
   delete user1.verifyExpires;
@@ -140,37 +140,37 @@ const sanitizeUserForClient = user => {
 };
 
 const sanitizeUserForNotifier = user => {
-  const user1 = cloneUserObject(user);
+  const user1 = cloneObject(user);
   delete user1.password;
   return user1;
 };
 
 /**
- * Returns new object with values cloned from original user object.
- * Some objects (like Sequelize model instances) contain circular references
+ * Returns new object with values cloned from the original object. Some objects
+ * (like Sequelize or MongoDB model instances) contain circular references
  * and cause TypeError when trying to JSON.stringify() them. They may contain
- * custom toJSON() method which allows to serialize them safely.
- * Object.assign() does not clone original toJSON(), so the purpose of this method
- * is to use result of custom toJSON() (if accessible) for Object.assign(),
- * but only in case of serialization failure.
+ * custom toJSON() or toObject() method which allows to serialize them safely.
+ * Object.assign() does not clone these methods, so the purpose of this method
+ * is to use result of custom toJSON() or toObject() (if accessible)
+ * for Object.assign(), but only in case of serialization failure.
  *
- * @param {Object?} user - Object to clone
- * @returns {Object} Cloned user object
+ * @param {Object?} obj - Object to clone
+ * @returns {Object} Cloned object
  */
-const cloneUserObject = user => {
-  let user1 = user;
+const cloneObject = obj => {
+  let obj1 = obj;
 
-  if (typeof user.toJSON === 'function') {
+  if (typeof obj.toJSON === 'function' || typeof obj.toObject === 'function') {
     try {
-      JSON.stringify(Object.assign({}, user1));
+      JSON.stringify(Object.assign({}, obj1));
     } catch (e) {
-      debug('User object is not serializable');
+      debug('Object is not serializable');
 
-      user1 = user1.toJSON();
+      obj1 = obj1.toJSON ? obj1.toJSON() : obj1.toObject();
     }
   }
 
-  return Object.assign({}, user1);
+  return Object.assign({}, obj1);
 };
 
 const notifier = (optionsNotifier, type, user, notifierOptions) => {

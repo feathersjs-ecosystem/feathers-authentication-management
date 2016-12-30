@@ -53,4 +53,24 @@ describe('helpers - sanitization', () => {
     assert.doesNotThrow(() => JSON.stringify(result1));
     assert.doesNotThrow(() => JSON.stringify(result2));
   });
+
+  it('allows to stringify sanitized object with circular reference and custom toObject()', () => {
+    const user = {
+      id: 1,
+      email: 'test@test.test',
+      password: '0000000000',
+      resetToken: 'aaa',
+      toObject: function() {
+        return Object.assign({}, this, { self: undefined });
+      }
+    };
+
+    user.self = user;
+
+    const result1 = helpers.sanitizeUserForClient(user);
+    const result2 = helpers.sanitizeUserForNotifier(user);
+
+    assert.doesNotThrow(() => JSON.stringify(result1));
+    assert.doesNotThrow(() => JSON.stringify(result2));
+  });
 });
