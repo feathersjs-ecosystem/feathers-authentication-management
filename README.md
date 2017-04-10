@@ -34,10 +34,7 @@ provide much of the infrastructure necessary to implement such a scenario.
 
 ## Documentation
 
-Refer to [Feathersjs documentation](https://docs.feathersjs.com/v/auk/authentication/management.html).
-
-`feathers-authentication-management` is part of the `Auk` release of Feathersjs.
-
+Refer to [Documentation](./docs.md).
 
 ## Tests
 
