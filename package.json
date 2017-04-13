@@ -62,7 +62,7 @@
     "debug": "2.3.3",
     "feathers-authentication": "^0.7.12",
     "feathers-errors": "2.5.0",
-    "feathers-hooks-common": "2.0.1"
+    "feathers-hooks-common": "3.0.0"
   },
   "devDependencies": {
     "babel-cli": "6.18.0",
