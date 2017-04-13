@@ -60,7 +60,7 @@
     "bcryptjs": "^2.3.0",
     "crypto": "^0.0.3",
     "debug": "2.6.3",
-    "feathers-authentication": "^1.2.1",
+    "feathers-authentication-local": "0.3.4",
     "feathers-errors": "2.6.3",
     "feathers-hooks-common": "3.0.0"
   },
