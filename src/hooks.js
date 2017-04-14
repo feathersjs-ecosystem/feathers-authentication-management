@@ -2,11 +2,11 @@
 /* eslint no-param-reassign: 0 */
 
 const errors = require('feathers-errors');
-const utils = require('feathers-hooks-common/lib/utils');
+const { checkContext } = require('feathers-hooks-common');
 const { getLongToken, getShortToken } = require('./helpers');
 
 module.exports.addVerification = path => hook => {
-  utils.checkContext(hook, 'before', 'create');
+  checkContext(hook, 'before', 'create');
 
   return Promise.resolve()
     .then(() => hook.app.service(path || 'authManagement').create({ action: 'options' }))
@@ -28,7 +28,7 @@ module.exports.addVerification = path => hook => {
 };
 
 module.exports.isVerified = () => hook => {
-  utils.checkContext(hook, 'before');
+  checkContext(hook, 'before');
 
   if (!hook.params.user || !hook.params.user.isVerified) {
     throw new errors.BadRequest('User\'s email is not yet verified.');
@@ -36,7 +36,7 @@ module.exports.isVerified = () => hook => {
 };
 
 module.exports.removeVerification = ifReturnTokens => (hook) => {
-  utils.checkContext(hook, 'after');
+  checkContext(hook, 'after');
   const user = hook.result || {};
 
   if (!('isVerified' in user) && hook.method === 'create') {

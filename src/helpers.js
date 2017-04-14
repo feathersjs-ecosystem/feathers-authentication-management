@@ -4,7 +4,7 @@
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const auth = require('feathers-authentication').hooks;
+const auth = require('feathers-authentication-local').hooks;
 const errors = require('feathers-errors');
 const debug = require('debug')('authManagement:helpers');
 
