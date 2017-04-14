@@ -1,5 +1,19 @@
 # Change Log
 
+## [v0.2.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.2.0) (2017-04-14)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.6...v0.2.0)
+
+**Closed issues:**
+
+- Missing doc? [\#18](https://github.com/feathersjs/feathers-authentication-management/issues/18)
+- Question regarding 'resetPassword' [\#15](https://github.com/feathersjs/feathers-authentication-management/issues/15)
+- Errors returned are vague [\#12](https://github.com/feathersjs/feathers-authentication-management/issues/12)
+
+**Merged pull requests:**
+
+- Update dependencies to enable Greenkeeper 🌴 [\#20](https://github.com/feathersjs/feathers-authentication-management/pull/20) ([greenkeeper[bot]](https://github.com/integration/greenkeeper))
+- Add documentation to the repository for now [\#19](https://github.com/feathersjs/feathers-authentication-management/pull/19) ([daffl](https://github.com/daffl))
+
 ## [v0.1.6](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.6) (2016-12-30)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.5...v0.1.6)
 
