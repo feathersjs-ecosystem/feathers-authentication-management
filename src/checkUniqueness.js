@@ -37,5 +37,7 @@ module.exports = function checkUniqueness (options, identifyUser, ownId, meta) {
           { errors: errs }
         );
       }
+    
+      return null;
     });
 };
