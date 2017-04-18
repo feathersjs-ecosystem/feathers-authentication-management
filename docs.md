@@ -272,7 +272,7 @@ app.authenticate({ type: 'local', email, password })
 ### Provided service wrappers
 The wrappers return a Promise.
 
-```javascript`
+```javascript
 <script src=".../feathers-authentication-management/lib/client.js"></script>
   or
 import AuthManagement from 'feathers-authentication-management/lib/client';
