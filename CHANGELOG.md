@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.3.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.3.0) (2017-04-19)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.2.0...v0.3.0)
+
+**Closed issues:**
+
+- getUserData never hits 'User not found' [\#25](https://github.com/feathersjs/feathers-authentication-management/issues/25)
+
+**Merged pull requests:**
+
+- Resolve `checkUnique` with `null` when no collisions [\#24](https://github.com/feathersjs/feathers-authentication-management/pull/24) ([cpsubrian](https://github.com/cpsubrian))
+- Fixes typo in docs [\#23](https://github.com/feathersjs/feathers-authentication-management/pull/23) ([cpsubrian](https://github.com/cpsubrian))
+- Update feathers-hooks to the latest version 🚀 [\#22](https://github.com/feathersjs/feathers-authentication-management/pull/22) ([greenkeeper[bot]](https://github.com/integration/greenkeeper))
+
 ## [v0.2.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.2.0) (2017-04-14)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.6...v0.2.0)
 
