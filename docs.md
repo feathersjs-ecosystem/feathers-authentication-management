@@ -124,8 +124,8 @@ app.configure(authentication)
 - shortTokenDigits: Short token is digits if true, else alphanumeric. Default is true.
 - delay: Duration for sign up email verification token in ms. Default is 5 days.
 - resetDelay: Duration for password reset token in ms. Default is 2 hours.
-- identityUserProps: Prop names in `user` item which uniquely identify the user,
-e.g. `['username, 'email', 'cellphone']`.
+- identifyUserProps: Prop names in `user` item which uniquely identify the user,
+e.g. `['username', 'email', 'cellphone']`.
 The default is `['email']`.
 The prop values must be strings.
 Only these props may be changed with verification by the service.
@@ -136,19 +136,20 @@ The service creates and maintains the following properties in the `user` item:
 
 - isVerified:       If the user's email addr has been verified (boolean)
 - verifyToken:      The 30-char token generated for email addr verification (string)
-- verifyTokenShort: The 6-digit token generated for email addr verification (string)
+- verifyShortToken: The 6-digit token generated for cellphone addr verification (string)
 - verifyExpires:    When the email addr token expire (Date)
-- verifyChanges     New values to apply on verification to some identityUserProps (string array)
+- verifyChanges     New values to apply on verification to some identifyUserProps (string array)
 - resetToken:       The 30-char token generated for forgotten password reset (string)
-- resetTokenShort:  The 6-digit token generated for forgotten password reset (string)
+- resetShortToken:  The 6-digit token generated for forgotten password reset (string)
 - resetExpires:     When the forgotten password token expire (Date)
 
 The following `user` item might also contain the following props:
 
-- preferredComm     The preferred way to notify the user. One of identityUserProps.
+- preferredComm     The preferred way to notify the user. One of identifyUserProps.
 
 The `users` service is expected to be already configured.
 Its `patch` method is used to update the password when needed,
+and this module hashes the password before it is passed to `patch`,
 therefore `patch` may *not* have a `auth.hashPassword()` hook.
 
 The user must be signed in before being allowed to change their password or communication values.
@@ -204,8 +205,8 @@ authManagement.create({ action: 'verifySignupLong',
 // sign up or identityChange verification with short token
 authManagement.create({ action: 'verifySignupShort',
   value: {
-    user, // identify user, e.g. {email: 'a@a.com'}. See options.identityUserProps.
-    token, // compares to .verifyTokenShort
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
   }
 })
 
@@ -226,8 +227,8 @@ authManagement.create({ action: 'resetPwdLong',
 // forgotten password verification with short token
 authManagement.create({ action: 'resetPwdShort',
   value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identityUserProps.
-    token, // compares to .resetTokenShort
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .resetShortToken
     password, // new password
   },
 })
@@ -235,7 +236,7 @@ authManagement.create({ action: 'resetPwdShort',
 // change password
 authManagement.create({ action: 'passwordChange',
   value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identityUserProps.
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     oldPassword, // old password for verification
     password, // new password
   },
@@ -244,7 +245,7 @@ authManagement.create({ action: 'passwordChange',
 // change communications
 authManagement.create({ action: 'identityChange',
   value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identityUserProps.
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     password, // current password for verification
     changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
   },
@@ -435,9 +436,11 @@ You should add them to your user model if your database uses models.
 {
   isVerified: { type: Boolean },
   verifyToken: { type: String },
+  verifyShortToken: { type: String },
   verifyExpires: { type: Date }, // or a long integer
   verifyChanges: // an object (key-value map), e.g. { field: "value" }
   resetToken: { type: String },
+  resetShortToken: { type: String },
   resetExpires: { type: Date }, // or a long integer
 }
 ```
