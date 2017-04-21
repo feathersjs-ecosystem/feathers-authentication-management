@@ -137,11 +137,11 @@ The service creates and maintains the following properties in the `user` item:
 
 - isVerified:       If the user's email addr has been verified (boolean)
 - verifyToken:      The 30-char token generated for email addr verification (string)
-- verifyTokenShort: The 6-digit token generated for email addr verification (string)
+- verifyShortToken: The 6-digit token generated for cellphone addr verification (string)
 - verifyExpires:    When the email addr token expire (Date)
 - verifyChanges     New values to apply on verification to some identifyUserProps (string array)
 - resetToken:       The 30-char token generated for forgotten password reset (string)
-- resetTokenShort:  The 6-digit token generated for forgotten password reset (string)
+- resetShortToken:  The 6-digit token generated for forgotten password reset (string)
 - resetExpires:     When the forgotten password token expire (Date)
 
 The following `user` item might also contain the following props:
@@ -206,7 +206,7 @@ authManagement.create({ action: 'verifySignupLong',
 authManagement.create({ action: 'verifySignupShort',
   value: {
     user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .verifyTokenShort
+    token, // compares to .verifyShortToken
   }
 })
 
@@ -228,7 +228,7 @@ authManagement.create({ action: 'resetPwdLong',
 authManagement.create({ action: 'resetPwdShort',
   value: {
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .resetTokenShort
+    token, // compares to .resetShortToken
     password, // new password
   },
 })
