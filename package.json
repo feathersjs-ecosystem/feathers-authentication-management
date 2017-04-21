@@ -76,7 +76,7 @@
     "istanbul": "1.1.0-alpha.1",
     "mocha": "3.2.0",
     "rimraf": "2.6.1",
-    "semistandard": "10.0.0",
+    "semistandard": "11.0.0",
     "sift": "3.3.2"
   }
 }
