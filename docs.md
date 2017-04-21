@@ -3,8 +3,7 @@
 Sign up verification, forgotten password reset, and other capabilities for local authentication.
 
 This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
-The examples below use v0.7.
-They will be updated to v1.0 when the `feathers-permissions` v1.0 API is finalized.
+The example below uses v1.0.
 
 ### Multiple communication channels:
 
