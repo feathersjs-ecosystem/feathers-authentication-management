@@ -436,9 +436,11 @@ You should add them to your user model if your database uses models.
 {
   isVerified: { type: Boolean },
   verifyToken: { type: String },
+  verifyShortToken: { type: String },
   verifyExpires: { type: Date }, // or a long integer
   verifyChanges: // an object (key-value map), e.g. { field: "value" }
   resetToken: { type: String },
+  resetShortToken: { type: String },
   resetExpires: { type: Date }, // or a long integer
 }
 ```
