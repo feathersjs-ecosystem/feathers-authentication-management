@@ -150,6 +150,7 @@ The following `user` item might also contain the following props:
 
 The `users` service is expected to be already configured.
 Its `patch` method is used to update the password when needed,
+and this module hashes the password before it is passed to `patch`,
 therefore `patch` may *not* have a `auth.hashPassword()` hook.
 
 The user must be signed in before being allowed to change their password or communication values.
