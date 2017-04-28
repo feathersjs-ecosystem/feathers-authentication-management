@@ -378,9 +378,9 @@ store.dispatch(signin.authenticate({ type: 'local', email, password }))
 ## Hooks
 The service does not itself handle creation of a new user account nor the sending of the initial
 sign up verification request.
-Instead hooks are provided for you to use with the `users` service `create` method.
+Instead hooks are provided for you to use with the `users` service `create` method. If you set a service path other than the default of `'authManagement'`, the custom path name must be passed into the hook.
 
-### `verifyHooks.addVerification()`
+### `verifyHooks.addVerification( path = 'authManagement' )`
 
 ```javascript
 const verifyHooks = require('feathers-authentication-management').hooks;
