@@ -1,5 +1,36 @@
 # Change Log
 
+## [v0.4.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.4.0) (2017-05-30)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.3.0...v0.4.0)
+
+**Implemented enhancements:**
+
+- added `sanitizeUserForClient` to options [\#47](https://github.com/feathersjs/feathers-authentication-management/pull/47) ([markacola](https://github.com/markacola))
+- Update docs for addVerification hook [\#34](https://github.com/feathersjs/feathers-authentication-management/pull/34) ([z-a-h](https://github.com/z-a-h))
+
+**Closed issues:**
+
+- option to customize `sanitizeUserForClient` function [\#46](https://github.com/feathersjs/feathers-authentication-management/issues/46)
+- Example Application [\#42](https://github.com/feathersjs/feathers-authentication-management/issues/42)
+- Does this package really need to require ECMAScript 2015? [\#29](https://github.com/feathersjs/feathers-authentication-management/issues/29)
+- checkUnique returns 'Page not found' for available value [\#14](https://github.com/feathersjs/feathers-authentication-management/issues/14)
+
+**Merged pull requests:**
+
+- Update chai to the latest version 🚀 [\#45](https://github.com/feathersjs/feathers-authentication-management/pull/45) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update sift to the latest version 🚀 [\#40](https://github.com/feathersjs/feathers-authentication-management/pull/40) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update all dependencies to version ranges [\#38](https://github.com/feathersjs/feathers-authentication-management/pull/38) ([daffl](https://github.com/daffl))
+- Update feathers-errors to the latest version 🚀 [\#37](https://github.com/feathersjs/feathers-authentication-management/pull/37) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update feathers-hooks to the latest version 🚀 [\#36](https://github.com/feathersjs/feathers-authentication-management/pull/36) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update sift to the latest version 🚀 [\#35](https://github.com/feathersjs/feathers-authentication-management/pull/35) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update sift to the latest version 🚀 [\#33](https://github.com/feathersjs/feathers-authentication-management/pull/33) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update feathers-errors to the latest version 🚀 [\#32](https://github.com/feathersjs/feathers-authentication-management/pull/32) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update mocha to the latest version 🚀 [\#31](https://github.com/feathersjs/feathers-authentication-management/pull/31) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Docs fixes [\#30](https://github.com/feathersjs/feathers-authentication-management/pull/30) ([shawnlauzon](https://github.com/shawnlauzon))
+- Edited docs to say example uses auth 1.0 [\#28](https://github.com/feathersjs/feathers-authentication-management/pull/28) ([eddyystop](https://github.com/eddyystop))
+- Update semistandard to the latest version 🚀 [\#27](https://github.com/feathersjs/feathers-authentication-management/pull/27) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+- Update debug to the latest version 🚀 [\#26](https://github.com/feathersjs/feathers-authentication-management/pull/26) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+
 ## [v0.3.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.3.0) (2017-04-19)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.2.0...v0.3.0)
 
@@ -11,7 +42,7 @@
 
 - Resolve `checkUnique` with `null` when no collisions [\#24](https://github.com/feathersjs/feathers-authentication-management/pull/24) ([cpsubrian](https://github.com/cpsubrian))
 - Fixes typo in docs [\#23](https://github.com/feathersjs/feathers-authentication-management/pull/23) ([cpsubrian](https://github.com/cpsubrian))
-- Update feathers-hooks to the latest version 🚀 [\#22](https://github.com/feathersjs/feathers-authentication-management/pull/22) ([greenkeeper[bot]](https://github.com/integration/greenkeeper))
+- Update feathers-hooks to the latest version 🚀 [\#22](https://github.com/feathersjs/feathers-authentication-management/pull/22) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.2.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.2.0) (2017-04-14)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.1.6...v0.2.0)
@@ -24,7 +55,7 @@
 
 **Merged pull requests:**
 
-- Update dependencies to enable Greenkeeper 🌴 [\#20](https://github.com/feathersjs/feathers-authentication-management/pull/20) ([greenkeeper[bot]](https://github.com/integration/greenkeeper))
+- Update dependencies to enable Greenkeeper 🌴 [\#20](https://github.com/feathersjs/feathers-authentication-management/pull/20) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 - Add documentation to the repository for now [\#19](https://github.com/feathersjs/feathers-authentication-management/pull/19) ([daffl](https://github.com/daffl))
 
 ## [v0.1.6](https://github.com/feathersjs/feathers-authentication-management/tree/v0.1.6) (2016-12-30)
