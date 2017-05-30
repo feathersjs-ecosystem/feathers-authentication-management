@@ -12,6 +12,8 @@ const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPasswo
 const passwordChange = require('./passwordChange');
 const identityChange = require('./identityChange');
 
+const { sanitizeUserForClient } = require('./helpers');
+
 const optionsDefault = {
   app: null,
   service: '/users', // need exactly this for test suite
@@ -22,7 +24,8 @@ const optionsDefault = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ['email']
+  identifyUserProps: ['email'],
+  sanitizeUserForClient
 };
 
 module.exports = function (options1 = {}) {

@@ -8,7 +8,6 @@ const {
   getLongToken,
   getShortToken,
   ensureObjPropsValid,
-  sanitizeUserForClient,
   comparePasswords,
   notifier
 } = require('./helpers');
@@ -18,6 +17,9 @@ module.exports = function identityChange (options, identifyUser, password, chang
   debug('identityChange', password, changesIdentifyUser);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return Promise.resolve()
     .then(() => {

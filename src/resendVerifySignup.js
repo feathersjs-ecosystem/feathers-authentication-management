@@ -6,7 +6,6 @@ const debug = require('debug')('authManagement:resendVerifySignup');
 const {
   getUserData,
   ensureObjPropsValid,
-  sanitizeUserForClient,
   getLongToken,
   getShortToken,
   notifier
@@ -18,6 +17,9 @@ module.exports = function resendVerifySignup (options, identifyUser, notifierOpt
   debug('resendVerifySignup', identifyUser);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return Promise.resolve()
     .then(() => {
