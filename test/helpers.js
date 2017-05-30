@@ -1,5 +1,7 @@
 const assert = require('chai').assert;
 const helpers = require('../src/helpers');
+const authManagementService = require('../src/index');
+const feathersStubs = require('./../test/helpers/feathersStubs');
 
 describe('helpers - sanitization', () => {
   it('allows to stringify sanitized user object', () => {
@@ -73,4 +75,33 @@ describe('helpers - sanitization', () => {
     assert.doesNotThrow(() => JSON.stringify(result1));
     assert.doesNotThrow(() => JSON.stringify(result2));
   });
+
+  it('allows for customized sanitize function', (done) => {
+    function customSanitizeUserForClient(user) {
+      const user1 = helpers.sanitizeUserForClient(user)
+      delete user1.sensitiveData
+      return user1
+    }
+    const app = feathersStubs.app();
+    const usersDb = [
+      { _id: 'a', email: 'a', username: 'john a', sensitiveData: 'some secret' }
+    ];
+    const users = feathersStubs.users(app, usersDb, true);
+    authManagementService({
+      sanitizeUserForClient: customSanitizeUserForClient
+    }).call(app); // define and attach authManagement service
+    const authManagement = app.service('authManagement'); // get handle to authManagement
+
+    const res = authManagement.create({
+      action: 'resendVerifySignup',
+      value: { email: 'a' }
+    })
+      .then((user) => {
+        assert.isUndefined(user.sensitiveData);
+        done()
+      })
+      .catch((err) => {
+        assert.fail(true, false, err);
+      })
+  })
 });

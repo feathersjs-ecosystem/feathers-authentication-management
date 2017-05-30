@@ -5,6 +5,7 @@ const assert = require('chai').assert;
 const feathers = require('feathers');
 const hooks = require('feathers-hooks');
 const authManagement = require('../src/index');
+const helpers = require('../src/helpers')
 
 const optionsDefault = {
   app: null,
@@ -16,7 +17,8 @@ const optionsDefault = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ['email']
+  identifyUserProps: ['email'],
+  sanitizeUserForClient: helpers.sanitizeUserForClient
 };
 
 const userMgntOptions = {
@@ -40,7 +42,7 @@ function services() {
 
 function user() {
   const app = this;
-  
+
   app.use('/users', {
     before: { create: authManagement.hooks.addVerification() },
     create: data => Promise.resolve(data)
@@ -49,7 +51,7 @@ function user() {
 
 function organization() {
   const app = this;
-  
+
   app.use('/organizations', {
     before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
     create: data => Promise.resolve(data)
@@ -59,17 +61,17 @@ function organization() {
 describe('multiple services', () => {
   describe('can configure 1 service', () => {
     var app;
-    
+
     beforeEach(() => {
       app = feathers()
         .configure(hooks())
         .configure(authManagement(userMgntOptions))
         .configure(services);
     });
-    
+
     it('can create an item', (done) => {
       const user = app.service('/users');
-    
+
       user.create({ username: 'John Doe' })
         .catch(err => {
           console.log(err);
@@ -78,14 +80,14 @@ describe('multiple services', () => {
         .then(result => {
           assert.equal(result.username, 'John Doe');
           assert.equal(result.verifyShortToken.length, 8);
-        
+
           done();
         });
     });
-    
+
     it('can call service', (done) => {
       const userMgnt = app.service('authManagement');
-      
+
       const options = userMgnt.create({ action: 'options' })
         .catch(err => console.log(err))
         .then(options => {
@@ -93,21 +95,21 @@ describe('multiple services', () => {
           assert.property(options, 'notifier');
           delete options.app;
           delete options.notifier;
-          
+
           const expected = Object.assign({}, optionsDefault, userMgntOptions);
           delete expected.app;
           delete expected.notifier;
-          
+
           assert.deepEqual(options, expected);
 
           done();
         });
     });
   });
-  
+
   describe('can configure 2 services', () => {
     var app;
-  
+
     beforeEach(() => {
       app = feathers()
         .configure(hooks())
@@ -115,11 +117,11 @@ describe('multiple services', () => {
         .configure(authManagement(orgMgntOptions))
         .configure(services);
     });
-    
+
     it('can create items', (done) => {
       const user = app.service('/users');
       const organization = app.service('/organizations');
-    
+
       // create a user item
       user.create({ username: 'John Doe' })
         .catch(err => {
@@ -129,7 +131,7 @@ describe('multiple services', () => {
         .then(result => {
           assert.equal(result.username, 'John Doe');
           assert.equal(result.verifyShortToken.length, 8);
-        
+
           // create an organization item
           organization.create({ organization: 'Black Ice' })
             .catch(err => {
@@ -139,17 +141,17 @@ describe('multiple services', () => {
             .then(result => {
               assert.equal(result.organization, 'Black Ice');
               assert.equal(result.verifyShortToken.length, 10);
-            
+
               done();
             });
-        
+
         });
     });
-  
+
     it('can call services', (done) => {
       const userMgnt = app.service('authManagement'); // *** the default
       const orgMgnt = app.service('authManagement/org'); // *** which one
-  
+
       // call the user instance
       userMgnt.create({ action: 'options' })
         .catch(err => console.log(err))
@@ -158,13 +160,13 @@ describe('multiple services', () => {
           assert.property(options, 'notifier');
           delete options.app;
           delete options.notifier;
-      
+
           const expected = Object.assign({}, optionsDefault, userMgntOptions);
           delete expected.app;
           delete expected.notifier;
-      
+
           assert.deepEqual(options, expected);
-  
+
           // call the organization instance
           orgMgnt.create({ action: 'options' })
             .catch(err => console.log(err))
@@ -173,17 +175,17 @@ describe('multiple services', () => {
               assert.property(options, 'notifier');
               delete options.app;
               delete options.notifier;
-      
+
               const expected = Object.assign({}, optionsDefault, orgMgntOptions);
               delete expected.app;
               delete expected.notifier;
-      
+
               assert.deepEqual(options, expected);
-      
+
               done();
             })
         });
-        
+
     });
   });
 });
