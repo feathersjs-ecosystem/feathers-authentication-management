@@ -7,7 +7,6 @@ const debug = require('debug')('authManagement:passwordChange');
 const {
   ensureValuesAreStrings,
   ensureObjPropsValid,
-  sanitizeUserForClient,
   hashPassword,
   comparePasswords,
   notifier
@@ -17,6 +16,9 @@ module.exports = function passwordChange (options, identifyUser, oldPassword, pa
   debug('passwordChange', oldPassword, password);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return Promise.resolve()
     .then(() => {

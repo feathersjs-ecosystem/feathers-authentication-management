@@ -8,7 +8,6 @@ const {
   getUserData,
   ensureObjPropsValid,
   ensureValuesAreStrings,
-  sanitizeUserForClient,
   notifier
 } = require('./helpers');
 
@@ -35,6 +34,9 @@ function verifySignup (options, query, tokens) {
   debug('verifySignup', query, tokens);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return users.find({ query })
     .then(data => getUserData(data, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']))

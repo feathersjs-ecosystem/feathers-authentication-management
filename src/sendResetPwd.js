@@ -6,7 +6,6 @@ const debug = require('debug')('authManagement:sendResetPwd');
 const {
   getUserData,
   ensureObjPropsValid,
-  sanitizeUserForClient,
   getLongToken,
   getShortToken,
   notifier
@@ -16,6 +15,9 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
   debug('sendResetPwd');
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return Promise.resolve()
     .then(() => {

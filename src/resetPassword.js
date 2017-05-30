@@ -8,7 +8,6 @@ const {
   getUserData,
   ensureObjPropsValid,
   ensureValuesAreStrings,
-  sanitizeUserForClient,
   hashPassword,
   notifier
 } = require('./helpers');
@@ -36,6 +35,9 @@ function resetPassword (options, query, tokens, password) {
   debug('resetPassword', query, tokens, password);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
+  const {
+    sanitizeUserForClient
+  } = options;
 
   return Promise.all([
     users.find({ query })
