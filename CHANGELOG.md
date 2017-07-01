@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.4.2](https://github.com/feathersjs/feathers-authentication-management/tree/v0.4.2) (2017-07-01)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.4.1...v0.4.2)
+
+## [v0.4.1](https://github.com/feathersjs/feathers-authentication-management/tree/v0.4.1) (2017-07-01)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.4.0...v0.4.1)
+
+**Merged pull requests:**
+
+- Switched to node's crypto builtin [\#51](https://github.com/feathersjs/feathers-authentication-management/pull/51) ([eddyystop](https://github.com/eddyystop))
+- removed not required crypto package from dependency [\#49](https://github.com/feathersjs/feathers-authentication-management/pull/49) ([hardik127](https://github.com/hardik127))
+- Update feathers-authentication-local to the latest version 🚀 [\#48](https://github.com/feathersjs/feathers-authentication-management/pull/48) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+
 ## [v0.4.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.4.0) (2017-05-30)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.3.0...v0.4.0)
 
