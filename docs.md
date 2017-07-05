@@ -408,10 +408,8 @@ const auth = require('feathers-authentication').hooks;
 const verifyHooks = require('feathers-authentication-management').hooks;
 export.before = {
   create: [
-    auth.verifyToken(),
-    auth.populateUser(),
-    auth.restrictToAuthenticated(),
-    verifyHooks.isVerified()
+    auth.authenticate('jwt'),
+    verifyHooks.isVerified(),
   ]
 };
 ```
