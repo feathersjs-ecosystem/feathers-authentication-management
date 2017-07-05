@@ -153,13 +153,12 @@ and this module hashes the password before it is passed to `patch`,
 therefore `patch` may *not* have a `auth.hashPassword()` hook.
 
 The user must be signed in before being allowed to change their password or communication values.
-The service, for feathers-authenticate v1.0, requires hooks similar to:
+The service, for feathers-authenticate v1.x, requires hooks similar to:
 ```javascript
     const isAction = (...args) => hook => args.includes(hook.data.action);
     app.service('authManagement').before({
       create: [
         hooks.iff(isAction('passwordChange', 'identityChange'), auth.hooks.authenticate('jwt')),
-        hooks.iff(isAction('passwordChange', 'identityChange'), auth.populateUser()),
       ],
     });
 ```
