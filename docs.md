@@ -106,7 +106,7 @@ app.configure(authentication)
 ```
 
 `options` are:
-- service: The path of the service for user items, e.g. `/user` (default) or `/organization`.
+- service: The path of the service for user items, e.g. `/users` (default) or `/organization`.
 - path: The path to associate with this service. Default `authManagement`.
  See [Multiple services](#multiple-services) for more information.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
