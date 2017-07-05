@@ -489,6 +489,37 @@ New tokens must be acquired for another attempt.
 - API params are verified to be strings. If the param is an object, the values of its props are
 verified to be strings.
 - options.identifyUserProps restricts the prop names allowed in param objects.
+- In order to protect sensitive data, you should set a hook that prevent `PATCH` or `PUT` calls on
+authentication-management related properties:
+```javascript
+// in user service hook
+before: {
+  update: [
+    iff(isProvider('external'), preventChanges(
+      'isVerified',
+      'verifyToken',
+      'verifyShortToken',
+      'verifyExpires',
+      'verifyChanges',
+      'resetToken',
+      'resetShortToken',
+      'resetExpires'
+    )),
+  ],
+  patch: [
+    iff(isProvider('external'), preventChanges(
+      'isVerified',
+      'verifyToken',
+      'verifyShortToken',
+      'verifyExpires',
+      'verifyChanges',
+      'resetToken',
+      'resetShortToken',
+      'resetExpires'
+    )),
+  ],
+},
+```
 
 ## Configurable
 The length of the "30-char" token is configurable.
