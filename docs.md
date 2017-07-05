@@ -106,7 +106,7 @@ app.configure(authentication)
 ```
 
 `options` are:
-- service: The path of the service for user items, e.g. `/user` (default) or `/organization`.
+- service: The path of the service for user items, e.g. `/users` (default) or `/organization`.
 - path: The path to associate with this service. Default `authManagement`.
  See [Multiple services](#multiple-services) for more information.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
@@ -153,13 +153,12 @@ and this module hashes the password before it is passed to `patch`,
 therefore `patch` may *not* have a `auth.hashPassword()` hook.
 
 The user must be signed in before being allowed to change their password or communication values.
-The service, for feathers-authenticate v1.0, requires hooks similar to:
+The service, for feathers-authenticate v1.x, requires hooks similar to:
 ```javascript
     const isAction = (...args) => hook => args.includes(hook.data.action);
     app.service('authManagement').before({
       create: [
         hooks.iff(isAction('passwordChange', 'identityChange'), auth.hooks.authenticate('jwt')),
-        hooks.iff(isAction('passwordChange', 'identityChange'), auth.populateUser()),
       ],
     });
 ```
@@ -409,10 +408,8 @@ const auth = require('feathers-authentication').hooks;
 const verifyHooks = require('feathers-authentication-management').hooks;
 export.before = {
   create: [
-    auth.verifyToken(),
-    auth.populateUser(),
-    auth.restrictToAuthenticated(),
-    verifyHooks.isVerified()
+    auth.authenticate('jwt'),
+    verifyHooks.isVerified(),
   ]
 };
 ```
@@ -492,6 +489,37 @@ New tokens must be acquired for another attempt.
 - API params are verified to be strings. If the param is an object, the values of its props are
 verified to be strings.
 - options.identifyUserProps restricts the prop names allowed in param objects.
+- In order to protect sensitive data, you should set a hook that prevent `PATCH` or `PUT` calls on
+authentication-management related properties:
+```javascript
+// in user service hook
+before: {
+  update: [
+    iff(isProvider('external'), preventChanges(
+      'isVerified',
+      'verifyToken',
+      'verifyShortToken',
+      'verifyExpires',
+      'verifyChanges',
+      'resetToken',
+      'resetShortToken',
+      'resetExpires'
+    )),
+  ],
+  patch: [
+    iff(isProvider('external'), preventChanges(
+      'isVerified',
+      'verifyToken',
+      'verifyShortToken',
+      'verifyExpires',
+      'verifyChanges',
+      'resetToken',
+      'resetShortToken',
+      'resetExpires'
+    )),
+  ],
+},
+```
 
 ## Configurable
 The length of the "30-char" token is configurable.
