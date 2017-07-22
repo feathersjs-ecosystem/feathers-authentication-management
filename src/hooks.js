@@ -6,7 +6,7 @@ const { checkContext } = require('feathers-hooks-common');
 const { getLongToken, getShortToken } = require('./helpers');
 
 module.exports.addVerification = path => hook => {
-  checkContext(hook, 'before', 'create');
+  checkContext(hook, 'before', ['create', 'patch', 'update']);
 
   return Promise.resolve()
     .then(() => hook.app.service(path || 'authManagement').create({ action: 'options' }))
