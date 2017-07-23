@@ -16,10 +16,11 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
   const users = options.app.service(options.service);
   const usersIdName = users.id;
   const {
-    sanitizeUserForClient
+    sanitizeUserForClient,
+    skipIsVerifiedCheck
   } = options;
 
-  const checkProps = options.skipIsVerifiedCheck ? [] : ['isVerified'];
+  const checkProps = skipIsVerifiedCheck ? [] : ['isVerified'];
 
   return Promise.resolve()
     .then(() => {
