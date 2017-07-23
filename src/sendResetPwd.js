@@ -19,13 +19,15 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
     sanitizeUserForClient
   } = options;
 
+  const checkProps = options.skipIsVerifiedCheck ? [] : ['isVerified'];
+
   return Promise.resolve()
     .then(() => {
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
       return Promise.all([
         users.find({ query: identifyUser })
-          .then(data => getUserData(data, ['isVerified'])),
+          .then(data => getUserData(data, checkProps)),
         getLongToken(options.longTokenLen),
         getShortToken(options.shortTokenLen, options.shortTokenDigits)
       ]);
