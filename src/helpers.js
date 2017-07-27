@@ -124,6 +124,12 @@ const ensureValuesAreStrings = (...rest) => {
   }
 };
 
+// Verify that obj1 and obj2 have different 'field' field
+// Returns false if either object is null/undefined
+const ensureFieldHasChanged = (obj1, obj2) => (field) => {
+  return obj1 && obj2 && obj1[field] !== obj2[field];
+};
+
 const sanitizeUserForClient = user => {
   const user1 = cloneObject(user);
 
@@ -193,6 +199,7 @@ module.exports = {
   getUserData,
   ensureObjPropsValid,
   ensureValuesAreStrings,
+  ensureFieldHasChanged,
   sanitizeUserForClient,
   sanitizeUserForNotifier,
   notifier

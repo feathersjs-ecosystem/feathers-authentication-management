@@ -3,10 +3,11 @@
 
 const errors = require('feathers-errors');
 const { checkContext } = require('feathers-hooks-common');
-const { getLongToken, getShortToken } = require('./helpers');
+const { getLongToken, getShortToken, ensureFieldHasChanged } = require('./helpers');
 
 module.exports.addVerification = path => hook => {
   checkContext(hook, 'before', ['create', 'patch', 'update']);
+
 
   return Promise.resolve()
     .then(() => hook.app.service(path || 'authManagement').create({ action: 'options' }))
@@ -16,6 +17,19 @@ module.exports.addVerification = path => hook => {
       getShortToken(options.shortTokenLen, options.shortTokenDigits)
     ]))
     .then(([options, longToken, shortToken]) => {
+
+      // We do NOT add verification fields if the 3 following conditions are fulfilled:
+      // - hook is PATCH or PUT
+      // - user is authenticated
+      // - user's identifyUserProps fields did not change
+      if (
+        (hook.method === 'PATCH' || hook.method === 'PUT') &&
+        !!hook.params.user &&
+        !options.identifyUserProps.some(ensureFieldHasChanged(hook.data, hook.params.user))
+      ) {
+        return hook;
+      }
+
       hook.data.isVerified = false;
       hook.data.verifyExpires = Date.now() + options.delay;
       hook.data.verifyToken = longToken;
