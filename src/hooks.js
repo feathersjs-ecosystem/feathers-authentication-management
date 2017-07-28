@@ -8,7 +8,6 @@ const { getLongToken, getShortToken, ensureFieldHasChanged } = require('./helper
 module.exports.addVerification = path => hook => {
   checkContext(hook, 'before', ['create', 'patch', 'update']);
 
-
   return Promise.resolve()
     .then(() => hook.app.service(path || 'authManagement').create({ action: 'options' }))
     .then(options => Promise.all([
@@ -17,13 +16,12 @@ module.exports.addVerification = path => hook => {
       getShortToken(options.shortTokenLen, options.shortTokenDigits)
     ]))
     .then(([options, longToken, shortToken]) => {
-
       // We do NOT add verification fields if the 3 following conditions are fulfilled:
       // - hook is PATCH or PUT
       // - user is authenticated
       // - user's identifyUserProps fields did not change
       if (
-        (hook.method === 'PATCH' || hook.method === 'PUT') &&
+        (hook.method === 'patch' || hook.method === 'update') &&
         !!hook.params.user &&
         !options.identifyUserProps.some(ensureFieldHasChanged(hook.data, hook.params.user))
       ) {
