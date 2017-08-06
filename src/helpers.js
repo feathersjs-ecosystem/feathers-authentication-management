@@ -39,8 +39,13 @@ const randomBytes = len => new Promise((resolve, reject) => {
 });
 
 const randomDigits = len => {
-  const str = Math.random().toString() + Array(len + 1).join('0');
-  return str.substr(2, len);
+  let str = '';
+
+  while (str.length < len) {
+    str += parseInt('0x' + crypto.randomBytes(4).toString('hex')).toString();
+  }
+
+  return str.substr(0, len);
 };
 
 const getLongToken = len => randomBytes(len);
