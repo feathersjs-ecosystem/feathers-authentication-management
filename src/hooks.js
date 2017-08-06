@@ -47,7 +47,7 @@ module.exports.isVerified = () => hook => {
   }
 };
 
-module.exports.removeVerification = ifReturnTokens => (hook) => {
+module.exports.removeVerification = ifReturnTokens => hook => {
   checkContext(hook, 'after');
   const user = hook.result || {};
 
