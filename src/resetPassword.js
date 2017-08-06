@@ -36,12 +36,18 @@ function resetPassword (options, query, tokens, password) {
   const users = options.app.service(options.service);
   const usersIdName = users.id;
   const {
-    sanitizeUserForClient
+    sanitizeUserForClient,
+    skipIsVerifiedCheck
   } = options;
+
+  const checkProps = ['resetNotExpired'];
+  if (!skipIsVerifiedCheck) {
+    checkProps.push('isVerified');
+  }
 
   return Promise.all([
     users.find({ query })
-      .then(data => getUserData(data, ['isVerified', 'resetNotExpired'])),
+      .then(data => getUserData(data, checkProps)),
     hashPassword(options.app, password)
   ])
     .then(([user, hashedPassword]) => {
