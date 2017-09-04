@@ -57,6 +57,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
+              console.log(`err`, err)
               assert.strictEqual(err, null, 'err code set');
               done();
             });
@@ -254,6 +255,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
+              console.log(`err`, err)
               assert.strictEqual(err, null, 'err code set');
               done();
             });
