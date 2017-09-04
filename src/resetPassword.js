@@ -9,7 +9,9 @@ const {
   ensureObjPropsValid,
   ensureValuesAreStrings,
   hashPassword,
-  notifier
+  notifier,
+  comparePasswords,
+  deconstructId
 } = require('./helpers');
 
 module.exports.resetPwdWithLongToken = function (options, resetToken, password) {
@@ -45,13 +47,26 @@ function resetPassword (options, query, tokens, password) {
     checkProps.push('isVerified');
   }
 
+  var id;
+
+  if (tokens.resetToken) {
+    id = deconstructId(tokens.resetToken);
+  } else if (tokens.resetShortToken) {
+    id = deconstructId(tokens.resetShortToken);
+  } else {
+    return Promise.reject(new errors.BadRequest('resetToken or resetShortToken is missing'));
+  }
+
   return Promise.all([
-    users.find({ query })
+    users.get(id)
       .then(data => getUserData(data, checkProps)),
     hashPassword(options.app, password)
   ])
-    .then(([user, hashedPassword]) => {
-      if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
+    .then(async ([user, hashedPassword]) => {
+      if (await !Object.keys(tokens).every(async (key) => {
+        const answer = await comparePasswords(tokens[key], user[key]);
+        return answer;
+      })) {
         return patchUser(user, {
           resetToken: null,
           resetShortToken: null,

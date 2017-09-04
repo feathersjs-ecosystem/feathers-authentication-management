@@ -44,7 +44,7 @@ const usersDb = [
         });
   
         it('verifies valid token', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
     
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -67,7 +67,7 @@ const usersDb = [
         });
 
         it('user is sanitized', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -89,7 +89,7 @@ const usersDb = [
         });
 
         it('handles multiple user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -111,7 +111,7 @@ const usersDb = [
         });
 
         it('requires user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -129,7 +129,7 @@ const usersDb = [
         });
 
         it('throws on non-configured user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -241,7 +241,7 @@ const usersDb = [
         });
   
         it('verifies valid token', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
     
           authManagement.create({

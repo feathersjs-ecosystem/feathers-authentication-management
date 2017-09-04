@@ -42,7 +42,7 @@ const usersDb = [
         });
 
         it('verifies valid token', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
@@ -63,7 +63,7 @@ const usersDb = [
         });
 
         it('user is sanitized', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
@@ -83,7 +83,7 @@ const usersDb = [
         });
 
         it('error on unverified user', (done) => {
-          const resetToken = '222';
+          const resetToken = 'd___222';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
             (err, user) => {
 
@@ -100,7 +100,7 @@ const usersDb = [
         });
 
         it('error on expired token', (done) => {
-          const resetToken = '111';
+          const resetToken = 'c___111';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
@@ -114,7 +114,7 @@ const usersDb = [
         });
 
         it('error on token not found', (done) => {
-          const resetToken = '999';
+          const resetToken = 'a___999';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
@@ -147,7 +147,7 @@ const usersDb = [
         });
   
         it('verifies valid token', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
     
           authManagement.create({

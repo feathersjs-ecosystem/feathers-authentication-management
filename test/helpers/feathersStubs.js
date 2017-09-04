@@ -62,6 +62,17 @@ module.exports.users = function users (app, usersDb, nonPaginated, idProp = '_id
           : { total: data.length, data });
       });
     },
+    get (id) { // always use as a Promise
+      const index = usersDb.findIndex(user1 => user1[idProp] === id);
+
+      if (index === -1) {
+        return Promise.reject(new Error(`users.get ${idProp}=${id} not found.`));
+      }
+
+      debug('/users get: %d %o', usersDb[index], id);
+
+      return Promise.resolve(usersDb[index]);
+    },
     update (id, user, params, cb) { // use with promise or  callback
       debug('/users update: %s %o %o', id, user, params);
       const index = usersDb.findIndex(user1 => user1[idProp] === id);
