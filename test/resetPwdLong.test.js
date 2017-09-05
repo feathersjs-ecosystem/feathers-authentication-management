@@ -13,13 +13,34 @@ const SpyOn = require('./helpers/basicSpy');
 // user DB
 
 const now = Date.now();
-const usersDb = [
-  // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + 200000 },
-  { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
-  { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - 200000 },
-  { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 },
-];
+const usersDbPromise = new Promise((resolve, reject) => {
+
+  var app = feathersStubs.app();
+
+  var users = [
+    // The added time interval must be longer than it takes to run ALL the tests
+    { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + 200000 },
+    { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
+    { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - 200000 },
+    { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 },
+  ];
+
+  var promises = [];
+  
+  users.forEach(item => {
+    if(item.resetToken) {
+      promises.push(
+        hashPassword(app, item.resetToken)
+          .then(saveHash(item, 'resetToken'))
+      );
+    }
+  });
+
+  Promise.all(promises).then(function() {
+    resolve(users);
+  });
+
+});
 
 // Tests
 ['_id', 'id'].forEach(idType => {
@@ -36,25 +57,13 @@ const usersDb = [
         const password = '123456';
 
         beforeEach((done) => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          authManagementService().call(app); // define and attach authManagement service
-          authManagement = app.service('authManagement'); // get handle to authManagement
-
-          var promises = [];
-
-          db.forEach(item => {
-            if(item.resetToken) {
-              promises.push(
-                hashPassword(app, item.resetToken)
-                  .then(saveHash(item, 'resetToken'))
-              );
-            }
-          });
-
-          Promise.all(promises).then(function() {
-            done()
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            authManagementService().call(app); // define and attach authManagement service
+            authManagement = app.service('authManagement'); // get handle to authManagement
+            done();
           });
         });
 
@@ -154,27 +163,16 @@ const usersDb = [
         const password = '123456';
 
         beforeEach((done) => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          spyNotifier = new SpyOn(notifier);
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            spyNotifier = new SpyOn(notifier);
 
-          authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
-          authManagement = app.service('authManagement'); // get handle to authManagement
+            authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
+            authManagement = app.service('authManagement'); // get handle to authManagement
 
-          var promises = [];
-
-          db.forEach(item => {
-            if(item.resetToken) {
-              promises.push(
-                hashPassword(app, item.resetToken)
-                  .then(saveHash(item, 'resetToken'))
-              );
-            }
-          });
-
-          Promise.all(promises).then(function() {
-            done()
+            done();
           });
         });
   
