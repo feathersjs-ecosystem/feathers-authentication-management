@@ -57,7 +57,6 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              console.log(`err`, err)
               assert.strictEqual(err, null, 'err code set');
               done();
             });
@@ -255,7 +254,6 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              console.log(`err`, err)
               assert.strictEqual(err, null, 'err code set');
               done();
             });
@@ -278,7 +276,7 @@ function makeDateTime(options1) {
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {
-  delta = delta || 1000;
+  delta = delta || 1500;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }
