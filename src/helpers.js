@@ -26,7 +26,13 @@ const hashPassword = (app1, password) => {
 
 var concatIDAndHash = (id, token) => `${id}___${token}`;
 
-var deconstructId = token => token.slice(0, token.indexOf('___'));
+var deconstructId = token => {
+  if (token.indexOf('___') === -1) {
+    throw new errors.BadRequest('Token is not in the correct format.',
+      { errors: { $className: 'badParams' } });
+  }
+  return token.slice(0, token.indexOf('___'));
+};
 
 const comparePasswords = (oldPassword, password, getError) => new Promise((resolve, reject) => {
   bcrypt.compare(oldPassword, password, (err, data1) => {
