@@ -1,7 +1,6 @@
 {
   "plugins": [ 
-    "add-module-exports", 
-    "transform-async-to-generator" 
+    "add-module-exports" 
   ],
   "presets": [ "es2015" ]
 }

@@ -44,7 +44,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
     )
     .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions).then(() => user))
     .then(user => Promise.all([
-      Promise.resolve(user),
+      user,
       hashPassword(options.app, user.resetToken),
       hashPassword(options.app, user.resetShortToken)
     ])

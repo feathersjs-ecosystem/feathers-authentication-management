@@ -5,6 +5,8 @@ no-unused-vars: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
+const { saveHash } = require('./../test/helpers/index');
+const { hashPassword } = require('../src/helpers')
 const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
@@ -13,10 +15,10 @@ const SpyOn = require('./helpers/basicSpy');
 const now = Date.now();
 const usersDb = [
   // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', isVerified: true, resetToken: '000', resetExpires: now + 200000 },
+  { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + 200000 },
   { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
-  { _id: 'c', email: 'c', isVerified: true, resetToken: '111', resetExpires: now - 200000 },
-  { _id: 'd', email: 'd', isVerified: false, resetToken: '222', resetExpires: now - 200000 },
+  { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - 200000 },
+  { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 },
 ];
 
 // Tests
@@ -33,12 +35,27 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
+        beforeEach((done) => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           authManagementService().call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
+
+          var promises = [];
+
+          db.forEach(item => {
+            if(item.resetToken) {
+              promises.push(
+                hashPassword(app, item.resetToken)
+                  .then(saveHash(item, 'resetToken'))
+              );
+            }
+          });
+
+          Promise.all(promises).then(function() {
+            done()
+          });
         });
 
         it('verifies valid token', (done) => {
@@ -136,7 +153,7 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
+        beforeEach((done) => {
           db = clone(usersDb);
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
@@ -144,6 +161,21 @@ const usersDb = [
 
           authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
           authManagement = app.service('authManagement'); // get handle to authManagement
+
+          var promises = [];
+
+          db.forEach(item => {
+            if(item.resetToken) {
+              promises.push(
+                hashPassword(app, item.resetToken)
+                  .then(saveHash(item, 'resetToken'))
+              );
+            }
+          });
+
+          Promise.all(promises).then(function() {
+            done()
+          });
         });
   
         it('verifies valid token', (done) => {

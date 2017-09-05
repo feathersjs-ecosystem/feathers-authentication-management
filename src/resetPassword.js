@@ -62,11 +62,16 @@ function resetPassword (options, query, tokens, password) {
       .then(data => getUserData(data, checkProps)),
     hashPassword(options.app, password)
   ])
-    .then(async ([user, hashedPassword]) => {
-      if (await !Object.keys(tokens).every(async (key) => {
-        const answer = await comparePasswords(tokens[key], user[key]);
-        return answer;
-      })) {
+    .then(([user, hashPassword]) => {
+      let promises = [];
+
+      Object.keys(tokens).forEach((key) => {
+        promises.push(comparePasswords(tokens[key], user[key], () => new errors.BadRequest('Reset Token is incorrect.')));
+      });
+
+      return Promise.all(promises).then(values => {
+        return [user, hashPassword];
+      }).catch(reason => {
         return patchUser(user, {
           resetToken: null,
           resetShortToken: null,
@@ -76,8 +81,9 @@ function resetPassword (options, query, tokens, password) {
             throw new errors.BadRequest('Invalid token. Get for a new one. (authManagement)',
               { errors: { $className: 'badParam' } });
           });
-      }
-
+      });
+    })
+    .then(([user, hashedPassword]) => {
       return patchUser(user, {
         password: hashedPassword,
         resetToken: null,
