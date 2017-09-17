@@ -9,7 +9,9 @@ const {
   ensureObjPropsValid,
   ensureValuesAreStrings,
   hashPassword,
-  notifier
+  notifier,
+  comparePasswords,
+  deconstructId
 } = require('./helpers');
 
 module.exports.resetPwdWithLongToken = function (options, resetToken, password) {
@@ -45,13 +47,31 @@ function resetPassword (options, query, tokens, password) {
     checkProps.push('isVerified');
   }
 
+  var id;
+
+  if (tokens.resetToken) {
+    id = deconstructId(tokens.resetToken);
+  } else if (tokens.resetShortToken) {
+    id = deconstructId(tokens.resetShortToken);
+  } else {
+    return Promise.reject(new errors.BadRequest('resetToken or resetShortToken is missing'));
+  }
+
   return Promise.all([
-    users.find({ query })
+    users.get(id)
       .then(data => getUserData(data, checkProps)),
     hashPassword(options.app, password)
   ])
-    .then(([user, hashedPassword]) => {
-      if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
+    .then(([user, hashPassword]) => {
+      let promises = [];
+
+      Object.keys(tokens).forEach((key) => {
+        promises.push(comparePasswords(tokens[key], user[key], () => new errors.BadRequest('Reset Token is incorrect.')));
+      });
+
+      return Promise.all(promises).then(values => {
+        return [user, hashPassword];
+      }).catch(reason => {
         return patchUser(user, {
           resetToken: null,
           resetShortToken: null,
@@ -61,8 +81,9 @@ function resetPassword (options, query, tokens, password) {
             throw new errors.BadRequest('Invalid token. Get for a new one. (authManagement)',
               { errors: { $className: 'badParam' } });
           });
-      }
-
+      });
+    })
+    .then(([user, hashedPassword]) => {
       return patchUser(user, {
         password: hashedPassword,
         resetToken: null,

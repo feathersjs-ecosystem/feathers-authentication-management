@@ -5,19 +5,42 @@ no-unused-vars: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
+const { saveHash } = require('./../test/helpers/index');
+const { hashPassword } = require('../src/helpers')
 const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB
 
 const now = Date.now();
-const usersDb = [
-  // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', isVerified: true, resetToken: '000', resetExpires: now + 200000 },
-  { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
-  { _id: 'c', email: 'c', isVerified: true, resetToken: '111', resetExpires: now - 200000 },
-  { _id: 'd', email: 'd', isVerified: false, resetToken: '222', resetExpires: now - 200000 },
-];
+const usersDbPromise = new Promise((resolve, reject) => {
+
+  var app = feathersStubs.app();
+
+  var users = [
+    // The added time interval must be longer than it takes to run ALL the tests
+    { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + 200000 },
+    { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
+    { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - 200000 },
+    { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 },
+  ];
+
+  var promises = [];
+  
+  users.forEach(item => {
+    if(item.resetToken) {
+      promises.push(
+        hashPassword(app, item.resetToken)
+          .then(saveHash(item, 'resetToken'))
+      );
+    }
+  });
+
+  Promise.all(promises).then(function() {
+    resolve(users);
+  });
+
+});
 
 // Tests
 ['_id', 'id'].forEach(idType => {
@@ -33,16 +56,19 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          authManagementService().call(app); // define and attach authManagement service
-          authManagement = app.service('authManagement'); // get handle to authManagement
+        beforeEach((done) => {
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            authManagementService().call(app); // define and attach authManagement service
+            authManagement = app.service('authManagement'); // get handle to authManagement
+            done();
+          });
         });
 
         it('verifies valid token', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
@@ -63,7 +89,7 @@ const usersDb = [
         });
 
         it('user is sanitized', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
@@ -83,7 +109,7 @@ const usersDb = [
         });
 
         it('error on unverified user', (done) => {
-          const resetToken = '222';
+          const resetToken = 'd___222';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
             (err, user) => {
 
@@ -100,7 +126,7 @@ const usersDb = [
         });
 
         it('error on expired token', (done) => {
-          const resetToken = '111';
+          const resetToken = 'c___111';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
@@ -114,7 +140,7 @@ const usersDb = [
         });
 
         it('error on token not found', (done) => {
-          const resetToken = '999';
+          const resetToken = 'a___999';
           authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
@@ -136,18 +162,22 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          spyNotifier = new SpyOn(notifier);
+        beforeEach((done) => {
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            spyNotifier = new SpyOn(notifier);
 
-          authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
-          authManagement = app.service('authManagement'); // get handle to authManagement
+            authManagementService({ notifier: spyNotifier.callWith, testMode: true }).call(app);
+            authManagement = app.service('authManagement'); // get handle to authManagement
+
+            done();
+          });
         });
   
         it('verifies valid token', (done) => {
-          const resetToken = '000';
+          const resetToken = 'a___000';
           const i = 0;
     
           authManagement.create({

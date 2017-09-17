@@ -5,19 +5,42 @@ no-unused-vars: 0 */
 
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
+const { saveHash } = require('./../test/helpers/index');
+const { hashPassword } = require('../src/helpers')
 const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB
 
 const now = Date.now();
-const usersDb = [
-  // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: '00099', resetExpires: now + 200000 },
-  { _id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
-  { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: '11199', resetExpires: now - 200000 },
-  { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: '22299', resetExpires: now - 200000 },
-];
+const usersDbPromise = new Promise((resolve, reject) => {
+
+  var app = feathersStubs.app();
+
+  var users = [
+    // The added time interval must be longer than it takes to run ALL the tests
+    { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: 'a___00099', resetExpires: now + 200000 },
+    { _id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
+    { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: 'c___11199', resetExpires: now - 200000 },
+    { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: 'd___22299', resetExpires: now - 200000 },
+  ];
+
+  var promises = [];
+  
+  users.forEach(item => {
+    if(item.resetShortToken) {
+      promises.push(
+        hashPassword(app, item.resetShortToken)
+          .then(saveHash(item, 'resetShortToken'))
+      );
+    }
+  });
+
+  Promise.all(promises).then(function() {
+    resolve(users)
+  });
+
+});
 
 // Tests
 ['_id', 'id'].forEach(idType => {
@@ -33,18 +56,21 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          authManagementService({
-            identifyUserProps: ['email', 'username']
-          }).call(app); // define and attach authManagement service
-          authManagement = app.service('authManagement'); // get handle to authManagement
+        beforeEach((done) => {
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            authManagementService({
+              identifyUserProps: ['email', 'username']
+            }).call(app); // define and attach authManagement service
+            authManagement = app.service('authManagement'); // get handle to authManagement
+            done();
+          })
         });
   
         it('verifies valid token', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
     
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -67,7 +93,7 @@ const usersDb = [
         });
 
         it('user is sanitized', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -89,7 +115,7 @@ const usersDb = [
         });
 
         it('handles multiple user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -111,7 +137,7 @@ const usersDb = [
         });
 
         it('requires user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -129,7 +155,7 @@ const usersDb = [
         });
 
         it('throws on non-configured user ident', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -226,22 +252,25 @@ const usersDb = [
         var authManagement;
         const password = '123456';
 
-        beforeEach(() => {
-          db = clone(usersDb);
-          app = feathersStubs.app();
-          users = feathersStubs.users(app, db, ifNonPaginated, idType);
-          spyNotifier = new SpyOn(notifier);
+        beforeEach((done) => {
+          usersDbPromise.then((usersDb) => {
+            db = clone(usersDb);
+            app = feathersStubs.app();
+            users = feathersStubs.users(app, db, ifNonPaginated, idType);
+            spyNotifier = new SpyOn(notifier);
 
-          authManagementService({
-            // maybe reset identifyUserProps
-            notifier: spyNotifier.callWith,
-            testMode: true
-          }).call(app);
-          authManagement = app.service('authManagement'); // get handle to authManagement
+            authManagementService({
+              // maybe reset identifyUserProps
+              notifier: spyNotifier.callWith,
+              testMode: true
+            }).call(app);
+            authManagement = app.service('authManagement'); // get handle to authManagement
+            done();
+          })
         });
   
         it('verifies valid token', (done) => {
-          const resetShortToken = '00099';
+          const resetShortToken = 'a___00099';
           const i = 0;
     
           authManagement.create({

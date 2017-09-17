@@ -24,6 +24,16 @@ const hashPassword = (app1, password) => {
     .then(hook1 => hook1.data.password);
 };
 
+var concatIDAndHash = (id, token) => `${id}___${token}`;
+
+var deconstructId = token => {
+  if (token.indexOf('___') === -1) {
+    throw new errors.BadRequest('Token is not in the correct format.',
+      { errors: { $className: 'badParams' } });
+  }
+  return token.slice(0, token.indexOf('___'));
+};
+
 const comparePasswords = (oldPassword, password, getError) => new Promise((resolve, reject) => {
   bcrypt.compare(oldPassword, password, (err, data1) => {
     if (err || !data1) {
@@ -73,7 +83,7 @@ const getUserData = (data, checks) => {
       { errors: { $className: 'badParams' } });
   }
 
-  const users = Array.isArray(data) ? data : data.data;
+  const users = Array.isArray(data) ? data : data.data || [ data ];
   const user = users[0];
 
   if (users.length !== 1) {
@@ -196,6 +206,8 @@ const notifier = (optionsNotifier, type, user, notifierOptions) => {
 
 module.exports = {
   hashPassword,
+  concatIDAndHash,
+  deconstructId,
   comparePasswords,
   randomBytes: (...args) => randomBytes(...args), // for testing, make safe from hacking
   randomDigits: (...args) => randomDigits(...args), // for testing, make safe from hacking

@@ -49,9 +49,9 @@ const usersDb = [
   
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
-              assert.equal(db[i].resetToken.length, 30, 'reset token wrong length');
-              assert.equal(db[i].resetShortToken.length, 6, 'reset short token wrong length');
-              assert.match(db[i].resetShortToken, /^[0-9]+$/);
+              assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
+              assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
+              assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
   
               done();
@@ -136,9 +136,9 @@ const usersDb = [
   
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
-              assert.equal(db[i].resetToken.length, 20, 'reset token wrong length');
-              assert.equal(db[i].resetShortToken.length, 9, 'reset short token wrong length');
-              assert.match(db[i].resetShortToken, /^[0-9]+$/);
+              assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
+              assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
+              assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
   
               done();
@@ -178,9 +178,9 @@ const usersDb = [
   
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
-              assert.equal(db[i].resetToken.length, 20, 'reset token wrong length');
-              assert.equal(db[i].resetShortToken.length, 9, 'reset short token wrong length');
-              assert.notMatch(db[i].resetShortToken, /^[0-9]+$/);
+              assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
+              assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
+              assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
   
               done();
@@ -228,11 +228,23 @@ const usersDb = [
       
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
-              assert.equal(db[i].resetToken.length, 30, 'reset token wrong length');
+              assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
+              assert.match(db[i].resetToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
+
+              var expected = spyNotifier.result()[0].args
+
+              expected[1] = Object.assign(
+                {}, 
+                expected[1], 
+                {
+                  resetToken: db[i].resetToken,
+                  resetShortToken: db[i].resetShortToken
+                }
+              )
       
               assert.deepEqual(
-                spyNotifier.result()[0].args,
+                expected,
                 [
                   'sendResetPwd',
                   sanitizeUserForEmail(db[i]),
@@ -264,7 +276,7 @@ function makeDateTime(options1) {
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {
-  delta = delta || 500;
+  delta = delta || 1500;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }

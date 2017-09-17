@@ -7,8 +7,10 @@ const {
   getUserData,
   ensureObjPropsValid,
   getLongToken,
+  hashPassword,
   getShortToken,
-  notifier
+  notifier,
+  concatIDAndHash
 } = require('./helpers');
 
 module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
@@ -34,13 +36,26 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
       ]);
     })
     .then(([user, longToken, shortToken]) =>
-      patchUser(user, {
+      Object.assign(user, {
         resetExpires: Date.now() + options.resetDelay,
+        resetToken: concatIDAndHash(user[usersIdName], longToken),
+        resetShortToken: concatIDAndHash(user[usersIdName], shortToken)
+      })
+    )
+    .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions).then(() => user))
+    .then(user => Promise.all([
+      user,
+      hashPassword(options.app, user.resetToken),
+      hashPassword(options.app, user.resetShortToken)
+    ])
+    )
+    .then(([ user, longToken, shortToken ]) =>
+      patchUser(user, {
+        resetExpires: user.resetExpires,
         resetToken: longToken,
         resetShortToken: shortToken
       })
     )
-    .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions))
     .then(user => sanitizeUserForClient(user));
 
   function patchUser (user, patchToUser) {
