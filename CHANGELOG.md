@@ -1,5 +1,22 @@
 # Change Log
 
+## [v1.0.0](https://github.com/feathersjs/feathers-authentication-management/tree/v1.0.0) (2017-09-17)
+[Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.7.0...v1.0.0)
+
+**Implemented enhancements:**
+
+- Securely encrypts reset token before storing in the database [\#68](https://github.com/feathersjs/feathers-authentication-management/pull/68) ([codingfriend1](https://github.com/codingfriend1))
+
+**Closed issues:**
+
+- Error on verification: size must be a number \>= 0 [\#70](https://github.com/feathersjs/feathers-authentication-management/issues/70)
+- Passwordless Example [\#67](https://github.com/feathersjs/feathers-authentication-management/issues/67)
+- Question:  How to use sendResetPwd when find is authenticated in users service [\#66](https://github.com/feathersjs/feathers-authentication-management/issues/66)
+
+**Merged pull requests:**
+
+- Update debug to the latest version 🚀 [\#65](https://github.com/feathersjs/feathers-authentication-management/pull/65) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
+
 ## [v0.7.0](https://github.com/feathersjs/feathers-authentication-management/tree/v0.7.0) (2017-08-06)
 [Full Changelog](https://github.com/feathersjs/feathers-authentication-management/compare/v0.5.0...v0.7.0)
 
@@ -52,7 +69,7 @@
 **Implemented enhancements:**
 
 - added `sanitizeUserForClient` to options [\#47](https://github.com/feathersjs/feathers-authentication-management/pull/47) ([markacola](https://github.com/markacola))
-- Update docs for addVerification hook [\#34](https://github.com/feathersjs/feathers-authentication-management/pull/34) ([z-a-h](https://github.com/z-a-h))
+- Update docs for addVerification hook [\#34](https://github.com/feathersjs/feathers-authentication-management/pull/34) ([zacaytion](https://github.com/zacaytion))
 - Docs fixes [\#30](https://github.com/feathersjs/feathers-authentication-management/pull/30) ([shawnlauzon](https://github.com/shawnlauzon))
 - Edited docs to say example uses auth 1.0 [\#28](https://github.com/feathersjs/feathers-authentication-management/pull/28) ([eddyystop](https://github.com/eddyystop))
 
