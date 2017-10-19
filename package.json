@@ -59,6 +59,7 @@
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "debug": "^3.0.0",
+    "crypto": "^1.0.1",
     "feathers-authentication-local": "^0.4.0",
     "feathers-errors": "^2.7.1",
     "feathers-hooks-common": "^3.0.0"
