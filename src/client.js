@@ -9,7 +9,7 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
 
   const authManagement = app.service('authManagement');
 
-  this.checkUnique = (identifyUser, ownId, ifErrMsg,) => authManagement.create({
+  this.checkUnique = (identifyUser, ownId, ifErrMsg) => authManagement.create({
     action: 'checkUnique',
     value: identifyUser,
     ownId,
@@ -53,7 +53,7 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
     value: { user: identifyUser, oldPassword, password }
   }, {});
 
-  this.identityChange = (password, changesIdentifyUser, identifyUser, cb) => authManagement.create({
+  this.identityChange = (password, changesIdentifyUser, identifyUser) => authManagement.create({
     action: 'identityChange',
     value: { user: identifyUser, password, changes: changesIdentifyUser }
   }, {});
