@@ -9,54 +9,54 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
 
   const authManagement = app.service('authManagement');
 
-  this.checkUnique = (identifyUser, ownId, ifErrMsg, cb) => authManagement.create({
+  this.checkUnique = (identifyUser, ownId, ifErrMsg,) => authManagement.create({
     action: 'checkUnique',
     value: identifyUser,
     ownId,
     meta: { noErrMsg: ifErrMsg }
-  }, {}, cb);
+  }, {});
 
-  this.resendVerifySignup = (identifyUser, notifierOptions, cb) => authManagement.create({
+  this.resendVerifySignup = (identifyUser, notifierOptions) => authManagement.create({
     action: 'resendVerifySignup',
     value: identifyUser,
     notifierOptions
-  }, {}, cb);
+  }, {});
 
-  this.verifySignupLong = (verifyToken, cb) => authManagement.create({
+  this.verifySignupLong = (verifyToken) => authManagement.create({
     action: 'verifySignupLong',
     value: verifyToken
-  }, {}, cb);
+  }, {});
 
-  this.verifySignupShort = (verifyShortToken, identifyUser, cb) => authManagement.create({
+  this.verifySignupShort = (verifyShortToken, identifyUser) => authManagement.create({
     action: 'verifySignupShort',
     value: { user: identifyUser, token: verifyShortToken }
-  }, {}, cb);
+  }, {});
 
-  this.sendResetPwd = (identifyUser, notifierOptions, cb) => authManagement.create({
+  this.sendResetPwd = (identifyUser, notifierOptions) => authManagement.create({
     action: 'sendResetPwd',
     value: identifyUser,
     notifierOptions
-  }, {}, cb);
+  }, {});
 
-  this.resetPwdLong = (resetToken, password, cb) => authManagement.create({
+  this.resetPwdLong = (resetToken, password) => authManagement.create({
     action: 'resetPwdLong',
     value: { token: resetToken, password }
-  }, {}, cb);
+  }, {});
 
-  this.resetPwdShort = (resetShortToken, identifyUser, password, cb) => authManagement.create({
+  this.resetPwdShort = (resetShortToken, identifyUser, password) => authManagement.create({
     action: 'resetPwdShort',
     value: { user: identifyUser, token: resetShortToken, password }
-  }, {}, cb);
+  }, {});
 
-  this.passwordChange = (oldPassword, password, identifyUser, cb) => authManagement.create({
+  this.passwordChange = (oldPassword, password, identifyUser) => authManagement.create({
     action: 'passwordChange',
     value: { user: identifyUser, oldPassword, password }
-  }, {}, cb);
+  }, {});
 
   this.identityChange = (password, changesIdentifyUser, identifyUser, cb) => authManagement.create({
     action: 'identityChange',
     value: { user: identifyUser, password, changes: changesIdentifyUser }
-  }, {}, cb);
+  }, {});
 
   this.authenticate = (email, password, cb) => {
     let cbCalled = false;
