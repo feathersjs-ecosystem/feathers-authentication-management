@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.0.3](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.3) (2017-12-30)
+[Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.2...v1.0.3)
+
+**Closed issues:**
+
+- how to pass hook data to the notifier [\#82](https://github.com/feathers-plus/feathers-authentication-management/issues/82)
+- resendVerifySignup failed [\#80](https://github.com/feathers-plus/feathers-authentication-management/issues/80)
+- After resetting password user not able to login [\#78](https://github.com/feathers-plus/feathers-authentication-management/issues/78)
+
 ## [v1.0.2](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.2) (2017-11-28)
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.1...v1.0.2)
 
