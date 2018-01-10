@@ -39,7 +39,7 @@ describe('hook:remove verification', () => {
     assert.notProperty(user, 'verifyChanges');
   });
 
-  it('works with unverified used', () => {
+  it('works with unverified user', () => {
     hookIn.result.isVerified = false;
 
     assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
@@ -74,7 +74,22 @@ describe('hook:remove verification', () => {
     assert.property(user, 'verifyChanges');
   });
 
-  it('throws with damaged hook', () => {
+  it('works with multiple verified user', () => {
+    hookIn.result = [hookIn.result, hookIn.result]
+    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+
+    hookIn.result.forEach(user => {
+      assert.property(user, 'isVerified');
+      assert.equal(user.isVerified, true);
+      assert.notProperty(user, 'verifyToken');
+      assert.notProperty(user, 'verifyExpires');
+      assert.notProperty(user, 'resetToken');
+      assert.notProperty(user, 'resetExpires');
+      assert.notProperty(user, 'verifyChanges');
+    })
+  });
+
+  it('does not throw with damaged hook', () => {
     delete hookIn.result;
 
     assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
