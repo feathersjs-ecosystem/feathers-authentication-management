@@ -108,12 +108,12 @@ const getUserData = (data, checks) => {
       { errors: { $className: 'isVerified' } });
   }
 
-  if (checks.includes('verifyNotExpired') && user.verifyExpires < Date.now()) {
+  if (checks.includes('verifyNotExpired') && user.verifyExpires < new Date()) {
     throw new errors.BadRequest('Verification token has expired.',
       { errors: { $className: 'verifyExpired' } });
   }
 
-  if (checks.includes('resetNotExpired') && user.resetExpires < Date.now()) {
+  if (checks.includes('resetNotExpired') && user.resetExpires < new Date()) {
     throw new errors.BadRequest('Password reset token has expired.',
       { errors: { $className: 'resetExpired' } });
   }

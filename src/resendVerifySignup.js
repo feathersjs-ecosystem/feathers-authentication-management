@@ -40,7 +40,7 @@ module.exports = function resendVerifySignup (options, identifyUser, notifierOpt
     .then(([user, longToken, shortToken]) =>
       patchUser(user, {
         isVerified: false,
-        verifyExpires: Date.now() + options.delay,
+        verifyExpires: new Date(Date.now() + options.delay),
         verifyToken: longToken,
         verifyShortToken: shortToken
       })

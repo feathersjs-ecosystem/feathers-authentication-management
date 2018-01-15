@@ -9,7 +9,7 @@ const feathersStubs = require('./../test/helpers/feathersStubs');
 
 const now = Date.now();
 const usersDb = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: new Date(now + 50000) },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
 ];
 

@@ -16,7 +16,7 @@ const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
 
 const now = Date.now();
 const usersDb = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 50000, username: 'Doe' },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: new Date(now + 50000), username: 'Doe' },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { _id: 'c', email: 'c', isVerified: true, verifyToken: '999', verifyShortToken: '99900', verifyExpires: null }, // impossible
 ];
@@ -392,7 +392,7 @@ function notifier(action, user, notifierOptions, newEmail) {
 
 function makeDateTime(options1) {
   options1 = options1 || {};
-  return Date.now() + (options1.delay || defaultVerifyDelay);
+  return new Date(Date.now() + (options1.delay || defaultVerifyDelay));
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {

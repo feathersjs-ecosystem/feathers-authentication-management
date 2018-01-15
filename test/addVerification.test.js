@@ -375,7 +375,7 @@ describe('hook:addVerification', () => {
 
 function makeDateTime(options1) {
   options1 = options1 || {};
-  return Date.now() + (options1.delay || defaultVerifyDelay);
+  return new Date(Date.now() + (options1.delay || defaultVerifyDelay));
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {

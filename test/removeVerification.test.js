@@ -18,10 +18,10 @@ describe('hook:remove verification', () => {
         password: '0000000000',
         isVerified: true,
         verifyToken: '000',
-        verifyExpires: Date.now(),
+        verifyExpires: new Date(),
         verifyChanges: {},
         resetToken: '000',
-        resetExpires: Date.now(),
+        resetExpires: new Date(),
       },
     };
   });

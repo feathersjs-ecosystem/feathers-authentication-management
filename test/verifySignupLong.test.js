@@ -13,11 +13,11 @@ const SpyOn = require('./helpers/basicSpy');
 const now = Date.now();
 const usersDb = [
   // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 200000 },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: new Date(now + 200000) },
   { _id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
-  { _id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - 200000 },
-  { _id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - 200000 },
-  { _id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + 200000,
+  { _id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: new Date(now - 200000) },
+  { _id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: new Date(now - 200000) },
+  { _id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: new Date(now + 200000),
     verifyChanges: { cellphone: '800' } },
 ];
 

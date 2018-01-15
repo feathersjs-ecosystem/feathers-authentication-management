@@ -49,7 +49,7 @@ function verifySignup (options, query, tokens) {
           });
       }
 
-      return eraseVerifyProps(user, user.verifyExpires > Date.now(), user.verifyChanges || {})
+      return eraseVerifyProps(user, user.verifyExpires > new Date(), user.verifyChanges || {})
         .then(user1 => notifier(options.notifier, 'verifySignup', user1))
         .then(user1 => sanitizeUserForClient(user1));
     });

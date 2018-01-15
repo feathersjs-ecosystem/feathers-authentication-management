@@ -41,7 +41,7 @@ module.exports = function identityChange (options, identifyUser, password, chang
     ]))
     .then(([user1, longToken, shortToken]) => {
       const patchToUser = {
-        verifyExpires: Date.now() + options.delay,
+        verifyExpires: new Date(Date.now() + options.delay),
         verifyToken: longToken,
         verifyShortToken: shortToken,
         verifyChanges: changesIdentifyUser

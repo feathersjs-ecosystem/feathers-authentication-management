@@ -14,7 +14,7 @@ const defaultResetDelay = 1000 * 60 * 60 * 2; // 2 hours
 
 const now = Date.now();
 const usersDb = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: new Date(now + 50000) },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
 ];
 
@@ -272,7 +272,7 @@ function notifier(action, user, notifierOptions, newEmail) {
 
 function makeDateTime(options1) {
   options1 = options1 || {};
-  return Date.now() + (options1.delay || defaultResetDelay);
+  return new Date(Date.now() + (options1.delay || defaultResetDelay));
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {

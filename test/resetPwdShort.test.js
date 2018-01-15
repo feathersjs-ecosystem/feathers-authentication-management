@@ -19,10 +19,10 @@ const usersDbPromise = new Promise((resolve, reject) => {
 
   var users = [
     // The added time interval must be longer than it takes to run ALL the tests
-    { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: 'a___00099', resetExpires: now + 200000 },
+    { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: 'a___00099', resetExpires: new Date(now + 200000) },
     { _id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
-    { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: 'c___11199', resetExpires: now - 200000 },
-    { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: 'd___22299', resetExpires: now - 200000 },
+    { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: 'c___11199', resetExpires: new Date(now - 200000) },
+    { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: 'd___22299', resetExpires: new Date(now - 200000) },
   ];
 
   var promises = [];

@@ -29,7 +29,7 @@ module.exports.addVerification = path => hook => {
       }
 
       hook.data.isVerified = false;
-      hook.data.verifyExpires = Date.now() + options.delay;
+      hook.data.verifyExpires = new Date(Date.now() + options.delay);
       hook.data.verifyToken = longToken;
       hook.data.verifyShortToken = shortToken;
       hook.data.verifyChanges = {};
