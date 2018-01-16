@@ -47,19 +47,19 @@ function resetPassword (options, query, tokens, password) {
     checkProps.push('isVerified');
   }
 
-  var id;
+  let userPromise;
 
   if (tokens.resetToken) {
-    id = deconstructId(tokens.resetToken);
+    let id = deconstructId(tokens.resetToken);
+    userPromise = users.get(id).then(data => getUserData(data, checkProps));
   } else if (tokens.resetShortToken) {
-    id = deconstructId(tokens.resetShortToken);
+    userPromise = users.find({query}).then(data => getUserData(data, checkProps));
   } else {
     return Promise.reject(new errors.BadRequest('resetToken or resetShortToken is missing'));
   }
 
   return Promise.all([
-    users.get(id)
-      .then(data => getUserData(data, checkProps)),
+    userPromise,
     hashPassword(options.app, password)
   ])
     .then(([user, hashPassword]) => {

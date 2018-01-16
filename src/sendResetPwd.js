@@ -39,7 +39,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
       Object.assign(user, {
         resetExpires: Date.now() + options.resetDelay,
         resetToken: concatIDAndHash(user[usersIdName], longToken),
-        resetShortToken: concatIDAndHash(user[usersIdName], shortToken)
+        resetShortToken: shortToken
       })
     )
     .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions).then(() => user))
