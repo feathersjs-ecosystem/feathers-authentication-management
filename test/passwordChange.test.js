@@ -5,7 +5,7 @@ no-param-reassign: 0, no-unused-vars: 0  */
 
 const assert = require('chai').assert;
 const bcrypt = require('bcryptjs');
-const auth = require('feathers-authentication-local').hooks;
+const auth = require('@feathersjs/authentication-local').hooks;
 
 const feathersStubs = require('./../test/helpers/feathersStubs');
 const authManagementService = require('../src/index');

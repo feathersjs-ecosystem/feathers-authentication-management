@@ -1,7 +1,7 @@
 
 /* eslint-env node */
 
-const errors = require('feathers-errors');
+const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:passwordChange');
 
 const {
