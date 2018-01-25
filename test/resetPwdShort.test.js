@@ -19,14 +19,14 @@ const usersDbPromise = new Promise((resolve, reject) => {
 
   var users = [
     // The added time interval must be longer than it takes to run ALL the tests
-    { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: 'a___00099', resetExpires: now + 200000 },
+    { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: '00099', resetExpires: now + 200000 },
     { _id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
-    { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: 'c___11199', resetExpires: now - 200000 },
-    { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: 'd___22299', resetExpires: now - 200000 },
+    { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: '11199', resetExpires: now - 200000 },
+    { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: '22299', resetExpires: now - 200000 },
   ];
 
   var promises = [];
-  
+
   users.forEach(item => {
     if(item.resetShortToken) {
       promises.push(
@@ -68,11 +68,11 @@ const usersDbPromise = new Promise((resolve, reject) => {
             done();
           })
         });
-  
+
         it('verifies valid token', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
-    
+
           authManagement.create({ action: 'resetPwdShort', value: {
             token: resetShortToken, password, user: { email: db[i].email }
           } })
@@ -93,7 +93,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
         });
 
         it('user is sanitized', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -115,7 +115,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
         });
 
         it('handles multiple user ident', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -137,7 +137,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
         });
 
         it('requires user ident', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -155,7 +155,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
         });
 
         it('throws on non-configured user ident', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
 
           authManagement.create({ action: 'resetPwdShort', value: {
@@ -268,25 +268,25 @@ const usersDbPromise = new Promise((resolve, reject) => {
             done();
           })
         });
-  
+
         it('verifies valid token', (done) => {
-          const resetShortToken = 'a___00099';
+          const resetShortToken = '00099';
           const i = 0;
-    
+
           authManagement.create({
               action: 'resetPwdShort',
               value: { token: resetShortToken, user: { email: db[i].email }, password } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
               assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
-  
+
               const hash = db[i].password;
               assert.isString(hash, 'password not a string');
               assert.equal(hash.length, 60, 'password wrong length');
-  
+
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -294,7 +294,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
                   Object.assign({}, sanitizeUserForEmail(db[i])),
                   {}
                 ]);
-  
+
               done();
             })
             .catch(err => {
