@@ -2,8 +2,8 @@
 /* global assert, describe, it */
 
 const assert = require('chai').assert;
-const feathers = require('feathers');
-const hooks = require('feathers-hooks');
+const feathers = require('@feathersjs/feathers');
+const express = require('@feathersjs/express');
 const authManagement = require('../src/index');
 const helpers = require('../src/helpers')
 
@@ -44,8 +44,13 @@ function user() {
   const app = this;
 
   app.use('/users', {
-    before: { create: authManagement.hooks.addVerification() },
     create: data => Promise.resolve(data)
+  });
+
+  const service = app.service('/users');
+
+  service.hooks({
+    before: { create: authManagement.hooks.addVerification() }
   });
 }
 
@@ -53,8 +58,13 @@ function organization() {
   const app = this;
 
   app.use('/organizations', {
-    before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
     create: data => Promise.resolve(data)
+  });
+
+  const service = app.service('/organizations');
+
+  service.hooks({
+    before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
   });
 }
 
@@ -63,9 +73,8 @@ describe('multiple services', () => {
     var app;
 
     beforeEach(() => {
-      app = feathers()
-        .configure(hooks())
-        .configure(authManagement(userMgntOptions))
+      app = express(feathers());
+      app.configure(authManagement(userMgntOptions))
         .configure(services);
     });
 
@@ -111,9 +120,8 @@ describe('multiple services', () => {
     var app;
 
     beforeEach(() => {
-      app = feathers()
-        .configure(hooks())
-        .configure(authManagement(userMgntOptions))
+      app = express(feathers());
+      app.configure(authManagement(userMgntOptions))
         .configure(authManagement(orgMgntOptions))
         .configure(services);
     });

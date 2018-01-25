@@ -1,7 +1,7 @@
 
 /* eslint no-param-reassign: 0 */
 
-const errors = require('feathers-errors');
+const errors = require('@feathersjs/errors');
 const { checkContext, getItems, replaceItems } = require('feathers-hooks-common');
 const { getLongToken, getShortToken, ensureFieldHasChanged } = require('./helpers');
 
@@ -50,11 +50,11 @@ module.exports.isVerified = () => hook => {
 module.exports.removeVerification = ifReturnTokens => hook => {
   checkContext(hook, 'after');
   // Retrieve the items from the hook
-  let users = getItems(hook)
-  if (!users) return
-  const isArray = Array.isArray(users)
-  users = (isArray ? users : [users])
-  
+  let users = getItems(hook);
+  if (!users) return;
+  const isArray = Array.isArray(users);
+  users = (isArray ? users : [users]);
+
   users.forEach(user => {
     if (!('isVerified' in user) && hook.method === 'create') {
       /* eslint-disable no-console */
@@ -75,7 +75,7 @@ module.exports.removeVerification = ifReturnTokens => hook => {
         delete user.resetShortToken;
       }
     }
-  })
+  });
   // Replace the items within the hook
-  replaceItems(hook, isArray ? users : users[0])
+  replaceItems(hook, isArray ? users : users[0]);
 };

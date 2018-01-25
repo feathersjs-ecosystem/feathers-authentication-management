@@ -1,7 +1,7 @@
 
 /* eslint-env node */
 
-const errors = require('feathers-errors');
+const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:checkUniqueness');
 
 // This module is usually called from the UI to check username, email, etc. are unique.
