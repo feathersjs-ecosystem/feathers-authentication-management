@@ -1,5 +1,18 @@
 # Change Log
 
+## [v2.0.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v2.0.0) (2018-01-25)
+[Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.3...v2.0.0)
+
+**Implemented enhancements:**
+
+- migrate to feathersjs v3 [\#89](https://github.com/feathers-plus/feathers-authentication-management/pull/89) ([lwhiteley](https://github.com/lwhiteley))
+- Fix reset password short reset token to work as advertised in the documentation [\#88](https://github.com/feathers-plus/feathers-authentication-management/pull/88) ([fiddler](https://github.com/fiddler))
+- Fix for \#55 [\#84](https://github.com/feathers-plus/feathers-authentication-management/pull/84) ([claustres](https://github.com/claustres))
+
+**Closed issues:**
+
+- Purpose of resetShortToken [\#83](https://github.com/feathers-plus/feathers-authentication-management/issues/83)
+
 ## [v1.0.3](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.3) (2017-12-30)
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.2...v1.0.3)
 
