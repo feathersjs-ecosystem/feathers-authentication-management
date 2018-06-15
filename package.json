@@ -61,7 +61,7 @@
     "@feathersjs/errors": "^3.2.1",
     "bcryptjs": "^2.3.0",
     "debug": "^3.0.0",
-    "feathers-hooks-common": "^3.0.0"
+    "feathers-hooks-common": "^4.12.0"
   },
   "devDependencies": {
     "@feathersjs/express": "^1.1.2",
