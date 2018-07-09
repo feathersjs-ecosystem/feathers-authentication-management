@@ -1,5 +1,29 @@
 # Change Log
 
+## [v2.0.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v2.0.1) (2018-07-09)
+[Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v2.0.0...v2.0.1)
+
+**Implemented enhancements:**
+
+- Rate Limit Authenticate and Reset Password Requests [\#69](https://github.com/feathers-plus/feathers-authentication-management/issues/69)
+
+**Closed issues:**
+
+- Installation issue [\#102](https://github.com/feathers-plus/feathers-authentication-management/issues/102)
+- Unexpected slashes in resetToken  [\#101](https://github.com/feathers-plus/feathers-authentication-management/issues/101)
+- can't login after change password [\#96](https://github.com/feathers-plus/feathers-authentication-management/issues/96)
+- Migration error from disallow external [\#95](https://github.com/feathers-plus/feathers-authentication-management/issues/95)
+- Setting up authManagement in Nuxt.js gives not authenticated error \(feathers-vuex\) [\#93](https://github.com/feathers-plus/feathers-authentication-management/issues/93)
+- Password hash on reset differs from account creation [\#92](https://github.com/feathers-plus/feathers-authentication-management/issues/92)
+- Documentation [\#91](https://github.com/feathers-plus/feathers-authentication-management/issues/91)
+- Possible user information leak: sendRestPwd action? [\#90](https://github.com/feathers-plus/feathers-authentication-management/issues/90)
+- authManagement:verifySignup - Method: create: users.find is not a function [\#74](https://github.com/feathers-plus/feathers-authentication-management/issues/74)
+- questions on docs [\#8](https://github.com/feathers-plus/feathers-authentication-management/issues/8)
+
+**Merged pull requests:**
+
+- migrate to featchers-common-hooks v4 [\#103](https://github.com/feathers-plus/feathers-authentication-management/pull/103) ([Anton-Nikishkin](https://github.com/Anton-Nikishkin))
+
 ## [v2.0.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v2.0.0) (2018-01-25)
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.3...v2.0.0)
 
