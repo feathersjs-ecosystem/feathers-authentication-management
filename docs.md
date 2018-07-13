@@ -247,6 +247,7 @@ authManagement.create({ action: 'identityChange',
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     password, // current password for verification
     changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+    identifyUserProps: ['email','cellphone'] // specified only if you have added extra columns (eg. cellphone) to your users table 
   },
 })
 
