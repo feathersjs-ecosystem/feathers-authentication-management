@@ -121,6 +121,21 @@ const getUserData = (data, checks) => {
   return user;
 };
 
+const getServiceParams = (originalParams, serviceParams) => {
+  return serviceParams.reduce((params, key) => {
+    params[key] = originalParams[key];
+    return params;
+  }, {});
+};
+
+const findUser = (users, query, params) => {
+  return users.find(Object.assign({ query }, params));
+};
+
+const patchUser = (users, user, data, params) => {
+  return users.patch(user[users.id], data, params).then(() => Object.assign(user, data));
+};
+
 const ensureObjPropsValid = (obj, props, allowNone) => {
   const keys = Object.keys(obj);
   const valid = keys.every(key => props.includes(key) && typeof obj[key] === 'string');
@@ -214,6 +229,9 @@ module.exports = {
   getLongToken,
   getShortToken,
   getUserData,
+  getServiceParams,
+  findUser,
+  patchUser,
   ensureObjPropsValid,
   ensureValuesAreStrings,
   ensureFieldHasChanged,

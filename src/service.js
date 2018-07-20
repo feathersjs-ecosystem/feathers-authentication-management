@@ -12,11 +12,12 @@ const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPasswo
 const passwordChange = require('./passwordChange');
 const identityChange = require('./identityChange');
 
-const { sanitizeUserForClient } = require('./helpers');
+const { sanitizeUserForClient, getServiceParams } = require('./helpers');
 
 const optionsDefault = {
   app: null,
   service: '/users', // need exactly this for test suite
+  serviceParams: [],
   path: 'authManagement',
   notifier: () => Promise.resolve(),
   longTokenLen: 15, // token's length will be twice this
@@ -42,31 +43,33 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
   options.app = app;
 
   options.app.use(options.path, {
-    create (data) {
+    create (data, params = {}) {
       debug(`service called. action=${data.action}`);
+
+      params = getServiceParams(params, options.serviceParams);
 
       switch (data.action) {
         case 'checkUnique':
-          return checkUniqueness(options, data.value, data.ownId || null, data.meta || {});
+          return checkUniqueness(options, params, data.value, data.ownId || null, data.meta || {});
         case 'resendVerifySignup':
-          return resendVerifySignup(options, data.value, data.notifierOptions);
+          return resendVerifySignup(options, params, data.value, data.notifierOptions);
         case 'verifySignupLong':
-          return verifySignupWithLongToken(options, data.value);
+          return verifySignupWithLongToken(options, params, data.value);
         case 'verifySignupShort':
-          return verifySignupWithShortToken(options, data.value.token, data.value.user);
+          return verifySignupWithShortToken(options, params, data.value.token, data.value.user);
         case 'sendResetPwd':
-          return sendResetPwd(options, data.value, data.notifierOptions);
+          return sendResetPwd(options, params, data.value, data.notifierOptions);
         case 'resetPwdLong':
-          return resetPwdWithLongToken(options, data.value.token, data.value.password);
+          return resetPwdWithLongToken(options, params, data.value.token, data.value.password);
         case 'resetPwdShort':
           return resetPwdWithShortToken(
-            options, data.value.token, data.value.user, data.value.password);
+            options, params, data.value.token, data.value.user, data.value.password);
         case 'passwordChange':
           return passwordChange(
-            options, data.value.user, data.value.oldPassword, data.value.password);
+            options, params, data.value.user, data.value.oldPassword, data.value.password);
         case 'identityChange':
           return identityChange(
-            options, data.value.user, data.value.password, data.value.changes);
+            options, params, data.value.user, data.value.password, data.value.changes);
         case 'options':
           return Promise.resolve(options);
         default:

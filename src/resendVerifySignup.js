@@ -4,6 +4,8 @@
 const debug = require('debug')('authManagement:resendVerifySignup');
 
 const {
+  findUser,
+  patchUser,
   getUserData,
   ensureObjPropsValid,
   getLongToken,
@@ -13,10 +15,9 @@ const {
 
 // {email}, {cellphone}, {verifyToken}, {verifyShortToken},
 // {email, cellphone, verifyToken, verifyShortToken}
-module.exports = function resendVerifySignup (options, identifyUser, notifierOptions) {
+module.exports = function resendVerifySignup (options, params, identifyUser, notifierOptions) {
   debug('resendVerifySignup', identifyUser);
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
   const {
     sanitizeUserForClient
   } = options;
@@ -31,25 +32,20 @@ module.exports = function resendVerifySignup (options, identifyUser, notifierOpt
     })
     .then(query =>
       Promise.all([
-        users.find({ query })
+        findUser(users, query, params)
           .then(data => getUserData(data, ['isNotVerified'])),
         getLongToken(options.longTokenLen),
         getShortToken(options.shortTokenLen, options.shortTokenDigits)
       ])
     )
     .then(([user, longToken, shortToken]) =>
-      patchUser(user, {
+      patchUser(users, user, {
         isVerified: false,
         verifyExpires: Date.now() + options.delay,
         verifyToken: longToken,
         verifyShortToken: shortToken
-      })
+      }, params)
     )
     .then(user => notifier(options.notifier, 'resendVerifySignup', user, notifierOptions))
     .then(user => sanitizeUserForClient(user));
-
-  function patchUser (user, patchToUser) {
-    return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure
-      .then(() => Object.assign(user, patchToUser));
-  }
 };

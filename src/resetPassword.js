@@ -5,6 +5,8 @@ const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:resetPassword');
 
 const {
+  findUser,
+  patchUser,
   getUserData,
   ensureObjPropsValid,
   ensureValuesAreStrings,
@@ -14,29 +16,28 @@ const {
   deconstructId
 } = require('./helpers');
 
-module.exports.resetPwdWithLongToken = function (options, resetToken, password) {
+module.exports.resetPwdWithLongToken = function (options, params, resetToken, password) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(resetToken, password);
 
-      return resetPassword(options, { resetToken }, { resetToken }, password);
+      return resetPassword(options, params, { resetToken }, { resetToken }, password);
     });
 };
 
-module.exports.resetPwdWithShortToken = function (options, resetShortToken, identifyUser, password) {
+module.exports.resetPwdWithShortToken = function (options, params, resetShortToken, identifyUser, password) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(resetShortToken, password);
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-      return resetPassword(options, identifyUser, { resetShortToken }, password);
+      return resetPassword(options, params, identifyUser, { resetShortToken }, password);
     });
 };
 
-function resetPassword (options, query, tokens, password) {
+function resetPassword (options, params, query, tokens, password) {
   debug('resetPassword', query, tokens, password);
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
   const {
     sanitizeUserForClient,
     skipIsVerifiedCheck
@@ -51,9 +52,9 @@ function resetPassword (options, query, tokens, password) {
 
   if (tokens.resetToken) {
     let id = deconstructId(tokens.resetToken);
-    userPromise = users.get(id).then(data => getUserData(data, checkProps));
+    userPromise = users.get(id, params).then(data => getUserData(data, checkProps));
   } else if (tokens.resetShortToken) {
-    userPromise = users.find({query}).then(data => getUserData(data, checkProps));
+    userPromise = findUser(users, query, params).then(data => getUserData(data, checkProps));
   } else {
     return Promise.reject(new errors.BadRequest('resetToken or resetShortToken is missing'));
   }
@@ -84,18 +85,13 @@ function resetPassword (options, query, tokens, password) {
       });
     })
     .then(([user, hashedPassword]) => {
-      return patchUser(user, {
+      return patchUser(users, user, {
         password: hashedPassword,
         resetToken: null,
         resetShortToken: null,
         resetExpires: null
-      })
+      }, params)
         .then(user1 => notifier(options.notifier, 'resetPwd', user1))
         .then(user1 => sanitizeUserForClient(user1));
     });
-
-  function patchUser (user, patchToUser) {
-    return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure
-      .then(() => Object.assign(user, patchToUser));
-  }
 }

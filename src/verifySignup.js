@@ -5,40 +5,41 @@ const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:verifySignup');
 
 const {
+  findUser,
+  patchUser,
   getUserData,
   ensureObjPropsValid,
   ensureValuesAreStrings,
   notifier
 } = require('./helpers');
 
-module.exports.verifySignupWithLongToken = function (options, verifyToken) {
+module.exports.verifySignupWithLongToken = function (options, params, verifyToken) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(verifyToken);
 
-      return verifySignup(options, { verifyToken }, { verifyToken });
+      return verifySignup(options, params, { verifyToken }, { verifyToken });
     });
 };
 
-module.exports.verifySignupWithShortToken = function (options, verifyShortToken, identifyUser) {
+module.exports.verifySignupWithShortToken = function (options, params, verifyShortToken, identifyUser) {
   return Promise.resolve()
     .then(() => {
       ensureValuesAreStrings(verifyShortToken);
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-      return verifySignup(options, identifyUser, { verifyShortToken });
+      return verifySignup(options, params, identifyUser, { verifyShortToken });
     });
 };
 
-function verifySignup (options, query, tokens) {
+function verifySignup (options, params, query, tokens) {
   debug('verifySignup', query, tokens);
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
   const {
     sanitizeUserForClient
   } = options;
 
-  return users.find({ query })
+  return findUser(users, query, params)
     .then(data => getUserData(data, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']))
     .then(user => {
       if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
@@ -63,11 +64,6 @@ function verifySignup (options, query, tokens) {
       verifyChanges: {}
     });
 
-    return patchUser(user, patchToUser);
-  }
-
-  function patchUser (user, patchToUser) {
-    return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure
-      .then(() => Object.assign(user, patchToUser));
+    return patchUser(users, user, patchToUser, params);
   }
 }

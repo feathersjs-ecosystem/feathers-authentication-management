@@ -4,21 +4,24 @@
 const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:checkUniqueness');
 
+const {
+  findUser
+} = require('./helpers');
+
 // This module is usually called from the UI to check username, email, etc. are unique.
-module.exports = function checkUniqueness (options, identifyUser, ownId, meta) {
+module.exports = function checkUniqueness (options, params, identifyUser, ownId, meta) {
   debug('checkUniqueness', identifyUser, ownId, meta);
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
 
   const keys = Object.keys(identifyUser).filter(
     key => identifyUser[key] !== undefined && identifyUser[key] !== null);
 
   return Promise.all(
-    keys.map(prop => users.find({ query: { [prop]: identifyUser[prop].trim() } })
+    keys.map(prop => findUser(users, { [prop]: identifyUser[prop].trim() }, params)
       .then(data => {
         const items = Array.isArray(data) ? data : data.data;
         const isNotUnique = items.length > 1 ||
-          (items.length === 1 && items[0][usersIdName] !== ownId);
+          (items.length === 1 && items[0][users.id] !== ownId);
 
         return isNotUnique ? prop : null;
       })
