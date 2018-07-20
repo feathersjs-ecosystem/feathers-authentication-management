@@ -4,6 +4,8 @@
 const debug = require('debug')('authManagement:sendResetPwd');
 
 const {
+  findUser,
+  patchUser,
   getUserData,
   ensureObjPropsValid,
   getLongToken,
@@ -13,10 +15,9 @@ const {
   concatIDAndHash
 } = require('./helpers');
 
-module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
+module.exports = function sendResetPwd (options, params, identifyUser, notifierOptions) {
   debug('sendResetPwd');
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
   const {
     sanitizeUserForClient,
     skipIsVerifiedCheck
@@ -29,7 +30,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
       return Promise.all([
-        users.find({ query: identifyUser })
+        findUser(users, identifyUser, params)
           .then(data => getUserData(data, checkProps)),
         getLongToken(options.longTokenLen),
         getShortToken(options.shortTokenLen, options.shortTokenDigits)
@@ -38,7 +39,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
     .then(([user, longToken, shortToken]) =>
       Object.assign(user, {
         resetExpires: Date.now() + options.resetDelay,
-        resetToken: concatIDAndHash(user[usersIdName], longToken),
+        resetToken: concatIDAndHash(user[users.id], longToken),
         resetShortToken: shortToken
       })
     )
@@ -50,16 +51,11 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
     ])
     )
     .then(([ user, longToken, shortToken ]) =>
-      patchUser(user, {
+      patchUser(users, user, {
         resetExpires: user.resetExpires,
         resetToken: longToken,
         resetShortToken: shortToken
-      })
+      }, params)
     )
     .then(user => sanitizeUserForClient(user));
-
-  function patchUser (user, patchToUser) {
-    return users.patch(user[usersIdName], patchToUser, {}) // needs users from closure
-      .then(() => Object.assign(user, patchToUser));
-  }
 };

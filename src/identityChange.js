@@ -5,6 +5,8 @@ const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:identityChange');
 
 const {
+  findUser,
+  patchUser,
   getLongToken,
   getShortToken,
   ensureObjPropsValid,
@@ -12,11 +14,10 @@ const {
   notifier
 } = require('./helpers');
 
-module.exports = function identityChange (options, identifyUser, password, changesIdentifyUser) {
+module.exports = function identityChange (options, params, identifyUser, password, changesIdentifyUser) {
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);
   const users = options.app.service(options.service);
-  const usersIdName = users.id;
   const {
     sanitizeUserForClient
   } = options;
@@ -26,7 +27,7 @@ module.exports = function identityChange (options, identifyUser, password, chang
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
       ensureObjPropsValid(changesIdentifyUser, options.identifyUserProps);
 
-      return users.find({ query: identifyUser })
+      return findUser(users, identifyUser, params)
         .then(data => (Array.isArray(data) ? data[0] : data.data[0]));
     })
 
@@ -47,13 +48,8 @@ module.exports = function identityChange (options, identifyUser, password, chang
         verifyChanges: changesIdentifyUser
       };
 
-      return patchUser(user1, patchToUser);
+      return patchUser(users, user1, patchToUser, params);
     })
     .then(user1 => notifier(options.notifier, 'identityChange', user1, null))
     .then(user1 => sanitizeUserForClient(user1));
-
-  function patchUser (user1, patchToUser) {
-    return users.patch(user1[usersIdName], patchToUser, {}) // needs users from closure
-      .then(() => Object.assign(user1, patchToUser));
-  }
 };
