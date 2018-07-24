@@ -210,6 +210,14 @@ const usersDbPromise = new Promise((resolve, reject) => {
               done();
             });
         });
+
+        it('verifies reset with long tokens works with generated tokens', () => {
+          const i = 0;
+          return authManagement.create({ action: 'sendResetPwd', value: { email: db[i].email } })
+          .then(() => {
+            return authManagement.create({ action: 'resetPwdLong', value: { token: db[i].resetToken, password } });
+          });
+        });
       });
     });
   });

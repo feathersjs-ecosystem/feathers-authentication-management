@@ -302,6 +302,14 @@ const usersDbPromise = new Promise((resolve, reject) => {
               done();
             });
         });
+
+        it('verifies reset with short tokens works with generated tokens', (done) => {
+          const i = 0;
+          return authManagement.create({ action: 'sendResetPwd', value: { email: db[i].email } })
+          .then(() => {
+            return authManagement.create({ action: 'resetPwdShort', value: { token: db[i].resetShortToken, user: { email: db[i].email }, password } });
+          });
+        });
       });
     });
   });
