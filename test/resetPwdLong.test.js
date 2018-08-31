@@ -6,15 +6,13 @@ no-unused-vars: 0 */
 const assert = require('chai').assert;
 const feathersStubs = require('./../test/helpers/feathersStubs');
 const { saveHash } = require('./../test/helpers/index');
-const { hashPassword } = require('../src/helpers')
+const { hashPassword } = require('../src/helpers');
 const authManagementService = require('../src/index');
 const SpyOn = require('./helpers/basicSpy');
 
 // user DB
-
 const now = Date.now();
 const usersDbPromise = new Promise((resolve, reject) => {
-
   var app = feathersStubs.app();
 
   var users = [
@@ -22,13 +20,13 @@ const usersDbPromise = new Promise((resolve, reject) => {
     { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + 200000 },
     { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
     { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - 200000 },
-    { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 },
+    { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - 200000 }
   ];
 
   var promises = [];
-  
+
   users.forEach(item => {
-    if(item.resetToken) {
+    if (item.resetToken) {
       promises.push(
         hashPassword(app, item.resetToken)
           .then(saveHash(item, 'resetToken'))
@@ -36,11 +34,11 @@ const usersDbPromise = new Promise((resolve, reject) => {
     }
   });
 
-  Promise.all(promises).then(function() {
+  Promise.all(promises).then(function () {
     resolve(users);
   });
-
 });
+var notifiedToken;
 
 // Tests
 ['_id', 'id'].forEach(idType => {
@@ -83,6 +81,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
               done();
             })
             .catch(err => {
+              console.log(err);
               assert.strictEqual(err, null, 'err code set');
               done();
             });
@@ -110,10 +109,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
 
         it('error on unverified user', (done) => {
           const resetToken = 'd___222';
-          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } }, {},
-            (err, user) => {
-
-            })
+          authManagement.create({ action: 'resetPwdLong', value: { token: resetToken, password } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -175,26 +171,26 @@ const usersDbPromise = new Promise((resolve, reject) => {
             done();
           });
         });
-  
+
         it('verifies valid token', (done) => {
           const resetToken = 'a___000';
           const i = 0;
-    
+
           authManagement.create({
             action: 'resetPwdLong',
             value: { token: resetToken, password } }
           )
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-        
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].resetToken, null, 'resetToken not null');
               assert.strictEqual(db[i].resetExpires, null, 'resetExpires not null');
-        
+
               const hash = db[i].password;
               assert.isString(hash, 'password not a string');
               assert.equal(hash.length, 60, 'password wrong length');
-        
+
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -202,10 +198,11 @@ const usersDbPromise = new Promise((resolve, reject) => {
                   Object.assign({}, sanitizeUserForEmail(db[i])),
                   {}
                 ]);
-        
+
               done();
             })
             .catch(err => {
+              console.log(err);
               assert.strictEqual(err, null, 'err code set');
               done();
             });
@@ -215,7 +212,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
           const i = 0;
           return authManagement.create({ action: 'sendResetPwd', value: { email: db[i].email } })
           .then(() => {
-            return authManagement.create({ action: 'resetPwdLong', value: { token: db[i].resetToken, password } });
+            return authManagement.create({ action: 'resetPwdLong', value: { token: notifiedToken, password } });
           });
         });
       });
@@ -225,11 +222,15 @@ const usersDbPromise = new Promise((resolve, reject) => {
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
+  // Keep track of notified token when any
+  if (user.resetToken) {
+    notifiedToken = user.resetToken;
+  }
   return Promise.resolve(user);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = Object.assign({}, user);
 
   delete user1.password;
@@ -237,6 +238,6 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

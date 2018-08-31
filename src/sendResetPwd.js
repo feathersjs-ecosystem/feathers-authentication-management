@@ -10,7 +10,7 @@ const {
   hashPassword,
   getShortToken,
   notifier,
-  concatIDAndHash
+  constructUserToken
 } = require('./helpers');
 
 module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
@@ -27,7 +27,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
   return Promise.resolve()
     .then(() => {
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
-
+      // Get user and generate tokens
       return Promise.all([
         users.find({ query: identifyUser })
           .then(data => getUserData(data, checkProps)),
@@ -38,7 +38,9 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
     .then(([user, longToken, shortToken]) =>
       Object.assign(user, {
         resetExpires: Date.now() + options.resetDelay,
-        resetToken: concatIDAndHash(user[usersIdName], longToken),
+        // Long token is used to identify the user by integrating his ID
+        // First create a clear one for the notifier because it will then be encrypted in DB to avoid hacking
+        resetToken: constructUserToken(user[usersIdName], longToken),
         resetShortToken: shortToken
       })
     )
@@ -49,13 +51,13 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
       hashPassword(options.app, user.resetShortToken)
     ])
     )
-    .then(([ user, longToken, shortToken ]) =>
-      patchUser(user, {
+    .then(([user, hashedLongToken, hashedShortToken]) => {
+      return patchUser(user, {
         resetExpires: user.resetExpires,
-        resetToken: longToken,
-        resetShortToken: shortToken
-      })
-    )
+        resetToken: hashedLongToken,
+        resetShortToken: hashedShortToken
+      });
+    })
     .then(user => sanitizeUserForClient(user));
 
   function patchUser (user, patchToUser) {

@@ -18,7 +18,7 @@ const now = Date.now();
 const usersDb = [
   { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 50000, username: 'Doe' },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyShortToken: null, verifyExpires: null },
-  { _id: 'c', email: 'c', isVerified: true, verifyToken: '999', verifyShortToken: '99900', verifyExpires: null }, // impossible
+  { _id: 'c', email: 'c', isVerified: true, verifyToken: '999', verifyShortToken: '99900', verifyExpires: null } // impossible
 ];
 
 // Tests
@@ -28,7 +28,7 @@ const usersDb = [
     describe(`resendVerifySignup ${pagination} ${idType}`, () => {
       const ifNonPaginated = pagination === 'non-paginated';
 
-      function basicTest1(desc, values) {
+      function basicTest1 (desc, values) {
         describe(desc, () => {
           var db;
           var app;
@@ -46,10 +46,10 @@ const usersDb = [
           it('authManagement::create exists', () => {
             assert.isFunction(authManagement.create);
           });
-  
+
           it('updates unverified user', (done) => {
             const i = 0;
-    
+
             authManagement.create({ action: 'resendVerifySignup', value: values[0] })
               .then(user => {
                 assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
@@ -66,7 +66,7 @@ const usersDb = [
                 done();
               });
           });
-  
+
           it('sanitizes user', (done) => {
             authManagement.create({ action: 'resendVerifySignup', value: values[1] })
               .then(user => {
@@ -121,14 +121,14 @@ const usersDb = [
         { verifyToken: '000' },
         { verifyToken: '000' },
         { verifyToken: '999' },
-        { verifyToken: 'xxx' },
+        { verifyToken: 'xxx' }
       ]);
 
       basicTest1('emailOfToken is {verifyShortToken}', [
         { verifyShortToken: '00099' },
         { verifyShortToken: '00099' },
         { verifyShortToken: '99900' },
-        { verifyShortToken: 'xxx' },
+        { verifyShortToken: 'xxx' }
       ]);
 
       describe('emailOfToken is {verifyToken} can change len', () => {
@@ -142,7 +142,7 @@ const usersDb = [
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           authManagementService({
-            longTokenLen: 10,
+            longTokenLen: 10
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -181,7 +181,7 @@ const usersDb = [
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           authManagementService({
             longTokenLen: 15, // need to reset this
-            shortTokenLen: 8,
+            shortTokenLen: 8
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -221,7 +221,7 @@ const usersDb = [
           authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 9,
-            shortTokenDigits: false,
+            shortTokenDigits: false
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -261,18 +261,19 @@ const usersDb = [
           authManagementService({
             longTokenLen: 15, // need to reset this
             shortTokenLen: 6,
-            shortTokenDigits: false,
+            shortTokenDigits: false
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
-  
+
         it('verifies when correct', (done) => {
           const verifyToken = '000';
           const i = 0;
-    
-          authManagement.create({ action: 'resendVerifySignup', value: {
-            verifyToken, email: 'a'
-          } })
+
+          authManagement.create({ action: 'resendVerifySignup',
+            value: {
+              verifyToken, email: 'a'
+            } })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -293,9 +294,10 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          authManagement.create({ action: 'resendVerifySignup', value: {
-            verifyToken, email: 'a', username: 'Doexxxxxxx'
-          } })
+          authManagement.create({ action: 'resendVerifySignup',
+            value: {
+              verifyToken, email: 'a', username: 'Doexxxxxxx'
+            } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -311,9 +313,10 @@ const usersDb = [
           const verifyToken = '000';
           const i = 0;
 
-          authManagement.create({ action: 'resendVerifySignup', value: {
-            username: 'Doe'
-          } })
+          authManagement.create({ action: 'resendVerifySignup',
+            value: {
+              username: 'Doe'
+            } })
             .then(user => {
               assert.fail(true, false);
               done();
@@ -347,16 +350,16 @@ const usersDb = [
           }).call(app);
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
-  
+
         it('is called', (done) => {
           const email = 'a';
           const i = 0;
-  
+
           authManagement.create({
-              action: 'resendVerifySignup',
-              value: { email },
-              notifierOptions: { transport: 'email' }
-            })
+            action: 'resendVerifySignup',
+            value: { email },
+            notifierOptions: { transport: 'email' }
+          })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'user.isVerified not false');
               assert.strictEqual(db[i].isVerified, false, 'isVerified not false');
@@ -386,22 +389,22 @@ const usersDb = [
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
   return Promise.resolve(user);
 }
 
-function makeDateTime(options1) {
+function makeDateTime (options1) {
   options1 = options1 || {};
   return Date.now() + (options1.delay || defaultVerifyDelay);
 }
 
-function aboutEqualDateTime(time1, time2, msg, delta) {
+function aboutEqualDateTime (time1, time2, msg, delta) {
   delta = delta || 500;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = clone(user);
 
   delete user1.password;
@@ -409,6 +412,6 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

@@ -1,5 +1,5 @@
 
-/* global assert, describe, it */
+/* global describe, it */
 /* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
@@ -12,7 +12,7 @@ describe('hook:isVerified', () => {
     hookIn = {
       type: 'before',
       method: 'create',
-      params: { user: { email: 'a@a.com', password: '0000000000' } },
+      params: { user: { email: 'a@a.com', password: '0000000000' } }
     };
   });
 

@@ -9,7 +9,7 @@ describe('helpers - sanitization', () => {
       id: 1,
       email: 'test@test.test',
       password: '0000000000',
-      resetToken: 'aaa',
+      resetToken: 'aaa'
     };
 
     const result1 = helpers.sanitizeUserForClient(user);
@@ -42,7 +42,7 @@ describe('helpers - sanitization', () => {
       email: 'test@test.test',
       password: '0000000000',
       resetToken: 'aaa',
-      toJSON: function() {
+      toJSON: function () {
         return Object.assign({}, this, { self: undefined });
       }
     };
@@ -62,7 +62,7 @@ describe('helpers - sanitization', () => {
       email: 'test@test.test',
       password: '0000000000',
       resetToken: 'aaa',
-      toObject: function() {
+      toObject: function () {
         return Object.assign({}, this, { self: undefined });
       }
     };
@@ -77,31 +77,31 @@ describe('helpers - sanitization', () => {
   });
 
   it('allows for customized sanitize function', (done) => {
-    function customSanitizeUserForClient(user) {
-      const user1 = helpers.sanitizeUserForClient(user)
-      delete user1.sensitiveData
-      return user1
+    function customSanitizeUserForClient (user) {
+      const user1 = helpers.sanitizeUserForClient(user);
+      delete user1.sensitiveData;
+      return user1;
     }
     const app = feathersStubs.app();
     const usersDb = [
       { _id: 'a', email: 'a', username: 'john a', sensitiveData: 'some secret' }
     ];
-    const users = feathersStubs.users(app, usersDb, true);
+    feathersStubs.users(app, usersDb, true);
     authManagementService({
       sanitizeUserForClient: customSanitizeUserForClient
     }).call(app); // define and attach authManagement service
     const authManagement = app.service('authManagement'); // get handle to authManagement
 
-    const res = authManagement.create({
+    authManagement.create({
       action: 'resendVerifySignup',
       value: { email: 'a' }
     })
       .then((user) => {
         assert.isUndefined(user.sensitiveData);
-        done()
+        done();
       })
       .catch((err) => {
         assert.fail(true, false, err);
-      })
-  })
+      });
+  });
 });

@@ -15,7 +15,7 @@ const SpyOn = require('./../test/helpers/basicSpy');
 
 const usersDb = [
   { _id: 'a', email: 'a', plainPassword: 'aa', plainNewPassword: 'xx', isVerified: false },
-  { _id: 'b', email: 'b', plainPassword: 'bb', plainNewPassword: 'yy', isVerified: true },
+  { _id: 'b', email: 'b', plainPassword: 'bb', plainNewPassword: 'yy', isVerified: true }
 ];
 
 describe('passwordChange - setup', () => {
@@ -38,7 +38,7 @@ describe('passwordChange - setup', () => {
       encrypt(feathersStubs.app(), usersDb[1].plainNewPassword)
         .then(password => {
           usersDb[1].newPassword = password;
-        }),
+        })
     ])
       .then(() => {
         done();
@@ -84,10 +84,10 @@ describe('passwordChange - setup', () => {
           const user = clone(db[i]);
           const paramsUser = clone(user);
           delete paramsUser.password;
-  
+
           authManagement.create({
             action: 'passwordChange',
-            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
+            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword }
           })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -109,7 +109,7 @@ describe('passwordChange - setup', () => {
 
           authManagement.create({
             action: 'passwordChange',
-            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
+            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword }
           })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'isVerified not false');
@@ -126,16 +126,16 @@ describe('passwordChange - setup', () => {
           this.timeout(9000);
           const i = 0;
           const user = clone(db[i]);
-  
+
           authManagement.create({
             action: 'passwordChange',
-            value: { user: { email: user.email }, oldPassword: 'fdfgfghghj', password: user.plainNewPassword },
+            value: { user: { email: user.email }, oldPassword: 'fdfgfghghj', password: user.plainNewPassword }
           })
             .then(user => {
               assert.fail(true, false);
               done();
             })
-            .catch( err => {
+            .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
               done();
@@ -166,12 +166,11 @@ describe('passwordChange - setup', () => {
           const user = clone(db[i]);
           const paramsUser = clone(user);
           delete paramsUser.password;
-  
-  
+
           authManagement.create({
-              action: 'passwordChange',
-              value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword },
-            })
+            action: 'passwordChange',
+            value: { user: { email: user.email }, oldPassword: user.plainPassword, password: user.plainNewPassword }
+          })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.isOk(bcrypt.compareSync(db[i].plainNewPassword, db[i].password), `[${i}]`);
@@ -196,27 +195,27 @@ describe('passwordChange - setup', () => {
 
 // Helpers
 
-function encrypt(app, password) {
+function encrypt (app, password) {
   const hook = {
     type: 'before',
     data: { password },
     params: { provider: null },
     app: {
-      get(str) {
+      get (str) {
         return app.get(str);
-      },
-    },
+      }
+    }
   };
   return auth.hashPassword()(hook)
     .then(hook1 => hook1.data.password)
     .catch(err => console.log('encrypt', err)); // eslint-disable-line no-console
 }
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
   return Promise.resolve(user);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = clone(user);
 
   delete user1.password;
@@ -224,6 +223,6 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

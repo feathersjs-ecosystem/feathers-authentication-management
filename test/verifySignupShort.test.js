@@ -18,7 +18,7 @@ const usersDb = [
   { _id: 'c', email: 'c', username: 'cc', isVerified: false, verifyToken: '111', verifyShortToken: '11199', verifyExpires: now - 200000 },
   { _id: 'd', email: 'd', username: 'dd', isVerified: true, verifyToken: '222', verifyShortToken: '22299', verifyExpires: now - 200000 },
   { _id: 'e', email: 'e', username: 'ee', isVerified: true, verifyToken: '800', verifyShortToken: '80099', verifyExpires: now + 200000,
-    verifyChanges: { cellphone: '800' } },
+    verifyChanges: { cellphone: '800' } }
 ];
 
 // Tests
@@ -39,7 +39,7 @@ const usersDb = [
           app = feathersStubs.app();
           users = feathersStubs.users(app, db, ifNonPaginated, idType);
           authManagementService({
-            identifyUserProps: ['email', 'username'],
+            identifyUserProps: ['email', 'username']
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -47,19 +47,19 @@ const usersDb = [
         it('verifies valid token if not verified', (done) => {
           const verifyShortToken = '00099';
           const i = 0;
-  
+
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: db[i].email },
+            token: verifyShortToken, user: { email: db[i].email }
           } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-      
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
               assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
               assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
               assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
-      
+
               done();
             })
             .catch(err => {
@@ -67,25 +67,25 @@ const usersDb = [
               done();
             });
         });
-  
+
         it('verifies valid token if verifyChanges', (done) => {
           const verifyShortToken = '80099';
           const i = 4;
-    
+
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: db[i].email },
+            token: verifyShortToken, user: { email: db[i].email }
           } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
               assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
               assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
               assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
-  
+
               assert.strictEqual(db[i].cellphone, '800', 'cellphone wrong');
-  
+
               done();
             })
             .catch(err => {
@@ -99,7 +99,7 @@ const usersDb = [
           const i = 0;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { username: db[i].username },
+            token: verifyShortToken, user: { username: db[i].username }
           } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -107,7 +107,7 @@ const usersDb = [
               assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
               assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
               assert.strictEqual(user.verifyChanges, undefined, 'verifyChanges not undefined');
-  
+
               done();
             })
             .catch(err => {
@@ -121,14 +121,14 @@ const usersDb = [
           const i = 0;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: db[i].email, username: db[i].username },
+            token: verifyShortToken, user: { email: db[i].email, username: db[i].username }
           } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
               assert.strictEqual(user.verifyToken, undefined, 'verifyToken not undefined');
               assert.strictEqual(user.verifyShortToken, undefined, 'verifyShortToken not undefined');
               assert.strictEqual(user.verifyExpires, undefined, 'verifyExpires not undefined');
-  
+
               done();
             })
             .catch(err => {
@@ -142,7 +142,7 @@ const usersDb = [
           const i = 0;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: {},
+            token: verifyShortToken, user: {}
           } })
             .then(user => {
               assert.fail(true, false);
@@ -160,7 +160,7 @@ const usersDb = [
           const i = 0;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: db[i].email, verifyShortToken },
+            token: verifyShortToken, user: { email: db[i].email, verifyShortToken }
           } })
             .then(user => {
               assert.fail(true, false);
@@ -178,7 +178,7 @@ const usersDb = [
           const i = 3;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: db[i].email },
+            token: verifyShortToken, user: { email: db[i].email }
           } })
             .then(user => {
               assert.fail(true, false);
@@ -196,7 +196,7 @@ const usersDb = [
           const i = 2;
 
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { username: db[i].username } },
+            token: verifyShortToken, user: { username: db[i].username } }
           })
             .then(user => {
               assert.fail(true, false);
@@ -205,7 +205,7 @@ const usersDb = [
             .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-  
+
               done();
             });
         });
@@ -213,7 +213,7 @@ const usersDb = [
         it('error on user not found', (done) => {
           const verifyShortToken = '999';
           authManagement.create({ action: 'verifySignupShort', value: {
-            token: verifyShortToken, user: { email: '999' },
+            token: verifyShortToken, user: { email: '999' }
           } })
             .then(user => {
               assert.fail(true, false);
@@ -241,7 +241,7 @@ const usersDb = [
             .catch(err => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
-  
+
               done();
             });
         });
@@ -264,28 +264,28 @@ const usersDb = [
           authManagementService({
             // maybe reset identifyUserProps
             notifier: spyNotifier.callWith,
-            testMode: true,
+            testMode: true
           }).call(app);
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
-        
+
         it('verifies valid token', (done) => {
           const verifyShortToken = '00099';
           const i = 0;
-          
+
           authManagement.create({
             action: 'verifySignupShort',
-            value: { token: verifyShortToken, user: { email: db[i].email } },
+            value: { token: verifyShortToken, user: { email: db[i].email } }
           })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.strictEqual(db[i].verifyToken, null, 'verifyToken not null');
               assert.strictEqual(db[i].verifyShortToken, null, 'verifyShortToken not null');
               assert.strictEqual(db[i].verifyExpires, null, 'verifyExpires not null');
               assert.deepEqual(db[i].verifyChanges, {}, 'verifyChanges not empty object');
-  
+
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -293,7 +293,7 @@ const usersDb = [
                   Object.assign({}, sanitizeUserForEmail(db[i])),
                   {}
                 ]);
-  
+
               done();
             })
             .catch(err => {
@@ -308,11 +308,11 @@ const usersDb = [
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
   return Promise.resolve(user);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = Object.assign({}, user);
 
   delete user1.password;
@@ -320,6 +320,6 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

@@ -1,11 +1,11 @@
 
-/* global assert, describe, it */
+/* global describe, it */
 
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const authManagement = require('../src/index');
-const helpers = require('../src/helpers')
+const helpers = require('../src/helpers');
 
 const optionsDefault = {
   app: null,
@@ -24,23 +24,23 @@ const optionsDefault = {
 const userMgntOptions = {
   service: '/users',
   notifier: () => Promise.resolve(),
-  shortTokenLen: 8,
+  shortTokenLen: 8
 };
 
 const orgMgntOptions = {
   service: '/organizations',
   path: 'authManagement/org', // *** specify path for this instance of service
   notifier: () => Promise.resolve(),
-  shortTokenLen: 10,
+  shortTokenLen: 10
 };
 
-function services() {
+function services () {
   const app = this;
   app.configure(user);
   app.configure(organization);
 }
 
-function user() {
+function user () {
   const app = this;
 
   app.use('/users', {
@@ -54,7 +54,7 @@ function user() {
   });
 }
 
-function organization() {
+function organization () {
   const app = this;
 
   app.use('/organizations', {
@@ -64,7 +64,7 @@ function organization() {
   const service = app.service('/organizations');
 
   service.hooks({
-    before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
+    before: { create: authManagement.hooks.addVerification('authManagement/org') } // *** which one
   });
 }
 
@@ -97,7 +97,7 @@ describe('multiple services', () => {
     it('can call service', (done) => {
       const userMgnt = app.service('authManagement');
 
-      const options = userMgnt.create({ action: 'options' })
+      userMgnt.create({ action: 'options' })
         .catch(err => console.log(err))
         .then(options => {
           assert.property(options, 'app');
@@ -152,7 +152,6 @@ describe('multiple services', () => {
 
               done();
             });
-
         });
     });
 
@@ -191,9 +190,8 @@ describe('multiple services', () => {
               assert.deepEqual(options, expected);
 
               done();
-            })
+            });
         });
-
     });
   });
 });

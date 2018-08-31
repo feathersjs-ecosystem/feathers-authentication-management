@@ -37,9 +37,9 @@ describe('randomBytes', () => {
 
   it('returns different values', (done) => {
     Promise.all([
-        randomBytes(10),
-        randomBytes(10)
-      ])
+      randomBytes(10),
+      randomBytes(10)
+    ])
       .then(([str1, str2]) => {
         assert.equal(str1.length, 20);
         assert.equal(str2.length, 20);

@@ -15,7 +15,7 @@ const SpyOn = require('./../test/helpers/basicSpy');
 
 const usersDb = [
   { _id: 'a', email: 'a', plainPassword: 'aa', isVerified: false },
-  { _id: 'b', email: 'b', plainPassword: 'bb', isVerified: true },
+  { _id: 'b', email: 'b', plainPassword: 'bb', isVerified: true }
 ];
 
 describe('identityChange - setup', () => {
@@ -30,7 +30,7 @@ describe('identityChange - setup', () => {
       encrypt(feathersStubs.app(), usersDb[1].plainPassword)
         .then(password => {
           usersDb[1].password = password;
-        }),
+        })
     ])
       .then(() => {
         done();
@@ -72,9 +72,9 @@ describe('identityChange - setup', () => {
           const i = 1;
           const user = clone(db[i]);
           const email = 'b@b';
-  
+
           authManagement.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
+            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } }
           })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -92,9 +92,9 @@ describe('identityChange - setup', () => {
           const i = 0;
           const user = clone(db[i]);
           const email = 'a@a';
-  
+
           authManagement.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } },
+            value: { user: { email: user.email }, password: user.plainPassword, changes: { email } }
           })
             .then(user => {
               assert.strictEqual(user.isVerified, false, 'isVerified not false');
@@ -103,7 +103,7 @@ describe('identityChange - setup', () => {
             })
             .catch(err => {
               assert.strictEqual(err, null, 'err code set');
-              cone();
+              done();
             });
         });
 
@@ -112,9 +112,9 @@ describe('identityChange - setup', () => {
           const i = 0;
           const user = clone(db[i]);
           const email = 'a@a';
-  
+
           authManagement.create({ action: 'identityChange',
-            value: { user: { email: user.email }, password: 'ghghghg', changes: { email } },
+            value: { user: { email: user.email }, password: 'ghghghg', changes: { email } }
           })
             .then(user => {
               assert.fail(true, false);
@@ -144,23 +144,24 @@ describe('identityChange - setup', () => {
           authManagementService({ notifier: spyNotifier.callWith }).call(app); // attach authManagement
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
-  
+
         it('updates verified user', function (done) {
           this.timeout(9000);
           const i = 1;
           const user = clone(db[i]);
           const email = 'b@b';
-    
-          authManagement.create({ action: 'identityChange', value: {
-            user: { email: user.email }, password: user.plainPassword, changes: { email } }
+
+          authManagement.create({ action: 'identityChange',
+            value: {
+              user: { email: user.email }, password: user.plainPassword, changes: { email } }
           })
             .then(user1 => {
               const dbi = db[i];
-  
+
               assert.strictEqual(user1.isVerified, true, 'isVerified not true');
               assert.equal(dbi.email, user.email);
               assert.deepEqual(dbi.verifyChanges, { email });
-              
+
               assert.deepEqual(
                 spyNotifier.result()[0].args,
                 [
@@ -172,15 +173,15 @@ describe('identityChange - setup', () => {
                     )
                   ),
                   {}
-                ],
+                ]
               );
-        
+
               assert.strictEqual(dbi.isVerified, true, 'isVerified not false');
               assert.isString(dbi.verifyToken, 'verifyToken not String');
               assert.equal(dbi.verifyToken.length, 30, 'verify token wrong length');
               assert.equal(dbi.verifyShortToken.length, 6, 'verify short token wrong length');
               assert.match(dbi.verifyShortToken, /^[0-9]+$/);
-        
+
               done();
             })
             .catch(err => {
@@ -195,27 +196,27 @@ describe('identityChange - setup', () => {
 
 // Helpers
 
-function encrypt(app, password) {
+function encrypt (app, password) {
   const hook = {
     type: 'before',
     data: { password },
     params: { provider: null },
     app: {
-      get(str) {
+      get (str) {
         return app.get(str);
-      },
-    },
+      }
+    }
   };
   return auth.hashPassword()(hook)
     .then(hook1 => hook1.data.password)
     .catch(err => console.log('encrypt', err)); // eslint-disable-line no-console
 }
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
   return Promise.resolve(user);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = clone(user);
 
   delete user1.password;
@@ -223,7 +224,7 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function extractProps(obj, ...rest) {
+function extractProps (obj, ...rest) {
   const res = {};
   rest.forEach(key => {
     res[key] = obj[key];
@@ -231,6 +232,6 @@ function extractProps(obj, ...rest) {
   return res;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

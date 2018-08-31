@@ -13,7 +13,7 @@ const authManagementService = require('../src/index');
 const usersDb = [
   { _id: 'a', email: 'a', username: 'john a' },
   { _id: 'b', email: 'b', username: 'john b' },
-  { _id: 'c', email: 'c', username: 'john b' },
+  { _id: 'c', email: 'c', username: 'john b' }
 ];
 
 // Tests
@@ -39,11 +39,11 @@ const usersDb = [
         it('returns a promise', () => {
           const res = authManagement.create({
             action: 'checkUnique',
-            value: { username: 'john a' },
+            value: { username: 'john a' }
           })
             .then(() => {})
             .catch(() => {});
-  
+
           assert.isOk(res, 'no promise returned');
           assert.isFunction(res.then, 'not a function');
         });
@@ -53,7 +53,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: {},
+            value: {}
           })
             .then(() => {
               done();
@@ -68,7 +68,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username: 'hjhjhj' },
+            value: { username: 'hjhjhj' }
           })
             .then(() => {
               done();
@@ -84,12 +84,12 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username },
+            value: { username }
           })
             .then(() => {
               console.log('1');
               assert.fail(true, false, 'test unexpectedly succeeded');
-              
+
               done();
             })
             .catch(err => {
@@ -107,7 +107,7 @@ const usersDb = [
           authManagement.create({
             action: 'checkUnique',
             value: { username },
-            meta: { noErrMsg: true },
+            meta: { noErrMsg: true }
           })
             .then(() => {
               assert.fail(true, false, 'test unexpectedly succeeded');
@@ -126,7 +126,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username },
+            value: { username }
           })
             .then(() => {
               assert.fail(true, false, 'test unexpectedly succeeded');
@@ -146,7 +146,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username, email },
+            value: { username, email }
           })
             .then(() => {
               assert.fail(true, false, 'test unexpectedly succeeded');
@@ -166,7 +166,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username, email },
+            value: { username, email }
           })
             .then(() => {
               assert.fail(true, false, 'test unexpectedly succeeded');
@@ -184,7 +184,7 @@ const usersDb = [
 
           authManagement.create({
             action: 'checkUnique',
-            value: { username: undefined, email: null },
+            value: { username: undefined, email: null }
           })
             .then(() => {
               done();
@@ -201,7 +201,7 @@ const usersDb = [
           authManagement.create({
             action: 'checkUnique',
             value: { username },
-            ownId: 'a',
+            ownId: 'a'
           })
             .then(() => {
               done();
@@ -218,7 +218,7 @@ const usersDb = [
           authManagement.create({
             action: 'checkUnique',
             value: { username },
-            ownId: 'b',
+            ownId: 'b'
           })
             .then(() => {
               assert.fail(true, false, 'test unexpectedly succeeded');
@@ -237,6 +237,6 @@ const usersDb = [
 
 // Helpers
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

@@ -1,5 +1,5 @@
 
-/* global assert, describe, it */
+/* global describe, it */
 /* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
@@ -10,7 +10,7 @@ const feathersStubs = require('./../test/helpers/feathersStubs');
 const now = Date.now();
 const usersDb = [
   { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
-  { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
+  { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null }
 ];
 
 // Tests

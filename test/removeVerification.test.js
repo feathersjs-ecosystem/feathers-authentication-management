@@ -1,5 +1,5 @@
 
-/* global assert, describe, it */
+/* global describe, it */
 /* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
 
 const assert = require('chai').assert;
@@ -21,8 +21,8 @@ describe('hook:remove verification', () => {
         verifyExpires: Date.now(),
         verifyChanges: {},
         resetToken: '000',
-        resetExpires: Date.now(),
-      },
+        resetExpires: Date.now()
+      }
     };
   });
 
@@ -75,7 +75,7 @@ describe('hook:remove verification', () => {
   });
 
   it('works with multiple verified user', () => {
-    hookIn.result = [hookIn.result, hookIn.result]
+    hookIn.result = [hookIn.result, hookIn.result];
     assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
 
     hookIn.result.forEach(user => {
@@ -86,7 +86,7 @@ describe('hook:remove verification', () => {
       assert.notProperty(user, 'resetToken');
       assert.notProperty(user, 'resetExpires');
       assert.notProperty(user, 'verifyChanges');
-    })
+    });
   });
 
   it('does not throw with damaged hook', () => {

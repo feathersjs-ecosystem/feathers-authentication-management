@@ -15,7 +15,7 @@ const defaultResetDelay = 1000 * 60 * 60 * 2; // 2 hours
 const now = Date.now();
 const usersDb = [
   { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
-  { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
+  { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null }
 ];
 
 // Tests
@@ -46,14 +46,14 @@ const usersDb = [
           authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
               assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
               assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
               assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
-  
+
               done();
             })
             .catch(err => {
@@ -121,7 +121,7 @@ const usersDb = [
           authManagementService({
             longTokenLen: 10,
             shortTokenLen: 9,
-            shortTokenDigits: true,
+            shortTokenDigits: true
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -133,14 +133,14 @@ const usersDb = [
           authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
               assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
               assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
               assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
-  
+
               done();
             })
             .catch(err => {
@@ -163,7 +163,7 @@ const usersDb = [
           authManagementService({
             longTokenLen: 10,
             shortTokenLen: 9,
-            shortTokenDigits: false,
+            shortTokenDigits: false
           }).call(app); // define and attach authManagement service
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -175,14 +175,14 @@ const usersDb = [
           authManagement.create({ action: 'sendResetPwd', value: { email } })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-  
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
               assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
               assert.equal(db[i].resetShortToken.length, 60, 'reset short token wrong length');
               assert.match(db[i].resetShortToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
-  
+
               done();
             })
             .catch(err => {
@@ -209,7 +209,7 @@ const usersDb = [
             longTokenLen: 15,
             shortTokenLen: 6,
             shortTokenDigits: true,
-            notifier: spyNotifier.callWith,
+            notifier: spyNotifier.callWith
           }).call(app);
           authManagement = app.service('authManagement'); // get handle to authManagement
         });
@@ -217,7 +217,7 @@ const usersDb = [
         it('is called', (done) => {
           const email = 'b';
           const i = 1;
-  
+
           authManagement.create({
             action: 'sendResetPwd',
             value: { email },
@@ -225,24 +225,24 @@ const usersDb = [
           })
             .then(user => {
               assert.strictEqual(user.isVerified, true, 'user.isVerified not true');
-      
+
               assert.strictEqual(db[i].isVerified, true, 'isVerified not true');
               assert.isString(db[i].resetToken, 'resetToken not String');
               assert.equal(db[i].resetToken.length, 60, 'reset token wrong length');
               assert.match(db[i].resetToken, /^\$2[ayb]\$.{56}$/);
               aboutEqualDateTime(db[i].resetExpires, makeDateTime());
 
-              var expected = spyNotifier.result()[0].args
+              var expected = spyNotifier.result()[0].args;
 
               expected[1] = Object.assign(
-                {}, 
-                expected[1], 
+                {},
+                expected[1],
                 {
                   resetToken: db[i].resetToken,
                   resetShortToken: db[i].resetShortToken
                 }
-              )
-      
+              );
+
               assert.deepEqual(
                 expected,
                 [
@@ -250,7 +250,7 @@ const usersDb = [
                   sanitizeUserForEmail(db[i]),
                   { transport: 'sms' }
                 ]);
-      
+
               done();
             })
             .catch(err => {
@@ -263,25 +263,24 @@ const usersDb = [
   });
 });
 
-
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
+function notifier (action, user, notifierOptions, newEmail) {
   return Promise.resolve(user);
 }
 
-function makeDateTime(options1) {
+function makeDateTime (options1) {
   options1 = options1 || {};
   return Date.now() + (options1.delay || defaultResetDelay);
 }
 
-function aboutEqualDateTime(time1, time2, msg, delta) {
+function aboutEqualDateTime (time1, time2, msg, delta) {
   delta = delta || 1500;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = clone(user);
 
   delete user1.password;
@@ -289,6 +288,6 @@ function sanitizeUserForEmail(user) {
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }
