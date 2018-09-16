@@ -9,9 +9,12 @@ const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:helpers');
 
 const hashPassword = (app1, password) => {
+  const authentication = app1.get('authentication');
+  const passwordField = authentication ? authentication.local.passwordField : 'password';
+
   const hook = {
     type: 'before',
-    data: { password },
+    data: { [passwordField]: password },
     params: { provider: null },
     app: {
       get (str) {
@@ -21,7 +24,7 @@ const hashPassword = (app1, password) => {
   };
 
   return auth.hashPassword()(hook)
-    .then(hook1 => hook1.data.password);
+    .then(hook1 => hook1.data[passwordField]);
 };
 
 var concatIDAndHash = (id, token) => `${id}___${token}`;
