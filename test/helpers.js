@@ -12,7 +12,7 @@ describe('helpers - sanitization', () => {
       resetToken: 'aaa',
     };
 
-    const result1 = helpers.sanitizeUserForClient()(user);
+    const result1 = helpers.sanitizeUserForClient(user);
     const result2 = helpers.sanitizeUserForNotifier(user);
 
     assert.doesNotThrow(() => JSON.stringify(result1));
@@ -29,7 +29,7 @@ describe('helpers - sanitization', () => {
 
     user.self = user;
 
-    const result1 = helpers.sanitizeUserForClient()(user);
+    const result1 = helpers.sanitizeUserForClient(user);
     const result2 = helpers.sanitizeUserForNotifier(user);
 
     assert.throws(() => JSON.stringify(result1), TypeError);
@@ -49,7 +49,7 @@ describe('helpers - sanitization', () => {
 
     user.self = user;
 
-    const result1 = helpers.sanitizeUserForClient()(user);
+    const result1 = helpers.sanitizeUserForClient(user);
     const result2 = helpers.sanitizeUserForNotifier(user);
 
     assert.doesNotThrow(() => JSON.stringify(result1));
@@ -69,7 +69,7 @@ describe('helpers - sanitization', () => {
 
     user.self = user;
 
-    const result1 = helpers.sanitizeUserForClient()(user);
+    const result1 = helpers.sanitizeUserForClient(user);
     const result2 = helpers.sanitizeUserForNotifier(user);
 
     assert.doesNotThrow(() => JSON.stringify(result1));
@@ -78,7 +78,7 @@ describe('helpers - sanitization', () => {
 
   it('allows for customized sanitize function', (done) => {
     function customSanitizeUserForClient(user) {
-      const user1 = helpers.sanitizeUserForClient()(user)
+      const user1 = helpers.sanitizeUserForClient(user)
       delete user1.sensitiveData
       return user1
     }

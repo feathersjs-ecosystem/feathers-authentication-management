@@ -24,13 +24,13 @@ const optionsDefault = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ['email']
+  identifyUserProps: ['email'],
+  sanitizeUserForClient
 };
 
 module.exports = function (options1 = {}) {
   debug('service being configured.');
   const options = Object.assign({}, optionsDefault, options1);
-  options.sanitizeUserForClient = options.sanitizeUserForClient || sanitizeUserForClient(options.privateProps);
 
   return function () {
     return authManagement(options, this);

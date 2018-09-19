@@ -18,7 +18,7 @@ const optionsDefault = {
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
   identifyUserProps: ['email'],
-  sanitizeUserForClient: helpers.sanitizeUserForClient()
+  sanitizeUserForClient: helpers.sanitizeUserForClient
 };
 
 const userMgntOptions = {

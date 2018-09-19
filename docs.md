@@ -220,6 +220,7 @@ authManagement.create({ action: 'resetPwdLong',
   value: {
     token, // compares to .resetToken
     password, // new password
+    passwordField, // field the password is stored. default: 'password'
   },
 })
 
@@ -229,6 +230,7 @@ authManagement.create({ action: 'resetPwdShort',
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .resetShortToken
     password, // new password
+    passwordField, // field the password is stored. default: 'password'
   },
 })
 
@@ -238,6 +240,7 @@ authManagement.create({ action: 'passwordChange',
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     oldPassword, // old password for verification
     password, // new password
+    passwordField, // field the password is stored. default: 'password'
   },
 })
 
@@ -247,6 +250,7 @@ authManagement.create({ action: 'identityChange',
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     password, // current password for verification
     changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+    passwordField, // field the password is stored. default: 'password'
   },
 })
 
@@ -294,16 +298,16 @@ authManagement.verifySignupShort(verifyShortToken, identifyUser)
 authManagement.sendResetPwd(identifyUser, notifierOptions)
 
 // forgotten password verification with long token
-authManagement.resetPwdLong(resetToken, password)
+authManagement.resetPwdLong(resetToken, password, passwordField)
 
 // forgotten password verification with short token
-authManagement.resetPwdShort(resetShortToken, identifyUser, password)
+authManagement.resetPwdShort(resetShortToken, identifyUser, password, passwordField)
 
 // change password
-authManagement.passwordChange(oldPassword, password, identifyUser)
+authManagement.passwordChange(oldPassword, password, identifyUser, passwordField)
 
 // change identity
-authManagement.identityChange(password, changesIdentifyUser, identifyUser)
+authManagement.identityChange(password, changesIdentifyUser, identifyUser, passwordField)
 
 // Authenticate user and log on if user is verified. v0.x only.
 authManagement.authenticate(email, password)

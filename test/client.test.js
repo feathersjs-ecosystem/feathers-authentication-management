@@ -135,7 +135,7 @@ describe('client - promise methods', () => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
           action: 'resetPwdLong',
-          value: { token: '000', password: '12345678' }
+          value: { token: '000', password: '12345678', passwordField: undefined }
         });
         
         done();
@@ -148,7 +148,7 @@ describe('client - promise methods', () => {
         assert.deepEqual(spyParams, {});
         assert.deepEqual(spyData, {
           action: 'resetPwdShort',
-          value: { token: '000', user: { email: 'a@a.com' }, password: '12345678' },
+          value: { token: '000', user: { email: 'a@a.com' }, password: '12345678', passwordField: undefined },
         });
         
         done();
@@ -159,7 +159,7 @@ describe('client - promise methods', () => {
     authManagement.passwordChange('12345678', 'password', { email: 'a' })
       .then(() => {
         assert.deepEqual(spyData, {
-          action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
+          action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password', passwordField: undefined },
         });
         
         done();
@@ -170,7 +170,7 @@ describe('client - promise methods', () => {
     authManagement.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' })
       .then(() => {
         assert.deepEqual(spyData, {
-          action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
+          action: 'identityChange', value: { user: { username: 'q' }, password: '12345678', passwordField: undefined,
             changes: { email: 'b@b.com' } },
         });
         

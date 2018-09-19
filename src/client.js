@@ -38,24 +38,24 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
     notifierOptions
   }, {});
 
-  this.resetPwdLong = (resetToken, password) => authManagement.create({
+  this.resetPwdLong = (resetToken, password, passwordField) => authManagement.create({
     action: 'resetPwdLong',
-    value: { token: resetToken, password }
+    value: { token: resetToken, password, passwordField }
   }, {});
 
-  this.resetPwdShort = (resetShortToken, identifyUser, password) => authManagement.create({
+  this.resetPwdShort = (resetShortToken, identifyUser, password, passwordField) => authManagement.create({
     action: 'resetPwdShort',
-    value: { user: identifyUser, token: resetShortToken, password }
+    value: { user: identifyUser, token: resetShortToken, password, passwordField }
   }, {});
 
-  this.passwordChange = (oldPassword, password, identifyUser) => authManagement.create({
+  this.passwordChange = (oldPassword, password, identifyUser, passwordField) => authManagement.create({
     action: 'passwordChange',
-    value: { user: identifyUser, oldPassword, password }
+    value: { user: identifyUser, oldPassword, password, passwordField }
   }, {});
 
-  this.identityChange = (password, changesIdentifyUser, identifyUser) => authManagement.create({
+  this.identityChange = (password, changesIdentifyUser, identifyUser, passwordField) => authManagement.create({
     action: 'identityChange',
-    value: { user: identifyUser, password, changes: changesIdentifyUser }
+    value: { user: identifyUser, password, changes: changesIdentifyUser, passwordField }
   }, {});
 
   this.authenticate = (email, password, cb) => {
