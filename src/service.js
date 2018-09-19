@@ -55,7 +55,7 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
         case 'verifySignupShort':
           return verifySignupWithShortToken(options, data.value.token, data.value.user);
         case 'sendResetPwd':
-          return sendResetPwd(options, data.value, data.notifierOptions);
+          return sendResetPwd(options, data.value, data.notifierOptions, data.passwordField);
         case 'resetPwdLong':
           return resetPwdWithLongToken(options, data.value.token, data.value.password, data.value.passwordField);
         case 'resetPwdShort':

@@ -32,9 +32,10 @@ function AuthManagement (app) { // eslint-disable-line no-unused-vars
     value: { user: identifyUser, token: verifyShortToken }
   }, {});
 
-  this.sendResetPwd = (identifyUser, notifierOptions) => authManagement.create({
+  this.sendResetPwd = (identifyUser, notifierOptions, passwordField) => authManagement.create({
     action: 'sendResetPwd',
     value: identifyUser,
+    passwordField,
     notifierOptions
   }, {});
 

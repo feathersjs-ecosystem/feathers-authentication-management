@@ -13,8 +13,10 @@ const {
   concatIDAndHash
 } = require('./helpers');
 
-module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
+module.exports = function sendResetPwd (options, identifyUser, notifierOptions, passwordFieldName) {
   debug('sendResetPwd');
+  const passwordField = passwordFieldName || 'password';
+  const notifierOpts = Object.assign({}, notifierOptions, { passwordField });
   const users = options.app.service(options.service);
   const usersIdName = users.id;
   const {
@@ -42,7 +44,7 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
         resetShortToken: shortToken
       })
     )
-    .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions).then(() => user))
+    .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOpts).then(() => user))
     .then(user => Promise.all([
       user,
       hashPassword(options.app, user.resetToken),

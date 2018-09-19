@@ -235,7 +235,7 @@ const usersDb = [
                 expected[1], 
                 {
                   resetToken: db[i].resetToken,
-                  resetShortToken: db[i].resetShortToken
+                  resetShortToken: db[i].resetShortToken,
                 }
               )
       
@@ -244,7 +244,7 @@ const usersDb = [
                 [
                   'sendResetPwd',
                   sanitizeUserForEmail(db[i]),
-                  { transport: 'sms' }
+                  { passwordField: 'password', transport: 'sms' }
                 ]);
       
               done();

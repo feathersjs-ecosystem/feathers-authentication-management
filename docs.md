@@ -212,6 +212,7 @@ authManagement.create({ action: 'verifySignupShort',
 // send forgotten password notification
 authManagement.create({ action: 'sendResetPwd',
   value: identifyUser, // {email}, {token: verifyToken}
+  passwordField, // field the password is stored. default: 'password'
   notifierOptions, // options passed to options.notifier, e.g. {preferredComm: 'email'}
 })
 
@@ -295,7 +296,7 @@ authManagement.verifySignupLong(verifyToken)
 authManagement.verifySignupShort(verifyShortToken, identifyUser)
 
 // send forgotten password notification
-authManagement.sendResetPwd(identifyUser, notifierOptions)
+authManagement.sendResetPwd(identifyUser, notifierOptions, passwordField)
 
 // forgotten password verification with long token
 authManagement.resetPwdLong(resetToken, password, passwordField)

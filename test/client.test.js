@@ -122,6 +122,7 @@ describe('client - promise methods', () => {
         assert.deepEqual(spyData, {
           action: 'sendResetPwd',
           value: 'a@a.com',
+          passwordField: undefined,
           notifierOptions: { b: 'b' }
         });
         
