@@ -271,7 +271,7 @@ function makeDateTime(options1) {
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {
-  delta = delta || 1700;
+  delta = delta || 2000;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }
