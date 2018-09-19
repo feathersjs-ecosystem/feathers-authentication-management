@@ -57,8 +57,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
 
@@ -102,8 +101,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });
@@ -144,8 +142,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });
@@ -186,8 +183,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });
@@ -254,8 +250,7 @@ const usersDb = [
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });
