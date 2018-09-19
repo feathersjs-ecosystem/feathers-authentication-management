@@ -24,13 +24,13 @@ const optionsDefault = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ['email'],
-  sanitizeUserForClient
+  identifyUserProps: ['email']
 };
 
 module.exports = function (options1 = {}) {
   debug('service being configured.');
   const options = Object.assign({}, optionsDefault, options1);
+  options.sanitizeUserForClient = options.sanitizeUserForClient || sanitizeUserForClient(options.privateProps);
 
   return function () {
     return authManagement(options, this);
@@ -57,16 +57,16 @@ function authManagement (options, app) { // 'function' needed as we use 'this'
         case 'sendResetPwd':
           return sendResetPwd(options, data.value, data.notifierOptions);
         case 'resetPwdLong':
-          return resetPwdWithLongToken(options, data.value.token, data.value.password);
+          return resetPwdWithLongToken(options, data.value.token, data.value.password, data.value.passwordField);
         case 'resetPwdShort':
           return resetPwdWithShortToken(
-            options, data.value.token, data.value.user, data.value.password);
+            options, data.value.token, data.value.user, data.value.password, data.value.passwordField);
         case 'passwordChange':
           return passwordChange(
-            options, data.value.user, data.value.oldPassword, data.value.password);
+            options, data.value.user, data.value.oldPassword, data.value.password, data.value.passwordField);
         case 'identityChange':
           return identityChange(
-            options, data.value.user, data.value.password, data.value.changes);
+            options, data.value.user, data.value.password, data.value.changes, data.value.passwordField);
         case 'options':
           return Promise.resolve(options);
         default:

@@ -14,27 +14,28 @@ const {
   deconstructId
 } = require('./helpers');
 
-module.exports.resetPwdWithLongToken = function (options, resetToken, password) {
+module.exports.resetPwdWithLongToken = function (options, resetToken, password, passwordField = 'password') {
   return Promise.resolve()
     .then(() => {
-      ensureValuesAreStrings(resetToken, password);
+      ensureValuesAreStrings(passwordField, resetToken, password);
 
       return resetPassword(options, { resetToken }, { resetToken }, password);
     });
 };
 
-module.exports.resetPwdWithShortToken = function (options, resetShortToken, identifyUser, password) {
+module.exports.resetPwdWithShortToken = function (options, resetShortToken, identifyUser, password, passwordField = 'password') {
   return Promise.resolve()
     .then(() => {
-      ensureValuesAreStrings(resetShortToken, password);
+      ensureValuesAreStrings(passwordField, resetShortToken, password);
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
       return resetPassword(options, identifyUser, { resetShortToken }, password);
     });
 };
 
-function resetPassword (options, query, tokens, password) {
+function resetPassword (options, query, tokens, password, passwordFieldName) {
   debug('resetPassword', query, tokens, password);
+  const passwordField = passwordFieldName || 'password';
   const users = options.app.service(options.service);
   const usersIdName = users.id;
   const {
@@ -85,12 +86,12 @@ function resetPassword (options, query, tokens, password) {
     })
     .then(([user, hashedPassword]) => {
       return patchUser(user, {
-        password: hashedPassword,
+        [passwordField]: hashedPassword,
         resetToken: null,
         resetShortToken: null,
         resetExpires: null
       })
-        .then(user1 => notifier(options.notifier, 'resetPwd', user1))
+        .then(user1 => notifier(options.notifier, 'resetPwd', user1, { passwordField }))
         .then(user1 => sanitizeUserForClient(user1));
     });
 

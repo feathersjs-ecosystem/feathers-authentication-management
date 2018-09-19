@@ -292,7 +292,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
                 [
                   'resetPwd',
                   Object.assign({}, sanitizeUserForEmail(db[i])),
-                  {}
+                  { passwordField: 'password' }
                 ]);
 
               done();

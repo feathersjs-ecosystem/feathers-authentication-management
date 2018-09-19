@@ -83,8 +83,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
 
@@ -103,8 +102,7 @@ const usersDbPromise = new Promise((resolve, reject) => {
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
 
@@ -200,14 +198,13 @@ const usersDbPromise = new Promise((resolve, reject) => {
                 [
                   'resetPwd',
                   Object.assign({}, sanitizeUserForEmail(db[i])),
-                  {}
+                  { passwordField: 'password' }
                 ]);
         
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });

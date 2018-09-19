@@ -8,13 +8,15 @@ const {
   getLongToken,
   getShortToken,
   ensureObjPropsValid,
+  ensureValuesAreStrings,
   comparePasswords,
   notifier
 } = require('./helpers');
 
-module.exports = function identityChange (options, identifyUser, password, changesIdentifyUser) {
+module.exports = function identityChange (options, identifyUser, password, changesIdentifyUser, passwordFieldName) {
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);
+  const passwordField = passwordFieldName || 'password';
   const users = options.app.service(options.service);
   const usersIdName = users.id;
   const {
@@ -23,6 +25,7 @@ module.exports = function identityChange (options, identifyUser, password, chang
 
   return Promise.resolve()
     .then(() => {
+      ensureValuesAreStrings(passwordField);
       ensureObjPropsValid(identifyUser, options.identifyUserProps);
       ensureObjPropsValid(changesIdentifyUser, options.identifyUserProps);
 
@@ -34,7 +37,7 @@ module.exports = function identityChange (options, identifyUser, password, chang
       user1,
       getLongToken(options.longTokenLen),
       getShortToken(options.shortTokenLen, options.shortTokenDigits),
-      comparePasswords(password, user1.password,
+      comparePasswords(password, user1[passwordField],
         () => new errors.BadRequest('Password is incorrect.',
           { errors: { password: 'Password is incorrect.', $className: 'badParams' } })
       )

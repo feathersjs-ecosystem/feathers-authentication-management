@@ -95,8 +95,7 @@ describe('passwordChange - setup', () => {
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
 
@@ -117,8 +116,7 @@ describe('passwordChange - setup', () => {
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
 
@@ -139,7 +137,8 @@ describe('passwordChange - setup', () => {
               assert.isString(err.message);
               assert.isNotFalse(err.message);
               done();
-            });
+            })
+            .catch(done);
         });
       });
 
@@ -180,13 +179,12 @@ describe('passwordChange - setup', () => {
                 [
                   'passwordChange',
                   sanitizeUserForEmail(db[i]),
-                  {}
+                  { passwordField: 'password' }
                 ]);
               done();
             })
             .catch(err => {
-              assert.strictEqual(err, null, 'err code set');
-              done();
+              done(err);
             });
         });
       });

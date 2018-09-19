@@ -18,7 +18,7 @@ const optionsDefault = {
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
   identifyUserProps: ['email'],
-  sanitizeUserForClient: helpers.sanitizeUserForClient
+  sanitizeUserForClient: helpers.sanitizeUserForClient()
 };
 
 const userMgntOptions = {
@@ -84,35 +84,40 @@ describe('multiple services', () => {
       user.create({ username: 'John Doe' })
         .catch(err => {
           console.log(err);
-          done();
+          done(err);
         })
         .then(result => {
           assert.equal(result.username, 'John Doe');
           assert.equal(result.verifyShortToken.length, 8);
 
           done();
-        });
+        })
+        .catch(done);
     });
 
     it('can call service', (done) => {
       const userMgnt = app.service('authManagement');
 
-      const options = userMgnt.create({ action: 'options' })
+      userMgnt.create({ action: 'options' })
         .catch(err => console.log(err))
         .then(options => {
           assert.property(options, 'app');
           assert.property(options, 'notifier');
+          assert.property(options, 'sanitizeUserForClient');
           delete options.app;
           delete options.notifier;
+          delete options.sanitizeUserForClient;
 
           const expected = Object.assign({}, optionsDefault, userMgntOptions);
           delete expected.app;
           delete expected.notifier;
+          delete expected.sanitizeUserForClient;
 
           assert.deepEqual(options, expected);
 
           done();
-        });
+        })
+        .catch(done);
     });
   });
 
@@ -166,12 +171,15 @@ describe('multiple services', () => {
         .then(options => {
           assert.property(options, 'app');
           assert.property(options, 'notifier');
+          assert.property(options, 'sanitizeUserForClient');
           delete options.app;
           delete options.notifier;
+          delete options.sanitizeUserForClient;
 
           const expected = Object.assign({}, optionsDefault, userMgntOptions);
           delete expected.app;
           delete expected.notifier;
+          delete expected.sanitizeUserForClient;
 
           assert.deepEqual(options, expected);
 
@@ -181,18 +189,23 @@ describe('multiple services', () => {
             .then(options => {
               assert.property(options, 'app');
               assert.property(options, 'notifier');
+              assert.property(options, 'sanitizeUserForClient');
               delete options.app;
               delete options.notifier;
+              delete options.sanitizeUserForClient;
 
               const expected = Object.assign({}, optionsDefault, orgMgntOptions);
               delete expected.app;
               delete expected.notifier;
+              delete expected.sanitizeUserForClient;
 
               assert.deepEqual(options, expected);
 
               done();
             })
-        });
+            .catch(done);
+        })
+        .catch(done);
 
     });
   });

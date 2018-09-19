@@ -145,7 +145,7 @@ const ensureFieldHasChanged = (obj1, obj2) => (field) => {
   return obj1 && obj2 && obj1[field] !== obj2[field];
 };
 
-const sanitizeUserForClient = user => {
+const sanitizeUserForClient = (additionalPrivateProps) => (user) => {
   const user1 = cloneObject(user);
 
   delete user1.password;
@@ -156,6 +156,12 @@ const sanitizeUserForClient = user => {
   delete user1.resetExpires;
   delete user1.resetToken;
   delete user1.resetShortToken;
+
+  if (Array.isArray(additionalPrivateProps)) {
+    additionalPrivateProps.forEach(prop => {
+      delete user1[prop];
+    });
+  }
 
   return user1;
 };
