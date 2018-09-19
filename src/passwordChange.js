@@ -22,7 +22,7 @@ module.exports = function passwordChange (options, identifyUser, oldPassword, pa
     sanitizeUserForClient
   } = options;
 
-  debug(action, `field<${passwordField}>`, oldPassword, password);
+  debug(action, `field:${passwordField}`, oldPassword, password);
 
   return Promise.resolve()
     .then(() => {
