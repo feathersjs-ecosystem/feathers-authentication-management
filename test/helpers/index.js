@@ -1,6 +1,11 @@
-module.exports.saveHash = function saveHash (item, property) {
-  return function (hash) {
+
+function saveHash (item, property) {
+  return hash => {
     item[property] = hash;
     return item;
   };
+}
+
+module.exports = {
+  saveHash
 };

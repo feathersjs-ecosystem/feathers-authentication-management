@@ -1,10 +1,11 @@
 ### Steps to reproduce
 
-(First please check that this issue is not already solved as [described
-here](https://github.com/feathersjs/feathers/blob/master/.github/contributing.md#report-a-bug))
-
 - [ ] Tell us what broke. The more detailed the better.
-- [ ] If you can, please create a simple example that reproduces the issue and link to a gist, jsbin, repo, etc.
+- [ ] Include the `feathers-gen-specs.json` file from your app.
+- [ ] Include the `src/services/[serviceName]/[serviceName].schema.?s` files if the issue involves the fields in one or more services.
+
+These last 2 items usually allow us to regen enough of your app to recreate the issue.
+We may otherwise ask you to provide a minimal GitHub repo or gist isolating the issue.
 
 ### Expected behavior
 Tell us what should happen

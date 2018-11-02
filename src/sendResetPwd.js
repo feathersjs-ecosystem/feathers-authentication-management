@@ -3,15 +3,8 @@
 
 const debug = require('debug')('authManagement:sendResetPwd');
 
-const {
-  getUserData,
-  ensureObjPropsValid,
-  getLongToken,
-  hashPassword,
-  getShortToken,
-  notifier,
-  concatIDAndHash
-} = require('./helpers');
+const { getUserData, ensureObjPropsValid, getLongToken, hashPassword, getShortToken, notifier,
+  concatIDAndHash } = require('./helpers');
 
 module.exports = function sendResetPwd (options, identifyUser, notifierOptions) {
   debug('sendResetPwd');
@@ -43,11 +36,12 @@ module.exports = function sendResetPwd (options, identifyUser, notifierOptions) 
       })
     )
     .then(user => notifier(options.notifier, 'sendResetPwd', user, notifierOptions).then(() => user))
-    .then(user => Promise.all([
-      user,
-      hashPassword(options.app, user.resetToken),
-      hashPassword(options.app, user.resetShortToken)
-    ])
+    .then(user =>
+      Promise.all([
+        user,
+        hashPassword(options.app, user.resetToken),
+        hashPassword(options.app, user.resetShortToken)
+      ])
     )
     .then(([ user, longToken, shortToken ]) =>
       patchUser(user, {

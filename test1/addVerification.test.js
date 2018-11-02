@@ -57,7 +57,7 @@ describe('hook:addVerification', () => {
           done();
         });
     });
-    
+
     it('delay option works', (done) => {
       const options = { delay: 1000 * 60 * 60 * 24 * 5 }; // 5 days}
       
@@ -359,16 +359,16 @@ describe('hook:addVerification', () => {
         });
     });
   });
-  
+
   it('throws if not before', () => {
     hookIn.type = 'after';
-    
+
     assert.throws(() => { hooks.isVerified()(hookIn); });
   });
-  
+
   it('throws if not create, update or patch', () => {
     hookIn.method = 'get';
-    
+
     assert.throws(() => { hooks.isVerified()(hookIn); });
   });
 });

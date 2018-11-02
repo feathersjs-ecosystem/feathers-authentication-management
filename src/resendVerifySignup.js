@@ -3,13 +3,8 @@
 
 const debug = require('debug')('authManagement:resendVerifySignup');
 
-const {
-  getUserData,
-  ensureObjPropsValid,
-  getLongToken,
-  getShortToken,
-  notifier
-} = require('./helpers');
+const { getUserData, ensureObjPropsValid, getLongToken, getShortToken, notifier } =
+  require('./helpers');
 
 // {email}, {cellphone}, {verifyToken}, {verifyShortToken},
 // {email, cellphone, verifyToken, verifyShortToken}
@@ -17,9 +12,7 @@ module.exports = function resendVerifySignup (options, identifyUser, notifierOpt
   debug('resendVerifySignup', identifyUser);
   const users = options.app.service(options.service);
   const usersIdName = users.id;
-  const {
-    sanitizeUserForClient
-  } = options;
+  const { sanitizeUserForClient } = options;
 
   return Promise.resolve()
     .then(() => {
