@@ -1,11 +1,8 @@
 
-/* global assert, describe, it */
-/* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
-
 const assert = require('chai').assert;
-const SpyOn = require('./helpers/basicSpy');
+const SpyOn = require('./helpers/basic-spy');
 
-describe('feathersStubs::SpyOn', () => {
+describe('spy-on.test.js', () => {
   it('works with functions without callbacks', () => {
     const spy = new SpyOn(test);
     spy.callWith(1, 2, 3);

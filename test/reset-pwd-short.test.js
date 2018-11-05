@@ -13,27 +13,27 @@ const makeUsersService = (options) => function (app) {
   app.use('/users', feathersMemory(options));
 };
 
-const fieldToHash = 'resetToken';
+const fieldToHash = 'resetShortToken';
 const users_Id = [
   // The added time interval must be longer than it takes to run ALL the tests
-  { _id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + maxTimeAllTests },
-  { _id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
-  { _id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - maxTimeAllTests },
-  { _id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - maxTimeAllTests },
+  { _id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: '00099', resetExpires: now + maxTimeAllTests },
+  { _id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
+  { _id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: '11199', resetExpires: now - maxTimeAllTests },
+  { _id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: '22299', resetExpires: now - maxTimeAllTests },
 ];
 
 const usersId = [
   // The added time interval must be longer than it takes to run ALL the tests
-  { id: 'a', email: 'a', isVerified: true, resetToken: 'a___000', resetExpires: now + maxTimeAllTests },
-  { id: 'b', email: 'b', isVerified: true, resetToken: null, resetExpires: null },
-  { id: 'c', email: 'c', isVerified: true, resetToken: 'c___111', resetExpires: now - maxTimeAllTests },
-  { id: 'd', email: 'd', isVerified: false, resetToken: 'd___222', resetExpires: now - maxTimeAllTests },
+  { id: 'a', email: 'a', username: 'aa', isVerified: true, resetToken: '000', resetShortToken: '00099', resetExpires: now + maxTimeAllTests },
+  { id: 'b', email: 'b', username: 'bb', isVerified: true, resetToken: null, resetShortToken: null, resetExpires: null },
+  { id: 'c', email: 'c', username: 'cc', isVerified: true, resetToken: '111', resetShortToken: '11199', resetExpires: now - maxTimeAllTests },
+  { id: 'd', email: 'd', username: 'dd', isVerified: false, resetToken: '222', resetShortToken: '22299', resetExpires: now - maxTimeAllTests },
 ];
 
 // Tests
-['_id', 'id'].forEach(idType => {
-  ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`reset-pwd-long.js ${pagination} ${idType}`, function () {
+['_id',/* 'id'*/].forEach(idType => {
+  ['paginated',/* 'non-paginated'*/].forEach(pagination => {
+    describe(`reset-pwd-short.js ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
@@ -47,7 +47,7 @@ const usersId = [
           app = feathers();
           app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
           app.configure(authLocalMgnt({
-
+            identifyUserProps: ['email', 'username']
           }));
           app.setup();
           authLocalMgntService = app.service('authManagement');
@@ -70,8 +70,14 @@ const usersId = [
         it('verifies valid token', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'a___000', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {
+                  username: db[0].username
+                }
+              },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -92,8 +98,14 @@ const usersId = [
         it('user is sanitized', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'a___000', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {
+                  username: db[0].username
+                }
+              },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -101,6 +113,7 @@ const usersId = [
             assert.strictEqual(result.resetToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetShortToken, undefined, 'resetShortToken not undefined');
             assert.strictEqual(result.resetExpires, undefined, 'resetExpires not undefined');
+
             assert.isString(user.password, 'password not a string');
             assert.equal(user.password.length, 60, 'password wrong length');
           } catch (err) {
@@ -109,11 +122,84 @@ const usersId = [
           }
         });
 
+        it('handles multiple user ident', async () => {
+          try {
+            result = await authLocalMgntService.create({
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {
+                  email: db[0].email,
+                  username: db[0].username
+                }
+              },
+            });
+            const user = await usersService.get(result.id || result._id);
+
+            assert.strictEqual(result.isVerified, true, 'isVerified not true');
+            assert.strictEqual(result.resetToken, undefined, 'resetToken not undefined');
+            assert.strictEqual(result.resetShortToken, undefined, 'resetShortToken not undefined');
+            assert.strictEqual(result.resetExpires, undefined, 'resetExpires not undefined');
+
+            assert.isString(user.password, 'password not a string');
+            assert.equal(user.password.length, 60, 'password wrong length');
+          } catch (err) {
+            console.log(err);
+            assert.strictEqual(err, null, 'err code set');
+          }
+        });
+
+        it('requires user ident', async () => {
+          try {
+            result = await authLocalMgntService.create({
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {}
+              },
+            });
+
+            assert(false, 'unexpected succeeded.');
+          } catch (err) {
+            assert.isString(err.message);
+            assert.isNotFalse(err.message);
+          }
+        });
+
+        it('throws on non-configured user ident', async () => {
+          try {
+            result = await authLocalMgntService.create({
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {
+                  email: db[0].email,
+                  resetShortToken: '00099',
+                }
+              },
+            });
+
+            assert(false, 'unexpected succeeded.');
+          } catch (err) {
+            assert.isString(err.message);
+            assert.isNotFalse(err.message);
+          }
+        });
+
         it('error on unverified user', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'd___222', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '22299',
+                password: '123456',
+                user: {
+                  email: db[3].email,
+                }
+              },
             });
 
             assert(false, 'unexpected succeeded.');
@@ -126,8 +212,14 @@ const usersId = [
         it('error on expired token', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'c___111', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '11199',
+                password: '123456',
+                user: {
+                  username: db[2].username,
+                }
+              },
             });
 
             assert(false, 'unexpected succeeded.');
@@ -137,11 +229,37 @@ const usersId = [
           }
         });
 
-        it('error on token not found', async () => {
+        it('error on user not found', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'a___999', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '999',
+                password: '123456',
+                user: {
+                  email: '999',
+                }
+              },
+            });
+
+            assert(false, 'unexpected succeeded.');
+          } catch (err) {
+            assert.isString(err.message);
+            assert.isNotFalse(err.message);
+          }
+        });
+
+        it('error incorrect token', async () => {
+          try {
+            result = await authLocalMgntService.create({
+              action: 'resetPwdShort',
+              value: {
+                token: '999',
+                password: '123456',
+                user: {
+                  email: db[0].email,
+                }
+              },
             });
 
             assert(false, 'unexpected succeeded.');
@@ -166,8 +284,9 @@ const usersId = [
           app = feathers();
           app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
           app.configure(authLocalMgnt({
+            // maybe reset identifyUserProps
             notifier: spyNotifier.callWith,
-            testMode: true,
+            testMode: true
           }));
           app.setup();
           authLocalMgntService = app.service('authManagement');
@@ -177,12 +296,18 @@ const usersId = [
           db = clone(idType === '_id' ? users_Id : usersId);
           await usersService.create(db);
         });
-  
+
         it('verifies valid token', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'resetPwdLong',
-              value: { token: 'a___000', password: '123456' }
+              action: 'resetPwdShort',
+              value: {
+                token: '00099',
+                password: '123456',
+                user: {
+                  email: db[0].email,
+                }
+              },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -192,8 +317,9 @@ const usersId = [
             assert.strictEqual(user.resetToken, null, 'resetToken not null');
             assert.strictEqual(user.resetExpires, null, 'resetExpires not null');
 
-            assert.isString(user.password, 'password not a string');
-            assert.equal(user.password.length, 60, 'password wrong length');
+            const hash = user.password;
+            assert.isString(hash, 'password not a string');
+            assert.equal(hash.length, 60, 'password wrong length');
 
             assert.deepEqual(
               spyNotifier.result()[0].args,

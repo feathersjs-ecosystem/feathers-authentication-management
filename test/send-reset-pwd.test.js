@@ -1,35 +1,33 @@
 
-/* global assert, describe, it */
-/* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0,
-no-param-reassign: 0, no-unused-vars: 0  */
-
 const assert = require('chai').assert;
-const feathersStubs = require('./../test/helpers/feathersStubs');
-const authManagementService = require('../src/index');
-const SpyOn = require('./helpers/basicSpy');
+const feathers = require('@feathersjs/feathers');
+const feathersMemory = require('feathers-memory');
+const authLocalMgnt = require('../src/index');
+const SpyOn = require('./helpers/basic-spy');
+const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
 
-const defaultResetDelay = 1000 * 60 * 60 * 2; // 2 hours
 const now = Date.now();
+const timeout = timeoutEachTest;
 
 const makeUsersService = (options) => function (app) {
   app.use('/users', feathersMemory(options));
 };
 
 const usersId = [
-  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
+  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
   { id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
-]
+];
 
 const users_Id = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + 50000 },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
 ];
 
-// Tests
-
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`sendResetPwd ${pagination} ${idType}`, () => {
+    describe(`send-reset-pwd.js ${pagination} ${idType}`, function () {
+      this.timeout(timeoutEachTest);
+
       describe('basic', () => {
         let app;
         let usersService;
@@ -43,6 +41,7 @@ const users_Id = [
           app.configure(authLocalMgnt({
 
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -51,14 +50,13 @@ const users_Id = [
           await usersService.create(db);
         });
 
-        it('updates verified user', async () => {
+        it('updates verified user', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'b' },
+              value: { email: 'b' }
             });
             const user = await usersService.get(result.id || result._id);
-
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
@@ -68,45 +66,44 @@ const users_Id = [
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
           } catch (err) {
-            assert.strictEqual(err, null, 'err code set');
+            console.log(err);
+            assert(false, 'err code set');
           }
         });
 
-        it('error on unverified user', async () => {
+        it('error on unverified user', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'a' },
+              value: { email: 'a' }
             });
 
-            assert.fail(true, false, 'test unexpectedly succeeded');
+            assert(false, 'unexpected succeeded.');
           } catch (err) {
-            console.log(err);
             assert.isString(err.message);
             assert.isNotFalse(err.message);
           }
         });
 
-        it('error on email not found', async () => {
+        it('error on email not found', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'x' },
+              value: { email: 'x' }
             });
 
-            assert.fail(true, false, 'test unexpectedly succeeded');
+            assert(false, 'unexpected succeeded.');
           } catch (err) {
-            console.log(err);
             assert.isString(err.message);
             assert.isNotFalse(err.message);
           }
         });
 
-        it('user is sanitized', async () => {
+        it('user is sanitized', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'b' },
+              value: { email: 'b' }
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -114,7 +111,8 @@ const users_Id = [
             assert.strictEqual(result.resetShortToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetExpires, undefined, 'resetExpires not undefined');
           } catch (err) {
-            assert.strictEqual(err, null, 'err code set');
+            console.log(err);
+            assert(false, 'err code set');
           }
         });
       });
@@ -134,6 +132,7 @@ const users_Id = [
             shortTokenLen: 9,
             shortTokenDigits: true,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -142,15 +141,15 @@ const users_Id = [
           await usersService.create(db);
         });
 
-        it('updates verified user', async () => {
+        it('updates verified user', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'b' },
+              value: { email: 'b' }
             });
             const user = await usersService.get(result.id || result._id);
 
-            assert.strictEqual(record.isVerified, true, 'user.isVerified not true');
+            assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
             assert.isString(user.resetToken, 'resetToken not String');
@@ -159,7 +158,8 @@ const users_Id = [
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
           } catch (err) {
-            assert.strictEqual(err, null, 'err code set');
+            console.log(err);
+            assert(false, 'err code set');
           }
         });
       });
@@ -179,6 +179,7 @@ const users_Id = [
             shortTokenLen: 9,
             shortTokenDigits: false,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -187,11 +188,11 @@ const users_Id = [
           await usersService.create(db);
         });
 
-        it('updates verified user', async () => {
+        it('updates verified user', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
-              value: { email: 'b' },
+              value: { email: 'b' }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -204,7 +205,8 @@ const users_Id = [
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
           } catch (err) {
-            assert.strictEqual(err, null, 'err code set');
+            console.log(err);
+            assert(false, 'err code set');
           }
         });
       });
@@ -218,6 +220,8 @@ const users_Id = [
         let spyNotifier;
 
         beforeEach(async () => {
+          spyNotifier = new SpyOn(notifier);
+
           app = feathers();
           app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
           app.configure(authLocalMgnt({
@@ -226,6 +230,7 @@ const users_Id = [
             shortTokenDigits: true,
             notifier: spyNotifier.callWith,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -234,11 +239,12 @@ const users_Id = [
           await usersService.create(db);
         });
 
-        it('is called', async () => {
+        it('is called', async function () {
           try {
             result = await authLocalMgntService.create({
               action: 'sendResetPwd',
               value: { email: 'b' },
+              notifierOptions: { transport: 'sms' }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -251,25 +257,19 @@ const users_Id = [
             aboutEqualDateTime(user.resetExpires, makeDateTime());
 
             const expected = spyNotifier.result()[0].args
+            expected[1] = Object.assign({}, expected[1], {
+              resetToken: user.resetToken,
+              resetShortToken: user.resetShortToken
+            });
 
-            expected[1] = Object.assign(
-              {},
-              expected[1],
-              {
-                resetToken: user.resetToken,
-                resetShortToken: user.resetShortToken
-              }
-            )
-
-            assert.deepEqual(
-              expected,
-              [
-                'sendResetPwd',
-                sanitizeUserForEmail(user),
-                { transport: 'sms' }
-              ]);
+            assert.deepEqual(expected, [
+              'sendResetPwd',
+              sanitizeUserForEmail(user),
+              { transport: 'sms' }
+            ]);
           } catch (err) {
-            assert.strictEqual(err, null, 'err code set');
+            console.log(err);
+            assert(false, 'err code set');
           }
         });
       });
@@ -279,13 +279,18 @@ const users_Id = [
 
 
 // Helpers
+
+function notifier(action, user, notifierOptions, newEmail) {
+  return Promise.resolve(user);
+}
+
 function makeDateTime(options1) {
   options1 = options1 || {};
-  return Date.now() + (options1.delay || defaultResetDelay);
+  return Date.now() + (options1.delay || maxTimeAllTests);
 }
 
 function aboutEqualDateTime(time1, time2, msg, delta) {
-  delta = delta || 1500;
+  delta = delta || maxTimeAllTests;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }

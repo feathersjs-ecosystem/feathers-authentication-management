@@ -1,15 +1,12 @@
 
-/* global assert, describe, it */
-/* eslint  no-shadow: 0, no-var: 0, one-var: 0, one-var-declaration-per-line: 0 */
-
 const assert = require('chai').assert;
 const hooks = require('../src/index').hooks;
 
-var hookIn;
+let context;
 
-describe('hook:remove verification', () => {
+describe('remove-verification.test.js', () => {
   beforeEach(() => {
-    hookIn = {
+    context = {
       type: 'after',
       method: 'create',
       params: { provider: 'socketio' },
@@ -27,9 +24,9 @@ describe('hook:remove verification', () => {
   });
 
   it('works with verified user', () => {
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
 
-    const user = hookIn.result;
+    const user = context.result;
     assert.property(user, 'isVerified');
     assert.equal(user.isVerified, true);
     assert.notProperty(user, 'verifyToken');
@@ -40,11 +37,11 @@ describe('hook:remove verification', () => {
   });
 
   it('works with unverified user', () => {
-    hookIn.result.isVerified = false;
+    context.result.isVerified = false;
 
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
 
-    const user = hookIn.result;
+    const user = context.result;
     assert.property(user, 'isVerified');
     assert.equal(user.isVerified, false);
     assert.notProperty(user, 'verifyToken');
@@ -55,16 +52,16 @@ describe('hook:remove verification', () => {
   });
 
   it('works if addVerification not run', () => {
-    hookIn.result = {};
+    context.result = {};
 
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
   });
 
   it('noop if server initiated', () => {
-    hookIn.params.provider = undefined;
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    context.params.provider = undefined;
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
 
-    const user = hookIn.result;
+    const user = context.result;
     assert.property(user, 'isVerified');
     assert.equal(user.isVerified, true);
     assert.property(user, 'verifyToken');
@@ -75,10 +72,10 @@ describe('hook:remove verification', () => {
   });
 
   it('works with multiple verified user', () => {
-    hookIn.result = [hookIn.result, hookIn.result]
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    context.result = [context.result, context.result]
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
 
-    hookIn.result.forEach(user => {
+    context.result.forEach(user => {
       assert.property(user, 'isVerified');
       assert.equal(user.isVerified, true);
       assert.notProperty(user, 'verifyToken');
@@ -90,14 +87,14 @@ describe('hook:remove verification', () => {
   });
 
   it('does not throw with damaged hook', () => {
-    delete hookIn.result;
+    delete context.result;
 
-    assert.doesNotThrow(() => { hooks.removeVerification()(hookIn); });
+    assert.doesNotThrow(() => { hooks.removeVerification()(context); });
   });
 
   it('throws if not after', () => {
-    hookIn.type = 'before';
+    context.type = 'before';
 
-    assert.throws(() => { hooks.removeVerification()(hookIn); });
+    assert.throws(() => { hooks.removeVerification()(context); });
   });
 });

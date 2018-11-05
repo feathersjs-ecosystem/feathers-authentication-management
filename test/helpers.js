@@ -1,9 +1,20 @@
+
 const assert = require('chai').assert;
+const feathers = require('@feathersjs/feathers');
+const feathersMemory = require('feathers-memory');
+const authLocalMgnt = require('../src/index');
 const helpers = require('../src/helpers');
 const authManagementService = require('../src/index');
-const feathersStubs = require('./../test/helpers/feathersStubs');
 
-describe('helpers - sanitization', () => {
+const makeUsersService = (options) => function (app) {
+  app.use('/users', feathersMemory(options));
+};
+
+const users_Id = [
+  { _id: 'a', email: 'a', username: 'john a', sensitiveData: 'some secret' }
+];
+
+describe('helpers.js - sanitization', () => {
   it('allows to stringify sanitized user object', () => {
     const user = {
       id: 1,
@@ -76,32 +87,30 @@ describe('helpers - sanitization', () => {
     assert.doesNotThrow(() => JSON.stringify(result2));
   });
 
-  it('allows for customized sanitize function', (done) => {
-    function customSanitizeUserForClient(user) {
-      const user1 = helpers.sanitizeUserForClient(user)
-      delete user1.sensitiveData
-      return user1
-    }
-    const app = feathersStubs.app();
-    const usersDb = [
-      { _id: 'a', email: 'a', username: 'john a', sensitiveData: 'some secret' }
-    ];
-    const users = feathersStubs.users(app, usersDb, true);
-    authManagementService({
+  it('allows for customized sanitize function', async () => {
+    const app = feathers();
+    app.configure(makeUsersService({ id: '_id' }));
+    app.configure(authLocalMgnt({
       sanitizeUserForClient: customSanitizeUserForClient
-    }).call(app); // define and attach authManagement service
-    const authManagement = app.service('authManagement'); // get handle to authManagement
+    }));
+    app.setup();
+    const authManagement = app.service('authManagement');
 
-    const res = authManagement.create({
+    const usersService = app.service('users');
+    await usersService.remove(null);
+    await usersService.create(users_Id);
+
+    const result = await authManagement.create({
       action: 'resendVerifySignup',
       value: { email: 'a' }
-    })
-      .then((user) => {
-        assert.isUndefined(user.sensitiveData);
-        done()
-      })
-      .catch((err) => {
-        assert.fail(true, false, err);
-      })
+    });
+
+    assert.isUndefined(result.sensitiveData);
   })
 });
+
+function customSanitizeUserForClient(user) {
+  const user1 = helpers.sanitizeUserForClient(user);
+  delete user1.sensitiveData;
+  return user1;
+}

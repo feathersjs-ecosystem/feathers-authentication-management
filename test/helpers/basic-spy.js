@@ -1,6 +1,4 @@
 
-/* eslint no-param-reassign: 0 */
-
 /**
  * Create a light weight spy on functions.
  *
@@ -32,6 +30,7 @@
  *   });
  * });
  */
+
 function SpyOn (fcn) {
   if (!(this instanceof SpyOn)) { return new SpyOn(fcn); }
   const stack = [];

@@ -1,8 +1,11 @@
 
 const assert = require('chai').assert;
 const { isVerified } = require('../src/index').hooks;
+const { timeoutEachTest } = require('./helpers/config');
 
-describe('is-verified.test.js', () => {
+
+describe('is-verified.test.js', function () {
+  this.timeout(timeoutEachTest);
   let context;
 
   beforeEach(() => {

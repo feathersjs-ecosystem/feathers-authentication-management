@@ -8,20 +8,16 @@ const auth = require('@feathersjs/authentication-local').hooks;
 const errors = require('@feathersjs/errors');
 const debug = require('debug')('authManagement:helpers');
 
-const hashPassword = (app1, password) => {
+const hashPassword = async (app, password) => {
   const hook = {
     type: 'before',
     data: { password },
     params: { provider: null },
-    app: {
-      get (str) {
-        return app1.get(str);
-      }
-    }
+    app
   };
 
-  return auth.hashPassword()(hook)
-    .then(hook1 => hook1.data.password);
+  const newHook = await auth.hashPassword()(hook);
+  return newHook.data.password;
 };
 
 var concatIDAndHash = (id, token) => `${id}___${token}`;

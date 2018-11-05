@@ -3,6 +3,7 @@ const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
 const authLocalMgnt = require('../src/index');
+const { timeoutEachTest } = require('./helpers/config');
 
 const makeUsersService = (options) => function (app) {
   app.use('/users', feathersMemory(options));
@@ -22,7 +23,9 @@ const users_Id = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`check-unique.test.js ${pagination} ${idType}`, () => {
+    describe(`check-unique.test.js ${pagination} ${idType}`, function () {
+      this.timeout(timeoutEachTest);
+
       describe('standard', () => {
         let app;
         let usersService;
@@ -32,6 +35,7 @@ const users_Id = [
           app = feathers();
           app.configure(authLocalMgnt());
           app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -39,7 +43,7 @@ const users_Id = [
           await usersService.create(clone(idType === '_id' ? users_Id : usersId));
         });
 
-        it('returns a promise', () => {
+        it('returns a promise', async () => {
           const res = authLocalMgntService.create({
             action: 'checkUnique',
             value: { username: 'john a' },
@@ -47,8 +51,8 @@ const users_Id = [
             .then(() => {})
             .catch(() => {});
 
-          assert.isOk(res, 'nothing returned');
-          assert.isFunction(res.then, 'not a promise');
+          assert.isOk(res, 'no promise returned');
+          assert.isFunction(res.then, 'not a function');
         });
 
         it('handles empty query', async () => {
@@ -58,19 +62,21 @@ const users_Id = [
               value: {},
             });
           } catch (err) {
+            console.log(err);
             assert(false, `unexpectedly failed: ${err.message}`);
           }
         });
 
         it('handles empty query returning nothing', async () => {
-          return authLocalMgntService.create({
-            action: 'checkUnique',
-            value: { username: 'hjhjhj' },
-          })
-            .then(() => {})
-            .catch(() => {
-              assert(false, `unexpectedly failed: ${err.message}`);
+          try {
+            await authLocalMgntService.create({
+              action: 'checkUnique',
+              value: { username: 'hjhjhj' },
             });
+          } catch (err) {
+            console.log(err);
+            assert(false, `unexpectedly failed: ${err.message}`);
+          }
         });
 
         it('finds single query on single item', async () => {
@@ -151,6 +157,7 @@ const users_Id = [
               value: { username: undefined, email: null },
             });
           } catch (err) {
+            console.log(err);
             assert.fail(true, false, 'test unexpectedly failed');
           }
         });
@@ -163,6 +170,7 @@ const users_Id = [
               ownId: 'a',
             });
           } catch (err) {
+            console.log(err);
             assert.fail(true, false, 'test unexpectedly failed');
           }
         });

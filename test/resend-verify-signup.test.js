@@ -4,8 +4,8 @@ const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
 const authLocalMgnt = require('../src/index');
 const SpyOn = require('./helpers/basic-spy');
+const { timeoutEachTest, maxTimeAllTests, defaultVerifyDelay } = require('./helpers/config');
 
-const defaultVerifyDelay = 1000 * 60 * 60 * 24 * 5; // 5 days
 const now = Date.now();
 
 const makeUsersService = (options) => function (app) {
@@ -13,20 +13,21 @@ const makeUsersService = (options) => function (app) {
 };
 
 const usersId = [
-  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 50000, username: 'Doe' },
+  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 500, username: 'Doe' },
   { id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { id: 'c', email: 'c', isVerified: true, verifyToken: '999', verifyShortToken: '99900', verifyExpires: null }, // impossible
 ];
 
 const users_Id = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 50000, username: 'Doe' },
+  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + 500, username: 'Doe' },
   { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { _id: 'c', email: 'c', isVerified: true, verifyToken: '999', verifyShortToken: '99900', verifyExpires: null }, // impossible
 ];
 
 ['_id' , 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`resend-verify-signup.test.js ${pagination} ${idType}`, () => {
+    describe(`resend-verify-signup.test.js ${pagination} ${idType}`, function () {
+      this.timeout(timeoutEachTest);
 
       function basicTest1(desc, values) {
         describe(desc, () => {
@@ -42,6 +43,7 @@ const users_Id = [
             app.configure(authLocalMgnt({
 
             }));
+            app.setup();
             authLocalMgntService = app.service('authManagement');
 
             usersService = app.service('users');
@@ -70,6 +72,7 @@ const users_Id = [
               assert.match(user.verifyShortToken, /^[0-9]+$/);
               aboutEqualDateTime(user.verifyExpires, makeDateTime());
             } catch (err) {
+              console.log(err);
               assert.strictEqual(err, null, 'err code set');
             }
           });
@@ -86,6 +89,7 @@ const users_Id = [
               assert.strictEqual(result.verifyShortToken, undefined, 'verifyShortToken not undefined');
               assert.strictEqual(result.verifyExpires, undefined, 'verifyExpires not undefined');
             } catch (err) {
+              console.log(err);
               assert.strictEqual(err, null, 'err code set');
             }
           });
@@ -154,6 +158,7 @@ const users_Id = [
           app.configure(authLocalMgnt({
             longTokenLen: 10,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -180,6 +185,7 @@ const users_Id = [
             assert.match(user.verifyShortToken, /^[0-9]+$/);
             aboutEqualDateTime(user.verifyExpires, makeDateTime());
           } catch (err) {
+            console.log(err);
             assert.strictEqual(err, null, 'err code set');
           }
         });
@@ -199,6 +205,7 @@ const users_Id = [
             longTokenLen: 15, // need to reset this
             shortTokenLen: 8,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -225,6 +232,7 @@ const users_Id = [
             assert.match(user.verifyShortToken, /^[0-9]+$/);
             aboutEqualDateTime(user.verifyExpires, makeDateTime());
           } catch (err) {
+            console.log(err);
             assert.strictEqual(err, null, 'err code set');
           }
         });
@@ -245,6 +253,7 @@ const users_Id = [
             shortTokenLen: 9,
             shortTokenDigits: false,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -271,6 +280,7 @@ const users_Id = [
             assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
             aboutEqualDateTime(user.verifyExpires, makeDateTime());
           } catch (err) {
+            console.log(err);
             assert.strictEqual(err, null, 'err code set');
           }
         });
@@ -291,6 +301,7 @@ const users_Id = [
             shortTokenLen: 6,
             shortTokenDigits: false,
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -320,6 +331,7 @@ const users_Id = [
             assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
             aboutEqualDateTime(user.verifyExpires, makeDateTime());
           } catch (err) {
+            console.log(err);
             assert.strictEqual(err, null, 'err code set');
           }
         });
@@ -380,6 +392,7 @@ const users_Id = [
             shortTokenDigits: true, // need to reset this
             notifier: spyNotifier.callWith
           }));
+          app.setup();
           authLocalMgntService = app.service('authManagement');
 
           usersService = app.service('users');
@@ -413,6 +426,7 @@ const users_Id = [
                 { transport: 'email' }
               ]);
           } catch (err) {
+            console.log(err);
             assert.strictEqual(err, null, 'err code set');
           }
         });
