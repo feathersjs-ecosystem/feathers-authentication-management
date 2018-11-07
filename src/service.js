@@ -1,24 +1,23 @@
 
-/* eslint-env node */
-
 const errors = require('@feathersjs/errors');
-const debug = require('debug')('authManagement:main');
+const makeDebug = require('debug');
 
-const checkUniqueness = require('./checkUniqueness');
-const resendVerifySignup = require('./resendVerifySignup');
-const { verifySignupWithLongToken, verifySignupWithShortToken } = require('./verifySignup');
-const sendResetPwd = require('./sendResetPwd');
-const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./resetPassword');
-const passwordChange = require('./passwordChange');
-const identityChange = require('./identityChange');
+const debug = makeDebug('authLocalMgnt:service');
 
-const { sanitizeUserForClient } = require('./helpers');
+const checkUnique = require('./check-unique');
+const identityChange = require('./identity-change');
+const passwordChange = require('./password-change');
+const resendVerifySignup = require('./resend-verify-signup');
+const sanitizeUserForClient = require('./helpers/sanitize-user-for-client');
+const sendResetPwd = require('./send-reset-pwd');
+const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./reset-password');
+const { verifySignupWithLongToken, verifySignupWithShortToken } = require('./verify-signup');
 
 const optionsDefault = {
-  app: null,
+  app: null, // value set during configuration
   service: '/users', // need exactly this for test suite
   path: 'authManagement',
-  notifier: () => Promise.resolve(),
+  notifier: async () => {},
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
   shortTokenDigits: true,
@@ -28,51 +27,90 @@ const optionsDefault = {
   sanitizeUserForClient
 };
 
-module.exports = function (options1 = {}) {
+module.exports = authenticationLocalManagement;
+
+function authenticationLocalManagement(options1 = {}) {
   debug('service being configured.');
-  const options = Object.assign({}, optionsDefault, options1);
 
   return function () {
-    return authManagement(options, this);
+    const options = Object.assign({}, optionsDefault, options1, { app: this });
+    options.app.use(options.path, authLocalMgntMethods(options));
   };
-};
+}
 
-function authManagement (options, app) { // 'function' needed as we use 'this'
-  debug('service initialized');
-  options.app = app;
-
-  options.app.use(options.path, {
-    create (data) {
-      debug(`service called. action=${data.action}`);
+function authLocalMgntMethods(options) {
+  return {
+    async create (data) {
+      debug(`create called. action=${data.action}`);
 
       switch (data.action) {
         case 'checkUnique':
-          return checkUniqueness(options, data.value, data.ownId || null, data.meta || {});
+          try {
+            return await checkUnique(options, data.value, data.ownId || null, data.meta || {});
+          } catch (err) {
+            return Promise.reject(err); // support both async and Promise interfaces
+          }
         case 'resendVerifySignup':
-          return resendVerifySignup(options, data.value, data.notifierOptions);
+          try {
+            return await resendVerifySignup(options, data.value, data.notifierOptions);
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'verifySignupLong':
-          return verifySignupWithLongToken(options, data.value);
+          try {
+            return await verifySignupWithLongToken(options, data.value);
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'verifySignupShort':
-          return verifySignupWithShortToken(options, data.value.token, data.value.user);
+          try {
+            return await verifySignupWithShortToken(options, data.value.token, data.value.user);
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'sendResetPwd':
-          return sendResetPwd(options, data.value, data.notifierOptions);
+          try {
+            return await sendResetPwd(options, data.value, data.notifierOptions);
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'resetPwdLong':
-          return resetPwdWithLongToken(options, data.value.token, data.value.password);
+          try {
+            return await resetPwdWithLongToken(options, data.value.token, data.value.password);
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'resetPwdShort':
-          return resetPwdWithShortToken(
-            options, data.value.token, data.value.user, data.value.password);
+          try {
+            return await resetPwdWithShortToken(
+              options, data.value.token, data.value.user, data.value.password
+            );
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'passwordChange':
-          return passwordChange(
-            options, data.value.user, data.value.oldPassword, data.value.password);
+          try {
+            return await passwordChange(
+              options, data.value.user, data.value.oldPassword, data.value.password
+            );
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'identityChange':
-          return identityChange(
-            options, data.value.user, data.value.password, data.value.changes);
+          try {
+            return await identityChange(
+              options, data.value.user, data.value.password, data.value.changes
+            );
+          } catch (err) {
+            return Promise.reject(err);
+          }
         case 'options':
-          return Promise.resolve(options);
+          return options;
         default:
-          return Promise.reject(new errors.BadRequest(`Action '${data.action}' is invalid.`,
-            { errors: { $className: 'badParams' } }));
+          throw new errors.BadRequest(`Action '${data.action}' is invalid.`,
+            { errors: { $className: 'badParams' } }
+          );
       }
     }
-  });
+  }
 }

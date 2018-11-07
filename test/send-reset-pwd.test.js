@@ -280,8 +280,8 @@ const users_Id = [
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
-  return Promise.resolve(user);
+async function notifier(action, user, notifierOptions, newEmail) {
+  return user;
 }
 
 function makeDateTime(options1) {
@@ -297,9 +297,7 @@ function aboutEqualDateTime(time1, time2, msg, delta) {
 
 function sanitizeUserForEmail(user) {
   const user1 = clone(user);
-
   delete user1.password;
-
   return user1;
 }
 

@@ -413,12 +413,14 @@ const users_Id = [
             const user = await usersService.get(result.id || result._id);
 
             assert.strictEqual(result.isVerified, false, 'user.isVerified not false');
+
             assert.strictEqual(user.isVerified, false, 'isVerified not false');
             assert.isString(user.verifyToken, 'verifyToken not String');
             assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
             assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
             assert.match(user.verifyShortToken, /^[0-9]+$/);
             aboutEqualDateTime(user.verifyExpires, makeDateTime());
+
             assert.deepEqual(
               spyNotifier.result()[0].args, [
                 'resendVerifySignup',
@@ -437,8 +439,8 @@ const users_Id = [
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
-  return Promise.resolve(user);
+async function notifier(action, user, notifierOptions, newEmail) {
+  return user;
 }
 
 function makeDateTime(options1) {
@@ -454,9 +456,7 @@ function aboutEqualDateTime(time1, time2, msg, delta) {
 
 function sanitizeUserForEmail(user) {
   const user1 = clone(user);
-
   delete user1.password;
-
   return user1;
 }
 

@@ -1,17 +1,9 @@
-## feathers-authentication-management
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/feathersjs/feathers-authentication-management.svg)](https://greenkeeper.io/)
-
-[![Build Status](https://travis-ci.org/feathersjs/feathers-authentication-management.png?branch=master)](https://travis-ci.org/feathersjs/feathers-authentication-management)
-[![Code Climate](https://codeclimate.com/github/feathersjs/feathers-authentication-management/badges/gpa.svg)](https://codeclimate.com/github/feathersjs/feathers-authentication-management)
-[![Test Coverage](https://codeclimate.com/github/feathersjs/feathers-authentication-management/badges/coverage.svg)](https://codeclimate.com/github/feathersjs/feathers-authentication-management/coverage)
-[![Dependency Status](https://img.shields.io/david/feathersjs/feathers-authentication-management.svg?style=flat-square)](https://david-dm.org/feathersjs/feathers-authentication-management)
-[![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
+## authentication-local-management
 
 > Adds sign up verification, forgotten password reset, and other capabilities to local
-[`feathers-authentication`](https://docs.feathersjs.com/api/authentication/local-management.html).
+[`feathersjs/authentication`](https://docs.feathersjs.com/api/authentication/local-management.html).
 
-This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
+This repo works with async/await or Promises.
 
 ## Multiple communication channels:
 
@@ -30,7 +22,7 @@ The user could also indicate how they prefer to be contacted.
 Some may prefer to get password resets via long tokens sent by email;
 others may prefer short numeric tokens sent by SMS or wechat.
 
-`feathers-authentication` and `feathers-authentication-management`
+`feathersjs/authentication` and `feathers-plus/authentication-local-management`
 provide much of the infrastructure necessary to implement such a scenario. 
 
 

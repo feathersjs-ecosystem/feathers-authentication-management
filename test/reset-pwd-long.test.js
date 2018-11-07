@@ -214,15 +214,13 @@ const usersId = [
 
 // Helpers
 
-function notifier(action, user, notifierOptions, newEmail) {
-  return Promise.resolve(user);
+async function notifier(action, user, notifierOptions, newEmail) {
+  return user;
 }
 
 function sanitizeUserForEmail(user) {
   const user1 = Object.assign({}, user);
-
   delete user1.password;
-
   return user1;
 }
 
