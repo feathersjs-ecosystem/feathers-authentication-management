@@ -30,7 +30,7 @@ provide much of the infrastructure necessary to implement such a scenario.
 
 Refer to [Documentation](https://docs.feathersjs.com/api/authentication/local-management.html).
 
-Read a [step-by-step guide](https://medium.com/@codingfriend/how-to-setup-email-verification-in-feathersjs-72ce9882e744) created by Jon Paul Miles
+Read a [step-by-step guide](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) created by Imre Gelens
 
 ## Tests
 
