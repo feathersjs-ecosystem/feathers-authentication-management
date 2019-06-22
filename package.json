@@ -28,9 +28,9 @@
   "engines": {
     "node": ">= 8.12.0"
   },
-  "main": "lib/",
+  "main": "src/",
   "directories": {
-    "lib": "lib"
+    "src": "src"
   },
   "scripts": {
     "release:patch": "npm version patch && npm publish",
