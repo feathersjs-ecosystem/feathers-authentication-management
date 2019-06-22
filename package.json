@@ -50,14 +50,14 @@
     ]
   },
   "dependencies": {
-    "@feathersjs/authentication-local": "^1.2.7",
-    "@feathersjs/errors": "^3.3.4",
+    "@feathersjs/authentication-local": "^1.2.9",
+    "@feathersjs/errors": "^3.3.6",
     "bcryptjs": "^2.3.0",
     "debug": "^3.2.6",
-    "feathers-hooks-common": "^4.17.14"
+    "feathers-hooks-common": "^4.20.7"
   },
   "devDependencies": {
-    "@feathersjs/feathers": "^3.2.3",
+    "@feathersjs/feathers": "^3.3.1",
     "chai": "^4.2.0",
     "feathers-memory": "^2.2.0",
     "istanbul": "^1.1.0-alpha.1",
