@@ -1,4 +1,3 @@
-
 const errors = require('@feathersjs/errors');
 const makeDebug = require('debug');
 const comparePasswords = require('./helpers/compare-passwords');
@@ -13,23 +12,23 @@ const debug = makeDebug('authLocalMgnt:resetPassword');
 
 module.exports = {
   resetPwdWithLongToken,
-  resetPwdWithShortToken,
+  resetPwdWithShortToken
 };
 
-async function resetPwdWithLongToken(options, resetToken, password) {
+async function resetPwdWithLongToken (options, resetToken, password, field) {
   ensureValuesAreStrings(resetToken, password);
 
-  return await resetPassword(options, { resetToken }, { resetToken }, password);
+  return await resetPassword(options, { resetToken }, { resetToken }, password, field);
 }
 
-async function resetPwdWithShortToken(options, resetShortToken, identifyUser, password) {
+async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field) {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await resetPassword(options, identifyUser, { resetShortToken }, password);
+  return await resetPassword(options, identifyUser, { resetShortToken }, password, field);
 }
 
-async function resetPassword (options, query, tokens, password) {
+async function resetPassword (options, query, tokens, password, field) {
   debug('resetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -42,20 +41,25 @@ async function resetPassword (options, query, tokens, password) {
   } else if (tokens.resetShortToken) {
     users = await usersService.find({ query });
   } else {
-    throw new errors.BadRequest('resetToken and resetShortToken are missing. (authLocalMgnt)',
-      { errors: { $className: 'missingToken' } }
-    );
+    throw new errors.BadRequest('resetToken and resetShortToken are missing. (authLocalMgnt)', {
+      errors: { $className: 'missingToken' }
+    });
   }
 
-  const checkProps = options.skipIsVerifiedCheck ?
-    ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
+  const checkProps = options.skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
   const user1 = getUserData(users, checkProps);
 
-  Object.keys(tokens).forEach((key) => {
-    promises.push(comparePasswords(tokens[key], user1[key], () =>
-      new errors.BadRequest('Reset Token is incorrect. (authLocalMgnt)',
-        { errors: { $className: 'incorrectToken' } })
-    ));
+  Object.keys(tokens).forEach(key => {
+    promises.push(
+      comparePasswords(
+        tokens[key],
+        user1[key],
+        () =>
+          new errors.BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
+            errors: { $className: 'incorrectToken' }
+          })
+      )
+    );
   });
 
   try {
@@ -67,13 +71,13 @@ async function resetPassword (options, query, tokens, password) {
       resetExpires: null
     });
 
-    new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)',
-      { errors: { $className: 'invalidToken' } }
-    );
+    new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
+      errors: { $className: 'invalidToken' }
+    });
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    password: await hashPassword(options.app, password),
+    password: await hashPassword(options.app, password, field),
     resetToken: null,
     resetShortToken: null,
     resetExpires: null
