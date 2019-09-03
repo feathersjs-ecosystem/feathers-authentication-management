@@ -1,4 +1,3 @@
-
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
@@ -8,26 +7,88 @@ const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
 
 const now = Date.now();
 
-const makeUsersService = (options) => function (app) {
-  app.use('/users', feathersMemory(options));
-};
+const makeUsersService = options =>
+  function (app) {
+    Object.assign(options, { multi: true });
+    app.use('/users', feathersMemory(options));
+  };
 
 const usersId = [
-  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
-  { id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
-  { id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  {
+    id: 'a',
+    email: 'a',
+    isVerified: false,
+    verifyToken: '000',
+    verifyExpires: now + maxTimeAllTests
+  },
+  {
+    id: 'b',
+    email: 'b',
+    isVerified: false,
+    verifyToken: null,
+    verifyExpires: null
+  },
+  {
+    id: 'c',
+    email: 'c',
+    isVerified: false,
+    verifyToken: '111',
+    verifyExpires: now - maxTimeAllTests
+  },
+  {
+    id: 'd',
+    email: 'd',
+    isVerified: true,
+    verifyToken: '222',
+    verifyExpires: now - maxTimeAllTests
+  },
+  {
+    id: 'e',
+    email: 'e',
+    isVerified: true,
+    verifyToken: '800',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' }
+  }
 ];
 
 const users_Id = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { _id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
-  { _id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
-  { _id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { _id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  {
+    _id: 'a',
+    email: 'a',
+    isVerified: false,
+    verifyToken: '000',
+    verifyExpires: now + maxTimeAllTests
+  },
+  {
+    _id: 'b',
+    email: 'b',
+    isVerified: false,
+    verifyToken: null,
+    verifyExpires: null
+  },
+  {
+    _id: 'c',
+    email: 'c',
+    isVerified: false,
+    verifyToken: '111',
+    verifyExpires: now - maxTimeAllTests
+  },
+  {
+    _id: 'd',
+    email: 'd',
+    isVerified: true,
+    verifyToken: '222',
+    verifyExpires: now - maxTimeAllTests
+  },
+  {
+    _id: 'e',
+    email: 'e',
+    isVerified: true,
+    verifyToken: '800',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' }
+  }
 ];
 
 ['_id', 'id'].forEach(idType => {
@@ -44,10 +105,13 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-
-          }));
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(authLocalMgnt({}));
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -56,12 +120,12 @@ const users_Id = [
           db = clone(idType === '_id' ? users_Id : usersId);
           await usersService.create(db);
         });
-  
+
         it('verifies valid token if not verified', async () => {
           try {
             result = await authLocalMgntService.create({
               action: 'verifySignupLong',
-              value: '000',
+              value: '000'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -82,7 +146,7 @@ const users_Id = [
           try {
             result = await authLocalMgntService.create({
               action: 'verifySignupLong',
-              value: '800',
+              value: '800'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -105,7 +169,7 @@ const users_Id = [
           try {
             result = await authLocalMgntService.create({
               action: 'verifySignupLong',
-              value: '000',
+              value: '000'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -122,12 +186,13 @@ const users_Id = [
 
         it('error on verified user without verifyChange', async () => {
           try {
-            result = await authLocalMgntService.create({
+            result = await authLocalMgntService.create(
+              {
                 action: 'verifySignupLong',
-                value: '222',
+                value: '222'
               },
               {},
-              (err, user) => {}
+              (err, user) => { }
             );
 
             assert(fail, 'unexpectedly succeeded');
@@ -141,7 +206,7 @@ const users_Id = [
           try {
             result = await authLocalMgntService.create({
               action: 'verifySignupLong',
-              value: '111',
+              value: '111'
             });
 
             assert(fail, 'unexpectedly succeeded');
@@ -178,10 +243,18 @@ const users_Id = [
           spyNotifier = new SpyOn(notifier);
 
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            notifier: spyNotifier.callWith, testMode: true
-          }));
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              notifier: spyNotifier.callWith,
+              testMode: true
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -190,12 +263,12 @@ const users_Id = [
           db = clone(idType === '_id' ? users_Id : usersId);
           await usersService.create(db);
         });
-  
+
         it('verifies valid token', async () => {
           try {
             result = await authLocalMgntService.create({
               action: 'verifySignupLong',
-              value: '000',
+              value: '000'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -222,16 +295,16 @@ const users_Id = [
 
 // Helpers
 
-async function notifier(action, user, notifierOptions, newEmail) {
+async function notifier (action, user, notifierOptions, newEmail) {
   return user;
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = Object.assign({}, user);
   delete user1.password;
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

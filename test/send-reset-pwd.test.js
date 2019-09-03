@@ -1,26 +1,53 @@
-
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
 const authLocalMgnt = require('../src/index');
+const authService = require('./helpers/authenticationService');
+
 const SpyOn = require('./helpers/basic-spy');
 const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
 
 const now = Date.now();
 const timeout = timeoutEachTest;
 
-const makeUsersService = (options) => function (app) {
-  app.use('/users', feathersMemory(options));
-};
+const makeUsersService = options =>
+  function (app) {
+    Object.assign(options, { multi: true });
+    app.use('/users', feathersMemory(options));
+  };
 
 const usersId = [
-  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
+  {
+    id: 'a',
+    email: 'a',
+    isVerified: false,
+    verifyToken: '000',
+    verifyExpires: now + maxTimeAllTests
+  },
+  {
+    id: 'b',
+    email: 'b',
+    isVerified: true,
+    verifyToken: null,
+    verifyExpires: null
+  }
 ];
 
 const users_Id = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { _id: 'b', email: 'b', isVerified: true, verifyToken: null, verifyExpires: null },
+  {
+    _id: 'a',
+    email: 'a',
+    isVerified: false,
+    verifyToken: '000',
+    verifyExpires: now + maxTimeAllTests
+  },
+  {
+    _id: 'b',
+    email: 'b',
+    isVerified: true,
+    verifyToken: null,
+    verifyExpires: null
+  }
 ];
 
 ['_id', 'id'].forEach(idType => {
@@ -37,10 +64,14 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-
-          }));
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(authLocalMgnt({}));
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -126,12 +157,21 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            longTokenLen: 10,
-            shortTokenLen: 9,
-            shortTokenDigits: true,
-          }));
+          app.use('/authentication', authService(app));
+
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              longTokenLen: 10,
+              shortTokenLen: 9,
+              shortTokenDigits: true
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -173,12 +213,21 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            longTokenLen: 10,
-            shortTokenLen: 9,
-            shortTokenDigits: false,
-          }));
+          app.use('/authentication', authService(app));
+
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              longTokenLen: 10,
+              shortTokenLen: 9,
+              shortTokenDigits: false
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -223,13 +272,22 @@ const users_Id = [
           spyNotifier = new SpyOn(notifier);
 
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            longTokenLen: 15,
-            shortTokenLen: 6,
-            shortTokenDigits: true,
-            notifier: spyNotifier.callWith,
-          }));
+          app.use('/authentication', authService(app));
+
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              longTokenLen: 15,
+              shortTokenLen: 6,
+              shortTokenDigits: true,
+              notifier: spyNotifier.callWith
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -256,17 +314,13 @@ const users_Id = [
             assert.match(user.resetToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
 
-            const expected = spyNotifier.result()[0].args
+            const expected = spyNotifier.result()[0].args;
             expected[1] = Object.assign({}, expected[1], {
               resetToken: user.resetToken,
               resetShortToken: user.resetShortToken
             });
 
-            assert.deepEqual(expected, [
-              'sendResetPwd',
-              sanitizeUserForEmail(user),
-              { transport: 'sms' }
-            ]);
+            assert.deepEqual(expected, ['sendResetPwd', sanitizeUserForEmail(user), { transport: 'sms' }]);
           } catch (err) {
             console.log(err);
             assert(false, 'err code set');
@@ -277,30 +331,29 @@ const users_Id = [
   });
 });
 
-
 // Helpers
 
-async function notifier(action, user, notifierOptions, newEmail) {
+async function notifier (action, user, notifierOptions, newEmail) {
   return user;
 }
 
-function makeDateTime(options1) {
+function makeDateTime (options1) {
   options1 = options1 || {};
   return Date.now() + (options1.delay || maxTimeAllTests);
 }
 
-function aboutEqualDateTime(time1, time2, msg, delta) {
+function aboutEqualDateTime (time1, time2, msg, delta) {
   delta = delta || maxTimeAllTests;
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = clone(user);
   delete user1.password;
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }
