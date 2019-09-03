@@ -1,4 +1,3 @@
-
 const errors = require('@feathersjs/errors');
 const makeDebug = require('debug');
 
@@ -12,12 +11,13 @@ const sanitizeUserForClient = require('./helpers/sanitize-user-for-client');
 const sendResetPwd = require('./send-reset-pwd');
 const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./reset-password');
 const { verifySignupWithLongToken, verifySignupWithShortToken } = require('./verify-signup');
+const passwordField = 'password';
 
 const optionsDefault = {
   app: null, // value set during configuration
   service: '/users', // need exactly this for test suite
   path: 'authManagement',
-  notifier: async () => {},
+  notifier: async () => { },
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
   shortTokenDigits: true,
@@ -29,7 +29,7 @@ const optionsDefault = {
 
 module.exports = authenticationLocalManagement;
 
-function authenticationLocalManagement(options1 = {}) {
+function authenticationLocalManagement (options1 = {}) {
   debug('service being configured.');
 
   return function () {
@@ -38,7 +38,7 @@ function authenticationLocalManagement(options1 = {}) {
   };
 }
 
-function authLocalMgntMethods(options) {
+function authLocalMgntMethods (options) {
   return {
     async create (data) {
       debug(`create called. action=${data.action}`);
@@ -70,47 +70,47 @@ function authLocalMgntMethods(options) {
           }
         case 'sendResetPwd':
           try {
-            return await sendResetPwd(options, data.value, data.notifierOptions);
+            return await sendResetPwd(options, data.value, data.notifierOptions, passwordField);
           } catch (err) {
             return Promise.reject(err);
           }
         case 'resetPwdLong':
           try {
-            return await resetPwdWithLongToken(options, data.value.token, data.value.password);
+            return await resetPwdWithLongToken(options, data.value.token, data.value.password, passwordField);
           } catch (err) {
             return Promise.reject(err);
           }
         case 'resetPwdShort':
           try {
-            return await resetPwdWithShortToken(
-              options, data.value.token, data.value.user, data.value.password
-            );
+            return await resetPwdWithShortToken(options, data.value.token, data.value.user, data.value.password, passwordField);
           } catch (err) {
             return Promise.reject(err);
           }
         case 'passwordChange':
           try {
             return await passwordChange(
-              options, data.value.user, data.value.oldPassword, data.value.password
+              options,
+              data.value.user,
+              data.value.oldPassword,
+              data.value.password,
+              passwordField
             );
           } catch (err) {
             return Promise.reject(err);
           }
         case 'identityChange':
           try {
-            return await identityChange(
-              options, data.value.user, data.value.password, data.value.changes
-            );
+            return await identityChange(options, data.value.user, data.value.password, data.value.changes, passwordField);
           } catch (err) {
             return Promise.reject(err);
           }
         case 'options':
           return options;
         default:
-          throw new errors.BadRequest(`Action '${data.action}' is invalid.`,
-            { errors: { $className: 'badParams' } }
-          );
+          throw new errors.BadRequest(`Action '${data.action}' is invalid.`, {
+            errors: { $className: 'badParams' }
+          });
       }
     }
-  }
+  };
 }
