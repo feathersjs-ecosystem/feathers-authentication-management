@@ -109,6 +109,7 @@ app.configure(authentication)
 - service: The path of the service for user items, e.g. `/users` (default) or `/organization`.
 - path: The path to associate with this service. Default `authManagement`.
  See [Multiple services](#multiple-services) for more information.
+- skipIsVerifiedCheck: if `true` (default) it is impossible to reset password if email is not verified.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
    - type: type of notification
      - 'resendVerifySignup'    From resendVerifySignup API call
