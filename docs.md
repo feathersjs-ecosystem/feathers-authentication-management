@@ -322,10 +322,6 @@ fetch('/authManagement', {
   .then(data => { ... }).catch(err => { ... });
 ```
 
-You will want to refer to
-[authenticating over HTTP](./local.md).
-
-
 ### React Redux
 See `feathers-reduxify-services` for information about state, etc.
 See `feathers-starter-react-redux-login-roles` for a working example.
