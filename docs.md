@@ -151,7 +151,7 @@ The following `user` item might also contain the following props:
 The `users` service is expected to be already configured.
 Its `patch` method is used to update the password when needed,
 and this module hashes the password before it is passed to `patch`,
-therefore `patch` may *not* have a `auth.hashPassword()` hook.
+therefore `patch` may *not* have a `auth.hashPassword()` hook. In cases where you only need hashPassword for externally submitted patch calls, you may use `iff(isProvider('external'), hashPassword())` on the patch hook.
 
 The user must be signed in before being allowed to change their password or communication values.
 The service, for feathers-authenticate v1.x, requires hooks similar to:
