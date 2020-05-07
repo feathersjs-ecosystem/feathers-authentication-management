@@ -1,3 +1,5 @@
+:warning: **This module is looking for new maintainers, please contact us on the [Feathers Slack group](http://slack.feathersjs.com/)** :warning:
+
 ## Local Authentication Management
 
 > Adds sign up verification, forgotten password reset, and other capabilities to local
