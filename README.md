@@ -1,4 +1,4 @@
-:warning: **This module is looking for new maintainers, please contact us on the [Feathers Slack group](http://slack.feathersjs.com/)** :warning:
+:warning: **This module is looking for new maintainers, please contact us on the [Feathers Slack group](http://slack.feathersjs.com/)** (more details in [#124](https://github.com/feathers-plus/feathers-authentication-management/issues/124)) :warning:
 
 ## Local Authentication Management
 
