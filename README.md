@@ -16,10 +16,6 @@ Refer to [Documentation](./docs.md).
 
 Read a [step-by-step guide](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) created by Imre Gelens
 
-## Tests
-
-Run `npm test`
-
 ## License
 
-MIT. See LICENSE.
+This project is licensed under the MIT License - see the [license file](./LICENSE) for details
