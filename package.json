@@ -1,16 +1,16 @@
 {
-  "name": "authentication-local-management",
+  "name": "feathers-authentication-management",
   "description": "Adds sign up verification, forgotten password reset, and other capabilities to local feathers-authentication ",
-  "version": "3.0.0",
+  "version": "2.0.1",
   "repository": {
     "type": "git",
-    "url": "git://github.com/feathersjs/authentication-local-management.git"
+    "url": "git://github.com/feathers-plus/feathers-authentication-management.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/feathersjs/authentication-feathers-management/issues"
+    "url": "https://github.com/feathers-plus/feathers-authentication-management/issues"
   },
-  "homepage": "https://github.com/feathers-plus/authentication-local-management",
+  "homepage": "https://github.com/feathers-plus/feathers-authentication-management",
   "keywords": [
     "feathers",
     "feathers-plus",
