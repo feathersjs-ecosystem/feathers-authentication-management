@@ -2,6 +2,8 @@
 
 Sign up verification, forgotten password reset, and other capabilities for local authentication.
 
+This repo now works with async/await or Promises.
+
 This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
 The example below uses v1.0.
 
