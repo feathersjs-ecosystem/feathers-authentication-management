@@ -2,8 +2,6 @@
 
 ## feathers-authentication-management
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/feathers-plus/feathers-authentication-management.svg)](https://greenkeeper.io/)
-
 [![Build Status](https://travis-ci.org/feathers-plus/feathers-authentication-management.png?branch=master)](https://travis-ci.org/feathers-plus/feathers-authentication-management)
 [![Code Climate](https://codeclimate.com/github/feathers-plus/feathers-authentication-management/badges/gpa.svg)](https://codeclimate.com/github/feathers-plus/feathers-authentication-management)
 [![Test Coverage](https://codeclimate.com/github/feathers-plus/feathers-authentication-management/badges/coverage.svg)](https://codeclimate.com/github/feathers-plus/feathers-authentication-management/coverage)
