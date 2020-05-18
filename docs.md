@@ -43,6 +43,7 @@ provide much of the infrastructure necessary to implement such a scenario.
 ### User notifications may be sent for:
 
 - Sign up verification when a new user is created.
+- Sign up verification and initial password set when a new user is created.
 - Resending a signup verification, e.g. previous verification was lost or is expired.
 - Successful user verification.
 - Resetting the password when the password is forgotten.
@@ -114,12 +115,13 @@ app.configure(authentication)
 - skipIsVerifiedCheck: if `true` (default) it is impossible to reset password if email is not verified.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
    - type: type of notification
-     - 'resendVerifySignup'    From resendVerifySignup API call
-     - 'verifySignup'          From verifySignupLong and verifySignupShort API calls
-     - 'sendResetPwd'          From sendResetPwd API call
-     - 'resetPwd'              From resetPwdLong and resetPwdShort API calls
-     - 'passwordChange'        From passwordChange API call
-     - 'identityChange'        From identityChange API call
+     - 'resendVerifySignup'      From resendVerifySignup API call
+     - 'verifySignup'            From verifySignupLong and verifySignupShort API calls
+     - 'verifySignupSetPassword' From verifySignupSetPasswordLong and verifySignupSetPasswordShort API calls
+     - 'sendResetPwd'            From sendResetPwd API call
+     - 'resetPwd'                From resetPwdLong and resetPwdShort API calls
+     - 'passwordChange'          From passwordChange API call
+     - 'identityChange'          From identityChange API call
    - user: user's item, minus password.
    - notifierOptions: notifierOptions option from resendVerifySignup and sendResetPwd API calls
 - longTokenLen: Half the length of the long token. Default is 15, giving 30-char tokens.
@@ -212,6 +214,23 @@ authManagement.create({ action: 'verifySignupShort',
   }
 })
 
+// sign up verification and set password  with long token
+authManagement.create({ action: 'verifySignupSetPasswordLong',
+  value: {
+    token, // compares to .verifyToken
+    password, // new password
+  }
+})
+
+// sign up verification and set password with short token
+authManagement.create({ action: 'verifySignupSetPasswordShort',
+  value: {
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
+    password, // new password
+  }
+})
+
 // send forgotten password notification
 authManagement.create({ action: 'sendResetPwd',
   value: identifyUser, // {email}, {token: verifyToken}
@@ -292,6 +311,12 @@ authManagement.verifySignupLong(verifyToken)
 
 // sign up or identityChange verification with short token
 authManagement.verifySignupShort(verifyShortToken, identifyUser)
+
+// sign up or identityChange verification with long token
+authManagement.verifySignupSetPasswordLong(verifyToken, password)
+
+// sign up or identityChange verification with short token
+authManagement.verifySignupSetPasswordShort(verifyShortToken, identifyUser, password)
 
 // send forgotten password notification
 authManagement.sendResetPwd(identifyUser, notifierOptions)

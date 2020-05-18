@@ -12,6 +12,10 @@ const sanitizeUserForClient = require('./helpers/sanitize-user-for-client');
 const sendResetPwd = require('./send-reset-pwd');
 const { resetPwdWithLongToken, resetPwdWithShortToken } = require('./reset-password');
 const { verifySignupWithLongToken, verifySignupWithShortToken } = require('./verify-signup');
+const {
+  verifySignupSetPasswordWithLongToken,
+  verifySignupSetPasswordWithShortToken,
+} = require("./verify-signup-set-password");
 
 const optionsDefault = {
   app: null, // value set during configuration
@@ -65,6 +69,18 @@ function authLocalMgntMethods(options) {
         case 'verifySignupShort':
           try {
             return await verifySignupWithShortToken(options, data.value.token, data.value.user);
+          } catch (err) {
+            return Promise.reject(err);
+          }
+        case 'verifySignupSetPasswordLong':
+          try {
+            return await verifySignupSetPasswordWithLongToken(options, data.value.token, data.value.password)
+          } catch (err) {
+            return Promise.reject(err);
+          }
+        case 'verifySignupSetPasswordShort':
+          try {
+            return await verifySignupSetPasswordWithShortToken(options, data.value.token, data.value.user, data.value.password)
           } catch (err) {
             return Promise.reject(err);
           }
