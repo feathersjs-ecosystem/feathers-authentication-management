@@ -2,6 +2,8 @@
 
 Sign up verification, forgotten password reset, and other capabilities for local authentication.
 
+This repo now works with async/await or Promises.
+
 This repo work with either the v1.0 rewrite of `feathers-authentication` or with v0.7.
 The example below uses v1.0.
 
@@ -109,6 +111,7 @@ app.configure(authentication)
 - service: The path of the service for user items, e.g. `/users` (default) or `/organization`.
 - path: The path to associate with this service. Default `authManagement`.
  See [Multiple services](#multiple-services) for more information.
+- skipIsVerifiedCheck: if `true` (default) it is impossible to reset password if email is not verified.
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
    - type: type of notification
      - 'resendVerifySignup'    From resendVerifySignup API call
@@ -150,7 +153,7 @@ The following `user` item might also contain the following props:
 The `users` service is expected to be already configured.
 Its `patch` method is used to update the password when needed,
 and this module hashes the password before it is passed to `patch`,
-therefore `patch` may *not* have a `auth.hashPassword()` hook.
+therefore `patch` may *not* have a `auth.hashPassword()` hook. In cases where you only need hashPassword for externally submitted patch calls, you may use `iff(isProvider('external'), hashPassword())` on the patch hook.
 
 The user must be signed in before being allowed to change their password or communication values.
 The service, for feathers-authenticate v1.x, requires hooks similar to:
@@ -320,10 +323,6 @@ fetch('/authManagement', {
 })
   .then(data => { ... }).catch(err => { ... });
 ```
-
-You will want to refer to
-[authenticating over HTTP](./local.md).
-
 
 ### React Redux
 See `feathers-reduxify-services` for information about state, etc.

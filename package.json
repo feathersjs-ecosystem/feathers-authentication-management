@@ -1,16 +1,16 @@
 {
-  "name": "authentication-local-management",
+  "name": "feathers-authentication-management",
   "description": "Adds sign up verification, forgotten password reset, and other capabilities to local feathers-authentication ",
   "version": "4.0.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/feathersjs/authentication-local-management.git"
+    "url": "git://github.com/feathers-plus/feathers-authentication-management.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/feathersjs/authentication-feathers-management/issues"
+    "url": "https://github.com/feathers-plus/feathers-authentication-management/issues"
   },
-  "homepage": "https://github.com/feathers-plus/authentication-local-management",
+  "homepage": "https://github.com/feathers-plus/feathers-authentication-management",
   "keywords": [
     "feathers",
     "feathers-plus",
@@ -28,9 +28,9 @@
   "engines": {
     "node": ">= 8.12.0"
   },
-  "main": "lib/",
+  "main": "src/",
   "directories": {
-    "lib": "lib"
+    "src": "src"
   },
   "scripts": {
     "release:patch": "npm version patch && npm publish",
@@ -55,7 +55,7 @@
     "@feathersjs/errors": "^4.3.0",
     "bcryptjs": "^2.3.0",
     "debug": "^3.2.6",
-    "feathers-hooks-common": "^4.17.14"
+    "feathers-hooks-common": "^4.20.7"
   },
   "devDependencies": {
     "@feathersjs/feathers": "^4.3.0",
