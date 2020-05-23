@@ -305,6 +305,13 @@ const usersId = [
             assert.strictEqual(err, null, "err code set");
           }
         });
+
+        it('verifies reset with long tokens works with generated tokens', async () => {
+          const i = 0;
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } })
+          await authLocalMgntService.create({ action: 'resetPwdLong',
+            value: { token: spyNotifier.result()[0].args[1].resetToken, password: "123456" } });
+        });
       });
     });
   });

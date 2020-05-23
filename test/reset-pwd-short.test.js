@@ -462,6 +462,18 @@ const usersId = [
             assert.strictEqual(err, null, "err code set");
           }
         });
+
+        it('verifies reset with short tokens works with generated tokens', async () => {
+          const i = 0;
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } })
+          await authLocalMgntService.create({ action: 'resetPwdShort',
+            value: {
+              token: spyNotifier.result()[0].args[1].resetShortToken,
+              password: "123456",
+              user: { email: db[i].email }
+            }
+          });
+        });
       });
     });
   });
