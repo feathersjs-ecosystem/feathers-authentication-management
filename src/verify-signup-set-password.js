@@ -16,7 +16,8 @@ module.exports = {
 async function verifySignupSetPasswordWithLongToken(
   options,
   verifyToken,
-  password
+  password,
+  field
 ) {
   ensureValuesAreStrings(verifyToken, password);
 
@@ -24,7 +25,8 @@ async function verifySignupSetPasswordWithLongToken(
     options,
     { verifyToken },
     { verifyToken },
-    password
+    password,
+    field
   );
 }
 
@@ -32,7 +34,8 @@ async function verifySignupSetPasswordWithShortToken(
   options,
   verifyShortToken,
   identifyUser,
-  password
+  password,
+  field
 ) {
   ensureValuesAreStrings(verifyShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -43,11 +46,12 @@ async function verifySignupSetPasswordWithShortToken(
     {
       verifyShortToken,
     },
-    password
+    password,
+    field
   );
 }
 
-async function verifySignupSetPassword(options, query, tokens, password) {
+async function verifySignupSetPassword(options, query, tokens, password, field) {
   debug("verifySignupSetPassword", query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -59,7 +63,7 @@ async function verifySignupSetPassword(options, query, tokens, password) {
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user2.isVerified, {}, password);
+    await eraseVerifyPropsSetPassword(user1, user2.isVerified, {}, password, field);
 
     throw new errors.BadRequest(
       "Invalid token. Get for a new one. (authLocalMgnt)",
@@ -71,14 +75,15 @@ async function verifySignupSetPassword(options, query, tokens, password) {
     user1,
     user1.verifyExpires > Date.now(),
     user1.verifyChanges || {},
-    password
+    password,
+    field
   );
 
   const user3 = await notifier(options.notifier, "verifySignupSetPassword", user2);
   return options.sanitizeUserForClient(user3);
 
-  async function eraseVerifyPropsSetPassword(user, isVerified, verifyChanges, password) {
-    const hashedPassword = await hashPassword(options.app, password);
+  async function eraseVerifyPropsSetPassword(user, isVerified, verifyChanges, password, field) {
+    const hashedPassword = await hashPassword(options.app, password, field);
 
     const patchToUser = Object.assign({}, verifyChanges || {}, {
       isVerified,

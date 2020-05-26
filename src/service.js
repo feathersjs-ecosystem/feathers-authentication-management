@@ -96,7 +96,8 @@ function authLocalMgntMethods(options) {
             return await verifySignupSetPasswordWithLongToken(
               options,
               data.value.token,
-              data.value.password
+              data.value.password,
+              passwordField
             );
           } catch (err) {
             return Promise.reject(err);
@@ -107,28 +108,8 @@ function authLocalMgntMethods(options) {
               options,
               data.value.token,
               data.value.user,
-              data.value.password
-            );
-          } catch (err) {
-            return Promise.reject(err);
-          }
-        case "verifySignupSetPasswordLong":
-          try {
-            return await verifySignupSetPasswordWithLongToken(
-              options,
-              data.value.token,
-              data.value.password
-            );
-          } catch (err) {
-            return Promise.reject(err);
-          }
-        case "verifySignupSetPasswordShort":
-          try {
-            return await verifySignupSetPasswordWithShortToken(
-              options,
-              data.value.token,
-              data.value.user,
-              data.value.password
+              data.value.password,
+              passwordField
             );
           } catch (err) {
             return Promise.reject(err);
