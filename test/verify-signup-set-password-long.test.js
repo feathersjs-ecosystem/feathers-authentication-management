@@ -2,16 +2,19 @@
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 const authLocalMgnt = require('../src/index');
+const authService = require('./helpers/authenticationService');
 const SpyOn = require('./helpers/basic-spy');
 const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
 
 const now = Date.now();
 
-const makeUsersService = (options) => function (app) {
-  app.use('/users', feathersMemory(options));
-};
+const makeUsersService = (options) =>
+  function (app) {
+    Object.assign(options, { multi: true });
+    app.use('/users', feathersMemory(options));
+  };
 
 const usersId = [
   { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
@@ -45,10 +48,15 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-
-          }));
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              multi: true,
+              id: idType,
+              paginate: pagination === 'paginated',
+            })
+          );
+          app.configure(authLocalMgnt({}));
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -203,10 +211,20 @@ const users_Id = [
           spyNotifier = new SpyOn(notifier);
 
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            notifier: spyNotifier.callWith, testMode: true
-          }));
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              multi: true,
+              id: idType,
+              paginate: pagination === 'paginated',
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              notifier: spyNotifier.callWith,
+              testMode: true,
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -235,7 +253,7 @@ const users_Id = [
             assert.strictEqual(user.verifyExpires, null, 'verifyExpires not null');
             assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
             assert.deepEqual(spyNotifier.result()[0].args, [
-              "verifySignupSetPassword",
+              'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
               {},
             ]);

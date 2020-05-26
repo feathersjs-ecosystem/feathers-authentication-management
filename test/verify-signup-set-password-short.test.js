@@ -2,16 +2,19 @@
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 const authLocalMgnt = require('../src/index');
+const authService = require('./helpers/authenticationService');
 const SpyOn = require('./helpers/basic-spy');
 const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
 
 const now = Date.now();
 
-const makeUsersService = (options) => function (app) {
-  app.use('/users', feathersMemory(options));
-};
+const makeUsersService = (options) =>
+  function (app) {
+    Object.assign(options, { multi: true });
+    app.use('/users', feathersMemory(options));
+  };
 
 const usersId = [
   { id: 'a', email: 'a', username: 'aa', isVerified: false, verifyToken: '000', verifyShortToken: '00099', verifyExpires: now + maxTimeAllTests },
@@ -33,7 +36,7 @@ const users_Id = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`verify-signUp-short.js ${pagination} ${idType}`, function () {
+    describe(`verify-signup-set-password-short.js ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
@@ -45,10 +48,18 @@ const users_Id = [
 
         beforeEach(async () => {
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            identifyUserProps: ['email', 'username'],
-          }));
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated',
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              identifyUserProps: ['email', 'username'],
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -274,12 +285,19 @@ const users_Id = [
           spyNotifier = new SpyOn(notifier);
 
           app = feathers();
-          app.configure(makeUsersService({ id: idType, paginate: pagination === 'paginated' }));
-          app.configure(authLocalMgnt({
-            // maybe reset identifyUserProps
-            notifier: spyNotifier.callWith,
-            testMode: true,
-          }));
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              id: idType,
+              paginate: pagination === 'paginated',
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              notifier: spyNotifier.callWith,
+              testMode: true,
+            })
+          );
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
