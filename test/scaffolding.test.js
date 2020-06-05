@@ -2,7 +2,7 @@
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
 const authManagement = require('../src/index');
-const helpers = require('../src/helpers')
+const helpers = require('../src/helpers');
 
 const optionsDefault = {
   app: null,
@@ -21,27 +21,27 @@ const optionsDefault = {
 const userMgntOptions = {
   service: '/users',
   notifier: () => Promise.resolve(),
-  shortTokenLen: 8,
+  shortTokenLen: 8
 };
 
 const orgMgntOptions = {
   service: '/organizations',
   path: 'authManagement/org', // *** specify path for this instance of service
   notifier: () => Promise.resolve(),
-  shortTokenLen: 10,
+  shortTokenLen: 10
 };
 
-function services() {
+function services () {
   const app = this;
   app.configure(user);
   app.configure(organization);
 }
 
-function user() {
+function user () {
   const app = this;
 
   app.use('/users', {
-    async create(data) { return data; }
+    async create (data) { return data; }
   });
 
   const service = app.service('/users');
@@ -51,17 +51,17 @@ function user() {
   });
 }
 
-function organization() {
+function organization () {
   const app = this;
 
   app.use('/organizations', {
-    async create(data) { return data; }
+    async create (data) { return data; }
   });
 
   const service = app.service('/organizations');
 
   service.hooks({
-    before: { create: authManagement.hooks.addVerification('authManagement/org') }, // *** which one
+    before: { create: authManagement.hooks.addVerification('authManagement/org') } // *** which one
   });
 }
 
@@ -118,7 +118,7 @@ describe('scaffolding.js', () => {
       const organization = app.service('/organizations');
 
       // create a user item
-      const result = await user.create({ username: 'John Doe' })
+      const result = await user.create({ username: 'John Doe' });
 
       assert.equal(result.username, 'John Doe');
       assert.equal(result.verifyShortToken.length, 8);

@@ -56,7 +56,7 @@ describe('add-verification.test.js', function () {
         type: 'before',
         method: 'create',
         data: { email: 'a@a.com', password: '0000000000' },
-        app,
+        app
       };
 
       try {
@@ -247,11 +247,11 @@ describe('add-verification.test.js', function () {
   });
 });
 
-function makeDateTime(options1 = {}) {
+function makeDateTime (options1 = {}) {
   return Date.now() + (options1.delay || defaultVerifyDelay);
 }
 
-function aboutEqualDateTime(time1, time2, msg, delta = 500) {
+function aboutEqualDateTime (time1, time2, msg, delta = 500) {
   const diff = Math.abs(time1 - time2);
   assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
 }

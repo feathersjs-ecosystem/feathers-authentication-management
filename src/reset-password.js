@@ -18,14 +18,16 @@ module.exports = {
 async function resetPwdWithLongToken (options, resetToken, password, field) {
   ensureValuesAreStrings(resetToken, password);
 
-  return await resetPassword(options, { resetToken }, { resetToken }, password, field);
+  const result = await resetPassword(options, { resetToken }, { resetToken }, password, field);
+  return result;
 }
 
 async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field) {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await resetPassword(options, identifyUser, { resetShortToken }, password, field);
+  const result = await resetPassword(options, identifyUser, { resetShortToken }, password, field);
+  return result;
 }
 
 async function resetPassword (options, query, tokens, password, field) {
@@ -70,10 +72,11 @@ async function resetPassword (options, query, tokens, password, field) {
       resetShortToken: null,
       resetExpires: null
     });
-
+    /*
     new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
       errors: { $className: 'invalidToken' }
     });
+    */
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {

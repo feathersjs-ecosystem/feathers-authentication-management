@@ -22,7 +22,7 @@
     "verification"
   ],
   "author": {
-    "name": "John Szwaronek",
+    "name": "John Szwaronek & contributors",
     "email": "johnsz9999@gmail.com"
   },
   "engines": {
@@ -33,16 +33,15 @@
     "src": "src"
   },
   "scripts": {
+    "publish": "git push origin --tags && npm run changelog && git push origin",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "publish": "git push origin --tags && npm run changelog && git push origin",
-    "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
-    "test": "npm run lint && npm run coverage",
-    "lint": "semistandard src/**/*.js test/**/*.js --fix",
-    "coverage": "istanbul cover _mocha -- --opts mocha.opts",
+    "changelog": "github_changelog_generator-u feathers-plus -p feathers-authentication-management && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
+    "lint": "semistandard src/**/*.js --fix",
     "mocha": "mocha --opts mocha.opts",
-    "start": "node example/app"
+    "coverage": "nyc npm run mocha",
+    "test": "npm run lint && npm run coverage"
   },
   "semistandard": {
     "env": [
@@ -54,7 +53,7 @@
     "@feathersjs/authentication-local": "^4.3.0",
     "@feathersjs/errors": "^4.3.0",
     "bcryptjs": "^2.3.0",
-    "debug": "^3.2.6",
+    "debug": "^4.1.0",
     "feathers-hooks-common": "^4.20.7"
   },
   "devDependencies": {
@@ -62,7 +61,8 @@
     "chai": "^4.2.0",
     "feathers-memory": "^4.0.0",
     "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^3.3.0",
+    "mocha": "^6.2.0",
+    "nyc": "^15.0.1",
     "semistandard": "^11.0.0"
   }
 }

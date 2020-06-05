@@ -6,7 +6,7 @@ const AuthManagement = require('../src/client');
 // users DB
 const usersDb = [
   { _id: 'a', email: 'bad', password: 'aa', isVerified: false },
-  { _id: 'b', email: 'ok', password: 'bb', isVerified: true },
+  { _id: 'b', email: 'ok', password: 'bb', isVerified: true }
 ];
 
 let spyData = null;
@@ -16,17 +16,17 @@ let spyAuthenticatePassword;
 
 // Fake for authManagementService service
 const authLocalMgntFake = function () {
-  return function authManagement() { // 'function' needed as we use 'this'
+  return function authManagement () { // 'function' needed as we use 'this'
     const app = this;
     const path = 'authManagement';
 
     app.use(path, {
-      create(data, params1, cb) {
+      create (data, params1, cb) {
         spyData = data;
         spyParams = params1;
-        
+
         return cb ? cb(null) : Promise.resolve();
-      },
+      }
     });
 
     app.authenticate = (obj) => {
@@ -34,7 +34,7 @@ const authLocalMgntFake = function () {
       spyAuthenticatePassword = obj.password;
 
       const index = usersDb[0].email === obj.email ? 0 : 1;
-  
+
       return Promise.resolve({ data: usersDb[index] });
     };
 
@@ -66,7 +66,7 @@ describe('client.test.js', () => {
 
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
-        action: 'checkUnique', value: { username: 'john a' }, ownId: null, meta: { noErrMsg: true },
+        action: 'checkUnique', value: { username: 'john a' }, ownId: null, meta: { noErrMsg: true }
       });
     });
 
@@ -94,7 +94,7 @@ describe('client.test.js', () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'verifySignupShort',
-        value: { token: '000', user: { email: 'a@a.com' } },
+        value: { token: '000', user: { email: 'a@a.com' } }
       });
     });
 
@@ -125,7 +125,7 @@ describe('client.test.js', () => {
       assert.deepEqual(spyParams, {});
       assert.deepEqual(spyData, {
         action: 'resetPwdShort',
-        value: { token: '000', user: { email: 'a@a.com' }, password: '12345678' },
+        value: { token: '000', user: { email: 'a@a.com' }, password: '12345678' }
       });
     });
 
@@ -133,7 +133,7 @@ describe('client.test.js', () => {
       await authManagement.passwordChange('12345678', 'password', { email: 'a' });
 
       assert.deepEqual(spyData, {
-        action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' },
+        action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' }
       });
     });
 
@@ -141,8 +141,10 @@ describe('client.test.js', () => {
       await authManagement.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' });
 
       assert.deepEqual(spyData, {
-        action: 'identityChange', value: { user: { username: 'q' }, password: '12345678',
-          changes: { email: 'b@b.com' } },
+        action: 'identityChange',
+        value: { user: { username: 'q' },
+          password: '12345678',
+          changes: { email: 'b@b.com' } }
       });
     });
 

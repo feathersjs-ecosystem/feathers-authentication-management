@@ -1,19 +1,19 @@
-const errors = require("@feathersjs/errors");
-const makeDebug = require("debug");
-const ensureObjPropsValid = require("./helpers/ensure-obj-props-valid");
-const ensureValuesAreStrings = require("./helpers/ensure-values-are-strings");
-const getUserData = require("./helpers/get-user-data");
-const hashPassword = require("./helpers/hash-password");
-const notifier = require("./helpers/notifier");
+const errors = require('@feathersjs/errors');
+const makeDebug = require('debug');
+const ensureObjPropsValid = require('./helpers/ensure-obj-props-valid');
+const ensureValuesAreStrings = require('./helpers/ensure-values-are-strings');
+const getUserData = require('./helpers/get-user-data');
+const hashPassword = require('./helpers/hash-password');
+const notifier = require('./helpers/notifier');
 
-const debug = makeDebug("authLocalMgnt:verifySignupSetPassword");
+const debug = makeDebug('authLocalMgnt:verifySignupSetPassword');
 
 module.exports = {
   verifySignupSetPasswordWithLongToken,
-  verifySignupSetPasswordWithShortToken,
+  verifySignupSetPasswordWithShortToken
 };
 
-async function verifySignupSetPasswordWithLongToken(
+async function verifySignupSetPasswordWithLongToken (
   options,
   verifyToken,
   password,
@@ -21,16 +21,17 @@ async function verifySignupSetPasswordWithLongToken(
 ) {
   ensureValuesAreStrings(verifyToken, password);
 
-  return await verifySignupSetPassword(
+  const result = await verifySignupSetPassword(
     options,
     { verifyToken },
     { verifyToken },
     password,
     field
   );
+  return result;
 }
 
-async function verifySignupSetPasswordWithShortToken(
+async function verifySignupSetPasswordWithShortToken (
   options,
   verifyShortToken,
   identifyUser,
@@ -40,34 +41,35 @@ async function verifySignupSetPasswordWithShortToken(
   ensureValuesAreStrings(verifyShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await verifySignupSetPassword(
+  const result = await verifySignupSetPassword(
     options,
     identifyUser,
     {
-      verifyShortToken,
+      verifyShortToken
     },
     password,
     field
   );
+  return result;
 }
 
-async function verifySignupSetPassword(options, query, tokens, password, field) {
-  debug("verifySignupSetPassword", query, tokens, password);
+async function verifySignupSetPassword (options, query, tokens, password, field) {
+  debug('verifySignupSetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
 
   const users = await usersService.find({ query });
   const user1 = getUserData(users, [
-    "isNotVerifiedOrHasVerifyChanges",
-    "verifyNotExpired",
+    'isNotVerifiedOrHasVerifyChanges',
+    'verifyNotExpired'
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user2.isVerified, {}, password, field);
+    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password, field);
 
     throw new errors.BadRequest(
-      "Invalid token. Get for a new one. (authLocalMgnt)",
-      { errors: { $className: "badParam" } }
+      'Invalid token. Get for a new one. (authLocalMgnt)',
+      { errors: { $className: 'badParam' } }
     );
   }
 
@@ -79,10 +81,10 @@ async function verifySignupSetPassword(options, query, tokens, password, field) 
     field
   );
 
-  const user3 = await notifier(options.notifier, "verifySignupSetPassword", user2);
+  const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2);
   return options.sanitizeUserForClient(user3);
 
-  async function eraseVerifyPropsSetPassword(user, isVerified, verifyChanges, password, field) {
+  async function eraseVerifyPropsSetPassword (user, isVerified, verifyChanges, password, field) {
     const hashedPassword = await hashPassword(options.app, password, field);
 
     const patchToUser = Object.assign({}, verifyChanges || {}, {
@@ -91,9 +93,10 @@ async function verifySignupSetPassword(options, query, tokens, password, field) 
       verifyShortToken: null,
       verifyExpires: null,
       verifyChanges: {},
-      password: hashedPassword,
+      password: hashedPassword
     });
 
-    return await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    return result;
   }
 }

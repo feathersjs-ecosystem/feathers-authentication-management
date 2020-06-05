@@ -21,8 +21,12 @@ const usersId = [
   { id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
   { id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
   { id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  { id: 'e',
+    email: 'e',
+    isVerified: true,
+    verifyToken: '800',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' } }
 ];
 
 const users_Id = [
@@ -30,8 +34,12 @@ const users_Id = [
   { _id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
   { _id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
   { _id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { _id: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  { _id: 'e',
+    email: 'e',
+    isVerified: true,
+    verifyToken: '800',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' } }
 ];
 
 ['_id', 'id'].forEach(idType => {
@@ -53,7 +61,7 @@ const users_Id = [
             makeUsersService({
               multi: true,
               id: idType,
-              paginate: pagination === 'paginated',
+              paginate: pagination === 'paginated'
             })
           );
           app.configure(authLocalMgnt({}));
@@ -74,8 +82,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '000',
-                password,
-              },
+                password
+              }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -100,8 +108,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '800',
-                password,
-              },
+                password
+              }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -127,8 +135,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '000',
-                password,
-              },
+                password
+              }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -147,12 +155,12 @@ const users_Id = [
         it('error on verified user without verifyChange', async () => {
           try {
             result = await authLocalMgntService.create({
-                action: 'verifySignupSetPasswordLong',
-                value: {
-                  token: '222',
-                  password: '12456',
-                },
-              },
+              action: 'verifySignupSetPasswordLong',
+              value: {
+                token: '222',
+                password: '12456'
+              }
+            },
               {},
               (err, user) => {}
             );
@@ -170,8 +178,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '111',
-                password: '123456',
-              },
+                password: '123456'
+              }
             });
 
             assert(fail, 'unexpectedly succeeded');
@@ -187,8 +195,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '999',
-                password: '123456',
-              },
+                password: '123456'
+              }
             });
 
             assert(fail, 'unexpectedly succeeded');
@@ -216,13 +224,13 @@ const users_Id = [
             makeUsersService({
               multi: true,
               id: idType,
-              paginate: pagination === 'paginated',
+              paginate: pagination === 'paginated'
             })
           );
           app.configure(
             authLocalMgnt({
               notifier: spyNotifier.callWith,
-              testMode: true,
+              testMode: true
             })
           );
           app.setup();
@@ -241,8 +249,8 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '000',
-                password,
-              },
+                password
+              }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -255,7 +263,7 @@ const users_Id = [
             assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
-              {},
+              {}
             ]);
           } catch (err) {
             console.log(err);
@@ -269,16 +277,16 @@ const users_Id = [
 
 // Helpers
 
-async function notifier(action, user, notifierOptions, newEmail) {
+async function notifier (action, user, notifierOptions, newEmail) {
   return user;
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = Object.assign({}, user);
   delete user1.password;
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

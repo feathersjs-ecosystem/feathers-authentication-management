@@ -18,8 +18,8 @@ describe('remove-verification.test.js', () => {
         verifyExpires: Date.now(),
         verifyChanges: {},
         resetToken: '000',
-        resetExpires: Date.now(),
-      },
+        resetExpires: Date.now()
+      }
     };
   });
 
@@ -72,7 +72,7 @@ describe('remove-verification.test.js', () => {
   });
 
   it('works with multiple verified user', () => {
-    context.result = [context.result, context.result]
+    context.result = [context.result, context.result];
     assert.doesNotThrow(() => { hooks.removeVerification()(context); });
 
     context.result.forEach(user => {
@@ -83,7 +83,7 @@ describe('remove-verification.test.js', () => {
       assert.notProperty(user, 'resetToken');
       assert.notProperty(user, 'resetExpires');
       assert.notProperty(user, 'verifyChanges');
-    })
+    });
   });
 
   it('does not throw with damaged hook', () => {

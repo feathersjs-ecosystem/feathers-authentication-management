@@ -3,7 +3,6 @@ const assert = require('chai').assert;
 const { isVerified } = require('../src/index').hooks;
 const { timeoutEachTest } = require('./helpers/config');
 
-
 describe('is-verified.test.js', function () {
   this.timeout(timeoutEachTest);
   let context;
@@ -12,13 +11,13 @@ describe('is-verified.test.js', function () {
     context = {
       type: 'before',
       method: 'create',
-      params: { user: { email: 'a@a.com', password: '0000000000' } },
+      params: { user: { email: 'a@a.com', password: '0000000000' } }
     };
   });
 
   it('throws if not before', () => {
     context.type = 'after';
-    assert.throws(() => { isVerified()(context) }, undefined, undefined, 'after');
+    assert.throws(() => { isVerified()(context); }, undefined, undefined, 'after');
   });
 
   it('throws if not create, update or patch', () => {

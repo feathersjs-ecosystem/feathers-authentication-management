@@ -23,7 +23,7 @@ describe('randoms.js', () => {
 
   describe('randomBytes', () => {
     it('correct length', async () => {
-      const str = await randomBytes(10)
+      const str = await randomBytes(10);
 
       assert.equal(str.length, 20);
     });

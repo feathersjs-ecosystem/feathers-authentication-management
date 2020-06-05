@@ -26,7 +26,7 @@ module.exports = async function resendVerifySignup (options, identifyUser, notif
     isVerified: false,
     verifyExpires: Date.now() + options.delay,
     verifyToken: await getLongToken(options.longTokenLen),
-    verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits),
+    verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits)
   });
 
   const user3 = await notifier(options.notifier, 'resendVerifySignup', user2, notifierOptions);

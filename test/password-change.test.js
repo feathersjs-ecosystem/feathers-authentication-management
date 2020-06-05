@@ -86,8 +86,8 @@ describe('password-change.js', function () {
     });
   });
 
-  ['_id' /* 'id'*/].forEach(idType => {
-    ['paginated' /* 'non-paginated'*/].forEach(pagination => {
+  ['_id' /* 'id' */].forEach(idType => {
+    ['paginated' /* 'non-paginated' */].forEach(pagination => {
       describe(`passwordChange ${pagination} ${idType}`, () => {
         describe('standard', () => {
           let app;

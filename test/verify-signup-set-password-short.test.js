@@ -21,8 +21,14 @@ const usersId = [
   { id: 'b', email: 'b', username: 'bb', isVerified: false, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { id: 'c', email: 'c', username: 'cc', isVerified: false, verifyToken: '111', verifyShortToken: '11199', verifyExpires: now - maxTimeAllTests },
   { id: 'd', email: 'd', username: 'dd', isVerified: true, verifyToken: '222', verifyShortToken: '22299', verifyExpires: now - maxTimeAllTests },
-  { id: 'e', email: 'e', username: 'ee', isVerified: true, verifyToken: '800', verifyShortToken: '80099', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  { id: 'e',
+    email: 'e',
+    username: 'ee',
+    isVerified: true,
+    verifyToken: '800',
+    verifyShortToken: '80099',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' } }
 ];
 
 const users_Id = [
@@ -30,8 +36,14 @@ const users_Id = [
   { _id: 'b', email: 'b', username: 'bb', isVerified: false, verifyToken: null, verifyShortToken: null, verifyExpires: null },
   { _id: 'c', email: 'c', username: 'cc', isVerified: false, verifyToken: '111', verifyShortToken: '11199', verifyExpires: now - maxTimeAllTests },
   { _id: 'd', email: 'd', username: 'dd', isVerified: true, verifyToken: '222', verifyShortToken: '22299', verifyExpires: now - maxTimeAllTests },
-  { _id: 'e', email: 'e', username: 'ee', isVerified: true, verifyToken: '800', verifyShortToken: '80099', verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } },
+  { _id: 'e',
+    email: 'e',
+    username: 'ee',
+    isVerified: true,
+    verifyToken: '800',
+    verifyShortToken: '80099',
+    verifyExpires: now + maxTimeAllTests,
+    verifyChanges: { cellphone: '800' } }
 ];
 
 ['_id', 'id'].forEach(idType => {
@@ -52,12 +64,12 @@ const users_Id = [
           app.configure(
             makeUsersService({
               id: idType,
-              paginate: pagination === 'paginated',
+              paginate: pagination === 'paginated'
             })
           );
           app.configure(
             authLocalMgnt({
-              identifyUserProps: ['email', 'username'],
+              identifyUserProps: ['email', 'username']
             })
           );
           app.setup();
@@ -71,11 +83,12 @@ const users_Id = [
 
         it('verifies valid token and sets password if not verified', async () => {
           try {
-            const password = '123456'
-            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort', value: {
+            const password = '123456';
+            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort',
+              value: {
                 token: '00099',
                 user: { email: db[0].email },
-                password,
+                password
               }
             });
             const user = await usersService.get(result.id || result._id);
@@ -96,10 +109,11 @@ const users_Id = [
         it('verifies valid token and sets password if verifyChanges', async () => {
           try {
             const password = '123456';
-            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort', value: {
+            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort',
+              value: {
                 token: '80099',
                 user: { email: db[4].email },
-                password,
+                password
               }
             });
             const user = await usersService.get(result.id || result._id);
@@ -122,11 +136,12 @@ const users_Id = [
 
         it('user is sanitized', async () => {
           try {
-            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort', value: {
+            result = await authLocalMgntService.create({ action: 'verifySignupSetPasswordShort',
+              value: {
                 token: '00099',
                 user: { username: db[0].username },
                 password: '123456'
-             }
+              }
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -147,7 +162,7 @@ const users_Id = [
               value: {
                 token: '00099',
                 user: { email: db[0].email, username: db[0].username },
-                password: '123456',
+                password: '123456'
               }
             });
 
@@ -169,7 +184,7 @@ const users_Id = [
               value: {
                 token: '00099',
                 user: {},
-                password,
+                password
               }
             });
 
@@ -182,13 +197,13 @@ const users_Id = [
 
         it('throws on non-configured user ident', async () => {
           try {
-            const password= '123456';
+            const password = '123456';
             result = await authLocalMgntService.create({
               action: 'verifySignupSetPasswordShort',
               value: {
                 token: '00099',
                 user: { email: db[i].email, verifyShortToken: '00099' },
-                password,
+                password
               }
             });
 
@@ -207,7 +222,7 @@ const users_Id = [
               value: {
                 token: '22299',
                 user: { email: db[3].email },
-                password,
+                password
               }
             });
 
@@ -227,7 +242,7 @@ const users_Id = [
                 token: '11199',
                 user: { username: db[2].username }
               },
-              password,
+              password
             });
 
             assert(false, 'unexpectedly succeeded.');
@@ -245,7 +260,7 @@ const users_Id = [
               value: {
                 token: '999',
                 user: { email: '999' },
-                password,
+                password
               }
             });
 
@@ -289,13 +304,13 @@ const users_Id = [
           app.configure(
             makeUsersService({
               id: idType,
-              paginate: pagination === 'paginated',
+              paginate: pagination === 'paginated'
             })
           );
           app.configure(
             authLocalMgnt({
               notifier: spyNotifier.callWith,
-              testMode: true,
+              testMode: true
             })
           );
           app.setup();
@@ -306,7 +321,7 @@ const users_Id = [
           db = clone(idType === '_id' ? users_Id : usersId);
           await usersService.create(db);
         });
-        
+
         it('verifies valid token and sets password', async () => {
           try {
             const password = '123456';
@@ -315,8 +330,8 @@ const users_Id = [
               value: {
                 token: '00099',
                 user: { email: db[0].email },
-                password,
-              },
+                password
+              }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -329,7 +344,7 @@ const users_Id = [
             assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
             assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
 
-            assert.deepEqual( spyNotifier.result()[0].args, [
+            assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
               {}
@@ -346,16 +361,16 @@ const users_Id = [
 
 // Helpers
 
-async function notifier(action, user, notifierOptions, newEmail) {
+async function notifier (action, user, notifierOptions, newEmail) {
   return user;
 }
 
-function sanitizeUserForEmail(user) {
+function sanitizeUserForEmail (user) {
   const user1 = Object.assign({}, user);
   delete user1.password;
   return user1;
 }
 
-function clone(obj) {
+function clone (obj) {
   return JSON.parse(JSON.stringify(obj));
 }

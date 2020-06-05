@@ -136,7 +136,7 @@ describe('errors-async-await.js', () => {
   });
 });
 
-async function service(action, param1, param2) {
+async function service (action, param1, param2) {
   switch (action) {
     case 'ok':
       return 'service ok';
@@ -144,7 +144,7 @@ async function service(action, param1, param2) {
       try {
         return await passwordChange(param1, param2);
       } catch (err) {
-        return Promise.reject(err)
+        return Promise.reject(err);
       }
     case 'throw':
       throw new errors.BadRequest('service throw');
@@ -153,7 +153,7 @@ async function service(action, param1, param2) {
   }
 }
 
-async function passwordChange(param1, param2) {
+async function passwordChange (param1, param2) {
   switch (param1) {
     case 'ok':
       return 'passwordChange ok';
@@ -166,7 +166,7 @@ async function passwordChange(param1, param2) {
   }
 }
 
-async function ensureValuesAreStrings(param2) {
+async function ensureValuesAreStrings (param2) {
   switch (param2) {
     case 'ok':
       return 'ensureValuesAreStrings ok';

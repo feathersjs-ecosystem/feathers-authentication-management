@@ -1,46 +1,46 @@
-const errors = require("@feathersjs/errors");
-const makeDebug = require("debug");
+const errors = require('@feathersjs/errors');
+const makeDebug = require('debug');
 
-const debug = makeDebug("authLocalMgnt:service");
+const debug = makeDebug('authLocalMgnt:service');
 
-const checkUnique = require("./check-unique");
-const identityChange = require("./identity-change");
-const passwordChange = require("./password-change");
-const resendVerifySignup = require("./resend-verify-signup");
-const sanitizeUserForClient = require("./helpers/sanitize-user-for-client");
-const sendResetPwd = require("./send-reset-pwd");
+const checkUnique = require('./check-unique');
+const identityChange = require('./identity-change');
+const passwordChange = require('./password-change');
+const resendVerifySignup = require('./resend-verify-signup');
+const sanitizeUserForClient = require('./helpers/sanitize-user-for-client');
+const sendResetPwd = require('./send-reset-pwd');
 const {
   resetPwdWithLongToken,
-  resetPwdWithShortToken,
-} = require("./reset-password");
+  resetPwdWithShortToken
+} = require('./reset-password');
 const {
   verifySignupWithLongToken,
-  verifySignupWithShortToken,
-} = require("./verify-signup");
+  verifySignupWithShortToken
+} = require('./verify-signup');
 const {
   verifySignupSetPasswordWithLongToken,
-  verifySignupSetPasswordWithShortToken,
-} = require("./verify-signup-set-password");
-const passwordField = "password";
+  verifySignupSetPasswordWithShortToken
+} = require('./verify-signup-set-password');
+const passwordField = 'password';
 
 const optionsDefault = {
   app: null, // value set during configuration
-  service: "/users", // need exactly this for test suite
-  path: "authManagement",
+  service: '/users', // need exactly this for test suite
+  path: 'authManagement',
   notifier: async () => {},
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  identifyUserProps: ["email"],
-  sanitizeUserForClient,
+  identifyUserProps: ['email'],
+  sanitizeUserForClient
 };
 
 module.exports = authenticationLocalManagement;
 
-function authenticationLocalManagement(options1 = {}) {
-  debug("service being configured.");
+function authenticationLocalManagement (options1 = {}) {
+  debug('service being configured.');
 
   return function () {
     const options = Object.assign({}, optionsDefault, options1, { app: this });
@@ -48,13 +48,13 @@ function authenticationLocalManagement(options1 = {}) {
   };
 }
 
-function authLocalMgntMethods(options) {
+function authLocalMgntMethods (options) {
   return {
-    async create(data) {
+    async create (data) {
       debug(`create called. action=${data.action}`);
 
       switch (data.action) {
-        case "checkUnique":
+        case 'checkUnique':
           try {
             return await checkUnique(
               options,
@@ -65,7 +65,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err); // support both async and Promise interfaces
           }
-        case "resendVerifySignup":
+        case 'resendVerifySignup':
           try {
             return await resendVerifySignup(
               options,
@@ -75,13 +75,13 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "verifySignupLong":
+        case 'verifySignupLong':
           try {
             return await verifySignupWithLongToken(options, data.value);
           } catch (err) {
             return Promise.reject(err);
           }
-        case "verifySignupShort":
+        case 'verifySignupShort':
           try {
             return await verifySignupWithShortToken(
               options,
@@ -91,7 +91,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "verifySignupSetPasswordLong":
+        case 'verifySignupSetPasswordLong':
           try {
             return await verifySignupSetPasswordWithLongToken(
               options,
@@ -102,7 +102,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "verifySignupSetPasswordShort":
+        case 'verifySignupSetPasswordShort':
           try {
             return await verifySignupSetPasswordWithShortToken(
               options,
@@ -114,7 +114,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "sendResetPwd":
+        case 'sendResetPwd':
           try {
             return await sendResetPwd(
               options,
@@ -125,7 +125,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "resetPwdLong":
+        case 'resetPwdLong':
           try {
             return await resetPwdWithLongToken(
               options,
@@ -136,7 +136,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "resetPwdShort":
+        case 'resetPwdShort':
           try {
             return await resetPwdWithShortToken(
               options,
@@ -148,7 +148,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "passwordChange":
+        case 'passwordChange':
           try {
             return await passwordChange(
               options,
@@ -160,7 +160,7 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "identityChange":
+        case 'identityChange':
           try {
             return await identityChange(
               options,
@@ -172,13 +172,13 @@ function authLocalMgntMethods(options) {
           } catch (err) {
             return Promise.reject(err);
           }
-        case "options":
+        case 'options':
           return options;
         default:
           throw new errors.BadRequest(`Action '${data.action}' is invalid.`, {
-            errors: { $className: "badParams" },
+            errors: { $className: 'badParams' }
           });
       }
-    },
+    }
   };
 }

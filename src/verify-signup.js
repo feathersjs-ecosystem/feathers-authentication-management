@@ -10,20 +10,22 @@ const debug = makeDebug('authLocalMgnt:verifySignup');
 
 module.exports = {
   verifySignupWithLongToken,
-  verifySignupWithShortToken,
+  verifySignupWithShortToken
 };
 
-async function verifySignupWithLongToken(options, verifyToken) {
+async function verifySignupWithLongToken (options, verifyToken) {
   ensureValuesAreStrings(verifyToken);
 
-  return await verifySignup(options, { verifyToken }, { verifyToken });
+  const result = await verifySignup(options, { verifyToken }, { verifyToken });
+  return result;
 }
 
-async function verifySignupWithShortToken(options, verifyShortToken, identifyUser) {
+async function verifySignupWithShortToken (options, verifyShortToken, identifyUser) {
   ensureValuesAreStrings(verifyShortToken);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await verifySignup(options, identifyUser, { verifyShortToken });
+  const result = await verifySignup(options, identifyUser, { verifyShortToken });
+  return result;
 }
 
 async function verifySignup (options, query, tokens) {
@@ -43,7 +45,7 @@ async function verifySignup (options, query, tokens) {
   }
 
   const user2 = await eraseVerifyProps(user1, user1.verifyExpires > Date.now(), user1.verifyChanges || {});
-  const user3 = await notifier(options.notifier, 'verifySignup', user2)
+  const user3 = await notifier(options.notifier, 'verifySignup', user2);
   return options.sanitizeUserForClient(user3);
 
   async function eraseVerifyProps (user, isVerified, verifyChanges) {
@@ -55,6 +57,7 @@ async function verifySignup (options, query, tokens) {
       verifyChanges: {}
     });
 
-    return await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    return result;
   }
 }

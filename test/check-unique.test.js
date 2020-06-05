@@ -1,32 +1,32 @@
-const assert = require("chai").assert;
-const feathers = require("@feathersjs/feathers");
-const feathersMemory = require("feathers-memory");
-const authLocalMgnt = require("../src/index");
-const { timeoutEachTest } = require("./helpers/config");
+const assert = require('chai').assert;
+const feathers = require('@feathersjs/feathers');
+const feathersMemory = require('feathers-memory');
+const authLocalMgnt = require('../src/index');
+const { timeoutEachTest } = require('./helpers/config');
 
 const makeUsersService = options =>
   function (app) {
-    app.use("/users", feathersMemory(options));
+    app.use('/users', feathersMemory(options));
   };
 
 const usersId = [
-  { id: "a", email: "a", username: "john a" },
-  { id: "b", email: "b", username: "john b" },
-  { id: "c", email: "c", username: "john b" }
+  { id: 'a', email: 'a', username: 'john a' },
+  { id: 'b', email: 'b', username: 'john b' },
+  { id: 'c', email: 'c', username: 'john b' }
 ];
 
 const users_Id = [
-  { _id: "a", email: "a", username: "john a" },
-  { _id: "b", email: "b", username: "john b" },
-  { _id: "c", email: "c", username: "john b" }
+  { _id: 'a', email: 'a', username: 'john a' },
+  { _id: 'b', email: 'b', username: 'john b' },
+  { _id: 'c', email: 'c', username: 'john b' }
 ];
 
-["_id", "id"].forEach(idType => {
-  ["paginated", "non-paginated"].forEach(pagination => {
+['_id', 'id'].forEach(idType => {
+  ['paginated', 'non-paginated'].forEach(pagination => {
     describe(`check-unique.test.js ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
-      describe("standard", () => {
+      describe('standard', () => {
         let app;
         let usersService;
         let authLocalMgntService;
@@ -38,36 +38,36 @@ const users_Id = [
             makeUsersService({
               multi: true,
               id: idType,
-              paginate: pagination === "paginated"
+              paginate: pagination === 'paginated'
             })
           );
           app.setup();
-          authLocalMgntService = app.service("authManagement");
+          authLocalMgntService = app.service('authManagement');
 
-          usersService = app.service("users");
+          usersService = app.service('users');
           await usersService.remove(null);
           await usersService.create(
-            clone(idType === "_id" ? users_Id : usersId)
+            clone(idType === '_id' ? users_Id : usersId)
           );
         });
 
-        it("returns a promise", async () => {
+        it('returns a promise', async () => {
           const res = authLocalMgntService
             .create({
-              action: "checkUnique",
-              value: { username: "john a" }
+              action: 'checkUnique',
+              value: { username: 'john a' }
             })
             .then(() => { })
             .catch(() => { });
 
-          assert.isOk(res, "no promise returned");
-          assert.isFunction(res.then, "not a function");
+          assert.isOk(res, 'no promise returned');
+          assert.isFunction(res.then, 'not a function');
         });
 
-        it("handles empty query", async () => {
+        it('handles empty query', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
+              action: 'checkUnique',
               value: {}
             });
           } catch (err) {
@@ -76,11 +76,11 @@ const users_Id = [
           }
         });
 
-        it("handles empty query returning nothing", async () => {
+        it('handles empty query returning nothing', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "hjhjhj" }
+              action: 'checkUnique',
+              value: { username: 'hjhjhj' }
             });
           } catch (err) {
             console.log(err);
@@ -88,114 +88,114 @@ const users_Id = [
           }
         });
 
-        it("finds single query on single item", async () => {
+        it('finds single query on single item', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john a" }
+              action: 'checkUnique',
+              value: { username: 'john a' }
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Values already taken.");
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Values already taken.');
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
 
-        it("handles noErrMsg option", async () => {
+        it('handles noErrMsg option', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john a" },
+              action: 'checkUnique',
+              value: { username: 'john a' },
               meta: { noErrMsg: true }
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Error"); // feathers default for no error message
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Error'); // feathers default for no error message
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
 
-        it("finds single query on multiple items", async () => {
+        it('finds single query on multiple items', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john b" }
+              action: 'checkUnique',
+              value: { username: 'john b' }
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Values already taken.");
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Values already taken.');
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
 
-        it("finds multiple queries on same item", async () => {
+        it('finds multiple queries on same item', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john a", email: "a" }
+              action: 'checkUnique',
+              value: { username: 'john a', email: 'a' }
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Values already taken.");
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Values already taken.');
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
 
-        it("finds multiple queries on different item", async () => {
+        it('finds multiple queries on different item', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john a", email: "b" }
+              action: 'checkUnique',
+              value: { username: 'john a', email: 'b' }
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Values already taken.");
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Values already taken.');
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
 
-        it("ignores null & undefined queries", async () => {
+        it('ignores null & undefined queries', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
+              action: 'checkUnique',
               value: { username: undefined, email: null }
             });
           } catch (err) {
             console.log(err);
-            assert.fail(true, false, "test unexpectedly failed");
+            assert.fail(true, false, 'test unexpectedly failed');
           }
         });
 
-        it("ignores current user on single item", async () => {
+        it('ignores current user on single item', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john a" },
-              ownId: "a"
+              action: 'checkUnique',
+              value: { username: 'john a' },
+              ownId: 'a'
             });
           } catch (err) {
             console.log(err);
-            assert.fail(true, false, "test unexpectedly failed");
+            assert.fail(true, false, 'test unexpectedly failed');
           }
         });
 
-        it("cannot ignore current user on multiple items", async () => {
+        it('cannot ignore current user on multiple items', async () => {
           try {
             await authLocalMgntService.create({
-              action: "checkUnique",
-              value: { username: "john b" },
-              ownId: "b"
+              action: 'checkUnique',
+              value: { username: 'john b' },
+              ownId: 'b'
             });
 
-            assert.fail(true, false, "test unexpectedly succeeded");
+            assert.fail(true, false, 'test unexpectedly succeeded');
           } catch (err) {
-            assert.equal(err.message, "Values already taken.");
-            assert.equal(err.errors.username, "Already taken.");
+            assert.equal(err.message, 'Values already taken.');
+            assert.equal(err.errors.username, 'Already taken.');
           }
         });
       });
