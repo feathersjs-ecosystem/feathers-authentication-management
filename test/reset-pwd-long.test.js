@@ -54,7 +54,7 @@ const usersId = [
     id: 'a',
     email: 'a',
     isVerified: true,
-    resetToken: 'a___000',
+    resetToken: '000',
     resetExpires: now + maxTimeAllTests
   },
   {
@@ -68,14 +68,14 @@ const usersId = [
     id: 'c',
     email: 'c',
     isVerified: true,
-    resetToken: 'c___111',
+    resetToken: '111',
     resetExpires: now - maxTimeAllTests
   },
   {
     id: 'd',
     email: 'd',
     isVerified: false,
-    resetToken: 'd___222',
+    resetToken: '222',
     resetExpires: now - maxTimeAllTests
   }
 ];
@@ -110,6 +110,7 @@ const usersId = [
           // Ugly but makes test much faster
           if (users_Id[0][fieldToHash].length < 15) {
             for (let i = 0, ilen = users_Id.length; i < ilen; i++) {
+              if (!users_Id[i][fieldToHash]) continue;
               const hashed = await hashPassword(
                 app,
                 users_Id[i][fieldToHash],

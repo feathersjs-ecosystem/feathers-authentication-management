@@ -72,11 +72,10 @@ async function resetPassword (options, query, tokens, password, field) {
       resetShortToken: null,
       resetExpires: null
     });
-    /*
-    new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
+    
+    throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
       errors: { $className: 'invalidToken' }
     });
-    */
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {

@@ -129,10 +129,11 @@ const usersId = [
           // Ugly but makes test much faster
           if (users_Id[0][fieldToHash].length < 15) {
             for (let i = 0, ilen = users_Id.length; i < ilen; i++) {
+              if (!users_Id[i][fieldToHash]) continue;
               const hashed = await hashPassword(
                 app,
                 users_Id[i][fieldToHash],
-                'resetToken'
+                'resetShortToken'
               );
               users_Id[i][fieldToHash] = hashed;
               usersId[i][fieldToHash] = hashed;
