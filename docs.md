@@ -418,7 +418,7 @@ module.exports.after = {
   create: [
     hooks.remove('password'),
     aHookToEmailYourVerification(),
-    verifyHooks.removeVerification() // removes verification/reset fields other than .isVerified
+    verifyHooks.removeVerification() // removes verification/reset fields other than .isVerified from the response
   ]
 };
 ```
