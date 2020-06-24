@@ -37,7 +37,7 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "changelog": "github_changelog_generator-u feathers-plus -p feathers-authentication-management && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
+    "changelog": "github_changelog_generator -u feathers-plus -p feathers-authentication-management && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
     "lint": "semistandard src/**/*.js --fix",
     "mocha": "mocha --opts mocha.opts",
     "coverage": "nyc npm run mocha",

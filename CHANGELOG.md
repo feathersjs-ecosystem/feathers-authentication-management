@@ -1,6 +1,72 @@
-# Change Log
+# Changelog
+
+## [v3.0.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v3.0.0) (2020-06-24)
+
+[Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v2.0.1...v3.0.0)
+
+**Implemented enhancements:**
+
+- how to setup 2FA [\#99](https://github.com/feathers-plus/feathers-authentication-management/issues/99)
+- Securely store password reset tokens [\#64](https://github.com/feathers-plus/feathers-authentication-management/issues/64)
+- Specify custom hash function to HashPassword when resetting password [\#43](https://github.com/feathers-plus/feathers-authentication-management/issues/43)
+- Add password tests that don't use fakes [\#4](https://github.com/feathers-plus/feathers-authentication-management/issues/4)
+
+**Fixed bugs:**
+
+- Security: Is `passwordChange` safe? [\#77](https://github.com/feathers-plus/feathers-authentication-management/issues/77)
+
+**Closed issues:**
+
+- verifyToken and others are empty [\#141](https://github.com/feathers-plus/feathers-authentication-management/issues/141)
+- send-reset-pwd.js creates wrong tokens [\#140](https://github.com/feathers-plus/feathers-authentication-management/issues/140)
+- Example passwordless app using SMS  for login and account creation [\#139](https://github.com/feathers-plus/feathers-authentication-management/issues/139)
+- how to use forgotten password of feathers-authentication-management  [\#134](https://github.com/feathers-plus/feathers-authentication-management/issues/134)
+- check unique is not working with mongodb [\#133](https://github.com/feathers-plus/feathers-authentication-management/issues/133)
+- f-a-m assumes bcrypt  [\#131](https://github.com/feathers-plus/feathers-authentication-management/issues/131)
+- MYSQL Error Verifying  e-mail Token [\#129](https://github.com/feathers-plus/feathers-authentication-management/issues/129)
+- using verifyHooks.addVerification\(\) [\#128](https://github.com/feathers-plus/feathers-authentication-management/issues/128)
+- resendVerifySignup is not working  [\#125](https://github.com/feathers-plus/feathers-authentication-management/issues/125)
+- v4 support [\#124](https://github.com/feathers-plus/feathers-authentication-management/issues/124)
+- pwReset should not be case sensitive [\#121](https://github.com/feathers-plus/feathers-authentication-management/issues/121)
+- Notifier wont work with other opitions like 'identifyUserProps' [\#120](https://github.com/feathers-plus/feathers-authentication-management/issues/120)
+- Distinguishing between identityChange and initial vericication in notifier [\#119](https://github.com/feathers-plus/feathers-authentication-management/issues/119)
+- Cannot read property 'id' of undefined [\#117](https://github.com/feathers-plus/feathers-authentication-management/issues/117)
+- Discussing enhancements and changes for V3 rewrite [\#114](https://github.com/feathers-plus/feathers-authentication-management/issues/114)
+- Create TypeScript typings for this package [\#112](https://github.com/feathers-plus/feathers-authentication-management/issues/112)
+- Generated tokens are not valid for password reset [\#110](https://github.com/feathers-plus/feathers-authentication-management/issues/110)
+- Can't provide custom hashPassword function [\#109](https://github.com/feathers-plus/feathers-authentication-management/issues/109)
+- Passing through params to users service [\#107](https://github.com/feathers-plus/feathers-authentication-management/issues/107)
+- disable external [\#100](https://github.com/feathers-plus/feathers-authentication-management/issues/100)
+- Not able to verify user. Using provided client library [\#97](https://github.com/feathers-plus/feathers-authentication-management/issues/97)
+- Update to latest feathers-hooks-common? [\#94](https://github.com/feathers-plus/feathers-authentication-management/issues/94)
+- Bad date format with SQL database [\#86](https://github.com/feathers-plus/feathers-authentication-management/issues/86)
+- sendResetPwd, information leak [\#85](https://github.com/feathers-plus/feathers-authentication-management/issues/85)
+- Docs misunderstanding [\#81](https://github.com/feathers-plus/feathers-authentication-management/issues/81)
+- authManagement:verifySignupLong Sequelize error "Invalid value \[object Object\]" [\#75](https://github.com/feathers-plus/feathers-authentication-management/issues/75)
+- If a user has signed up with oAuth, is there an ability to add/change a password? [\#71](https://github.com/feathers-plus/feathers-authentication-management/issues/71)
+- Cast to \[string\] failed for value \"\[{}\]\" at path \"verifyChanges\" [\#53](https://github.com/feathers-plus/feathers-authentication-management/issues/53)
+- How to ensure a user's email is verified before they can sign in - needs feathers-authentication changes [\#17](https://github.com/feathers-plus/feathers-authentication-management/issues/17)
+- Conflict on batch insert users when adding addVerification hook  [\#16](https://github.com/feathers-plus/feathers-authentication-management/issues/16)
+- Review article for pain points [\#13](https://github.com/feathers-plus/feathers-authentication-management/issues/13)
+- Using feathers-authentication v1.0 [\#3](https://github.com/feathers-plus/feathers-authentication-management/issues/3)
+- API to check if tokens are still valid, without changing password [\#2](https://github.com/feathers-plus/feathers-authentication-management/issues/2)
+
+**Merged pull requests:**
+
+- Update docs.md [\#146](https://github.com/feathers-plus/feathers-authentication-management/pull/146) ([MichaelErmer](https://github.com/MichaelErmer))
+- Update docs.md [\#145](https://github.com/feathers-plus/feathers-authentication-management/pull/145) ([devashishsethia](https://github.com/devashishsethia))
+- Bump handlebars from 4.0.6 to 4.7.6 [\#143](https://github.com/feathers-plus/feathers-authentication-management/pull/143) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add actions to verify signup and set password simultaneously [\#142](https://github.com/feathers-plus/feathers-authentication-management/pull/142) ([mattyg](https://github.com/mattyg))
+- Bump js-yaml from 3.8.3 to 3.13.1 [\#135](https://github.com/feathers-plus/feathers-authentication-management/pull/135) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump lodash from 4.17.4 to 4.17.15 [\#130](https://github.com/feathers-plus/feathers-authentication-management/pull/130) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update to v4 authentication [\#127](https://github.com/feathers-plus/feathers-authentication-management/pull/127) ([TheSinding](https://github.com/TheSinding))
+- Remove outdated link. [\#123](https://github.com/feathers-plus/feathers-authentication-management/pull/123) ([bartduisters](https://github.com/bartduisters))
+- chore\(\): update feathers libs [\#122](https://github.com/feathers-plus/feathers-authentication-management/pull/122) ([bitflower](https://github.com/bitflower))
+- Update walkthrough on medium [\#118](https://github.com/feathers-plus/feathers-authentication-management/pull/118) ([morenoh149](https://github.com/morenoh149))
+- hashPassword workaround verbage [\#113](https://github.com/feathers-plus/feathers-authentication-management/pull/113) ([rayfoss](https://github.com/rayfoss))
 
 ## [v2.0.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v2.0.1) (2018-07-09)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v2.0.0...v2.0.1)
 
 **Implemented enhancements:**
@@ -25,6 +91,7 @@
 - migrate to featchers-common-hooks v4 [\#103](https://github.com/feathers-plus/feathers-authentication-management/pull/103) ([Anton-Nikishkin](https://github.com/Anton-Nikishkin))
 
 ## [v2.0.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v2.0.0) (2018-01-25)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.3...v2.0.0)
 
 **Implemented enhancements:**
@@ -38,6 +105,7 @@
 - Purpose of resetShortToken [\#83](https://github.com/feathers-plus/feathers-authentication-management/issues/83)
 
 ## [v1.0.3](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.3) (2017-12-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.2...v1.0.3)
 
 **Closed issues:**
@@ -47,9 +115,11 @@
 - After resetting password user not able to login [\#78](https://github.com/feathers-plus/feathers-authentication-management/issues/78)
 
 ## [v1.0.2](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.2) (2017-11-28)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.1...v1.0.2)
 
 ## [v1.0.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.1) (2017-11-28)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v1.0.0...v1.0.1)
 
 **Implemented enhancements:**
@@ -62,6 +132,7 @@
 - congratulations for v1.0!!! [\#72](https://github.com/feathers-plus/feathers-authentication-management/issues/72)
 
 ## [v1.0.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v1.0.0) (2017-09-17)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.7.0...v1.0.0)
 
 **Implemented enhancements:**
@@ -79,9 +150,11 @@
 - Update debug to the latest version 🚀 [\#65](https://github.com/feathers-plus/feathers-authentication-management/pull/65) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.7.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.7.0) (2017-08-06)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.5.0...v0.7.0)
 
 ## [v0.5.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.5.0) (2017-08-06)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.4.2...v0.5.0)
 
 **Implemented enhancements:**
@@ -110,9 +183,11 @@
 - Update sift to the latest version 🚀 [\#58](https://github.com/feathers-plus/feathers-authentication-management/pull/58) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.4.2](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.4.2) (2017-07-01)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.4.1...v0.4.2)
 
 ## [v0.4.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.4.1) (2017-07-01)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.4.0...v0.4.1)
 
 **Implemented enhancements:**
@@ -125,6 +200,7 @@
 - Update feathers-authentication-local to the latest version 🚀 [\#48](https://github.com/feathers-plus/feathers-authentication-management/pull/48) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.4.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.4.0) (2017-05-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.3.0...v0.4.0)
 
 **Implemented enhancements:**
@@ -156,6 +232,7 @@
 - Update debug to the latest version 🚀 [\#26](https://github.com/feathers-plus/feathers-authentication-management/pull/26) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.3.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.3.0) (2017-04-19)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.2.0...v0.3.0)
 
 **Implemented enhancements:**
@@ -172,6 +249,7 @@
 - Update feathers-hooks to the latest version 🚀 [\#22](https://github.com/feathers-plus/feathers-authentication-management/pull/22) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.2.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.2.0) (2017-04-14)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.6...v0.2.0)
 
 **Implemented enhancements:**
@@ -189,15 +267,19 @@
 - Update dependencies to enable Greenkeeper 🌴 [\#20](https://github.com/feathers-plus/feathers-authentication-management/pull/20) ([greenkeeper[bot]](https://github.com/apps/greenkeeper))
 
 ## [v0.1.6](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.6) (2016-12-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.5...v0.1.6)
 
 ## [v0.1.5](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.5) (2016-12-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.4...v0.1.5)
 
 ## [v0.1.4](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.4) (2016-12-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.3...v0.1.4)
 
 ## [v0.1.3](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.3) (2016-12-30)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.2...v0.1.3)
 
 **Implemented enhancements:**
@@ -209,9 +291,11 @@
 - Make app.authenticate\({ type: 'local', email, password }\) more secure [\#10](https://github.com/feathers-plus/feathers-authentication-management/issues/10)
 
 ## [v0.1.2](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.2) (2016-12-20)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.1...v0.1.2)
 
 ## [v0.1.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.1) (2016-12-20)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.1.0...v0.1.1)
 
 **Implemented enhancements:**
@@ -219,6 +303,7 @@
 - Update README [\#9](https://github.com/feathers-plus/feathers-authentication-management/pull/9) ([eddyystop](https://github.com/eddyystop))
 
 ## [v0.1.0](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.1.0) (2016-12-18)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.0.2...v0.1.0)
 
 **Closed issues:**
@@ -232,9 +317,13 @@
 - Removed duplicate documentation from README [\#5](https://github.com/feathers-plus/feathers-authentication-management/pull/5) ([eddyystop](https://github.com/eddyystop))
 
 ## [v0.0.2](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.0.2) (2016-11-21)
+
 [Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/v0.0.1...v0.0.2)
 
 ## [v0.0.1](https://github.com/feathers-plus/feathers-authentication-management/tree/v0.0.1) (2016-11-21)
 
+[Full Changelog](https://github.com/feathers-plus/feathers-authentication-management/compare/7d14a1a58bc9fc00b34ca8658ea0b38766f7032a...v0.0.1)
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
