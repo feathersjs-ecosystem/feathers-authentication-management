@@ -1,7 +1,7 @@
 .editorconfig
+.jshintrc
 .travis.yml
 .istanbul.yml
 .idea/
-src/
+!src/
 test/
-!lib/
