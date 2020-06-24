@@ -12,6 +12,10 @@
 
 ## Documentation
 
+The [`master`](https://github.com/feathers-plus/feathers-authentication-management) branch and versions >= 3.x are expected to work with [Feathers v4](https://docs.feathersjs.com/) (a.k.a. Crow).
+
+Versions >= 1.x are expected to work with [Feathers v3](https://buzzard.docs.feathersjs.com/) (a.k.a. Buzzard)
+
 Refer to [Documentation](./docs.md).
 
 Read a [step-by-step guide](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) created by Imre Gelens
