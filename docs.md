@@ -50,7 +50,8 @@ provide much of the infrastructure necessary to implement such a scenario.
 - Successful password reset for a forgotten password.
 - Manual change of a password.
 - Change of identity.
-  Notify both the current and new e.g. old email addr may be notified when the email addr changes.
+
+Notify both the current and new e.g. old email addr may be notified when the email addr changes.
 
 ### May be used with
 
