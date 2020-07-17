@@ -39,12 +39,12 @@ const optionsDefault = {
 
 module.exports = authenticationLocalManagement;
 
-function authenticationLocalManagement (options1 = {}) {
+function authenticationLocalManagement (options1 = {}, docs = {}) {
   debug('service being configured.');
 
   return function () {
     const options = Object.assign({}, optionsDefault, options1, { app: this });
-    options.app.use(options.path, authLocalMgntMethods(options));
+    options.app.use(options.path, Object.assign(authLocalMgntMethods(options), { docs }));
   };
 }
 
