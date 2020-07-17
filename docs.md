@@ -97,6 +97,7 @@ Leaving it a pure API server, lets it be used with both native and browser clien
 - [Database](#database)
 - [Routing](#routing)
 - [Security](#security)
+- [Docs](#docs)
 - [Configurable](#configurable)
 - [Tests](#tests)
 
@@ -106,7 +107,7 @@ Leaving it a pure API server, lets it be used with both native and browser clien
 import authManagement from "feathers-authentication-management";
 app
   .configure(authentication)
-  .configure(authManagement({ options }))
+  .configure(authManagement({ options }, { docs }))
   .configure(user);
 ```
 
@@ -140,6 +141,11 @@ app
   Only these props may be changed with verification by the service.
   At least one of these props must be provided whenever a short token is used,
   as the short token alone is too susceptible to brute force attack.
+
+`docs` (optional) are:
+
+- representation of the service swagger documentation. Default `{}`
+  See [Docs](#docs) for more information.
 
 The service creates and maintains the following properties in the `user` item:
 
@@ -573,6 +579,8 @@ before: {
 ```
 
 ## Docs
+
+_optional params_
 
 Because this service doesn't use `app.use()` but `app.configure()`, you can't add documentation like it's recommended by [@feathers-swagger](feathers-swagger). Instead, you've just have to pass your docs through the second params.
 
