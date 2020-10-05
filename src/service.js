@@ -77,7 +77,11 @@ function authLocalMgntMethods (options) {
           }
         case 'verifySignupLong':
           try {
-            return await verifySignupWithLongToken(options, data.value);
+            return await verifySignupWithLongToken(
+              options,
+              data.value,
+              data.notifierOptions
+            );
           } catch (err) {
             return Promise.reject(err);
           }
@@ -86,7 +90,8 @@ function authLocalMgntMethods (options) {
             return await verifySignupWithShortToken(
               options,
               data.value.token,
-              data.value.user
+              data.value.user,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -97,7 +102,8 @@ function authLocalMgntMethods (options) {
               options,
               data.value.token,
               data.value.password,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -109,7 +115,8 @@ function authLocalMgntMethods (options) {
               data.value.token,
               data.value.user,
               data.value.password,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -119,8 +126,8 @@ function authLocalMgntMethods (options) {
             return await sendResetPwd(
               options,
               data.value,
-              data.notifierOptions,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -131,7 +138,8 @@ function authLocalMgntMethods (options) {
               options,
               data.value.token,
               data.value.password,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -143,7 +151,8 @@ function authLocalMgntMethods (options) {
               data.value.token,
               data.value.user,
               data.value.password,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -155,7 +164,8 @@ function authLocalMgntMethods (options) {
               data.value.user,
               data.value.oldPassword,
               data.value.password,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
@@ -167,7 +177,8 @@ function authLocalMgntMethods (options) {
               data.value.user,
               data.value.password,
               data.value.changes,
-              passwordField
+              passwordField,
+              data.notifierOptions
             );
           } catch (err) {
             return Promise.reject(err);
