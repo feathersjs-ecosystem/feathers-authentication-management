@@ -211,7 +211,7 @@ const usersId = [
                   'verifyChanges'
                 )
               ),
-              {}
+              'password'
             ]);
 
             assert.strictEqual(user.isVerified, true, 'isVerified not false');
