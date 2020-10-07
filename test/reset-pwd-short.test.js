@@ -431,7 +431,8 @@ const usersId = [
                 user: {
                   email: db[0].email
                 }
-              }
+              },
+              notifierOptions: {transport: 'sms'},
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -456,7 +457,7 @@ const usersId = [
             assert.deepEqual(spyNotifier.result()[0].args, [
               'resetPwd',
               Object.assign({}, sanitizeUserForEmail(user)),
-              {}
+              {transport: 'sms'}
             ]);
           } catch (err) {
             console.log(err);

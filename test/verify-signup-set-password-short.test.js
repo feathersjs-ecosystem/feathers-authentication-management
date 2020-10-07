@@ -330,8 +330,9 @@ const users_Id = [
               value: {
                 token: '00099',
                 user: { email: db[0].email },
-                password
-              }
+                password,
+              },
+              notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -347,7 +348,7 @@ const users_Id = [
             assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
-              {}
+              { transport: 'sms' }
             ]);
           } catch (err) {
             console.log(err);

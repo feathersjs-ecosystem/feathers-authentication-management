@@ -189,7 +189,8 @@ const usersId = [
                 user: { email: userRec.email },
                 password: userRec.plainPassword,
                 changes: { email: 'b@b' }
-              }
+              },
+              notifierOptions: {transport: 'sms'},
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -211,7 +212,7 @@ const usersId = [
                   'verifyChanges'
                 )
               ),
-              'password'
+              'password',
             ]);
 
             assert.strictEqual(user.isVerified, true, 'isVerified not false');
