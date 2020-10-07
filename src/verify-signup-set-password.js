@@ -17,7 +17,8 @@ async function verifySignupSetPasswordWithLongToken (
   options,
   verifyToken,
   password,
-  field
+  field,
+  notifierOptions = {}
 ) {
   ensureValuesAreStrings(verifyToken, password);
 
@@ -26,7 +27,8 @@ async function verifySignupSetPasswordWithLongToken (
     { verifyToken },
     { verifyToken },
     password,
-    field
+    field,
+    notifierOptions
   );
   return result;
 }
@@ -36,7 +38,8 @@ async function verifySignupSetPasswordWithShortToken (
   verifyShortToken,
   identifyUser,
   password,
-  field
+  field,
+  notifierOptions = {}
 ) {
   ensureValuesAreStrings(verifyShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -48,12 +51,13 @@ async function verifySignupSetPasswordWithShortToken (
       verifyShortToken
     },
     password,
-    field
+    field,
+    notifierOptions
   );
   return result;
 }
 
-async function verifySignupSetPassword (options, query, tokens, password, field) {
+async function verifySignupSetPassword (options, query, tokens, password, field, notifierOptions = {}) {
   debug('verifySignupSetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -81,7 +85,7 @@ async function verifySignupSetPassword (options, query, tokens, password, field)
     field
   );
 
-  const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2);
+  const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);
 
   async function eraseVerifyPropsSetPassword (user, isVerified, verifyChanges, password, field) {

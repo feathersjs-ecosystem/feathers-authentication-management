@@ -5,11 +5,11 @@ const feathers = require('@feathersjs/feathers');
 const feathersMemory = require('feathers-memory');
 const authLocalMgnt = require('../src/index');
 const authService = require('./helpers/authenticationService');
-const { authentication: authConfig } = require('./helpers/config');
+const {authentication: authConfig} = require('./helpers/config');
 
 const SpyOn = require('./helpers/basic-spy');
-const { hashPassword } = require('../src/helpers');
-const { timeoutEachTest, maxTimeAllTests } = require('./helpers/config');
+const {hashPassword} = require('../src/helpers');
+const {timeoutEachTest, maxTimeAllTests} = require('./helpers/config');
 
 const makeUsersService = options =>
   function (app) {
@@ -60,7 +60,7 @@ describe('password-change.js', function () {
 
     beforeEach(async () => {
       app = feathers();
-      app.use('/auth', authService(app, Object.assign({}, { ...authConfig, entity: null })));
+      app.use('/auth', authService(app, Object.assign({}, {...authConfig, entity: null})));
       app.setup();
 
       // Ugly but makes test much faster
@@ -237,13 +237,18 @@ describe('password-change.js', function () {
                   },
                   oldPassword: userRec.plainPassword,
                   password: userRec.plainNewPassword
-                }
+                },
+                notifierOptions: {transport: 'sms'},
               });
               const user = await usersService.get(result.id || result._id);
 
               assert.strictEqual(result.isVerified, true, 'isVerified not true');
               assert.isOk(bcrypt.compareSync(user.plainNewPassword, user.password), `[1`);
-              assert.deepEqual(spyNotifier.result()[0].args, ['passwordChange', sanitizeUserForEmail(user), {}]);
+              assert.deepEqual(spyNotifier.result()[0].args, [
+                'passwordChange',
+                sanitizeUserForEmail(user),
+                {transport: 'sms'}
+              ]);
             } catch (err) {
               console.log(err);
               assert.strictEqual(err, null, 'err code set');
@@ -257,16 +262,16 @@ describe('password-change.js', function () {
 
 // Helpers
 
-async function notifier (action, user, notifierOptions, newEmail) {
+async function notifier(action, user, notifierOptions, newEmail) {
   return user;
 }
 
-function sanitizeUserForEmail (user) {
+function sanitizeUserForEmail(user) {
   const user1 = clone(user);
   delete user1.password;
   return user1;
 }
 
-function clone (obj) {
+function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
