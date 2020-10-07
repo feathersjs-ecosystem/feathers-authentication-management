@@ -1,7 +1,7 @@
 {
   "name": "feathers-authentication-management",
   "description": "Adds sign up verification, forgotten password reset, and other capabilities to local feathers-authentication ",
-  "version": "3.0.1",
+  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/feathers-plus/feathers-authentication-management.git"
