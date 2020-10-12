@@ -249,8 +249,9 @@ const users_Id = [
               action: 'verifySignupSetPasswordLong',
               value: {
                 token: '000',
-                password
-              }
+                password,
+              },
+              notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -263,7 +264,7 @@ const users_Id = [
             assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
-              {}
+              { transport: 'sms' }
             ]);
           } catch (err) {
             console.log(err);

@@ -15,22 +15,22 @@ module.exports = {
   resetPwdWithShortToken
 };
 
-async function resetPwdWithLongToken (options, resetToken, password, field) {
+async function resetPwdWithLongToken (options, resetToken, password, field, notifierOptions = {}) {
   ensureValuesAreStrings(resetToken, password);
 
-  const result = await resetPassword(options, { resetToken }, { resetToken }, password, field);
+  const result = await resetPassword(options, { resetToken }, { resetToken }, password, field, notifierOptions);
   return result;
 }
 
-async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field) {
+async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field, notifierOptions = {}) {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const result = await resetPassword(options, identifyUser, { resetShortToken }, password, field);
+  const result = await resetPassword(options, identifyUser, { resetShortToken }, password, field, notifierOptions);
   return result;
 }
 
-async function resetPassword (options, query, tokens, password, field) {
+async function resetPassword (options, query, tokens, password, field, notifierOptions = {}) {
   debug('resetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -72,7 +72,7 @@ async function resetPassword (options, query, tokens, password, field) {
       resetShortToken: null,
       resetExpires: null
     });
-    
+
     throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
       errors: { $className: 'invalidToken' }
     });
@@ -85,6 +85,6 @@ async function resetPassword (options, query, tokens, password, field) {
     resetExpires: null
   });
 
-  const user3 = await notifier(options.notifier, 'resetPwd', user2);
+  const user3 = await notifier(options.notifier, 'resetPwd', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);
 }

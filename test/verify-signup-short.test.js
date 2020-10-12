@@ -377,8 +377,9 @@ const users_Id = [
               action: 'verifySignupShort',
               value: {
                 token: '00099',
-                user: { email: db[0].email }
-              }
+                user: { email: db[0].email },
+              },
+              notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -393,7 +394,7 @@ const users_Id = [
             assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignup',
               Object.assign({}, sanitizeUserForEmail(user)),
-              {}
+              { transport: 'sms' }
             ]);
           } catch (err) {
             console.log(err);
