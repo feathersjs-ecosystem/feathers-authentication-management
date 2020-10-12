@@ -314,6 +314,148 @@ const usersId = [
           await authLocalMgntService.create({ action: 'resetPwdLong',
             value: { token: spyNotifier.result()[0].args[1].resetToken, password: '123456' } });
         });
+
+        it('failed reset is expiring the token', async () => {
+          const i = 0;
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } });
+
+          try {
+            await authLocalMgntService.create({ action: 'resetPwdLong',
+              value: {
+                token: 'a___999', // invalid token
+                password: '123456',
+                user: { email: db[i].email },
+              }
+            });
+          } catch {}
+
+          try {
+            await authLocalMgntService.create({ action: 'resetPwdLong',
+              value: {
+                token: spyNotifier.result()[0].args[1].resetToken,
+                password: '123456',
+                user: { email: db[i].email },
+              }
+            });
+            assert(false, 'unexpected succeeded.');
+          } catch {}
+        });
+      });
+
+      describe('with reusable token', () => {
+        let app;
+        let usersService;
+        let authLocalMgntService;
+        let db;
+        let spyNotifier;
+        let result;
+
+        beforeEach(async () => {
+          spyNotifier = new SpyOn(notifier);
+
+          app = feathers();
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              multi: true,
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              notifier: spyNotifier.callWith,
+              reuseResetToken: true,
+              testMode: true
+            })
+          );
+          app.setup();
+          authLocalMgntService = app.service('authManagement');
+
+          usersService = app.service('users');
+          await usersService.remove(null);
+          db = clone(idType === '_id' ? users_Id : usersId);
+          await usersService.create(db);
+        });
+
+        it('verifies reused reset works as expected', async () => {
+          const i = 0;
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } });
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } });
+          assert.strictEqual(
+            spyNotifier.result()[0].args[1].resetToken,
+            spyNotifier.result()[1].args[1].resetToken,
+            'resetToken is not the same'
+          );
+
+          await authLocalMgntService.create({ action: 'resetPwdLong',
+            value: {
+              token: spyNotifier.result()[0].args[1].resetToken,
+              password: '123456',
+              user: { email: db[i].email },
+            }
+          });
+        });
+      });
+
+      describe('not expiring on token error', () => {
+        let app;
+        let usersService;
+        let authLocalMgntService;
+        let db;
+        let spyNotifier;
+        let result;
+
+        beforeEach(async () => {
+          spyNotifier = new SpyOn(notifier);
+
+          app = feathers();
+          app.use('/authentication', authService(app));
+          app.configure(
+            makeUsersService({
+              multi: true,
+              id: idType,
+              paginate: pagination === 'paginated'
+            })
+          );
+          app.configure(
+            authLocalMgnt({
+              notifier: spyNotifier.callWith,
+              removeTokenOnError: false,
+              testMode: true
+            })
+          );
+          app.setup();
+          authLocalMgntService = app.service('authManagement');
+
+          usersService = app.service('users');
+          await usersService.remove(null);
+          db = clone(idType === '_id' ? users_Id : usersId);
+          await usersService.create(db);
+        });
+
+        it('failed reset not expiring the token', async () => {
+          const i = 0;
+          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } });
+
+          try {
+            await authLocalMgntService.create({ action: 'resetPwdLong',
+              value: {
+                token: 'a___999', // invalid token
+                password: '123456',
+                user: { email: db[i].email },
+              }
+            });
+          } catch {}
+
+          await authLocalMgntService.create({ action: 'resetPwdLong',
+            value: {
+              token: spyNotifier.result()[0].args[1].resetToken,
+              password: '123456',
+              user: { email: db[i].email },
+            }
+          });
+        });
       });
     });
   });

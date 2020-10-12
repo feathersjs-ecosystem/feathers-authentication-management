@@ -133,6 +133,8 @@ app
 - shortTokenDigits: Short token is digits if true, else alphanumeric. Default is true.
 - delay: Duration for sign up email verification token in ms. Default is 5 days.
 - resetDelay: Duration for password reset token in ms. Default is 2 hours.
+- removeTokenOnError: Remove reset token from database if user tries to reset with invalid token. Default is true.
+- reuseResetToken: Use the same reset token if user resets password twice in a short period. In this case token is not hashed in a database. Default is false.
 - identifyUserProps: Prop names in `user` item which uniquely identify the user,
   e.g. `['username', 'email', 'cellphone']`.
   The default is `['email']`.

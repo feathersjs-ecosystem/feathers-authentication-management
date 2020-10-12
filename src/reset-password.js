@@ -34,7 +34,6 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   debug('resetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
-  const promises = [];
   let users;
 
   if (tokens.resetToken) {
@@ -51,27 +50,35 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   const checkProps = options.skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
   const user1 = getUserData(users, checkProps);
 
-  Object.keys(tokens).forEach(key => {
-    promises.push(
-      comparePasswords(
+  const incorrectError = () =>
+    new errors.BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
+      errors: {$className: 'incorrectToken'}
+    });
+
+  const tokenChecks = Object.keys(tokens).map(key => {
+    if (options.reuseResetToken) {
+      // Comparing token directly as reused resetToken is not hashed
+      if (tokens[key] !== user1[key])
+        return Promise.reject(incorrectError());
+    } else {
+      return comparePasswords(
         tokens[key],
         user1[key],
-        () =>
-          new errors.BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
-            errors: { $className: 'incorrectToken' }
-          })
-      )
-    );
+        incorrectError
+      );
+    }
   });
 
   try {
-    await Promise.all(promises);
+    await Promise.all(tokenChecks);
   } catch (err) {
-    await usersService.patch(user1[usersServiceIdName], {
-      resetToken: null,
-      resetShortToken: null,
-      resetExpires: null
-    });
+    if (options.removeTokenOnError) {
+      await usersService.patch(user1[usersServiceIdName], {
+        resetToken: null,
+        resetShortToken: null,
+        resetExpires: null
+      });
+    }
 
     throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
       errors: { $className: 'invalidToken' }
