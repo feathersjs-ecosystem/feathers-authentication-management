@@ -133,8 +133,8 @@ app
 - shortTokenDigits: Short token is digits if true, else alphanumeric. Default is true.
 - delay: Duration for sign up email verification token in ms. Default is 5 days.
 - resetDelay: Duration for password reset token in ms. Default is 2 hours.
-- resetAttempts: Amount of times user can submit invalid token before current token is removed from database. Default is 0.
-- reuseResetToken: Use the same reset token if user resets password twice in a short period. In this case token is not hashed in a database. Default is false.
+- resetAttempts: Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0.
+- reuseResetToken: Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is false.
 - identifyUserProps: Prop names in `user` item which uniquely identify the user,
   e.g. `['username', 'email', 'cellphone']`.
   The default is `['email']`.
@@ -158,6 +158,7 @@ The service creates and maintains the following properties in the `user` item:
 - resetToken: The 30-char token generated for forgotten password reset (string)
 - resetShortToken: The 6-digit token generated for forgotten password reset (string)
 - resetExpires: When the forgotten password token expire (Date)
+- resetAttempts: Amount of incorrect reset submissions left before token invalidation (Number)
 
 The following `user` item might also contain the following props:
 
