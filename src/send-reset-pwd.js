@@ -34,6 +34,7 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
 
   const user2 = Object.assign(user1, {
     resetExpires: Date.now() + options.resetDelay,
+    resetAttempts: options.resetAttempts,
     resetToken: concatIDAndHash(user1[usersServiceIdName], await getLongToken(options.longTokenLen)),
     resetShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits)
   });
@@ -41,6 +42,7 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
   await notifier(options.notifier, 'sendResetPwd', user2, notifierOptions);
   const user3 = await usersService.patch(user2[usersServiceIdName], {
     resetExpires: user2.resetExpires,
+    resetAttempts: user2.resetAttempts,
     resetToken:
       options.reuseResetToken ?
         user2.resetToken :

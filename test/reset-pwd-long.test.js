@@ -421,7 +421,7 @@ const usersId = [
           app.configure(
             authLocalMgnt({
               notifier: spyNotifier.callWith,
-              removeTokenOnError: false,
+              resetAttempts: 1,
               testMode: true
             })
           );

@@ -72,13 +72,15 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   try {
     await Promise.all(tokenChecks);
   } catch (err) {
-    if (options.removeTokenOnError) {
-      await usersService.patch(user1[usersServiceIdName], {
+    await usersService.patch(user1[usersServiceIdName],
+      user1.resetAttempts === 0 ? {
         resetToken: null,
         resetShortToken: null,
         resetExpires: null
-      });
-    }
+      } : {
+        resetAttempts: user1.resetAttempts - 1
+      }
+    );
 
     throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
       errors: { $className: 'invalidToken' }

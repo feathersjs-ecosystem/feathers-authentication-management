@@ -33,7 +33,7 @@ const optionsDefault = {
   shortTokenDigits: true,
   resetDelay: 1000 * 60 * 60 * 2, // 2 hours
   delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  removeTokenOnError: true,
+  resetAttempts: 0,
   reuseResetToken: false,
   identifyUserProps: ['email'],
   sanitizeUserForClient
