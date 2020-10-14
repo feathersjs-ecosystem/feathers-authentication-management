@@ -4,7 +4,7 @@ node_js:
 - '12'
 addons:
   code_climate:
-    repo_token: 62a3bde0f027c118850a683b86a8d609c9ecbeee35c0d9687e56a3049bb9aa69
+    repo_token: ac461a4a35fe5e70a011b20969f4298ad55da3498f1efbe0019d2bc3b99cf885
 notifications:
   email: false
 before_script:
