@@ -18,16 +18,14 @@ module.exports = {
 async function resetPwdWithLongToken (options, resetToken, password, field, notifierOptions = {}) {
   ensureValuesAreStrings(resetToken, password);
 
-  const result = await resetPassword(options, { resetToken }, { resetToken }, password, field, notifierOptions);
-  return result;
+  return resetPassword(options, { resetToken }, { resetToken }, password, field, notifierOptions);
 }
 
 async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field, notifierOptions = {}) {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const result = await resetPassword(options, identifyUser, { resetShortToken }, password, field, notifierOptions);
-  return result;
+  return resetPassword(options, identifyUser, { resetShortToken }, password, field, notifierOptions);
 }
 
 async function resetPassword (options, query, tokens, password, field, notifierOptions = {}) {
@@ -72,26 +70,32 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   try {
     await Promise.all(tokenChecks);
   } catch (err) {
-    await usersService.patch(user1[usersServiceIdName],
-      user1.resetAttempts === 0 ? {
+    if (user1.resetAttempts > 0) {
+      await usersService.patch(user1[usersServiceIdName], {
+        resetAttempts: user1.resetAttempts - 1
+      });
+
+      throw err;
+    } else {
+      await usersService.patch(user1[usersServiceIdName], {
         resetToken: null,
+        resetAttempts: null,
         resetShortToken: null,
         resetExpires: null
-      } : {
-        resetAttempts: user1.resetAttempts - 1
-      }
-    );
+      });
 
-    throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
-      errors: { $className: 'invalidToken' }
-    });
+      throw new errors.BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
+        errors: { $className: 'invalidToken' }
+      });
+    }
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
     password: await hashPassword(options.app, password, field),
+    resetExpires: null,
+    resetAttempts: null,
     resetToken: null,
-    resetShortToken: null,
-    resetExpires: null
+    resetShortToken: null
   });
 
   const user3 = await notifier(options.notifier, 'resetPwd', user2, notifierOptions);
