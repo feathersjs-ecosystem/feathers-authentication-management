@@ -258,8 +258,7 @@ const usersId = [
           );
           app.configure(
             authLocalMgnt({
-              notifier: spyNotifier.callWith,
-              testMode: true
+              notifier: spyNotifier.callWith
             })
           );
           app.setup();
@@ -365,8 +364,7 @@ const usersId = [
           app.configure(
             authLocalMgnt({
               notifier: spyNotifier.callWith,
-              reuseResetToken: true,
-              testMode: true
+              reuseResetToken: true
             })
           );
           app.setup();
@@ -421,8 +419,7 @@ const usersId = [
           app.configure(
             authLocalMgnt({
               notifier: spyNotifier.callWith,
-              resetAttempts: 1,
-              testMode: true
+              resetAttempts: 1
             })
           );
           app.setup();
