@@ -48,7 +48,7 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   const checkProps = options.skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
   const user1 = getUserData(users, checkProps);
 
-  const tokenChecks = Object.keys(tokens).map(key => {
+  const tokenChecks = Object.keys(tokens).map(async key => {
     if (options.reuseResetToken) {
       // Comparing token directly as reused resetToken is not hashed
       if (tokens[key] !== user1[key])
