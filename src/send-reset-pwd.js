@@ -22,10 +22,9 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
   const user1 = getUserData(users, options.skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
-    // Use existing token if remaining time exceeds half of resetDelay
-    options.reuseResetToken
-    && user1.resetToken
-    && user1.resetToken.includes('___')
+    // Use existing token when it's not hashed,
+    options.reuseResetToken && user1.resetToken && user1.resetToken.includes('___')
+    // and remaining time exceeds half of resetDelay
     && user1.resetExpires > Date.now() + options.resetDelay / 2
   ) {
     await notifier(options.notifier, 'sendResetPwd', user1, notifierOptions);
