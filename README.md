@@ -16,9 +16,15 @@ The [`master`](https://github.com/feathersjs-ecosystem/feathers-authentication-m
 
 Versions >= 1.x are expected to work with [Feathers v3](https://buzzard.docs.feathersjs.com/) (a.k.a. Buzzard)
 
+### Developers
+
 Refer to [Documentation](./docs.md).
 
 Read a [step-by-step guide](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) created by Imre Gelens
+
+### Maintainers
+
+Refer to our [guidelines](./development.md).
 
 ## License
 
