@@ -115,7 +115,7 @@ app
 - service: The path of the service for user items, e.g. `/users` (default) or `/organization`.
 - path: The path to associate with this service. Default `authManagement`.
   See [Multiple services](#multiple-services) for more information.
-- skipIsVerifiedCheck: if `true` (default) it is impossible to reset password if email is not verified.
+- skipIsVerifiedCheck: if `false` (default) it is impossible to reset password if email is not verified.
 - sanitizeUserForClient: ([default](https://github.com/feathers-plus/feathers-authentication-management/blob/master/src/helpers/sanitize-user-for-client.js)) sanatize the user in the response, if not overwriten **THE USER OBJECT IS IN THE RESPONSE** eg. on a password reset request, to reply with empty object use `sanitizeUserForClient: () => ({})`
 - notifier: `function(type, user, notifierOptions)` returns a Promise.
   - type: type of notification
