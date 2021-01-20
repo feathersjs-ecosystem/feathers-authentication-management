@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.1.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v3.1.0) (2021-01-20)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v3.0.1...v3.1.0)
+
+**Merged pull requests:**
+
+- Reuse reset token [\#156](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/156) ([rma4ok](https://github.com/rma4ok))
+
 ## [v3.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v3.0.1) (2020-10-12)
 
 [Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v3.0.0...v3.0.1)
