@@ -51,10 +51,11 @@ async function resetPassword (options, query, tokens, password, field, notifierO
   const tokenChecks = Object.keys(tokens).map(async key => {
     if (options.reuseResetToken) {
       // Comparing token directly as reused resetToken is not hashed
-      if (tokens[key] !== user1[key])
+      if (tokens[key] !== user1[key]) {
         throw new errors.BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
           errors: {$className: 'incorrectToken'}
         });
+      }
     } else {
       return comparePasswords(
         tokens[key],

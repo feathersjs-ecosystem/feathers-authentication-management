@@ -23,9 +23,9 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
 
   if (
     // Use existing token when it's not hashed,
-    options.reuseResetToken && user1.resetToken && user1.resetToken.includes('___')
+    options.reuseResetToken && user1.resetToken && user1.resetToken.includes('___') &&
     // and remaining time exceeds half of resetDelay
-    && user1.resetExpires > Date.now() + options.resetDelay / 2
+    user1.resetExpires > Date.now() + options.resetDelay / 2
   ) {
     await notifier(options.notifier, 'sendResetPwd', user1, notifierOptions);
     return options.sanitizeUserForClient(user1);
@@ -43,13 +43,13 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
     resetExpires: user2.resetExpires,
     resetAttempts: user2.resetAttempts,
     resetToken:
-      options.reuseResetToken ?
-        user2.resetToken :
-        await hashPassword(options.app, user2.resetToken, field),
+      options.reuseResetToken
+        ? user2.resetToken
+        : await hashPassword(options.app, user2.resetToken, field),
     resetShortToken:
-      options.reuseResetToken ?
-        user2.resetShortToken :
-        await hashPassword(options.app, user2.resetShortToken, field)
+      options.reuseResetToken
+        ? user2.resetShortToken
+        : await hashPassword(options.app, user2.resetShortToken, field)
   });
 
   return options.sanitizeUserForClient(user3);
