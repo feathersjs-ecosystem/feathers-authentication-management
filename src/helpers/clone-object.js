@@ -1,6 +1,5 @@
-
-module.exports = cloneObject;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Returns new object with values cloned from the original object. Some objects
  * (like Sequelize or MongoDB model instances) contain circular references
@@ -13,16 +12,16 @@ module.exports = cloneObject;
  * @param {Object?} obj - Object to clone
  * @returns {Object} Cloned object
  */
-function cloneObject (obj) {
-  let obj1 = obj;
-
-  if (typeof obj.toJSON === 'function' || typeof obj.toObject === 'function') {
-    try {
-      JSON.stringify(Object.assign({}, obj1));
-    } catch (err) {
-      obj1 = obj1.toJSON ? obj1.toJSON() : obj1.toObject();
+function cloneObject(obj) {
+    var obj1 = obj;
+    if (typeof obj.toJSON === 'function' || typeof obj.toObject === 'function') {
+        try {
+            JSON.stringify(Object.assign({}, obj1));
+        }
+        catch (err) {
+            obj1 = obj1.toJSON ? obj1.toJSON() : obj1.toObject();
+        }
     }
-  }
-
-  return Object.assign({}, obj1);
+    return Object.assign({}, obj1);
 }
+exports.default = cloneObject;

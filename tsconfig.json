@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "outDir": "src",
+    "moduleResolution": "node",
+    "target": "es5",
+    "downlevelIteration": true,
+    "sourceMap": false,
+    "declaration": true
+  },
+  "include": ["lib/**/*"],
+  "exclude": ["node_modules", "**/*.test.js"]
+}

@@ -1,15 +1,11 @@
-
-const errors = require('@feathersjs/errors');
-
-module.exports = ensureObjPropsValid;
-
-function ensureObjPropsValid (obj, props, allowNone) {
-  const keys = Object.keys(obj);
-  const valid = keys.every(key => props.includes(key) && typeof obj[key] === 'string');
-
-  if (!valid || (keys.length === 0 && !allowNone)) {
-    throw new errors.BadRequest('User info is not valid. (authLocalMgnt)',
-      { errors: { $className: 'badParams' } }
-    );
-  }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var errors_1 = require("@feathersjs/errors");
+function ensureObjPropsValid(obj, props, allowNone) {
+    var keys = Object.keys(obj);
+    var valid = keys.every(function (key) { return props.includes(key) && typeof obj[key] === 'string'; });
+    if (!valid || (keys.length === 0 && !allowNone)) {
+        throw new errors_1.BadRequest('User info is not valid. (authLocalMgnt)', { errors: { $className: 'badParams' } });
+    }
 }
+exports.default = ensureObjPropsValid;
