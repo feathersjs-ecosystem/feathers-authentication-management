@@ -9,5 +9,5 @@
     "allowJs": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.js"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

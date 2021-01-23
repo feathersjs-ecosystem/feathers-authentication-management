@@ -27,18 +27,20 @@
   "engines": {
     "node": ">= 8.12.0"
   },
-  "main": "src/",
+  "main": "dist/",
+  "types": "dist/",
   "directories": {
     "src": "src"
   },
   "scripts": {
+    "preversion": "npm run lint && npm run test && npm run compile",
     "publish": "git push origin --tags && npm run changelog && git push origin",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "changelog": "github_changelog_generator -u feathersjs-ecosystem -p feathers-authentication-management && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
-    "lint": "semistandard src/**/*.js --fix",
-    "mocha": "mocha --opts mocha.opts",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "mocha": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha --require ts-node/register --timeout 40000",
     "coverage": "nyc npm run mocha",
     "test": "npm run compile && npm run coverage",
     "compile": "tsc"
@@ -49,22 +51,33 @@
     ]
   },
   "dependencies": {
-    "@feathersjs/authentication": "^4.3.0",
-    "@feathersjs/authentication-local": "^4.3.0",
-    "@feathersjs/errors": "^4.3.0",
-    "bcryptjs": "^2.3.0",
-    "debug": "^4.1.0",
-    "feathers-hooks-common": "^5.0.3"
+    "@feathersjs/authentication": "^4.5.11",
+    "@feathersjs/authentication-client": "^4.5.11",
+    "@feathersjs/authentication-local": "^4.5.11",
+    "@feathersjs/errors": "^4.5.11",
+    "bcryptjs": "^2.4.3",
+    "debug": "^4.3.1",
+    "feathers-hooks-common": "^5.0.4"
   },
   "devDependencies": {
-    "@feathersjs/feathers": "^4.3.0",
+    "@feathersjs/feathers": "^4.5.11",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/debug": "^4.1.5",
+    "@types/mocha": "^8.2.0",
     "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
     "chai": "^4.2.0",
-    "feathers-memory": "^4.0.0",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^6.2.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.18.0",
+    "eslint-config-standard-with-typescript": "^19.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "feathers-memory": "^4.1.0",
+    "mocha": "^8.2.1",
     "nyc": "^15.0.1",
-    "semistandard": "^11.0.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
