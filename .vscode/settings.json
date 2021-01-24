@@ -1,0 +1,9 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/public": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true
+  }
+}

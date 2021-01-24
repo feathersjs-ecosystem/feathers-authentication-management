@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
+import feathers, { Application, HookContext } from '@feathersjs/feathers';
 import authLocalMgnt from "../src/index";
 import { addVerification } from '../src/hooks';
 import { defaultVerifyDelay, timeoutEachTest, maxTimeAllTests } from './helpers/config';
@@ -11,8 +11,8 @@ import {
 describe('add-verification.test.js', function () {
   this.timeout(timeoutEachTest);
 
-  let app;
-  let context;
+  let app: Application;
+  let context: Partial<HookContext>;
 
   beforeEach(() => {
     app = feathers();
@@ -34,6 +34,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -63,6 +64,7 @@ describe('add-verification.test.js', function () {
       };
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -87,6 +89,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -111,6 +114,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -131,6 +135,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -151,6 +156,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -171,6 +177,7 @@ describe('add-verification.test.js', function () {
       app.setup();
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -190,9 +197,11 @@ describe('add-verification.test.js', function () {
     it('works with patch', async () => {
       app.configure(authLocalMgnt());
       app.setup();
+      //@ts-ignore
       context.method = 'patch';
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -212,9 +221,11 @@ describe('add-verification.test.js', function () {
     it('works with update', async () => {
       app.configure(authLocalMgnt());
       app.setup();
+      //@ts-ignore
       context.method = 'update';
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 
@@ -234,10 +245,12 @@ describe('add-verification.test.js', function () {
     it('does not modify context if email not updated', async () => {
       app.configure(authLocalMgnt());
       app.setup();
+      //@ts-ignore
       context.method = 'update';
       context.params.user.email = 'a@a.com';
 
       try {
+        //@ts-ignore
         const ctx = await addVerification()(context);
         const user = ctx.data;
 

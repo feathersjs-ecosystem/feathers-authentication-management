@@ -1,8 +1,9 @@
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import { timeoutEachTest } from './helpers/config';
+import { AuthenticationManagementService } from '../src/service';
 
 const makeUsersService = options =>
   function (app) {
@@ -27,9 +28,9 @@ const users_Id = [
       this.timeout(timeoutEachTest);
 
       describe('standard', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
 
         beforeEach(async () => {
           app = feathers();

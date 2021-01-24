@@ -18,6 +18,7 @@ export default async function identityChange (
   identifyUser: IdentifyUser,
   password: string,
   changesIdentifyUser: Record<string, unknown>,
+  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   // note this call does not update the authenticated user info in hooks.params.user.
@@ -32,10 +33,10 @@ export default async function identityChange (
   const user1 = getUserData(users);
 
   try {
-    await comparePasswords(password, user1.password);
+    await comparePasswords(password, user1[field] as string);
   } catch (err) {
     throw new BadRequest('Password is incorrect.',
-      { errors: { password: 'Password is incorrect.', $className: 'badParams' } }
+      { errors: { [field]: 'Password is incorrect.', $className: 'badParams' } }
     );
   }
 

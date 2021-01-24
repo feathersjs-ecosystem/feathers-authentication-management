@@ -42,7 +42,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "mocha": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha --require ts-node/register --timeout 40000",
     "coverage": "nyc npm run mocha",
-    "test": "npm run compile && npm run coverage",
+    "test": "npm run coverage",
     "compile": "tsc"
   },
   "semistandard": {

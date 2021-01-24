@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 
 import {
@@ -10,6 +10,7 @@ import {
 import { hashPassword } from '../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
 import { UserTestDB, UserTestLocal } from './helpers/types';
+import { AuthenticationManagementService } from '../src/service';
 
 const now = Date.now();
 
@@ -106,9 +107,9 @@ const usersId: UserTestLocal[] = [
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -390,9 +391,9 @@ const usersId: UserTestLocal[] = [
       });
 
       describe('with notification', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
         let spyNotifier;

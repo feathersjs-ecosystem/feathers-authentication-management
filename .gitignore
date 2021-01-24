@@ -38,5 +38,5 @@ dist/
 ## editor
 .idea/
 
-.vscode/
+#.vscode/
 .prettierrc

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import authService from './helpers/authenticationService';
 
@@ -10,6 +10,8 @@ import {
   SpyOn,
   aboutEqualDateTime
 } from './helpers';
+import { UserTestDB, UserTestLocal } from './helpers/types';
+import { AuthenticationManagementService } from '../src/service';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};
@@ -26,7 +28,7 @@ const makeUsersService = options =>
     app.use('/users', feathersMemory(options));
   };
 
-const usersId = [
+const usersId: UserTestLocal[] = [
   {
     id: 'a',
     email: 'a',
@@ -43,7 +45,7 @@ const usersId = [
   }
 ];
 
-const users_Id = [
+const users_Id: UserTestDB[] = [
   {
     _id: 'a',
     email: 'a',
@@ -66,9 +68,9 @@ const users_Id = [
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -159,9 +161,9 @@ const users_Id = [
       });
 
       describe('length can change (digits)', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -238,9 +240,9 @@ const users_Id = [
       });
 
       describe('length can change (digits)', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -294,9 +296,9 @@ const users_Id = [
       });
 
       describe('length can change (alpha)', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -350,9 +352,9 @@ const users_Id = [
       });
 
       describe('with notification', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
         let spyNotifier;

@@ -1,8 +1,6 @@
 
 import { assert } from 'chai';
 import {
-  addVerification,
-  isVerified,
   removeVerification
 } from '../src/hooks';
 

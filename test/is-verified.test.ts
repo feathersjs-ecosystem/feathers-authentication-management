@@ -17,18 +17,18 @@ describe('is-verified.test.js', function () {
 
   it('throws if not before', () => {
     context.type = 'after';
-    assert.throws(() => { isVerified()(context); }, undefined, undefined, 'after');
+    assert.throws(() => { isVerified()(context); }, undefined, undefined);
   });
 
   it('throws if not create, update or patch', () => {
     context.method = 'find';
-    assert.throws(() => isVerified()(context), undefined, undefined, 'find');
+    assert.throws(() => isVerified()(context), undefined, undefined);
 
     context.method = 'get';
-    assert.throws(() => isVerified()(context), undefined, undefined, 'get');
+    assert.throws(() => isVerified()(context), undefined, undefined);
 
     context.method = 'remove';
-    assert.throws(() => isVerified()(context), undefined, undefined, 'remove');
+    assert.throws(() => isVerified()(context), undefined, undefined);
   });
 
   it('works with verified used', () => {

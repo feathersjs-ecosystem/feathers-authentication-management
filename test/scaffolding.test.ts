@@ -1,8 +1,9 @@
 
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
+import feathers, { Application } from '@feathersjs/feathers';
 import authManagement from '../src/index';
 import helpers from '../src/helpers';
+import { AuthenticationManagementService } from '../src/service';
 
 const optionsDefault = {
   app: null,
@@ -72,7 +73,7 @@ function organization () {
 
 describe('scaffolding.js', () => {
   describe('can configure 1 service', () => {
-    let app;
+    let app: Application;
 
     beforeEach(() => {
       app = feathers();
@@ -90,7 +91,7 @@ describe('scaffolding.js', () => {
     });
 
     it('can call service', async () => {
-      const authLocalMgntService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
 
       const options = await authLocalMgntService.create({ action: 'options' });
 
@@ -108,7 +109,7 @@ describe('scaffolding.js', () => {
   });
 
   describe('can configure 2 services', () => {
-    let app;
+    let app: Application;
 
     beforeEach(() => {
       app = feathers();
@@ -119,25 +120,25 @@ describe('scaffolding.js', () => {
     });
 
     it('can create items', async () => {
-      const user = app.service('/users');
-      const organization = app.service('/organizations');
+      const usersService = app.service('/users');
+      const organizationsService = app.service('/organizations');
 
       // create a user item
-      const result = await user.create({ username: 'John Doe' });
+      const result = await usersService.create({ username: 'John Doe' });
 
       assert.equal(result.username, 'John Doe');
       assert.equal(result.verifyShortToken.length, 8);
 
       // create an organization item
-      const result1 = await organization.create({ organization: 'Black Ice' });
+      const result1 = await organizationsService.create({ organization: 'Black Ice' });
 
       assert.equal(result1.organization, 'Black Ice');
       assert.equal(result1.verifyShortToken.length, 10);
     });
 
     it('can call services', async () => {
-      const authLocalMgntService = app.service('authManagement'); // *** the default
-      const authMgntOrgService = app.service('authManagement/org'); // *** which one
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement'); // *** the default
+      const authMgntOrgService: AuthenticationManagementService = app.service('authManagement/org'); // *** which one
 
       // call the user instance
       const options = await authLocalMgntService.create({ action: 'options' });

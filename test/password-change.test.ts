@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import bcrypt from 'bcryptjs';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import { authentication as authConfig } from './helpers/config';
 
@@ -12,6 +12,7 @@ import {
 import hashPassword from '../src/helpers/hash-password';
 import { timeoutEachTest } from './helpers/config';
 import { UserTestDB, UserTestLocal } from './helpers/types';
+import { AuthenticationManagementService } from '../src/service';
 
 const makeUsersService = options =>
   function (app) {
@@ -58,7 +59,7 @@ describe('password-change.js', function () {
   this.timeout(timeoutEachTest);
 
   describe('bcrypt', function () {
-    let app;
+    let app: Application;
 
     beforeEach(async () => {
       app = feathers();
@@ -92,9 +93,9 @@ describe('password-change.js', function () {
     ['paginated' /* 'non-paginated' */].forEach(pagination => {
       describe(`passwordChange ${pagination} ${idType}`, () => {
         describe('standard', () => {
-          let app;
-          let usersService;
-          let authLocalMgntService;
+          let app: Application;
+          let usersService: Service;
+          let authLocalMgntService: AuthenticationManagementService;
           let db;
           let result;
 
@@ -194,9 +195,9 @@ describe('password-change.js', function () {
         describe('with notification', () => {
           let spyNotifier;
 
-          let app;
-          let usersService;
-          let authLocalMgntService;
+          let app: Application;
+          let usersService: Service;
+          let authLocalMgntService: AuthenticationManagementService;
           let db;
           let result;
 

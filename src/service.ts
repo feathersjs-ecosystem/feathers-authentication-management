@@ -30,6 +30,7 @@ import {
 
 const debug = makeDebug('authLocalMgnt:service');
 
+// TODO: move this to options
 const passwordField = 'password';
 
 const optionsDefault: AuthenticationManagementOptionsDefault = {
@@ -212,8 +213,8 @@ export class AuthenticationManagementService {
             data.value.user,
             data.value.password,
             data.value.changes,
-            passwordField
-            // data.notifierOptions //TODO: what's going on here?
+            passwordField,
+            data.notifierOptions
           );
         } catch (err) {
           return await Promise.reject(err);

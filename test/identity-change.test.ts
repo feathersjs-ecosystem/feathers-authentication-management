@@ -1,7 +1,6 @@
 import { assert } from 'chai';
-import bcrypt from 'bcryptjs';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import {
   SpyOn,
@@ -10,6 +9,7 @@ import {
 import hashPassword from '../src/helpers/hash-password';
 import { timeoutEachTest } from './helpers/config';
 import { UserTestDB, UserTestLocal } from './helpers/types';
+import { AuthenticationManagementService } from '../src/service';
 
 const makeUsersService = options =>
   function (app) {
@@ -34,9 +34,9 @@ const usersId: UserTestLocal[] = [
       this.timeout(timeoutEachTest);
 
       describe('standard', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -149,9 +149,9 @@ const usersId: UserTestLocal[] = [
       describe('with notification', () => {
         let spyNotifier;
 
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -202,7 +202,9 @@ const usersId: UserTestLocal[] = [
             assert.equal(user.email, user.email);
             assert.deepEqual(user.verifyChanges, { email: 'b@b' });
 
-            assert.deepEqual(spyNotifier.result()[0].args, [
+            const spy = spyNotifier.result()[0].args;
+
+            assert.deepEqual(spy, [
               'identityChange',
               Object.assign(
                 {},
@@ -215,7 +217,7 @@ const usersId: UserTestLocal[] = [
                   'verifyChanges'
                 )
               ),
-              'password',
+              { transport: "sms" },
             ]);
 
             assert.strictEqual(user.isVerified, true, 'isVerified not false');

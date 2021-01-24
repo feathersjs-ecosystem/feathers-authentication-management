@@ -1,7 +1,7 @@
 
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import feathers, { Application } from '@feathersjs/feathers';
+import feathersMemory, { Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
 import authLocalMgnt from '../src/index';
 import {
@@ -9,6 +9,7 @@ import {
   authenticationService as authService
 } from './helpers';
 import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
+import { AuthenticationManagementService } from '../src/service';
 
 const now = Date.now();
 
@@ -50,9 +51,9 @@ const users_Id = [
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -162,10 +163,7 @@ const users_Id = [
                 token: '222',
                 password: '12456'
               }
-            },
-              {},
-              (err, user) => {}
-            );
+            });
 
             assert(false, 'unexpectedly succeeded');
           } catch (err) {
@@ -210,9 +208,9 @@ const users_Id = [
       });
 
       describe('with notification', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
         let spyNotifier;

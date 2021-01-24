@@ -196,6 +196,7 @@ export interface DataIdentityChange {
     password: string
     changes: Record<string, unknown>
   }
+  notifierOptions?: Record<string, unknown>
 }
 
 export interface DataOptions {

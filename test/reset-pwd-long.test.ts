@@ -1,12 +1,13 @@
 import { assert } from 'chai';
-import feathers from '@feathersjs/feathers';
+import feathers, { Application } from '@feathersjs/feathers';
 import authService from './helpers/authenticationService';
 
-import feathersMemory from 'feathers-memory';
+import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import { SpyOn } from './helpers';
 import { hashPassword } from '../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
+import { AuthenticationManagementService } from '../src/service';
 
 const now = Date.now();
 
@@ -87,9 +88,9 @@ const usersId = [
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
 
@@ -237,9 +238,9 @@ const usersId = [
       });
 
       describe('with notification', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
         let spyNotifier;
@@ -323,7 +324,7 @@ const usersId = [
               value: {
                 token: 'a___999', // invalid token
                 password: '123456',
-                user: { email: db[i].email },
+                //user: { email: db[i].email },
               }
             });
           } catch {}
@@ -333,7 +334,7 @@ const usersId = [
               value: {
                 token: spyNotifier.result()[0].args[1].resetToken,
                 password: '123456',
-                user: { email: db[i].email },
+                //user: { email: db[i].email },
               }
             });
             assert(false, 'unexpected succeeded.');
@@ -342,9 +343,9 @@ const usersId = [
       });
 
       describe('with reusable token', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let spyNotifier;
         let result;
@@ -390,16 +391,16 @@ const usersId = [
             value: {
               token: spyNotifier.result()[0].args[1].resetToken,
               password: '123456',
-              user: { email: db[i].email },
+              //user: { email: db[i].email },
             }
           });
         });
       });
 
       describe('not expiring on token error', () => {
-        let app;
-        let usersService;
-        let authLocalMgntService;
+        let app: Application;
+        let usersService: Service;
+        let authLocalMgntService: AuthenticationManagementService;
         let db;
         let spyNotifier;
         let result;
@@ -440,7 +441,7 @@ const usersId = [
               value: {
                 token: 'a___999', // invalid token
                 password: '123456',
-                user: { email: db[i].email },
+                //user: { email: db[i].email },
               }
             });
           } catch {}
@@ -449,7 +450,7 @@ const usersId = [
             value: {
               token: spyNotifier.result()[0].args[1].resetToken,
               password: '123456',
-              user: { email: db[i].email },
+              //user: { email: db[i].email },
             }
           });
         });
