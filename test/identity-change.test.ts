@@ -9,7 +9,7 @@ import {
 import hashPassword from '../src/helpers/hash-password';
 import { timeoutEachTest } from './helpers/config';
 import { UserTestDB, UserTestLocal } from './helpers/types';
-import { AuthenticationManagementService } from '../src/service/service';
+import { AuthenticationManagementService } from '../src/service';
 
 const makeUsersService = options =>
   function (app) {

@@ -1,10 +1,8 @@
-import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import sanitizeUserForClient from '../helpers/sanitize-user-for-client';
+import { BadRequest } from '@feathersjs/errors';
 import {
   AuthenticationManagementData,
   AuthenticationManagementOptions,
-  AuthenticationManagementOptionsDefault,
   DataCheckUniqueWithAction,
   DataIdentityChangeWithAction,
   DataOptions,
@@ -32,39 +30,6 @@ import { VerifySignupShortService } from './VerifySignupShort';
 import { PasswordChangeService } from './PasswordChangeService';
 
 const debug = makeDebug('authLocalMgnt:service');
-
-const optionsDefault: AuthenticationManagementOptionsDefault = {
-  app: null, // value set during configuration
-  service: '/users', // need exactly this for test suite
-  path: 'authManagement',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  notifier: async () => {},
-  longTokenLen: 15, // token's length will be twice this
-  shortTokenLen: 6,
-  shortTokenDigits: true,
-  resetDelay: 1000 * 60 * 60 * 2, // 2 hours
-  delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  resetAttempts: 0,
-  reuseResetToken: false,
-  identifyUserProps: ['email'],
-  sanitizeUserForClient,
-  skipIsVerifiedCheck: false,
-  passwordField: 'password'
-};
-
-export default function authenticationLocalManagement (
-  options1?: Partial<AuthenticationManagementOptions>,
-  docs?: Record<string, unknown>
-): () => void {
-  debug('service being configured.');
-
-  docs = docs ?? {};
-
-  return function () {
-    const options = Object.assign({}, optionsDefault, options1, { app: this });
-    options.app.use(options.path, new AuthenticationManagementService(options, docs));
-  };
-}
 
 export class AuthenticationManagementService {
   docs: unknown;
@@ -100,52 +65,87 @@ export class AuthenticationManagementService {
 
   /**
    * check props are unique in the users items.
+   * @param data.action action is 'checkUnique'
+   * @param data.value {IdentifyUser} the user with properties, e.g. {email, username}. Props with null or undefined are ignored.
+   * @param data.ownId excludes your current user from the search
+   * @param data.meta.noErrMsg if return an error.message if not unique
    */
-  async create (data: DataCheckUniqueWithAction): Promise<null>
+  async create ({ action, value, ownId, meta }: DataCheckUniqueWithAction): Promise<null>
   /**
    * resend sign up verification notification
+   * @param action action is 'resendVerifySignup'
+   * @param value {IdentifyUser} the user with properties, e.g. {email}, {token: verifyToken}
+   * @param notifierOptions options passed to options.notifier, e.g. {preferredComm: 'cellphone'}
    */
-  async create (data: DataResendVerifySignupWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataResendVerifySignupWithAction): Promise<SanitizedUser>
   /**
    * sign up or identityChange verification with long token
+   * @param action action is 'verifySignupLong'
+   * @param value // compares to user.verifyToken
+   * @param notifierOptions options passed to options.notifier, e.g. {preferredComm: 'cellphone'}
    */
-  async create (data: DataVerifySignupLongWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataVerifySignupLongWithAction): Promise<SanitizedUser>
   /**
    * sign up or identityChange verification with short token
+   * @param action action is 'verifySignupShort'
+   * @param value { token, user }
+   * @param notifierOptions
    */
-  async create (data: DataVerifySignupShortWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataVerifySignupShortWithAction): Promise<SanitizedUser>
   /**
    * sign up verification and set password  with long token
+   * @param action action is 'verifySignupSetPasswordLong'
+   * @param value { password, token }
+   * @param notifierOptions
    */
-  async create (data: DataVerifySignupSetPasswordLongWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataVerifySignupSetPasswordLongWithAction): Promise<SanitizedUser>
   /**
    * sign up verification and set password with short token
+   * @param action action is 'verifySignupSetPasswordShort'
+   * @param value { password, token, user }
+   * @param notifierOptions
    */
-  async create (data: DataVerifySignupSetPasswordShortWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataVerifySignupSetPasswordShortWithAction): Promise<SanitizedUser>
   /**
    * send forgotten password notification
+   * @param action action is 'sendResetPwd'
+   * @param value { password, token }
+   * @param notifierOptions
    */
-  async create (data: DataSendResetPwdWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataSendResetPwdWithAction): Promise<SanitizedUser>
   /**
    * forgotten password verification with long token
+   * @param action action is 'resetPwdLong'
+   * @param value { password, token, user }
+   * @param notifierOptions
    */
-  async create (data: DataResetPwdLongWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataResetPwdLongWithAction): Promise<SanitizedUser>
   /**
    * forgotten password verification with short token
+   * @param action action is 'resetPwdShort'
+   * @param value { password, token, user }
+   * @param notifierOptions
    */
-  async create (data: DataResetPwdShortWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataResetPwdShortWithAction): Promise<SanitizedUser>
   /**
    * change password
+   * @param action action is 'passwordChange'
+   * @param value { oldPassword, password, user }
+   * @param notifierOptions
    */
-  async create (data: DataPasswordChangeWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataPasswordChangeWithAction): Promise<SanitizedUser>
   /**
    * change communications
+   * @param action action is 'identityChange'
+   * @param value { changes, password, user }
+   * @param notifierOptions
    */
-  async create (data: DataIdentityChangeWithAction): Promise<SanitizedUser>
+  async create ({ action, value, notifierOptions }: DataIdentityChangeWithAction): Promise<SanitizedUser>
   /**
    * get options for AuthenticationManagement
+   * @param action action is 'options'
    */
-  async create (data: DataOptions): Promise<AuthenticationManagementOptions>
+  async create ({ action }: DataOptions): Promise<AuthenticationManagementOptions>
   async create (data: AuthenticationManagementData): Promise<unknown> {
     debug(`create called. action=${data.action}`);
 

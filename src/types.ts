@@ -163,8 +163,8 @@ export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySig
 
 export interface DataVerifySignupSetPasswordShort {
   value: {
-    token: string
     password: string
+    token: string
     user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
@@ -185,8 +185,8 @@ export interface DataSendResetPwdWithAction extends DataSendResetPwd {
 
 export interface DataResetPwdLong {
   value: {
-    token: string
     password: string
+    token: string
   }
   notifierOptions?: Record<string, unknown>
 }
@@ -197,8 +197,8 @@ export interface DataResetPwdLongWithAction extends DataResetPwdLong {
 
 export interface DataResetPwdShort {
   value: {
-    token: string
     password: string
+    token: string
     user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
@@ -210,9 +210,9 @@ export interface DataResetPwdShortWithAction extends DataResetPwdShort {
 
 export interface DataPasswordChange {
   value: {
-    user: IdentifyUser
-    password: string
     oldPassword: string
+    password: string
+    user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
 }
@@ -223,9 +223,9 @@ export interface DataPasswordChangeWithAction extends DataPasswordChange {
 
 export interface DataIdentityChange {
   value: {
-    user: IdentifyUser
-    password: string
     changes: Record<string, unknown>
+    password: string
+    user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
 }

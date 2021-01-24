@@ -4,7 +4,7 @@ import { checkContext } from 'feathers-hooks-common';
 import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
-import { AuthenticationManagementService } from '../service/service';
+import { AuthenticationManagementService } from '../service';
 
 export default function addVerification (path?: string): ((hook: HookContext) => Promise<HookContext>) {
   return async (hook: HookContext): Promise<HookContext> => {
