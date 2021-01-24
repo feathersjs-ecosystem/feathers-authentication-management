@@ -1,4 +1,3 @@
-
 import service from './service/service';
 import hooks from './hooks';
 

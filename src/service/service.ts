@@ -98,17 +98,53 @@ export class AuthenticationManagementService {
     this.verifySignupShortService = new VerifySignupShortService(options);
   }
 
+  /**
+   * check props are unique in the users items.
+   */
   async create (data: DataCheckUniqueWithAction): Promise<null>
+  /**
+   * resend sign up verification notification
+   */
   async create (data: DataResendVerifySignupWithAction): Promise<SanitizedUser>
+  /**
+   * sign up or identityChange verification with long token
+   */
   async create (data: DataVerifySignupLongWithAction): Promise<SanitizedUser>
+  /**
+   * sign up or identityChange verification with short token
+   */
   async create (data: DataVerifySignupShortWithAction): Promise<SanitizedUser>
+  /**
+   * sign up verification and set password  with long token
+   */
   async create (data: DataVerifySignupSetPasswordLongWithAction): Promise<SanitizedUser>
+  /**
+   * sign up verification and set password with short token
+   */
   async create (data: DataVerifySignupSetPasswordShortWithAction): Promise<SanitizedUser>
+  /**
+   * send forgotten password notification
+   */
   async create (data: DataSendResetPwdWithAction): Promise<SanitizedUser>
+  /**
+   * forgotten password verification with long token
+   */
   async create (data: DataResetPwdLongWithAction): Promise<SanitizedUser>
+  /**
+   * forgotten password verification with short token
+   */
   async create (data: DataResetPwdShortWithAction): Promise<SanitizedUser>
+  /**
+   * change password
+   */
   async create (data: DataPasswordChangeWithAction): Promise<SanitizedUser>
+  /**
+   * change communications
+   */
   async create (data: DataIdentityChangeWithAction): Promise<SanitizedUser>
+  /**
+   * get options for AuthenticationManagement
+   */
   async create (data: DataOptions): Promise<AuthenticationManagementOptions>
   async create (data: AuthenticationManagementData): Promise<unknown> {
     debug(`create called. action=${data.action}`);
