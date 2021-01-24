@@ -1,18 +1,17 @@
-import { DataVerifySignupSetPasswordShort, SanitizedUser, VerifySignupSetPasswordWithShortTokenOptions } from '../types';
-import { verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
+import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordOptions } from '../types';
+import { verifySignupSetPasswordWithLongToken } from '../verify-signup-set-password';
 
 export class VerifySignupSetPasswordLongService {
-  options: VerifySignupSetPasswordWithShortTokenOptions;
+  options: VerifySignupSetPasswordOptions;
 
-  constructor (options: VerifySignupSetPasswordWithShortTokenOptions) {
+  constructor (options: VerifySignupSetPasswordOptions) {
     this.options = options;
   }
 
-  async create (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
-    return await verifySignupSetPasswordWithShortToken(
+  async create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
+    return await verifySignupSetPasswordWithLongToken(
       this.options,
       data.value.token,
-      data.value.user,
       data.value.password,
       this.options.passwordField,
       data.notifierOptions

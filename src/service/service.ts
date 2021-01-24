@@ -1,14 +1,6 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import checkUnique from '../check-unique';
-import identityChange from '../identity-change';
-import passwordChange from '../password-change';
-import resendVerifySignup from '../resend-verify-signup';
 import sanitizeUserForClient from '../helpers/sanitize-user-for-client';
-import sendResetPwd from '../send-reset-pwd';
-import { resetPwdWithLongToken, resetPwdWithShortToken } from '../reset-password';
-import { verifySignupWithLongToken, verifySignupWithShortToken } from '../verify-signup';
-import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
 import {
   AuthenticationManagementData,
   AuthenticationManagementOptions,
@@ -27,11 +19,19 @@ import {
   DataVerifySignupShortWithAction,
   SanitizedUser
 } from '../types';
+import { CheckUniqueService } from './CheckUniqueService';
+import { IdentityChangeService } from './IdentityChangeService';
+import { ResendVerifySignupService } from './ResendVerifySignupService';
+import { ResetPwdLongService } from './ResetPwdLongService';
+import { ResetPwdShortService } from './ResetPwdShortService';
+import { SendResetPwdService } from './SendResetPwdService';
+import { VerifySignupLongService } from './VerifySignupLongService';
+import { VerifySignupSetPasswordLongService } from './VerifySignupSetPasswordLongService';
+import { VerifySignupSetPasswordShortService } from './VerifySignupSetPasswordShortService';
+import { VerifySignupShortService } from './VerifySignupShort';
+import { PasswordChangeService } from './PasswordChangeService';
 
 const debug = makeDebug('authLocalMgnt:service');
-
-// TODO: move this to options
-const passwordField = 'password';
 
 const optionsDefault: AuthenticationManagementOptionsDefault = {
   app: null, // value set during configuration
@@ -69,10 +69,33 @@ export default function authenticationLocalManagement (
 export class AuthenticationManagementService {
   docs: unknown;
   options: AuthenticationManagementOptions;
+  checkUniqueService: CheckUniqueService;
+  identityChangeService: IdentityChangeService;
+  passwordChangeService: PasswordChangeService;
+  resendVerifySignupService: ResendVerifySignupService;
+  resetPwdLongService: ResetPwdLongService;
+  resetPwdShortService: ResetPwdShortService;
+  sendResetPwdService: SendResetPwdService;
+  verifySignupLongService: VerifySignupLongService;
+  verifySignupSetPasswordLongService: VerifySignupSetPasswordLongService;
+  verifySignupSetPasswordShortService: VerifySignupSetPasswordShortService;
+  verifySignupShortService: VerifySignupShortService;
 
   constructor (options: AuthenticationManagementOptions, docs: unknown) {
     this.docs = docs;
     this.options = options;
+
+    this.checkUniqueService = new CheckUniqueService(options);
+    this.identityChangeService = new IdentityChangeService(options);
+    this.passwordChangeService = new PasswordChangeService(options);
+    this.resendVerifySignupService = new ResendVerifySignupService(options);
+    this.resetPwdLongService = new ResetPwdLongService(options);
+    this.resetPwdShortService = new ResetPwdShortService(options);
+    this.sendResetPwdService = new SendResetPwdService(options);
+    this.verifySignupLongService = new VerifySignupLongService(options);
+    this.verifySignupSetPasswordLongService = new VerifySignupSetPasswordLongService(options);
+    this.verifySignupSetPasswordShortService = new VerifySignupSetPasswordShortService(options);
+    this.verifySignupShortService = new VerifySignupShortService(options);
   }
 
   async create (data: DataCheckUniqueWithAction): Promise<null>
@@ -93,130 +116,67 @@ export class AuthenticationManagementService {
     switch (data.action) {
       case 'checkUnique':
         try {
-          return await checkUnique(
-            this.options,
-            data.value,
-            data.ownId ?? null,
-            data.meta ?? {}
-          );
+          return await this.checkUniqueService.create(data);
         } catch (err) {
           return await Promise.reject(err); // support both async and Promise interfaces
         }
       case 'resendVerifySignup':
         try {
-          return await resendVerifySignup(
-            this.options,
-            data.value,
-            data.notifierOptions
-          );
+          return await this.resendVerifySignupService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'verifySignupLong':
         try {
-          return await verifySignupWithLongToken(
-            this.options,
-            data.value,
-            data.notifierOptions
-          );
+          return await this.verifySignupLongService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'verifySignupShort':
         try {
-          return await verifySignupWithShortToken(
-            this.options,
-            data.value.token,
-            data.value.user,
-            data.notifierOptions
-          );
+          return await this.verifySignupShortService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'verifySignupSetPasswordLong':
         try {
-          return await verifySignupSetPasswordWithLongToken(
-            this.options,
-            data.value.token,
-            data.value.password,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.verifySignupSetPasswordLongService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'verifySignupSetPasswordShort':
         try {
-          return await verifySignupSetPasswordWithShortToken(
-            this.options,
-            data.value.token,
-            data.value.user,
-            data.value.password,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.verifySignupSetPasswordShortService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'sendResetPwd':
         try {
-          return await sendResetPwd(
-            this.options,
-            data.value,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.sendResetPwdService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'resetPwdLong':
         try {
-          return await resetPwdWithLongToken(
-            this.options,
-            data.value.token,
-            data.value.password,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.resetPwdLongService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'resetPwdShort':
         try {
-          return await resetPwdWithShortToken(
-            this.options,
-            data.value.token,
-            data.value.user,
-            data.value.password,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.resetPwdShortService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'passwordChange':
         try {
-          return await passwordChange(
-            this.options,
-            data.value.user,
-            data.value.oldPassword,
-            data.value.password,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.passwordChangeService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
       case 'identityChange':
         try {
-          return await identityChange(
-            this.options,
-            data.value.user,
-            data.value.password,
-            data.value.changes,
-            passwordField,
-            data.notifierOptions
-          );
+          return await this.identityChangeService.create(data);
         } catch (err) {
           return await Promise.reject(err);
         }
