@@ -9,7 +9,7 @@ import {
   authenticationService as authService
 } from './helpers';
 import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
-import { AuthenticationManagementService } from '../src/service';
+import { AuthenticationManagementService } from '../src/service/service';
 
 const now = Date.now();
 

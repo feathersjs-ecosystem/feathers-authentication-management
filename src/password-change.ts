@@ -7,12 +7,12 @@ import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
 import getUserData from './helpers/get-user-data';
 import hashPassword from './helpers/hash-password';
 import notifier from './helpers/notifier';
-import { AuthenticationManagementOptions, IdentifyUser, SanitizedUser } from './types';
+import { IdentifyUser, PasswordChangeOptions, SanitizedUser } from './types';
 
 const debug = makeDebug('authLocalMgnt:passwordChange');
 
 export default async function passwordChange (
-  options: AuthenticationManagementOptions,
+  options: PasswordChangeOptions,
   identifyUser: IdentifyUser,
   oldPassword: string,
   password: string,

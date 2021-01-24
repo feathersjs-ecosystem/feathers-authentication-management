@@ -1,6 +1,6 @@
 import { AuthenticationClient } from '@feathersjs/authentication-client';
 import { Application, Id } from '@feathersjs/feathers';
-import { AuthenticationManagementService } from './service';
+import { AuthenticationManagementService } from './service/service';
 
 import {
   AuthenticationManagementClient,

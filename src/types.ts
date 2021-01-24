@@ -57,7 +57,8 @@ export type AuthenticationManagementOptionsDefault =
   'reuseResetToken' |
   'identifyUserProps' |
   'sanitizeUserForClient' |
-  'skipIsVerifiedCheck'> & { app: null };
+  'skipIsVerifiedCheck' |
+  'passwordField'> & { app: null };
 
 export interface AuthenticationManagementOptions {
   app: Application
@@ -74,6 +75,7 @@ export interface AuthenticationManagementOptions {
   reuseResetToken: boolean
   identifyUserProps: string[]
   sanitizeUserForClient: (user: User) => Partial<User>
+  passwordField: string
   // identifyUser: IdentifyUser // TODO ?
 }
 
@@ -91,21 +93,20 @@ export interface AuthenticationManagementClient {
 }
 
 export type AuthenticationManagementData =
-  DataCheckUnique |
-  DataIdentityChange |
+  DataCheckUniqueWithAction |
+  DataIdentityChangeWithAction |
   DataOptions |
-  DataPasswordChange |
-  DataResendVerifySignup |
-  DataResetPwdLong |
-  DataResetPwdShort |
-  DataSendResetPwd |
-  DataVerifySignupLong |
-  DataVerifySignupSetPasswordLong |
-  DataVerifySignupSetPasswordShort |
-  DataVerifySignupShort;
+  DataPasswordChangeWithAction |
+  DataResendVerifySignupWithAction |
+  DataResetPwdLongWithAction |
+  DataResetPwdShortWithAction |
+  DataSendResetPwdWithAction |
+  DataVerifySignupLongWithAction |
+  DataVerifySignupSetPasswordLongWithAction |
+  DataVerifySignupSetPasswordShortWithAction |
+  DataVerifySignupShortWithAction;
 
 export interface DataCheckUnique {
-  action: 'checkUnique'
   value: IdentifyUser
   ownId?: Id
   meta?: {
@@ -113,30 +114,42 @@ export interface DataCheckUnique {
   }
 }
 
+export interface DataCheckUniqueWithAction extends DataCheckUnique {
+  action: 'checkUnique'
+}
+
 // TODO: notifierOptions
 export interface DataResendVerifySignup {
-  action: 'resendVerifySignup'
   value: IdentifyUser
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataResendVerifySignupWithAction extends DataResendVerifySignup {
+  action: 'resendVerifySignup'
+}
+
 export interface DataVerifySignupLong {
-  action: 'verifySignupLong'
   value: string
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataVerifySignupLongWithAction extends DataVerifySignupLong {
+  action: 'verifySignupLong'
+}
+
 export interface DataVerifySignupShort {
-  action: 'verifySignupShort'
   value: {
     token: string
     user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
+}
+
+export interface DataVerifySignupShortWithAction extends DataVerifySignupShort {
+  action: 'verifySignupShort'
 }
 
 export interface DataVerifySignupSetPasswordLong {
-  action: 'verifySignupSetPasswordLong'
   value: {
     token: string
     password: string
@@ -144,8 +157,11 @@ export interface DataVerifySignupSetPasswordLong {
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySignupSetPasswordLong {
+  action: 'verifySignupSetPasswordLong'
+}
+
 export interface DataVerifySignupSetPasswordShort {
-  action: 'verifySignupSetPasswordShort'
   value: {
     token: string
     password: string
@@ -154,14 +170,20 @@ export interface DataVerifySignupSetPasswordShort {
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataVerifySignupSetPasswordShortWithAction extends DataVerifySignupSetPasswordShort {
+  action: 'verifySignupSetPasswordShort'
+}
+
 export interface DataSendResetPwd {
-  action: 'sendResetPwd'
   value: IdentifyUser
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataSendResetPwdWithAction extends DataSendResetPwd {
+  action: 'sendResetPwd'
+}
+
 export interface DataResetPwdLong {
-  action: 'resetPwdLong'
   value: {
     token: string
     password: string
@@ -169,8 +191,11 @@ export interface DataResetPwdLong {
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataResetPwdLongWithAction extends DataResetPwdLong {
+  action: 'resetPwdLong'
+}
+
 export interface DataResetPwdShort {
-  action: 'resetPwdShort'
   value: {
     token: string
     password: string
@@ -179,8 +204,11 @@ export interface DataResetPwdShort {
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataResetPwdShortWithAction extends DataResetPwdShort {
+  action: 'resetPwdShort'
+}
+
 export interface DataPasswordChange {
-  action: 'passwordChange'
   value: {
     user: IdentifyUser
     password: string
@@ -189,14 +217,21 @@ export interface DataPasswordChange {
   notifierOptions?: Record<string, unknown>
 }
 
+export interface DataPasswordChangeWithAction extends DataPasswordChange {
+  action: 'passwordChange'
+}
+
 export interface DataIdentityChange {
-  action: 'identityChange'
   value: {
     user: IdentifyUser
     password: string
     changes: Record<string, unknown>
   }
   notifierOptions?: Record<string, unknown>
+}
+
+export interface DataIdentityChangeWithAction extends DataIdentityChange {
+  action: 'identityChange'
 }
 
 export interface DataOptions {
@@ -213,15 +248,34 @@ export interface VerifySignupWithShortTokenOptions extends VerifySignupOptions {
   identifyUserProps: string[]
 }
 
+export type VerifySignupSetPasswordOptions = Pick<AuthenticationManagementOptions,
+'app' |
+'service' |
+'sanitizeUserForClient' |
+'notifier' |
+'passwordField'>;
+
+export type PasswordChangeOptions = Pick<AuthenticationManagementOptions,
+'app' |
+'service' |
+'identifyUserProps' |
+'notifier' |
+'sanitizeUserForClient' |
+'passwordField'>;
+
+export type VerifySignupSetPasswordWithShortTokenOptions =
+VerifySignupSetPasswordOptions & Pick<AuthenticationManagementOptions, 'identifyUserProps'>;
+
 export type ResetPasswordOptions = Pick<AuthenticationManagementOptions,
 'app' |
 'service' |
 'skipIsVerifiedCheck' |
 'reuseResetToken' |
 'notifier' |
-'sanitizeUserForClient'>;
+'sanitizeUserForClient' |
+'passwordField'>;
 
-export interface ResetPwdWithShortToken extends ResetPasswordOptions {
+export interface ResetPwdWithShortTokenOptions extends ResetPasswordOptions {
   identifyUserProps: string[]
 }
 
@@ -245,7 +299,8 @@ export type IdentityChangeOptions = Pick<AuthenticationManagementOptions,
 'shortTokenLen' |
 'shortTokenDigits' |
 'notifier' |
-'sanitizeUserForClient'>;
+'sanitizeUserForClient' |
+'passwordField'>;
 
 export type CheckUniqueOptions = Pick<AuthenticationManagementOptions,
 'app' |
@@ -263,4 +318,5 @@ export type SendResetPwdOptions = Pick<AuthenticationManagementOptions,
 'shortTokenLen' |
 'longTokenLen' |
 'shortTokenDigits' |
-'notifier'>;
+'notifier' |
+'passwordField'>;

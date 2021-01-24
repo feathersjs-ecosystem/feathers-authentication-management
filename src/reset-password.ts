@@ -8,7 +8,7 @@ import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
 import getUserData from './helpers/get-user-data';
 import hashPassword from './helpers/hash-password';
 import notifier from './helpers/notifier';
-import { HookResult, IdentifyUser, ResetPasswordOptions, ResetPwdWithShortToken, SanitizedUser, Tokens } from './types';
+import { HookResult, IdentifyUser, ResetPasswordOptions, ResetPwdWithShortTokenOptions, SanitizedUser, Tokens } from './types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
 
@@ -25,7 +25,7 @@ export async function resetPwdWithLongToken (
 }
 
 export async function resetPwdWithShortToken (
-  options: ResetPwdWithShortToken,
+  options: ResetPwdWithShortTokenOptions,
   resetShortToken: string,
   identifyUser: IdentifyUser,
   password: string,

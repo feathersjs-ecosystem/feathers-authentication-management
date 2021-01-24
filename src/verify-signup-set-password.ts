@@ -1,12 +1,20 @@
 import { BadRequest } from '@feathersjs/errors';
-import { Application, Query } from '@feathersjs/feathers';
+import { Query } from '@feathersjs/feathers';
 import makeDebug from 'debug';
 import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
 import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
 import getUserData from './helpers/get-user-data';
 import hashPassword from './helpers/hash-password';
 import notifier from './helpers/notifier';
-import { IdentifyUser, Notifier, SanitizedUser, SanitizeUserForClient, Tokens, User, VerifyChanges } from './types';
+import {
+  IdentifyUser,
+  SanitizedUser,
+  Tokens,
+  User,
+  VerifyChanges,
+  VerifySignupSetPasswordOptions,
+  VerifySignupSetPasswordWithShortTokenOptions
+} from './types';
 
 const debug = makeDebug('authLocalMgnt:verifySignupSetPassword');
 
@@ -28,10 +36,6 @@ export async function verifySignupSetPasswordWithLongToken (
     notifierOptions
   );
   return result;
-}
-
-interface VerifySignupSetPasswordWithShortTokenOptions extends VerifySignupSetPasswordOptions {
-  identifyUserProps: string[]
 }
 
 export async function verifySignupSetPasswordWithShortToken (
@@ -56,13 +60,6 @@ export async function verifySignupSetPasswordWithShortToken (
     notifierOptions
   );
   return result;
-}
-
-interface VerifySignupSetPasswordOptions {
-  app: Application
-  service: string
-  sanitizeUserForClient: SanitizeUserForClient
-  notifier: Notifier
 }
 
 async function verifySignupSetPassword (

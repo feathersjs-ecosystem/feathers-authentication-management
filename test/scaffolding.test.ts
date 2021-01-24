@@ -4,8 +4,9 @@ import feathers, { Application } from '@feathersjs/feathers';
 import authManagement from '../src/index';
 import helpers from '../src/helpers';
 import { AuthenticationManagementService } from '../src/service';
+import { AuthenticationManagementOptionsDefault } from '../src/types';
 
-const optionsDefault = {
+const optionsDefault: AuthenticationManagementOptionsDefault = {
   app: null,
   service: '/users', // need exactly this for test suite
   path: 'authManagement',
@@ -19,7 +20,8 @@ const optionsDefault = {
   reuseResetToken: false,
   identifyUserProps: ['email'],
   sanitizeUserForClient: helpers.sanitizeUserForClient,
-  skipIsVerifiedCheck: false
+  skipIsVerifiedCheck: false,
+  passwordField: "password"
 };
 
 const userMgntOptions = {

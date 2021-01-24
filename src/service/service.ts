@@ -1,32 +1,32 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import checkUnique from './check-unique';
-import identityChange from './identity-change';
-import passwordChange from './password-change';
-import resendVerifySignup from './resend-verify-signup';
-import sanitizeUserForClient from './helpers/sanitize-user-for-client';
-import sendResetPwd from './send-reset-pwd';
-import { resetPwdWithLongToken, resetPwdWithShortToken } from './reset-password';
-import { verifySignupWithLongToken, verifySignupWithShortToken } from './verify-signup';
-import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from './verify-signup-set-password';
+import checkUnique from '../check-unique';
+import identityChange from '../identity-change';
+import passwordChange from '../password-change';
+import resendVerifySignup from '../resend-verify-signup';
+import sanitizeUserForClient from '../helpers/sanitize-user-for-client';
+import sendResetPwd from '../send-reset-pwd';
+import { resetPwdWithLongToken, resetPwdWithShortToken } from '../reset-password';
+import { verifySignupWithLongToken, verifySignupWithShortToken } from '../verify-signup';
+import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
 import {
   AuthenticationManagementData,
   AuthenticationManagementOptions,
   AuthenticationManagementOptionsDefault,
-  DataCheckUnique,
-  DataIdentityChange,
+  DataCheckUniqueWithAction,
+  DataIdentityChangeWithAction,
   DataOptions,
-  DataPasswordChange,
-  DataResendVerifySignup,
-  DataResetPwdLong,
-  DataResetPwdShort,
-  DataSendResetPwd,
-  DataVerifySignupLong,
-  DataVerifySignupSetPasswordLong,
-  DataVerifySignupSetPasswordShort,
-  DataVerifySignupShort,
+  DataPasswordChangeWithAction,
+  DataResendVerifySignupWithAction,
+  DataResetPwdLongWithAction,
+  DataResetPwdShortWithAction,
+  DataSendResetPwdWithAction,
+  DataVerifySignupLongWithAction,
+  DataVerifySignupSetPasswordLongWithAction,
+  DataVerifySignupSetPasswordShortWithAction,
+  DataVerifySignupShortWithAction,
   SanitizedUser
-} from './types';
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:service');
 
@@ -48,7 +48,8 @@ const optionsDefault: AuthenticationManagementOptionsDefault = {
   reuseResetToken: false,
   identifyUserProps: ['email'],
   sanitizeUserForClient,
-  skipIsVerifiedCheck: false
+  skipIsVerifiedCheck: false,
+  passwordField: 'password'
 };
 
 export default function authenticationLocalManagement (
@@ -74,17 +75,17 @@ export class AuthenticationManagementService {
     this.options = options;
   }
 
-  async create (data: DataCheckUnique): Promise<null>
-  async create (data: DataResendVerifySignup): Promise<SanitizedUser>
-  async create (data: DataVerifySignupLong): Promise<SanitizedUser>
-  async create (data: DataVerifySignupShort): Promise<SanitizedUser>
-  async create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser>
-  async create (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser>
-  async create (data: DataSendResetPwd): Promise<SanitizedUser>
-  async create (data: DataResetPwdLong): Promise<SanitizedUser>
-  async create (data: DataResetPwdShort): Promise<SanitizedUser>
-  async create (data: DataPasswordChange): Promise<SanitizedUser>
-  async create (data: DataIdentityChange): Promise<SanitizedUser>
+  async create (data: DataCheckUniqueWithAction): Promise<null>
+  async create (data: DataResendVerifySignupWithAction): Promise<SanitizedUser>
+  async create (data: DataVerifySignupLongWithAction): Promise<SanitizedUser>
+  async create (data: DataVerifySignupShortWithAction): Promise<SanitizedUser>
+  async create (data: DataVerifySignupSetPasswordLongWithAction): Promise<SanitizedUser>
+  async create (data: DataVerifySignupSetPasswordShortWithAction): Promise<SanitizedUser>
+  async create (data: DataSendResetPwdWithAction): Promise<SanitizedUser>
+  async create (data: DataResetPwdLongWithAction): Promise<SanitizedUser>
+  async create (data: DataResetPwdShortWithAction): Promise<SanitizedUser>
+  async create (data: DataPasswordChangeWithAction): Promise<SanitizedUser>
+  async create (data: DataIdentityChangeWithAction): Promise<SanitizedUser>
   async create (data: DataOptions): Promise<AuthenticationManagementOptions>
   async create (data: AuthenticationManagementData): Promise<unknown> {
     debug(`create called. action=${data.action}`);

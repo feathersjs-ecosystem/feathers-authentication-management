@@ -1,5 +1,5 @@
 
-import service from './service';
+import service from './service/service';
 import hooks from './hooks';
 
 // @ts-expect-error assign object to a function
