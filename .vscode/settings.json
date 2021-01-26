@@ -5,5 +5,10 @@
     "**/public": true,
     "**/package-lock.json": true,
     "**/yarn.lock": true
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#520064",
+    "titleBar.activeBackground": "#520064",
+    "titleBar.activeForeground": "#FAFBF4"
   }
 }
