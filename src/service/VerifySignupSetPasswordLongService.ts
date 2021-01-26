@@ -13,7 +13,6 @@ export class VerifySignupSetPasswordLongService {
       this.options,
       data.value.token,
       data.value.password,
-      this.options.passwordField,
       data.notifierOptions
     );
   }

@@ -16,7 +16,6 @@ export default async function passwordChange (
   identifyUser: IdentifyUser,
   oldPassword: string,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('passwordChange', oldPassword, password);
@@ -38,7 +37,7 @@ export default async function passwordChange (
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    password: await hashPassword(options.app, password, field)
+    password: await hashPassword(options.app, password, options.passwordField)
   });
 
   const user3 = await notifier(options.notifier, 'passwordChange', user2, notifierOptions);

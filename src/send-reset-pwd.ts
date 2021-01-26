@@ -14,7 +14,6 @@ const debug = makeDebug('authLocalMgnt:sendResetPwd');
 export default async function sendResetPwd (
   options: SendResetPwdOptions,
   identifyUser: IdentifyUser,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('sendResetPwd');
@@ -50,11 +49,11 @@ export default async function sendResetPwd (
     resetToken:
       options.reuseResetToken
         ? user2.resetToken
-        : await hashPassword(options.app, user2.resetToken, field),
+        : await hashPassword(options.app, user2.resetToken, options.passwordField),
     resetShortToken:
       options.reuseResetToken
         ? user2.resetShortToken
-        : await hashPassword(options.app, user2.resetShortToken, field)
+        : await hashPassword(options.app, user2.resetShortToken, options.passwordField)
   });
 
   return options.sanitizeUserForClient(user3);

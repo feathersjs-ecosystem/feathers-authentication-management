@@ -14,7 +14,6 @@ export class VerifySignupSetPasswordShortService {
       data.value.token,
       data.value.user,
       data.value.password,
-      this.options.passwordField,
       data.notifierOptions
     );
   }

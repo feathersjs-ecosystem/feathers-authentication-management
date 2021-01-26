@@ -14,7 +14,6 @@ export class PasswordChangeService {
       data.value.user,
       data.value.oldPassword,
       data.value.password,
-      this.options.passwordField,
       data.notifierOptions
     );
   }

@@ -16,12 +16,11 @@ export async function resetPwdWithLongToken (
   options: ResetPasswordOptions,
   resetToken: string,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetToken, password);
 
-  return await resetPassword(options, { resetToken }, { resetToken }, password, field, notifierOptions);
+  return await resetPassword(options, { resetToken }, { resetToken }, password, notifierOptions);
 }
 
 export async function resetPwdWithShortToken (
@@ -29,13 +28,12 @@ export async function resetPwdWithShortToken (
   resetShortToken: string,
   identifyUser: IdentifyUser,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await resetPassword(options, identifyUser, { resetShortToken }, password, field, notifierOptions);
+  return await resetPassword(options, identifyUser, { resetShortToken }, password, notifierOptions);
 }
 
 async function resetPassword (
@@ -43,7 +41,6 @@ async function resetPassword (
   query: Query,
   tokens: Tokens,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('resetPassword', query, tokens, password);
@@ -109,7 +106,7 @@ async function resetPassword (
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    password: await hashPassword(options.app, password, field),
+    password: await hashPassword(options.app, password, options.passwordField),
     resetExpires: null,
     resetAttempts: null,
     resetToken: null,

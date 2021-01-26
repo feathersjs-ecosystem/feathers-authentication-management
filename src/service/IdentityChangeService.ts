@@ -14,7 +14,6 @@ export class IdentityChangeService {
       data.value.user,
       data.value.password,
       data.value.changes,
-      this.options.passwordField,
       data.notifierOptions
     );
   }

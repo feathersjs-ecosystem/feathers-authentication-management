@@ -12,7 +12,6 @@ export class SendResetPwdService {
     return await sendResetPwd(
       this.options,
       data.value,
-      this.options.passwordField,
       data.notifierOptions
     );
   }

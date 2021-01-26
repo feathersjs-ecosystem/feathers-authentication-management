@@ -22,7 +22,6 @@ export async function verifySignupSetPasswordWithLongToken (
   options: VerifySignupSetPasswordOptions,
   verifyToken: string,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyToken, password);
@@ -32,7 +31,6 @@ export async function verifySignupSetPasswordWithLongToken (
     { verifyToken },
     { verifyToken },
     password,
-    field,
     notifierOptions
   );
   return result;
@@ -43,7 +41,6 @@ export async function verifySignupSetPasswordWithShortToken (
   verifyShortToken: string,
   identifyUser: IdentifyUser,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyShortToken, password);
@@ -56,7 +53,6 @@ export async function verifySignupSetPasswordWithShortToken (
       verifyShortToken
     },
     password,
-    field,
     notifierOptions
   );
   return result;
@@ -67,7 +63,6 @@ async function verifySignupSetPassword (
   query: Query,
   tokens: Tokens,
   password: string,
-  field: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('verifySignupSetPassword', query, tokens, password);
@@ -81,7 +76,7 @@ async function verifySignupSetPassword (
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password, field);
+    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password);
 
     throw new BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
@@ -93,8 +88,7 @@ async function verifySignupSetPassword (
     user1,
     user1.verifyExpires > Date.now(),
     user1.verifyChanges || {},
-    password,
-    field
+    password
   );
 
   const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2, notifierOptions);
@@ -104,10 +98,9 @@ async function verifySignupSetPassword (
     user: User,
     isVerified: boolean,
     verifyChanges: VerifyChanges,
-    password: string,
-    field: string
+    password: string
   ): Promise<User> {
-    const hashedPassword = await hashPassword(options.app, password, field);
+    const hashedPassword = await hashPassword(options.app, password, options.passwordField);
 
     const patchToUser = Object.assign({}, verifyChanges || {}, {
       isVerified,
