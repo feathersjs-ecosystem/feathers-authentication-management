@@ -11,7 +11,7 @@ import { Application } from '@feathersjs/feathers';
 
 const debug = makeDebug('authLocalMgnt:service');
 
-const optionsDefault: AuthenticationManagementOptionsDefault = {
+export const optionsDefault: AuthenticationManagementOptionsDefault = {
   app: null, // value set during configuration
   service: '/users', // need exactly this for test suite
   path: 'authManagement',
@@ -28,15 +28,27 @@ const optionsDefault: AuthenticationManagementOptionsDefault = {
   sanitizeUserForClient,
   skipIsVerifiedCheck: false,
   passwordField: 'password',
-  useSeparateServices: true
+  useSeparateServices: {
+    checkUnique: 'authManagement/check-unique',
+    identityChange: 'authManagement/identity-change',
+    passwordChange: 'authManagement/password-change',
+    resendVerifySignup: 'authManagement/resend-verify-signup',
+    resetPwdLong: 'authManagement/reset-password-long',
+    resetPwdShort: 'authManagement/reset-password-short',
+    sendResetPwd: 'authManagement/send-reset-pwd',
+    verifySignupLong: 'authManagement/verify-signup-long',
+    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
+    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
+    verifySignupShort: 'authManagement/verify-signup-short'
+  }
 };
 
 const setSeparateServicesPaths = (
   path: string,
-  options: AuthenticationManagementOptions
+  options?: Partial<Pick<AuthenticationManagementOptions, 'useSeparateServices'>>
 ): Partial<Record<AuthenticationManagementAction, string>> => {
-  if (!options.useSeparateServices) {
-    options.useSeparateServices = {};
+  if (options?.useSeparateServices === false) {
+    if (options) options.useSeparateServices = {};
     return {};
   }
 
@@ -55,8 +67,12 @@ const setSeparateServicesPaths = (
     verifySignupShort: `${path}/verify-signup-short`
   };
 
-  if (options.useSeparateServices === true) {
-    options.useSeparateServices = servicePaths;
+  if (
+    !options ||
+    !Object.prototype.hasOwnProperty.call(options, 'useSeparateServices') ||
+    options?.useSeparateServices === true
+  ) {
+    if (options) options.useSeparateServices = servicePaths;
     return servicePaths;
   }
 
@@ -89,13 +105,15 @@ export default function authenticationLocalManagement (
   docs = docs ?? {};
 
   return function (app) {
-    const options = Object.assign({}, optionsDefault, providedOptions, { app });
+    const options: AuthenticationManagementOptions = Object.assign({}, optionsDefault, providedOptions, { app });
     const { path } = options;
+    const useSeparateServices = setSeparateServicesPaths(path, providedOptions);
+    options.useSeparateServices = useSeparateServices;
     app.use(options.path, new AuthenticationManagementService(options, docs));
 
     // separate paths
-    const pathByAction = setSeparateServicesPaths(path, options);
-    for (const [action, path] of Object.entries(pathByAction)) {
+
+    for (const [action, path] of Object.entries(useSeparateServices)) {
       const Service = actionServiceClassMap[action];
       app.use(path, new Service(options));
     }

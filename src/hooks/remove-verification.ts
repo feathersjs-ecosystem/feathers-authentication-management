@@ -3,7 +3,9 @@ import { HookContext } from '@feathersjs/feathers';
 import { checkContext, getItems, replaceItems } from 'feathers-hooks-common';
 import { User } from '../types';
 
-export default function removeVerification (ifReturnTokens?: boolean): ((hook: HookContext) => HookContext) {
+export default function removeVerification (
+  ifReturnTokens?: boolean
+): ((hook: HookContext) => HookContext) {
   return (hook: HookContext): HookContext => {
     checkContext(hook, 'after');
     // Retrieve the items from the hook

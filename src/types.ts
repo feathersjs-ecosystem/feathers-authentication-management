@@ -63,9 +63,11 @@ export type AuthenticationManagementAction =
   'identityChange' |
   'options';
 
-export type UseSeparateServicesOption = boolean | {
-  [key in Exclude<AuthenticationManagementAction, 'options'>]?: boolean | string
+export type ActionPathMap<T> = {
+  [key in Exclude<AuthenticationManagementAction, 'options'>]: T
 };
+
+export type UseSeparateServicesOption = boolean | Partial<ActionPathMap<boolean | string>>;
 
 export type AuthenticationManagementOptionsDefault =
   Pick<AuthenticationManagementOptions,
@@ -82,8 +84,10 @@ export type AuthenticationManagementOptionsDefault =
   'identifyUserProps' |
   'sanitizeUserForClient' |
   'skipIsVerifiedCheck' |
-  'passwordField' |
-  'useSeparateServices'> & { app: null };
+  'passwordField'> & {
+    app: null
+    useSeparateServices: ActionPathMap<string>
+  };
 
 export interface AuthenticationManagementOptions {
   app: Application

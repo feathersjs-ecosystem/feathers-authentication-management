@@ -25,7 +25,19 @@ const optionsDefault: AuthenticationManagementOptionsDefault = {
   sanitizeUserForClient: helpers.sanitizeUserForClient,
   skipIsVerifiedCheck: false,
   passwordField: "password",
-  useSeparateServices: true
+  useSeparateServices: {
+    checkUnique: 'authManagement/check-unique',
+    identityChange: 'authManagement/identity-change',
+    passwordChange: 'authManagement/password-change',
+    resendVerifySignup: 'authManagement/resend-verify-signup',
+    resetPwdLong: 'authManagement/reset-password-long',
+    resetPwdShort: 'authManagement/reset-password-short',
+    sendResetPwd: 'authManagement/send-reset-pwd',
+    verifySignupLong: 'authManagement/verify-signup-long',
+    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
+    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
+    verifySignupShort: 'authManagement/verify-signup-short'
+  }
 };
 
 const userMgntOptions = {
