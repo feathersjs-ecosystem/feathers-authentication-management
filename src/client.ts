@@ -110,7 +110,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
     authenticate: async (
       email: string,
       password: string,
-      cb?: (err: Error | null, user?: Partial<User>) => void
+      cb: (err: Error | null, user?: Partial<User>) => void
     ): Promise<unknown> => {
       let cbCalled = false;
 
@@ -130,8 +130,8 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
 
         return user;
       } catch (err) {
-        if (!cbCalled) {
-          if (cb) cb(err);
+        if (!cbCalled && cb) {
+          cb(err);
         }
       }
     }
