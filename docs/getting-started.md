@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-sidebarDepth: 3
+sidebarDepth: 2
 ---
 
 # Getting Started
@@ -171,8 +171,6 @@ module.exports = function(app) {
 - The sendEmail function which calls our /mailer service internally to send the email.
 - The notifier function which, based on the action type, decides what email to send where. We are now only using the verification part but this can also be used to code the other actions. Also, we will only be sending the plain link to the email. If you want to use html templates or some preprocessor to generate nicer looking emails, you need to make sure they are inserted as a value in the html key in the email object.
 
-
-
 ### Add properties to your `/users` service
 
 The service creates and maintains the following properties in the `user` item:
@@ -201,11 +199,12 @@ The service, for feathers-authenticate v1.x, requires hooks similar to:
 
 ```javascript
 const { authenticate } = require("@feathersjs/authentication").hooks;
+const { iff } = require('feathers-hooks-common');
 
 const isAction = (...args) => (hook) => args.includes(hook.data.action);
 app.service("authManagement").before({
   create: [
-    hooks.iff(
+    iff(
       isAction("passwordChange", "identityChange"),
       authenticate("jwt")
     ),
@@ -216,6 +215,7 @@ app.service("authManagement").before({
 ## Testing
 
 `npm test`
+This repo is pre-configured to work with the Visual Studio Code debugger. After running `npm install`, use the "Mocha Tests" debug script for a smooth debugging experience.
 
 ## Help
 

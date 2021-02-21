@@ -15,6 +15,7 @@ module.exports = {
       sidebar: [
         '/getting-started.md',
         '/basic.md',
+        '/hooks.md',
         '/client.md',
         '/advanced.md'
       ],

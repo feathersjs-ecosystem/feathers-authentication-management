@@ -1,6 +1,6 @@
 ---
 title: Client
-sidebarDepth: 3
+sidebarDepth: 2
 ---
 
 # Client
