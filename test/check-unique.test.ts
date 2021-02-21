@@ -6,7 +6,7 @@ import { timeoutEachTest } from './helpers/config';
 import { AuthenticationManagementService } from '../src/service';
 
 const makeUsersService = options =>
-  function (app) {
+  function (app: Application) {
     app.use('/users', feathersMemory(options));
   };
 

@@ -35,16 +35,40 @@ export interface IdentifyUser {
   [key: number]: string
 }
 
-export type Notifier = (type: string, user: Partial<User>, notifierOptions: Record<string, unknown>) => unknown;
+export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions: Record<string, unknown>) => unknown;
 export type SanitizeUserForClient = (user: Partial<User>) => SanitizedUser;
 
 export type SanitizedUser = Partial<User>;
 
-export type NotificationType = 'resendVerifySignup' | 'verifySignup' | 'verifySignupSetPassword' | 'sendResetPwd' | 'resetPwd' | 'passwordChange' | 'identityChange';
+export type NotificationType =
+  'resendVerifySignup' |
+  'verifySignup' |
+  'verifySignupSetPassword' |
+  'sendResetPwd' |
+  'resetPwd' |
+  'passwordChange' |
+  'identityChange';
+
+export type AuthenticationManagementAction =
+  'checkUnique' |
+  'resendVerifySignup' |
+  'verifySignupLong' |
+  'verifySignupShort' |
+  'verifySignupSetPasswordLong' |
+  'verifySignupSetPasswordShort' |
+  'sendResetPwd' |
+  'resetPwdLong' |
+  'resetPwdShort' |
+  'passwordChange' |
+  'identityChange' |
+  'options';
+
+export type UseSeparateServicesOption = boolean | {
+  [key in Exclude<AuthenticationManagementAction, 'options'>]?: boolean | string
+};
 
 export type AuthenticationManagementOptionsDefault =
   Pick<AuthenticationManagementOptions,
-  'app' |
   'service' |
   'path' |
   'notifier' |
@@ -58,14 +82,15 @@ export type AuthenticationManagementOptionsDefault =
   'identifyUserProps' |
   'sanitizeUserForClient' |
   'skipIsVerifiedCheck' |
-  'passwordField'> & { app: null };
+  'passwordField' |
+  'useSeparateServices'> & { app: null };
 
 export interface AuthenticationManagementOptions {
   app: Application
   service: string
   path: string
   skipIsVerifiedCheck: boolean
-  notifier: (type: NotificationType, user: Omit<User, 'password'>, notifierOptions: unknown) => Promise<void>
+  notifier: Notifier
   longTokenLen: number
   shortTokenLen: number
   shortTokenDigits: boolean
@@ -76,6 +101,7 @@ export interface AuthenticationManagementOptions {
   identifyUserProps: string[]
   sanitizeUserForClient: (user: User) => Partial<User>
   passwordField: string
+  useSeparateServices: UseSeparateServicesOption
   // identifyUser: IdentifyUser // TODO ?
 }
 

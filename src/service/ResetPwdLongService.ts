@@ -1,14 +1,16 @@
 import { resetPwdWithLongToken } from '../reset-password';
 import { SanitizedUser, ResetPasswordOptions, DataResetPwdLong } from '../types';
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class ResetPwdLongService {
+export class ResetPwdLongService extends AuthenticationManagementBase {
   options: ResetPasswordOptions;
 
   constructor (options: ResetPasswordOptions) {
+    super();
     this.options = options;
   }
 
-  async create (data: DataResetPwdLong): Promise<SanitizedUser> {
+  async _create (data: DataResetPwdLong): Promise<SanitizedUser> {
     return await resetPwdWithLongToken(
       this.options,
       data.value.token,

@@ -32,19 +32,23 @@ This project is built for [FeathersJS](http://feathersjs.com). An open source we
 ## Installation
 
 ```bash
-npm i feathers-authentication-management
+npm i feathers-authentication-management feathers-mailer
 # or
-yarn add feathers-authentication-management
+yarn add feathers-authentication-management feathers-mailer
 ```
+
+## Setup feathers-mailer
+
+See [feathers-mailer](https://github.com/feathersjs-ecosystem/feathers-mailer)
 
 ## Getting Started
 
 ```js
+// src/
 const authManagement = require('feathers-authentication-management');
 app
   .configure(authentication)
   .configure(authManagement({ options }, { docs }))
-  .configure(user);
 ```
 
 ### Options
@@ -84,6 +88,89 @@ app
 
 - representation of the service swagger documentation. Default `{}`
   See [Docs](#docs) for more information.
+
+### Create notifier function
+
+```js
+// src/services/auth-management/notifier.js
+
+module.exports = function(app) {
+  function getLink(type, hash) {
+    const url = 'http://localhost:3030/' + type + '?token=' + hash; // your domain url
+    return url;
+  }
+
+  function sendEmail(email) {
+    return app.service('mailer').create(email).then(function (result) {
+      console.log('Sent email', result)
+    }).catch(err => {
+      console.log('Error sending email', err)
+    })
+  }
+
+  return {
+    // see options.notifier
+    notifier: function(type, user, notifierOptions) {
+      let tokenLink
+      let email
+      switch (type) {
+        case 'resendVerifySignup': //sending the user the verification email
+          tokenLink = getLink('verify', user.verifyToken)
+          email = {
+             from: process.env.FROM_EMAIL,
+             to: user.email,
+             subject: 'Verify Signup',
+             html: tokenLink
+          }
+          return sendEmail(email)
+          break
+
+        case 'verifySignup': // confirming verification
+          tokenLink = getLink('verify', user.verifyToken)
+          email = {
+             from: process.env.FROM_EMAIL,
+             to: user.email,
+             subject: 'Confirm Signup',
+             html: 'Thanks for verifying your email'
+          }
+          return sendEmail(email)
+          break
+
+        case 'sendResetPwd':
+          tokenLink = getLink('reset', user.resetToken)
+          email = {}
+          return sendEmail(email)
+          break
+
+        case 'resetPwd':
+          tokenLink = getLink('reset', user.resetToken)
+          email = {}
+          return sendEmail(email)
+          break
+
+        case 'passwordChange':
+          email = {}
+          return sendEmail(email)
+          break
+
+        case 'identityChange':
+          tokenLink = getLink('verifyChanges', user.verifyToken)
+          email = {}
+          return sendEmail(email)
+          break
+
+        default:
+          break
+      }
+    }
+  }
+}
+```
+
+- The getLink function which generates our token url. This can either have a verify token or a reset token included. For now, we are only using the verify token.
+- The sendEmail function which calls our /mailer service internally to send the email.
+- The notifier function which, based on the action type, decides what email to send where. We are now only using the verification part but this can also be used to code the other actions. Also, we will only be sending the plain link to the email. If you want to use html templates or some preprocessor to generate nicer looking emails, you need to make sure they are inserted as a value in the html key in the email object.
+
 
 
 ### Add properties to your `/users` service

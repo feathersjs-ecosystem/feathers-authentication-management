@@ -1,14 +1,16 @@
 import identityChange from '../identity-change';
 import { SanitizedUser, IdentityChangeOptions, DataIdentityChange } from '../types';
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class IdentityChangeService {
+export class IdentityChangeService extends AuthenticationManagementBase {
   options: IdentityChangeOptions;
 
   constructor (options: IdentityChangeOptions) {
+    super();
     this.options = options;
   }
 
-  async create (data: DataIdentityChange): Promise<SanitizedUser> {
+  async _create (data: DataIdentityChange): Promise<SanitizedUser> {
     return await identityChange(
       this.options,
       data.value.user,

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import feathers, { Application, HookContext } from '@feathersjs/feathers';
 import authLocalMgnt from "../src/index";
 import { addVerification } from '../src/hooks';
-import { defaultVerifyDelay, timeoutEachTest, maxTimeAllTests } from './helpers/config';
+import { timeoutEachTest } from './helpers/config';
 import {
   makeDateTime,
   aboutEqualDateTime

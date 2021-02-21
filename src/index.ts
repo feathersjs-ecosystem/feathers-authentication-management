@@ -1,13 +1,13 @@
-import service from './service';
+import configure from './configureAuthManagement';
 import hooks from './hooks';
 
 // @ts-expect-error assign object to a function
-service.hooks = hooks;
+configure.hooks = hooks;
 
-export default service;
+export default configure;
 export { hooks };
 
 // commonjs
 if (typeof module !== 'undefined') {
-  module.exports = Object.assign(service, module.exports);
+  module.exports = Object.assign(configure, module.exports);
 }

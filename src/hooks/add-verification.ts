@@ -11,7 +11,7 @@ export default function addVerification (path?: string): ((hook: HookContext) =>
     checkContext(hook, 'before', ['create', 'patch', 'update']);
 
     try {
-      const options = await (hook.app.service(path ?? 'authManagement') as AuthenticationManagementService).create({ action: 'options' });
+      const { options } = (hook.app.service(path ?? 'authManagement') as AuthenticationManagementService);
 
       const [longToken, shortToken] = await Promise.all([
         getLongToken(options.longTokenLen),

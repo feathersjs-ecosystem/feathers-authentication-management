@@ -1,14 +1,16 @@
 import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordOptions } from '../types';
 import { verifySignupSetPasswordWithLongToken } from '../verify-signup-set-password';
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class VerifySignupSetPasswordLongService {
+export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase {
   options: VerifySignupSetPasswordOptions;
 
   constructor (options: VerifySignupSetPasswordOptions) {
+    super();
     this.options = options;
   }
 
-  async create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
+  async _create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithLongToken(
       this.options,
       data.value.token,
