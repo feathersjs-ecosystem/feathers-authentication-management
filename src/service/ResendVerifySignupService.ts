@@ -1,3 +1,7 @@
+import { SetRequired } from 'type-fest';
+
+import { makeDefaultOptions } from '.';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import resendVerifySignup from '../resend-verify-signup';
 import { SanitizedUser, ResendVerifySignupOptions, DataResendVerifySignup } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
@@ -5,9 +9,21 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 export class ResendVerifySignupService extends AuthenticationManagementBase {
   options: ResendVerifySignupOptions;
 
-  constructor (options: ResendVerifySignupOptions) {
+  constructor (options: SetRequired<Partial<ResendVerifySignupOptions>, 'app'>) {
     super();
-    this.options = options;
+
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<ResendVerifySignupOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'notifier',
+      'longTokenLen',
+      'shortTokenLen',
+      'shortTokenDigits',
+      'delay',
+      'identifyUserProps',
+      'sanitizeUserForClient'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataResendVerifySignup): Promise<SanitizedUser> {

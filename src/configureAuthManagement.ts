@@ -1,54 +1,23 @@
 import makeDebug from 'debug';
-import sanitizeUserForClient from './helpers/sanitize-user-for-client';
+
 import actionServiceClassMap from './helpers/action-service-class-map';
 import {
-  AuthenticationManagementOptions,
-  AuthenticationManagementOptionsDefault,
-  AuthenticationManagementAction
+  AuthenticationManagementAction,
+  AuthenticationManagementConfigureOptions,
+  AuthenticationManagementServiceOptions,
+  AuthenticationManagementServiceOptionsDefault
 } from './types';
 import { AuthenticationManagementService } from './service/AuthenticationManagementService';
 import { Application } from '@feathersjs/feathers';
+import { makeDefaultOptions } from './service';
 
 const debug = makeDebug('authLocalMgnt:service');
 
-export const optionsDefault: AuthenticationManagementOptionsDefault = {
-  app: null, // value set during configuration
-  service: '/users', // need exactly this for test suite
-  path: 'authManagement',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  notifier: async () => {},
-  longTokenLen: 15, // token's length will be twice this
-  shortTokenLen: 6,
-  shortTokenDigits: true,
-  resetDelay: 1000 * 60 * 60 * 2, // 2 hours
-  delay: 1000 * 60 * 60 * 24 * 5, // 5 days
-  resetAttempts: 0,
-  reuseResetToken: false,
-  identifyUserProps: ['email'],
-  sanitizeUserForClient,
-  skipIsVerifiedCheck: false,
-  passwordField: 'password',
-  useSeparateServices: {
-    checkUnique: 'authManagement/check-unique',
-    identityChange: 'authManagement/identity-change',
-    passwordChange: 'authManagement/password-change',
-    resendVerifySignup: 'authManagement/resend-verify-signup',
-    resetPwdLong: 'authManagement/reset-password-long',
-    resetPwdShort: 'authManagement/reset-password-short',
-    sendResetPwd: 'authManagement/send-reset-pwd',
-    verifySignupLong: 'authManagement/verify-signup-long',
-    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
-    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
-    verifySignupShort: 'authManagement/verify-signup-short'
-  }
-};
-
-const setSeparateServicesPaths = (
+const getSeparateServicesPaths = (
   path: string,
-  options?: Partial<Pick<AuthenticationManagementOptions, 'useSeparateServices'>>
+  options?: Partial<Pick<AuthenticationManagementConfigureOptions, 'useSeparateServices'>>
 ): Partial<Record<AuthenticationManagementAction, string>> => {
   if (options?.useSeparateServices === false) {
-    if (options) options.useSeparateServices = {};
     return {};
   }
 
@@ -72,7 +41,6 @@ const setSeparateServicesPaths = (
     !Object.prototype.hasOwnProperty.call(options, 'useSeparateServices') ||
     options?.useSeparateServices === true
   ) {
-    if (options) options.useSeparateServices = servicePaths;
     return servicePaths;
   }
 
@@ -92,12 +60,48 @@ const setSeparateServicesPaths = (
     }
   }
 
-  options.useSeparateServices = servicePaths;
   return servicePaths;
 };
 
+export const defaultConfigureOptions = {
+  path: 'authManagement',
+  useSeparateServices: {
+    checkUnique: 'authManagement/check-unique',
+    identityChange: 'authManagement/identity-change',
+    passwordChange: 'authManagement/password-change',
+    resendVerifySignup: 'authManagement/resend-verify-signup',
+    resetPwdLong: 'authManagement/reset-password-long',
+    resetPwdShort: 'authManagement/reset-password-short',
+    sendResetPwd: 'authManagement/send-reset-pwd',
+    verifySignupLong: 'authManagement/verify-signup-long',
+    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
+    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
+    verifySignupShort: 'authManagement/verify-signup-short'
+  }
+};
+
+export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigureOptions => {
+  const defaultServiceOptions: AuthenticationManagementServiceOptionsDefault = makeDefaultOptions([
+    'service',
+    'notifier',
+    'longTokenLen',
+    'shortTokenLen',
+    'shortTokenDigits',
+    'resetDelay',
+    'delay',
+    'resetAttempts',
+    'reuseResetToken',
+    'identifyUserProps',
+    'sanitizeUserForClient',
+    'skipIsVerifiedCheck',
+    'passwordField'
+  ]);
+
+  return Object.assign({}, defaultServiceOptions, defaultConfigureOptions);
+};
+
 export default function authenticationLocalManagement (
-  providedOptions?: Partial<AuthenticationManagementOptions>,
+  providedOptions?: Partial<AuthenticationManagementConfigureOptions>,
   docs?: Record<string, unknown>
 ): (app: Application) => void {
   debug('service being configured.');
@@ -105,14 +109,21 @@ export default function authenticationLocalManagement (
   docs = docs ?? {};
 
   return function (app) {
-    const options: AuthenticationManagementOptions = Object.assign({}, optionsDefault, providedOptions, { app });
+    const defaultOptions = makeDefaultConfigureOptions();
+    const options: AuthenticationManagementServiceOptions & AuthenticationManagementConfigureOptions = Object.assign(
+      {},
+      defaultOptions,
+      providedOptions,
+      {
+        app
+      });
     const { path } = options;
-    const useSeparateServices = setSeparateServicesPaths(path, providedOptions);
+    const useSeparateServices = getSeparateServicesPaths(path, providedOptions);
     options.useSeparateServices = useSeparateServices;
+
     app.use(options.path, new AuthenticationManagementService(options, docs));
 
     // separate paths
-
     for (const [action, path] of Object.entries(useSeparateServices)) {
       const Service = actionServiceClassMap[action];
       app.use(path, new Service(options));

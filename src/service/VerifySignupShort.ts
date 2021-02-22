@@ -1,3 +1,7 @@
+import { SetRequired } from 'type-fest';
+
+import { makeDefaultOptions } from '.';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupShort, SanitizedUser, VerifySignupWithShortTokenOptions } from '../types';
 import { verifySignupWithShortToken } from '../verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
@@ -5,9 +9,18 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 export class VerifySignupShortService extends AuthenticationManagementBase {
   options: VerifySignupWithShortTokenOptions;
 
-  constructor (options: VerifySignupWithShortTokenOptions) {
+  constructor (options: SetRequired<Partial<VerifySignupWithShortTokenOptions>, 'app'>) {
     super();
-    this.options = options;
+
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<VerifySignupWithShortTokenOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'notifier',
+      'sanitizeUserForClient',
+      'passwordField',
+      'identifyUserProps'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataVerifySignupShort): Promise<SanitizedUser> {

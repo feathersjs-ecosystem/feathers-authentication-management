@@ -4,15 +4,18 @@ import feathers, { Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
 import helpers from '../src/helpers';
-import { AuthenticationManagementService } from '../src/service';
-import { AuthenticationManagementOptions, AuthenticationManagementOptionsDefault } from '../src/types';
+import { AuthenticationManagementService, CheckUniqueService, IdentityChangeService, PasswordChangeService, ResendVerifySignupService, ResetPwdLongService, ResetPwdShortService, SendResetPwdService, VerifySignupLongService, VerifySignupSetPasswordLongService, VerifySignupSetPasswordShortService, VerifySignupShortService } from '../src/service';
+import {
+  AuthenticationManagementServiceOptions,
+  AuthenticationManagementConfigureOptions
+} from '../src/types';
 
 import "@feathersjs/transport-commons";
+import { GeneralError } from '@feathersjs/errors';
 
-const optionsDefault: AuthenticationManagementOptionsDefault = {
-  app: null,
+const optionsDefault: Omit<AuthenticationManagementConfigureOptions, 'app'> = {
   service: '/users', // need exactly this for test suite
-  path: 'authManagement',
+  path: "authManagement",
   notifier: () => Promise.resolve(),
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
@@ -133,10 +136,10 @@ describe('scaffolding.js', () => {
         verifySignupShort: 'authManagement/verify-signup-short'
       }
 
-      const expected = Object.assign({}, optionsDefault, userMgntOptions, { useSeparateServices });
-      delete expected.app;
+      const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
+      //@ts-expect-error thinks options has options
       assert.deepEqual(options, expected);
 
       Object.values(useSeparateServices).forEach(path => {
@@ -148,7 +151,7 @@ describe('scaffolding.js', () => {
     it("does not call publish on authManagement", async () => {
       const usersService = app.service('/users');
 
-      const authManagementService = app.service(optionsDefault.path)
+      const authManagementService = app.service("authManagement")
 
       assert.ok(authManagementService, "registered the service");
 
@@ -159,7 +162,7 @@ describe('scaffolding.js', () => {
         if (context.path === "users") {
           calledUserEvent = true;
         }
-        if (context.path === optionsDefault.path) {
+        if (context.path === "authManagement") {
           calledAuthMgmtEvent = true;
           throw "it should not get here";
         }
@@ -226,10 +229,10 @@ describe('scaffolding.js', () => {
         verifySignupShort: 'authManagement/verify-signup-short'
       }
 
-      const expected = Object.assign({}, optionsDefault, userMgntOptions, { useSeparateServices });
-      delete expected.app;
+      const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
+      //@ts-expect-error thinks options has options
       assert.deepEqual(options, expected);
 
       Object.values(useSeparateServices).forEach(path => {
@@ -260,9 +263,9 @@ describe('scaffolding.js', () => {
       }
 
       const expected1 = Object.assign({}, optionsDefault, orgMgntOptions, { useSeparateServices: useSeparateServicesOrg });
-      delete expected1.app;
       delete expected1.notifier;
 
+      //@ts-expect-error thinks options has options
       assert.deepEqual(options1, expected1);
 
       Object.values(useSeparateServicesOrg).forEach(path => {
@@ -273,7 +276,7 @@ describe('scaffolding.js', () => {
   });
 
   describe('useSeparateServices', () => {
-    const makeApp = (options: Partial<AuthenticationManagementOptions>) => {
+    const makeApp = (options: Partial<AuthenticationManagementConfigureOptions>) => {
       const app = feathers();
       app.configure(authManagement(options));
       app.configure(services);
@@ -285,10 +288,6 @@ describe('scaffolding.js', () => {
       const app = makeApp({ useSeparateServices: false });
       const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
 
-      const { options } = authLocalMgntService;
-
-      assert.isEmpty(options.useSeparateServices, "no separate services in options");
-
       const servicePaths = Object.keys(app.services);
       assert.deepEqual(servicePaths.sort(), ["authManagement", "organizations", "users"].sort(), 'has no other services')
     });
@@ -298,11 +297,7 @@ describe('scaffolding.js', () => {
         checkUnique: false,
         verifySignupShort: false
       } });
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
 
-      const { options } = authLocalMgntService;
-
-      assert.doesNotHaveAllKeys(options.useSeparateServices, ["checkUnique", "verifySignupShort"]);
       assert.notOk(app.service("authManagement/check-unique"), "does not have 'checkUnique' service");
       assert.notOk(app.service("authManagement/verify-signup-short"), "does not have 'verifySignupShort' service");
     });
@@ -311,13 +306,67 @@ describe('scaffolding.js', () => {
       const app = makeApp({ useSeparateServices: {
         checkUnique: 'super-custom-service'
       } });
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
 
-      const { options } = authLocalMgntService;
-
-      //@ts-expect-error because it could be a boolean
-      assert.equal(options.useSeparateServices.checkUnique, 'super-custom-service');
       assert.ok(app.service('super-custom-service'), 'registered on custom path');
     });
+  });
+
+  describe('services independently', () => {
+    it("can register all services independently at custom routes", () => {
+      const app = feathers();
+      app.configure(services);
+      app.use("am", new AuthenticationManagementService({ app }));
+      app.use("am/1", new CheckUniqueService({ app }));
+      app.use("am/2", new IdentityChangeService({ app }));
+      app.use("am/3", new PasswordChangeService({ app }));
+      app.use("am/4", new ResendVerifySignupService({ app }));
+      app.use("am/5", new ResetPwdLongService({ app }));
+      app.use("am/6", new ResetPwdShortService({ app }));
+      app.use("am/7", new SendResetPwdService({ app }));
+      app.use("am/8", new VerifySignupLongService({ app }));
+      app.use("am/9", new VerifySignupSetPasswordLongService({ app }));
+      app.use("am/10", new VerifySignupSetPasswordShortService({ app }));
+      app.use("am/11", new VerifySignupShortService({ app }));
+      app.setup();
+
+      const servicePaths = Object.keys(app.services);
+
+      const expected = [
+        "am", "am/1", "am/2", "am/3", "am/4", "am/5", "am/6", "am/7", "am/8", "am/9", "am/10", "am/11"
+      ]
+
+      expected.forEach(path => {
+        assert.ok(servicePaths.includes(path), `registered '${path}' correctly`);
+      })
+    });
+
+    it("fails without options: { app }", () => {
+      const app = feathers();
+      app.configure(services);
+      const classes = [
+        AuthenticationManagementService,
+        CheckUniqueService,
+        IdentityChangeService,
+        PasswordChangeService,
+        ResendVerifySignupService,
+        ResetPwdLongService,
+        ResetPwdShortService,
+        SendResetPwdService,
+        VerifySignupLongService,
+        VerifySignupSetPasswordLongService,
+        VerifySignupSetPasswordShortService,
+        VerifySignupShortService,
+      ];
+
+      classes.forEach(Service => {
+        //@ts-expect-error
+        assert.throws(() => new Service());
+      })
+
+      classes.forEach(Service => {
+        //@ts-expect-error
+        assert.throws(() => new Service({}));
+      })
+    })
   });
 });

@@ -5,10 +5,10 @@ import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
 import { AuthenticationManagementService } from '../service';
-import { optionsDefault } from '../configureAuthManagement';
+import { defaultConfigureOptions } from '../configureAuthManagement';
 
 export default function addVerification (path?: string): ((hook: HookContext) => Promise<HookContext>) {
-  path = path || optionsDefault.path; // default: 'authManagement'
+  path = path || defaultConfigureOptions.path; // default: 'authManagement'
   return async (hook: HookContext): Promise<HookContext> => {
     checkContext(hook, 'before', ['create', 'patch', 'update']);
 

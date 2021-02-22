@@ -1,3 +1,7 @@
+import { SetRequired } from 'type-fest';
+
+import { makeDefaultOptions } from '.';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import passwordChange from '../password-change';
 import { SanitizedUser, DataPasswordChange, PasswordChangeOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
@@ -5,9 +9,18 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 export class PasswordChangeService extends AuthenticationManagementBase {
   options: PasswordChangeOptions;
 
-  constructor (options: PasswordChangeOptions) {
+  constructor (options: SetRequired<Partial<PasswordChangeOptions>, 'app'>) {
     super();
-    this.options = options;
+
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<PasswordChangeOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'notifier',
+      'identifyUserProps',
+      'sanitizeUserForClient',
+      'passwordField'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataPasswordChange): Promise<SanitizedUser> {

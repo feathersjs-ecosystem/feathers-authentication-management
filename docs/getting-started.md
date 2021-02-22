@@ -41,10 +41,10 @@ yarn add feathers-authentication-management feathers-mailer
 
 See [feathers-mailer](https://github.com/feathersjs-ecosystem/feathers-mailer)
 
-## Getting Started
+## Setup application
 
 ```js
-// src/
+// src/app.js
 const authManagement = require('feathers-authentication-management');
 app
   .configure(authentication)
@@ -53,10 +53,10 @@ app
 
 ### Options
 
-- `service: string='/users'`: The path of the service for user items, e.g. `/users` (default) or `/organization`.
-- `path: string='authManagement'`: The path to associate with this service`.
+- `service: string = '/users'`: The path of the service for user items, e.g. `/users` (default) or `/organization`.
+- `path: string = 'authManagement'`: The path to associate with this service`.
   See [Multiple services](#multiple-services) for more information.
-- `skipIsVerifiedCheck: boolean=false`: if `false` (default) it is impossible to reset password if email is not verified.
+- `skipIsVerifiedCheck: boolean = false`: if `false` (default) it is impossible to reset password if email is not verified.
 - `sanitizeUserForClient: (user: User) => Partial<User>`: ([default](https://github.com/feathers-plus/feathers-authentication-management/blob/master/src/helpers/sanitize-user-for-client.js)) sanitize the user in the response, if not overwritten **THE USER OBJECT IS IN THE RESPONSE** eg. on a password reset request, to reply with empty object use `sanitizeUserForClient: () => ({})`
 - `notifier: (type: string, user: User, notifierOptions) => Promise<void>` returns a Promise.
   - type: type of notification
@@ -69,25 +69,37 @@ app
     - `'identityChange'` From identityChange API call
   - `user`: user's item, minus password.
   - `notifierOptions`: notifierOptions option from resendVerifySignup and sendResetPwd API calls
-- `longTokenLen: number=15`: Half the length of the long token. Default is 15, giving 30-char tokens.
-- `shortTokenLen: number=6`: Length of short token.
-- `shortTokenDigits: boolean=true`: Short token is digits if true, else alphanumeric.
-- `delay: number`: Duration for sign up email verification token in ms. Default is 5 days.
-- `resetDelay: number`: Duration for password reset token in ms. Default is 2 hours.
-- `resetAttempts: number=0`: Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0.
-- `reuseResetToken: boolean=false`: Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is false.
-- `identifyUserProps: string[]`: Prop names in `user` item which uniquely identify the user,
+- `longTokenLen: number = 15`: Half the length of the long token. Default is 15, giving 30-char tokens.
+- `shortTokenLen: number = 6`: Length of short token.
+- `shortTokenDigits: boolean = true`: Short token is digits if true, else alphanumeric.
+- `delay: number = 1000 * 60 * 60 * 24 * 5`: Duration for sign up email verification token in ms. Default is 5 days.
+- `resetDelay: number = 1000 * 60 * 60 * 2`: Duration for password reset token in ms. Default is 2 hours.
+- `resetAttempts: number = 0`: Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0.
+- `reuseResetToken: boolean = false`: Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is false.
+- `identifyUserProps: string[] = ['email']`: Prop names in `user` item which uniquely identify the user,
   e.g. `['username', 'email', 'cellphone']`.
   The default is `['email']`.
   The prop values must be strings.
   Only these props may be changed with verification by the service.
   At least one of these props must be provided whenever a short token is used,
   as the short token alone is too susceptible to brute force attack.
+- `passwordField: string = 'password'`: Prop name of the password field.
+- `useSeparateServices: boolean | Record<action, string> = true`: Registers the following services which are also accessible on the client:
+  - `checkUnique`: `${path}/check-unique'`
+  - `identityChange`: `${path}/identity-change`,
+  - `passwordChange`: `${path}/password-change`,
+  - `resendVerifySignup`: `${path}/resend-verify-signup`,
+  - `resetPwdLong`: `${path}/reset-password-long`,
+  - `resetPwdShort`: `${path}/reset-password-short`,
+  - `sendResetPwd`: `${path}/send-reset-pwd`,
+  - `verifySignupLong`: `${path}/verify-signup-long`,
+  - `verifySignupSetPasswordLong`: `${path}/verify-signup-set-password-long`,
+  - `verifySignupSetPasswordShort`: `${path}/verify-signup-set-password-short`,
+  - `verifySignupShort`: `${path}/verify-signup-short`
 
 `docs` (optional) are:
 
 - representation of the service swagger documentation. Default `{}`
-  See [Docs](#docs) for more information.
 
 ### Create notifier function
 
@@ -167,9 +179,9 @@ module.exports = function(app) {
 }
 ```
 
-- The getLink function which generates our token url. This can either have a verify token or a reset token included. For now, we are only using the verify token.
-- The sendEmail function which calls our /mailer service internally to send the email.
-- The notifier function which, based on the action type, decides what email to send where. We are now only using the verification part but this can also be used to code the other actions. Also, we will only be sending the plain link to the email. If you want to use html templates or some preprocessor to generate nicer looking emails, you need to make sure they are inserted as a value in the html key in the email object.
+- The `getLink` function generates our token url. This can either have a verify token or a reset token included. For now, we are only using the verify token.
+- The `sendEmail` function calls our `/mailer` service internally to send the email.
+- The notifier function, based on the action type, decides what email to send where. We are now only using the verification part but this can also be used to code the other actions. Also, we will only be sending the plain link to the email. If you want to use html templates or some preprocessor to generate nicer looking emails, you need to make sure they are inserted as a value in the html key in the email object.
 
 ### Add properties to your `/users` service
 
@@ -198,6 +210,7 @@ The user must be signed in before being allowed to change their password or comm
 The service, for feathers-authenticate v1.x, requires hooks similar to:
 
 ```javascript
+// src/services/auth-management/auth-management.hooks.js
 const { authenticate } = require("@feathersjs/authentication").hooks;
 const { iff } = require('feathers-hooks-common');
 

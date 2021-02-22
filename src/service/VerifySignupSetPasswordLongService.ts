@@ -1,3 +1,7 @@
+import { SetRequired } from 'type-fest';
+
+import { makeDefaultOptions } from '.';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordOptions } from '../types';
 import { verifySignupSetPasswordWithLongToken } from '../verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
@@ -5,9 +9,17 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase {
   options: VerifySignupSetPasswordOptions;
 
-  constructor (options: VerifySignupSetPasswordOptions) {
+  constructor (options: SetRequired<Partial<VerifySignupSetPasswordOptions>, 'app'>) {
     super();
-    this.options = options;
+
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<VerifySignupSetPasswordOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'notifier',
+      'sanitizeUserForClient',
+      'passwordField'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {

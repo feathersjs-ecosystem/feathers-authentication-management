@@ -19,7 +19,8 @@ module.exports = {
   rules: {
     semi: ['warn', 'always'],
     '@typescript-eslint/semi': ['warn', 'always'],
-    '@typescript-eslint/strict-boolean-expressions': ['off']
+    '@typescript-eslint/strict-boolean-expressions': ['off'],
+    'spaced-comment': ['off']
   },
   overrides: [
     {

@@ -1,5 +1,6 @@
 import makeDebug from 'debug';
 import { BadRequest } from '@feathersjs/errors';
+import { SetRequired } from 'type-fest';
 
 import { CheckUniqueService } from './CheckUniqueService';
 import { IdentityChangeService } from './IdentityChangeService';
@@ -16,7 +17,7 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 import {
   AuthenticationManagementData,
-  AuthenticationManagementOptions,
+  AuthenticationManagementServiceOptions,
   DataCheckUniqueWithAction,
   DataIdentityChangeWithAction,
   DataOptions,
@@ -31,12 +32,15 @@ import {
   DataVerifySignupShortWithAction,
   SanitizedUser
 } from '../types';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
+import { makeDefaultOptions } from '.';
 
 const debug = makeDebug('authLocalMgnt:service');
 
 export class AuthenticationManagementService extends AuthenticationManagementBase {
   docs: unknown;
-  options: AuthenticationManagementOptions;
+  options: AuthenticationManagementServiceOptions;
+
   checkUniqueService: CheckUniqueService;
   identityChangeService: IdentityChangeService;
   passwordChangeService: PasswordChangeService;
@@ -49,22 +53,43 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
   verifySignupSetPasswordShortService: VerifySignupSetPasswordShortService;
   verifySignupShortService: VerifySignupShortService;
 
-  constructor (options: AuthenticationManagementOptions, docs: unknown) {
+  constructor (
+    options: SetRequired<Partial<AuthenticationManagementServiceOptions>, 'app'>,
+    docs?: unknown
+  ) {
     super();
-    this.docs = docs;
-    this.options = options;
 
-    this.checkUniqueService = new CheckUniqueService(options);
-    this.identityChangeService = new IdentityChangeService(options);
-    this.passwordChangeService = new PasswordChangeService(options);
-    this.resendVerifySignupService = new ResendVerifySignupService(options);
-    this.resetPwdLongService = new ResetPwdLongService(options);
-    this.resetPwdShortService = new ResetPwdShortService(options);
-    this.sendResetPwdService = new SendResetPwdService(options);
-    this.verifySignupLongService = new VerifySignupLongService(options);
-    this.verifySignupSetPasswordLongService = new VerifySignupSetPasswordLongService(options);
-    this.verifySignupSetPasswordShortService = new VerifySignupSetPasswordShortService(options);
-    this.verifySignupShortService = new VerifySignupShortService(options);
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<AuthenticationManagementServiceOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'skipIsVerifiedCheck',
+      'notifier',
+      'longTokenLen',
+      'shortTokenLen',
+      'shortTokenDigits',
+      'resetDelay',
+      'delay',
+      'resetAttempts',
+      'reuseResetToken',
+      'identifyUserProps',
+      'sanitizeUserForClient',
+      'passwordField'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
+
+    this.docs = docs;
+
+    this.checkUniqueService = new CheckUniqueService(this.options);
+    this.identityChangeService = new IdentityChangeService(this.options);
+    this.passwordChangeService = new PasswordChangeService(this.options);
+    this.resendVerifySignupService = new ResendVerifySignupService(this.options);
+    this.resetPwdLongService = new ResetPwdLongService(this.options);
+    this.resetPwdShortService = new ResetPwdShortService(this.options);
+    this.sendResetPwdService = new SendResetPwdService(this.options);
+    this.verifySignupLongService = new VerifySignupLongService(this.options);
+    this.verifySignupSetPasswordLongService = new VerifySignupSetPasswordLongService(this.options);
+    this.verifySignupSetPasswordShortService = new VerifySignupSetPasswordShortService(this.options);
+    this.verifySignupShortService = new VerifySignupShortService(this.options);
   }
 
   /**
@@ -150,7 +175,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
    * get options for AuthenticationManagement
    * @param action action is 'options'
    */
-  async _create ({ action }: DataOptions): Promise<AuthenticationManagementOptions>
+  async _create ({ action }: DataOptions): Promise<AuthenticationManagementServiceOptions>
   async _create (data: AuthenticationManagementData): Promise<unknown> {
     debug(`create called. action=${data.action}`);
 

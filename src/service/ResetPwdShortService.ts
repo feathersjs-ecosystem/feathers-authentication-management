@@ -1,13 +1,33 @@
+import { SetRequired } from 'type-fest';
+
+import { makeDefaultOptions } from '.';
+import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithShortToken } from '../reset-password';
-import { DataResetPwdShort, SanitizedUser, ResetPwdWithShortTokenOptions } from '../types';
+import {
+  DataResetPwdShort,
+  SanitizedUser,
+  ResetPwdWithShortTokenOptions
+} from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 export class ResetPwdShortService extends AuthenticationManagementBase {
   options: ResetPwdWithShortTokenOptions;
 
-  constructor (options: ResetPwdWithShortTokenOptions) {
+  constructor (options: SetRequired<Partial<ResetPwdWithShortTokenOptions>, 'app'>) {
     super();
-    this.options = options;
+
+    ensureHasAllKeys(options, ['app'], this.constructor.name);
+    const defaultOptions: Omit<ResetPwdWithShortTokenOptions, 'app'> = makeDefaultOptions([
+      'service',
+      'skipIsVerifiedCheck',
+      'reuseResetToken',
+      'notifier',
+      'reuseResetToken',
+      'sanitizeUserForClient',
+      'passwordField',
+      'identifyUserProps'
+    ]);
+    this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataResetPwdShort): Promise<SanitizedUser> {
