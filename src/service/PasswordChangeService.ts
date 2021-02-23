@@ -6,7 +6,7 @@ import passwordChange from '../password-change';
 import { SanitizedUser, DataPasswordChange, PasswordChangeOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class PasswordChangeService extends AuthenticationManagementBase {
+export class PasswordChangeService extends AuthenticationManagementBase<DataPasswordChange, SanitizedUser> {
   options: PasswordChangeOptions;
 
   constructor (options: SetRequired<Partial<PasswordChangeOptions>, 'app'>) {

@@ -6,7 +6,7 @@ import { resetPwdWithLongToken } from '../reset-password';
 import { SanitizedUser, ResetPasswordOptions, DataResetPwdLong } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class ResetPwdLongService extends AuthenticationManagementBase {
+export class ResetPwdLongService extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser> {
   options: ResetPasswordOptions;
 
   constructor (options: SetRequired<Partial<ResetPasswordOptions>, 'app'>) {

@@ -10,7 +10,7 @@ import {
 } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class ResetPwdShortService extends AuthenticationManagementBase {
+export class ResetPwdShortService extends AuthenticationManagementBase<DataResetPwdShort, SanitizedUser> {
   options: ResetPwdWithShortTokenOptions;
 
   constructor (options: SetRequired<Partial<ResetPwdWithShortTokenOptions>, 'app'>) {

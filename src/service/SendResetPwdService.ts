@@ -6,7 +6,7 @@ import sendResetPwd from '../send-reset-pwd';
 import { DataSendResetPwd, SanitizedUser, SendResetPwdOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class SendResetPwdService extends AuthenticationManagementBase {
+export class SendResetPwdService extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser> {
   options: SendResetPwdOptions;
 
   constructor (options: SetRequired<Partial<SendResetPwdOptions>, 'app'>) {

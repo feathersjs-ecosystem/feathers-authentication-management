@@ -6,7 +6,7 @@ import resendVerifySignup from '../resend-verify-signup';
 import { SanitizedUser, ResendVerifySignupOptions, DataResendVerifySignup } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class ResendVerifySignupService extends AuthenticationManagementBase {
+export class ResendVerifySignupService extends AuthenticationManagementBase<DataResendVerifySignup, SanitizedUser> {
   options: ResendVerifySignupOptions;
 
   constructor (options: SetRequired<Partial<ResendVerifySignupOptions>, 'app'>) {

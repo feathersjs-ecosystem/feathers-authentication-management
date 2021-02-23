@@ -6,7 +6,7 @@ import { DataVerifySignupLong, SanitizedUser, VerifySignupOptions } from '../typ
 import { verifySignupWithLongToken } from '../verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class VerifySignupLongService extends AuthenticationManagementBase {
+export class VerifySignupLongService extends AuthenticationManagementBase<DataVerifySignupLong, SanitizedUser> {
   options: VerifySignupOptions;
 
   constructor (options: SetRequired<Partial<VerifySignupOptions>, 'app'>) {

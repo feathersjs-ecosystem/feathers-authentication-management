@@ -1,5 +1,4 @@
 import { BadRequest } from '@feathersjs/errors';
-import { Query } from '@feathersjs/feathers';
 import makeDebug from 'debug';
 import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
 import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
@@ -60,7 +59,7 @@ export async function verifySignupSetPasswordWithShortToken (
 
 async function verifySignupSetPassword (
   options: VerifySignupSetPasswordOptions,
-  query: Query,
+  query: IdentifyUser,
   tokens: Tokens,
   password: string,
   notifierOptions = {}

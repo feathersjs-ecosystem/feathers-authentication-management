@@ -18,13 +18,20 @@ export default async function identityChange (
   identifyUser: IdentifyUser,
   password: string,
   changesIdentifyUser: Record<string, unknown>,
-  notifierOptions = {}
+  notifierOptions: Record<string, unknown> = {}
 ): Promise<SanitizedUser> {
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
-  const { identifyUserProps, passwordField } = options;
+  const {
+    delay,
+    identifyUserProps,
+    longTokenLen,
+    shortTokenLen,
+    shortTokenDigits,
+    passwordField
+  } = options;
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
   ensureObjPropsValid(changesIdentifyUser, identifyUserProps);
@@ -41,9 +48,9 @@ export default async function identityChange (
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    verifyExpires: Date.now() + options.delay,
-    verifyToken: await getLongToken(options.longTokenLen),
-    verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits),
+    verifyExpires: Date.now() + delay,
+    verifyToken: await getLongToken(longTokenLen),
+    verifyShortToken: await getShortToken(shortTokenLen, shortTokenDigits),
     verifyChanges: changesIdentifyUser
   });
 

@@ -6,7 +6,7 @@ import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPassword
 import { verifySignupSetPasswordWithLongToken } from '../verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase {
+export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase<DataVerifySignupSetPasswordLong, SanitizedUser> {
   options: VerifySignupSetPasswordOptions;
 
   constructor (options: SetRequired<Partial<VerifySignupSetPasswordOptions>, 'app'>) {

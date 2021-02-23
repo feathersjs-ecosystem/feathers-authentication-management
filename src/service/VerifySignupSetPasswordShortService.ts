@@ -6,7 +6,7 @@ import { DataVerifySignupSetPasswordShort, SanitizedUser, VerifySignupSetPasswor
 import { verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class VerifySignupSetPasswordShortService extends AuthenticationManagementBase {
+export class VerifySignupSetPasswordShortService extends AuthenticationManagementBase<DataVerifySignupSetPasswordShort, SanitizedUser> {
   options: VerifySignupSetPasswordWithShortTokenOptions;
 
   constructor (options: SetRequired<Partial<VerifySignupSetPasswordWithShortTokenOptions>, 'app'>) {

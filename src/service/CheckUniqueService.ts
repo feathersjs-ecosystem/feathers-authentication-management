@@ -6,7 +6,7 @@ import { DataCheckUnique, CheckUniqueOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from './index';
 
-export class CheckUniqueService extends AuthenticationManagementBase {
+export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUnique, null> {
   options: CheckUniqueOptions;
 
   constructor (options: SetRequired<Partial<CheckUniqueOptions>, 'app'>) {
@@ -20,8 +20,8 @@ export class CheckUniqueService extends AuthenticationManagementBase {
     return await checkUnique(
       this.options,
       data.value,
-      data.ownId ?? null,
-      data.meta ?? {}
+      data.ownId,
+      data.meta
     );
   }
 }

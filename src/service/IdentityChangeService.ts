@@ -6,7 +6,7 @@ import identityChange from '../identity-change';
 import { SanitizedUser, IdentityChangeOptions, DataIdentityChange } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-export class IdentityChangeService extends AuthenticationManagementBase {
+export class IdentityChangeService extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser> {
   options: IdentityChangeOptions;
 
   constructor (options: SetRequired<Partial<IdentityChangeOptions>, 'app'>) {

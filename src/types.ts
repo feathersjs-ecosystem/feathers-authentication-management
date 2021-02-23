@@ -229,6 +229,32 @@ export interface DataCheckUniqueWithAction extends DataCheckUnique {
   action: 'checkUnique'
 }
 
+export interface DataIdentityChange {
+  value: {
+    changes: Record<string, unknown>
+    password: string
+    user: IdentifyUser
+  }
+  notifierOptions?: Record<string, unknown>
+}
+
+export interface DataIdentityChangeWithAction extends DataIdentityChange {
+  action: 'identityChange'
+}
+
+export interface DataPasswordChange {
+  value: {
+    oldPassword: string
+    password: string
+    user: IdentifyUser
+  }
+  notifierOptions?: Record<string, unknown>
+}
+
+export interface DataPasswordChangeWithAction extends DataPasswordChange {
+  action: 'passwordChange'
+}
+
 // TODO: notifierOptions
 export interface DataResendVerifySignup {
   value: IdentifyUser
@@ -237,61 +263,6 @@ export interface DataResendVerifySignup {
 
 export interface DataResendVerifySignupWithAction extends DataResendVerifySignup {
   action: 'resendVerifySignup'
-}
-
-export interface DataVerifySignupLong {
-  value: string
-  notifierOptions?: Record<string, unknown>
-}
-
-export interface DataVerifySignupLongWithAction extends DataVerifySignupLong {
-  action: 'verifySignupLong'
-}
-
-export interface DataVerifySignupShort {
-  value: {
-    token: string
-    user: IdentifyUser
-  }
-  notifierOptions?: Record<string, unknown>
-}
-
-export interface DataVerifySignupShortWithAction extends DataVerifySignupShort {
-  action: 'verifySignupShort'
-}
-
-export interface DataVerifySignupSetPasswordLong {
-  value: {
-    token: string
-    password: string
-  }
-  notifierOptions?: Record<string, unknown>
-}
-
-export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySignupSetPasswordLong {
-  action: 'verifySignupSetPasswordLong'
-}
-
-export interface DataVerifySignupSetPasswordShort {
-  value: {
-    password: string
-    token: string
-    user: IdentifyUser
-  }
-  notifierOptions?: Record<string, unknown>
-}
-
-export interface DataVerifySignupSetPasswordShortWithAction extends DataVerifySignupSetPasswordShort {
-  action: 'verifySignupSetPasswordShort'
-}
-
-export interface DataSendResetPwd {
-  value: IdentifyUser
-  notifierOptions?: Record<string, unknown>
-}
-
-export interface DataSendResetPwdWithAction extends DataSendResetPwd {
-  action: 'sendResetPwd'
 }
 
 export interface DataResetPwdLong {
@@ -319,30 +290,59 @@ export interface DataResetPwdShortWithAction extends DataResetPwdShort {
   action: 'resetPwdShort'
 }
 
-export interface DataPasswordChange {
+export interface DataSendResetPwd {
+  value: IdentifyUser
+  notifierOptions?: Record<string, unknown>
+}
+
+export interface DataSendResetPwdWithAction extends DataSendResetPwd {
+  action: 'sendResetPwd'
+}
+
+export interface DataVerifySignupLong {
+  value: string
+  notifierOptions?: Record<string, unknown>
+}
+
+export interface DataVerifySignupLongWithAction extends DataVerifySignupLong {
+  action: 'verifySignupLong'
+}
+
+export interface DataVerifySignupSetPasswordLong {
   value: {
-    oldPassword: string
     password: string
+    token: string
+  }
+  notifierOptions?: Record<string, unknown>
+}
+
+export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySignupSetPasswordLong {
+  action: 'verifySignupSetPasswordLong'
+}
+
+export interface DataVerifySignupSetPasswordShort {
+  value: {
+    password: string
+    token: string
     user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
 }
 
-export interface DataPasswordChangeWithAction extends DataPasswordChange {
-  action: 'passwordChange'
+export interface DataVerifySignupSetPasswordShortWithAction extends DataVerifySignupSetPasswordShort {
+  action: 'verifySignupSetPasswordShort'
 }
 
-export interface DataIdentityChange {
+export interface DataVerifySignupShort {
   value: {
-    changes: Record<string, unknown>
-    password: string
+    token: string
     user: IdentifyUser
   }
   notifierOptions?: Record<string, unknown>
 }
 
-export interface DataIdentityChangeWithAction extends DataIdentityChange {
-  action: 'identityChange'
+export interface DataVerifySignupShortWithAction extends DataVerifySignupShort {
+  action: 'verifySignupShort'
 }
 
 export interface DataOptions {
