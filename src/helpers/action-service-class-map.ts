@@ -14,7 +14,7 @@ import { VerifySignupSetPasswordLongService } from '../service/VerifySignupSetPa
 import { VerifySignupSetPasswordShortService } from '../service/VerifySignupSetPasswordShortService';
 import { VerifySignupShortService } from '../service/VerifySignupShort';
 
-const actionServiceClassMap: Record<Exclude<AuthenticationManagementAction, 'options'>, Class<AuthenticationManagementBase>> = {
+const actionServiceClassMap: Record<Exclude<AuthenticationManagementAction, 'options'>, Class<AuthenticationManagementBase<unknown, unknown>>> = {
   checkUnique: CheckUniqueService,
   identityChange: IdentityChangeService,
   passwordChange: PasswordChangeService,

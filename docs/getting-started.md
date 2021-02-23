@@ -1,33 +1,8 @@
 ---
 title: Getting Started
-sidebarDepth: 2
 ---
 
 # Getting Started
-
-![npm](https://img.shields.io/npm/v/feathers-authentication-management)
-<!--![GitHub Workflow Status](https://img.shields.io/github/workflow/status/feathersjs-ecosystem/feathers-authentication-management/Node.js%20CI)-->
-![npm](https://img.shields.io/npm/dm/feathers-authentication-management)
-[![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE)
-
-## About
-
-Sign up verification, forgotten password reset, and other capabilities for local authentication.
-
-This project is built for [FeathersJS](http://feathersjs.com). An open source web framework for building modern real-time applications.
-
-## Features
-
-- Checking that values for fields like username, email, cellphone are unique within `users` items.
-- Hooks for adding a new user.
-- Send another sign up verification notification, routing through user's selected transport.
-- Process a sign up or identity change verification from a URL response.
-- Process a sign up or identity change verification using a short token.
-- Send a forgotten password reset notification, routing through user's preferred communication transport.
-- Process a forgotten password reset from a URL response.
-- Process a forgotten password reset using a short token.
-- Process password change.
-- Process an identity change such as a new email addr, or cellphone.
 
 ## Installation
 
@@ -224,16 +199,3 @@ app.service("authManagement").before({
   ],
 });
 ```
-
-## Testing
-
-`npm test`
-This repo is pre-configured to work with the Visual Studio Code debugger. After running `npm install`, use the "Mocha Tests" debug script for a smooth debugging experience.
-
-## Help
-
-Open an issue or come talk on the FeathersJS Slack.
-
-## License
-
-Licensed under the [MIT license](LICENSE).

@@ -1,6 +1,5 @@
 ---
 title: Advanced Usage
-sidebarDepth: 3
 ---
 
 # Advanced Usage

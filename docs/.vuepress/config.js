@@ -8,13 +8,17 @@ module.exports = {
     },
     themeConfig: {
       //logo: '/img/logo.svg',
+      displayAllHeaders: true,
+      sidebarDepth: 1,
       repo: 'feathersjs-ecosystem/feathers-authentication-management',
       docsDir: 'docs',
       editLinks: true,
       lastUpdated: true,
       sidebar: [
+        'overview.md',
         '/getting-started.md',
         '/basic.md',
+        '/services.md',
         '/hooks.md',
         '/client.md',
         '/advanced.md'
