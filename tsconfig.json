@@ -11,5 +11,10 @@
     "strictNullChecks": false,
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.*", ".eslintrc.js"]
+  "exclude": [
+    "node_modules",
+    "**/*.test.*",
+    ".eslintrc.js",
+    "examples/**"
+  ]
 }
