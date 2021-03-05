@@ -497,6 +497,7 @@ You should add them to your user model if your database uses models.
   resetToken: { type: String },
   resetShortToken: { type: String },
   resetExpires: { type: Date }, // or a long integer
+  resetAttempts: { type: Number },
 }
 ```
 
