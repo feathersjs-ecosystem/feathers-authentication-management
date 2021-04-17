@@ -4,6 +4,7 @@ import feathers, { Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
 import helpers from '../src/helpers';
+
 import {
   AuthenticationManagementService,
   IdentityChangeService,
@@ -17,7 +18,7 @@ import {
   VerifySignupSetPasswordShortService,
   VerifySignupShortService,
   CheckUniqueService
-} from '../src/services';
+} from '../src';
 import {
   AuthenticationManagementConfigureOptions
 } from '../src/types';

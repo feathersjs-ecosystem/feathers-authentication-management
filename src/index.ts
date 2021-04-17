@@ -1,15 +1,24 @@
 import configure from './configureAuthManagement';
 import hooks from './hooks';
-import services from './services';
 
 // @ts-expect-error assign object to a function
 configure.hooks = hooks;
-// @ts-expect-error assign object to a function
-configure.services = services;
 
 export default configure;
 export { hooks };
-export { services };
+
+export { AuthenticationManagementService } from './services/AuthenticationManagementService';
+export { CheckUniqueService } from './services/CheckUniqueService';
+export { IdentityChangeService } from './services/IdentityChangeService';
+export { PasswordChangeService } from './services/PasswordChangeService';
+export { ResendVerifySignupService } from './services/ResendVerifySignupService';
+export { ResetPwdLongService } from './services/ResetPwdLongService';
+export { ResetPwdShortService } from './services/ResetPwdShortService';
+export { SendResetPwdService } from './services/SendResetPwdService';
+export { VerifySignupLongService } from './services/VerifySignupLongService';
+export { VerifySignupSetPasswordLongService } from './services/VerifySignupSetPasswordLongService';
+export { VerifySignupSetPasswordShortService } from './services/VerifySignupSetPasswordShortService';
+export { VerifySignupShortService } from './services/VerifySignupShort';
 
 // commonjs
 if (typeof module !== 'undefined') {
