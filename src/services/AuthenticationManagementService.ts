@@ -2,38 +2,46 @@ import makeDebug from 'debug';
 import { BadRequest } from '@feathersjs/errors';
 import { SetRequired } from 'type-fest';
 
-import { CheckUniqueService } from './CheckUniqueService';
-import { IdentityChangeService } from './IdentityChangeService';
-import { ResendVerifySignupService } from './ResendVerifySignupService';
-import { ResetPwdLongService } from './ResetPwdLongService';
-import { ResetPwdShortService } from './ResetPwdShortService';
-import { SendResetPwdService } from './SendResetPwdService';
-import { VerifySignupLongService } from './VerifySignupLongService';
-import { VerifySignupSetPasswordLongService } from './VerifySignupSetPasswordLongService';
-import { VerifySignupSetPasswordShortService } from './VerifySignupSetPasswordShortService';
-import { VerifySignupShortService } from './VerifySignupShort';
-import { PasswordChangeService } from './PasswordChangeService';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 import {
   AuthenticationManagementData,
   AuthenticationManagementServiceOptions,
+  DataCheckUnique,
   DataCheckUniqueWithAction,
+  DataIdentityChange,
   DataIdentityChangeWithAction,
   DataOptions,
+  DataPasswordChange,
   DataPasswordChangeWithAction,
+  DataResendVerifySignup,
   DataResendVerifySignupWithAction,
+  DataResetPwdLong,
   DataResetPwdLongWithAction,
+  DataResetPwdShort,
   DataResetPwdShortWithAction,
+  DataSendResetPwd,
   DataSendResetPwdWithAction,
+  DataVerifySignupLong,
   DataVerifySignupLongWithAction,
+  DataVerifySignupSetPasswordLong,
   DataVerifySignupSetPasswordLongWithAction,
+  DataVerifySignupSetPasswordShort,
   DataVerifySignupSetPasswordShortWithAction,
+  DataVerifySignupShort,
   DataVerifySignupShortWithAction,
   SanitizedUser
 } from '../types';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { makeDefaultOptions } from '.';
+import checkUnique from '../check-unique';
+import identityChange from '../identity-change';
+import passwordChange from '../password-change';
+import resendVerifySignup from '../resend-verify-signup';
+import { resetPwdWithLongToken, resetPwdWithShortToken } from '../reset-password';
+import sendResetPwd from '../send-reset-pwd';
+import { verifySignupWithLongToken, verifySignupWithShortToken } from '../verify-signup';
+import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
 
 const debug = makeDebug('authLocalMgnt:service');
 
@@ -42,18 +50,6 @@ type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOpti
 export class AuthenticationManagementService extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes> {
   docs: unknown;
   options: AuthenticationManagementServiceOptions;
-
-  checkUniqueService: CheckUniqueService;
-  identityChangeService: IdentityChangeService;
-  passwordChangeService: PasswordChangeService;
-  resendVerifySignupService: ResendVerifySignupService;
-  resetPwdLongService: ResetPwdLongService;
-  resetPwdShortService: ResetPwdShortService;
-  sendResetPwdService: SendResetPwdService;
-  verifySignupLongService: VerifySignupLongService;
-  verifySignupSetPasswordLongService: VerifySignupSetPasswordLongService;
-  verifySignupSetPasswordShortService: VerifySignupSetPasswordShortService;
-  verifySignupShortService: VerifySignupShortService;
 
   constructor (
     options: SetRequired<Partial<AuthenticationManagementServiceOptions>, 'app'>,
@@ -80,18 +76,106 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
     this.options = Object.assign(defaultOptions, options);
 
     this.docs = docs;
+  }
 
-    this.checkUniqueService = new CheckUniqueService(this.options);
-    this.identityChangeService = new IdentityChangeService(this.options);
-    this.passwordChangeService = new PasswordChangeService(this.options);
-    this.resendVerifySignupService = new ResendVerifySignupService(this.options);
-    this.resetPwdLongService = new ResetPwdLongService(this.options);
-    this.resetPwdShortService = new ResetPwdShortService(this.options);
-    this.sendResetPwdService = new SendResetPwdService(this.options);
-    this.verifySignupLongService = new VerifySignupLongService(this.options);
-    this.verifySignupSetPasswordLongService = new VerifySignupSetPasswordLongService(this.options);
-    this.verifySignupSetPasswordShortService = new VerifySignupSetPasswordShortService(this.options);
-    this.verifySignupShortService = new VerifySignupShortService(this.options);
+  async _checkUnique (data: DataCheckUnique): Promise<unknown> {
+    return await checkUnique(
+      this.options,
+      data.value,
+      data.ownId,
+      data.meta
+    );
+  }
+
+  async _identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
+    return await identityChange(
+      this.options,
+      data.value.user,
+      data.value.password,
+      data.value.changes,
+      data.notifierOptions
+    );
+  }
+
+  async _passwordChange (data: DataPasswordChange): Promise<SanitizedUser> {
+    return await passwordChange(
+      this.options,
+      data.value.user,
+      data.value.oldPassword,
+      data.value.password,
+      data.notifierOptions
+    );
+  }
+
+  async _resendVerifySignup (data: DataResendVerifySignup): Promise<SanitizedUser> {
+    return await resendVerifySignup(
+      this.options,
+      data.value,
+      data.notifierOptions
+    );
+  }
+
+  async _resetPasswordLong (data: DataResetPwdLong): Promise<SanitizedUser> {
+    return await resetPwdWithLongToken(
+      this.options,
+      data.value.token,
+      data.value.password,
+      data.notifierOptions
+    );
+  }
+
+  async _resetPasswordShort (data: DataResetPwdShort): Promise<SanitizedUser> {
+    return await resetPwdWithShortToken(
+      this.options,
+      data.value.token,
+      data.value.user,
+      data.value.password,
+      data.notifierOptions
+    );
+  }
+
+  async _sendResetPassword (data: DataSendResetPwd): Promise<SanitizedUser> {
+    return await sendResetPwd(
+      this.options,
+      data.value,
+      data.notifierOptions
+    );
+  }
+
+  async _verifySignupLong (data: DataVerifySignupLong): Promise<SanitizedUser> {
+    return await verifySignupWithLongToken(
+      this.options,
+      data.value,
+      data.notifierOptions
+    );
+  }
+
+  async _verifySignupShort (data: DataVerifySignupShort): Promise<SanitizedUser> {
+    return await verifySignupWithShortToken(
+      this.options,
+      data.value.token,
+      data.value.user,
+      data.notifierOptions
+    );
+  }
+
+  async _verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
+    return await verifySignupSetPasswordWithLongToken(
+      this.options,
+      data.value.token,
+      data.value.password,
+      data.notifierOptions
+    );
+  }
+
+  async _verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
+    return await verifySignupSetPasswordWithShortToken(
+      this.options,
+      data.value.token,
+      data.value.user,
+      data.value.password,
+      data.notifierOptions
+    );
   }
 
   /**
@@ -183,27 +267,27 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
     try {
       if (data.action === 'checkUnique') {
-        return await this.checkUniqueService.create(data);
+        return await this._checkUnique(data);
       } else if (data.action === 'resendVerifySignup') {
-        return await this.resendVerifySignupService.create(data);
+        return await this._resendVerifySignup(data);
       } else if (data.action === 'verifySignupLong') {
-        return await this.verifySignupLongService.create(data);
+        return await this._verifySignupLong(data);
       } else if (data.action === 'verifySignupShort') {
-        return await this.verifySignupShortService.create(data);
+        return await this._verifySignupShort(data);
       } else if (data.action === 'verifySignupSetPasswordLong') {
-        return await this.verifySignupSetPasswordLongService.create(data);
+        return await this._verifySignupSetPasswordLong(data);
       } else if (data.action === 'verifySignupSetPasswordShort') {
-        return await this.verifySignupSetPasswordShortService.create(data);
+        return await this._verifySignupSetPasswordShort(data);
       } else if (data.action === 'sendResetPwd') {
-        return await this.sendResetPwdService.create(data);
+        return await this._sendResetPassword(data);
       } else if (data.action === 'resetPwdLong') {
-        return await this.resetPwdLongService.create(data);
+        return await this._resetPasswordLong(data);
       } else if (data.action === 'resetPwdShort') {
-        return await this.resetPwdShortService.create(data);
+        return await this._resetPasswordShort(data);
       } else if (data.action === 'passwordChange') {
-        return await this.passwordChangeService.create(data);
+        return await this._passwordChange(data);
       } else if (data.action === 'identityChange') {
-        return await this.identityChangeService.create(data);
+        return await this._identityChange(data);
       } else if (data.action === 'options') {
         return this.options;
       }
