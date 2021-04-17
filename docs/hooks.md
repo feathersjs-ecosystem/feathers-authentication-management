@@ -28,12 +28,19 @@ This hook is made exclusively for the `/users` service. Creates tokens and sets 
 const { 
   hashPassword, 
   protect
-} = require("@feathersjs/authentication-local").hooks;
+} = require('@feathersjs/authentication-local').hooks;
 
 const { 
   addVerification, 
   removeVerification 
-} = require("feathers-authentication-management").hooks;
+} = require('feathers-authentication-management').hooks;
+
+const {
+  disallow,
+  iff,
+  isProvider,
+  preventChanges
+} = require('feathers-hooks-common');
 
 module.exports = {
   before: {
@@ -44,31 +51,46 @@ module.exports = {
       hashPassword('password'),
       addVerification(), // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
     ],
-    update: [ 
+    update: [
+      disallow('external'),
       authenticate('jwt'),
-      hashPassword("password")
+      hashPassword('password')
     ],
-    patch: [ 
+    patch: [
       authenticate('jwt'),
-      hashPassword("password")
+      iff(
+        isProvider('external'),
+        preventChanges(
+          'email',
+          'isVerified',
+          'verifyToken',
+          'verifyShortToken',
+          'verifyExpires',
+          'verifyChanges',
+          'resetToken',
+          'resetShortToken',
+          'resetExpires'
+        ),
+        hashPassword('password'),
+      )
     ],
     remove: [ 
       authenticate('jwt'),
-      hashPassword("password")
+      hashPassword('password')
     ]
   },
   after: {
     all: [],
-    find: [protect("password")],
-    get: [protect("password")],
+    find: [ protect('password') ],
+    get: [ protect('password') ],
     create: [
       protect('password'),
       aHookToEmailYourVerification(),
       removeVerification(), // removes verification/reset fields other than .isVerified from the response
     ],
-    update: [protect("password")],
-    patch: [protect("password")],
-    remove: [protect("password")]
+    update: [ protect('password') ],
+    patch: [ protect('password') ],
+    remove: [ protect('password') ]
   },
   error: {
     all: [],
@@ -79,18 +101,6 @@ module.exports = {
     patch: [],
     remove: []
   }
-}
-
-module.exports.before = {
-  create: [
-    hashPassword(),
-    addVerification(), // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
-  ],
-};
-module.exports.after = {
-  create: [
-    
-  ],
 };
 ```
 

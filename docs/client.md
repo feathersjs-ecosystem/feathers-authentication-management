@@ -8,11 +8,45 @@ The service may be called on the client using
 
 [[toc]]
 
+### 
+
+```html
+<html>
+<body>
+  <p id = "info">
+    Sending token
+  </p>
+  <script>
+    var url = new URL(window.location.href);
+    var token = url.searchParams.get("token");
+    var obj = {
+      action: 'verifySignupLong',
+      value: token
+    }
+    console.log(JSON.stringify(obj))
+    console.log(obj)
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 201) {
+           // Typical action to be performed when the document is ready:
+           document.getElementById("info").innerHTML = 'Verification Successful for action <b>' + obj.action + '</b> and token <b>' + obj.value + '</b>';
+        } else {
+          document.getElementById("info").innerHTML = xhttp.response
+        }
+    };
+    xhttp.open('POST', 'http://localhost:3030/authmanagement' , true);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send(JSON.stringify(obj));
+  </script>
+</body>
+</html>
+```
+
 ### Using Feathers method calls
 
 Method calls return a Promise.
 
-```javascript
+```js
 const authManagementService = require("feathers-authentication-management");
 app.configure(authManagementService(options));
 const authManagement = app.service("authManagement");

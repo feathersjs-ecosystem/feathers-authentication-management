@@ -199,3 +199,31 @@ app.service("authManagement").before({
   ],
 });
 ```
+
+### Setting up authentication management hooks
+
+Now we are ready to set up some hooks to actually get our service to work. For this we need to adapt the `users.hooks.js` file. We need to do a couple of things here.
+
+- Import the verification hooks from feathers authentication management by adding this line to the top: `const { addVerification, removeVerification } = require(‘feathers-authentication-management’).hooks;`
+- Import our `notifier` by adding this line: `const accountService = require(‘../authmanagement/notifier’);`
+- Then add `addVerification()` to the before create hook to add verification to our user object. This needs to be after the `hashPassword()` hook. What this code does is that it adds some extra fields to our user objects and generates a token.
+- Finally, we need to add two after create hooks to our `/users` service. One to call our notifier function and one to remove the verification again. That looks like this:
+
+For a full example, see [Hooks](/hooks.html)
+
+### Verifying the email link
+
+For simplicity we will create a basic html page with a `XMLHttpRequest()` script to handle the verification. Obviously there are better ways to handle this with feathers-client and your favorite frontend library. However, that is out of scope of this article. Following the structure of our verification link we will create a new folder in the `/public` folder of our app called “verify”. Here we will put a new `index.html` file. All this needs to do is to send a POST request to our `/authmanagement` service with the following JSON object.
+
+```json
+{
+  "action": "verifySignupLong",
+  "value": YOUR_TOKEN
+}
+```
+
+So in the end all we need to do is create a script that takes the `token` parameter from the URL and posts this to our endpoint. You can create a sample page which looks like this.
+
+### Securing the application
+
+Now that the app works there is only one step to complete and that is adding some security to the users service. Since we have a nice authentication flow running we don’t want any users to meddle with the user service directly anymore. For this we create two before hooks. One on the update method and one on the patch method. With the one on the update method we are going to disallow this method in its entirety. After all, we wouldn’t want someone to be able to replace our carefully verified user by a new one. The one on the patch method we want to restrict the user from touching any of the authentication field methods directly. For a full example of the `services/users/users.hooks.js` file see: [Hooks](/hooks.md)
