@@ -3,7 +3,7 @@ import feathers, { Application } from '@feathersjs/feathers';
 import feathersMemory, { Service } from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import { timeoutEachTest } from './helpers/config';
-import { AuthenticationManagementService } from '../src/service';
+import { AuthenticationManagementService } from '../src/services';
 
 const makeUsersService = options =>
   function (app: Application) {

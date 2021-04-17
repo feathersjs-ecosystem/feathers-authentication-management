@@ -11,7 +11,7 @@ import {
   aboutEqualDateTime
 } from './helpers';
 import { UserTestDB, UserTestLocal } from './helpers/types';
-import { AuthenticationManagementService } from '../src/service';
+import { AuthenticationManagementService } from '../src/services';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};

@@ -37,7 +37,7 @@ import { makeDefaultOptions } from '.';
 
 const debug = makeDebug('authLocalMgnt:service');
 
-type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOptions;
+type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOptions | unknown;
 
 export class AuthenticationManagementService extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes> {
   docs: unknown;

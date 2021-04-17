@@ -7,9 +7,9 @@ import {
   AuthenticationManagementServiceOptions,
   AuthenticationManagementServiceOptionsDefault
 } from './types';
-import { AuthenticationManagementService } from './service/AuthenticationManagementService';
+import { AuthenticationManagementService } from './services/AuthenticationManagementService';
 import { Application } from '@feathersjs/feathers';
-import { makeDefaultOptions } from './service';
+import { makeDefaultOptions } from './services';
 
 const debug = makeDebug('authLocalMgnt:service');
 

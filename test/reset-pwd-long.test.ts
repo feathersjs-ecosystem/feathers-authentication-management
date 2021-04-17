@@ -7,7 +7,7 @@ import authLocalMgnt from '../src/index';
 import { SpyOn } from './helpers';
 import { hashPassword } from '../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
-import { AuthenticationManagementService } from '../src/service';
+import { AuthenticationManagementService } from '../src/services';
 
 const now = Date.now();
 

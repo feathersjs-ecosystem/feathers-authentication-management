@@ -6,7 +6,7 @@ import { DataCheckUnique, CheckUniqueOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from './index';
 
-export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUnique, null> {
+export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUnique, unknown> {
   options: CheckUniqueOptions;
 
   constructor (options: SetRequired<Partial<CheckUniqueOptions>, 'app'>) {
@@ -16,7 +16,7 @@ export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUn
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataCheckUnique): Promise<null> {
+  async _create (data: DataCheckUnique): Promise<unknown> {
     return await checkUnique(
       this.options,
       data.value,

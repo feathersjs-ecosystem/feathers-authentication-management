@@ -1,18 +1,18 @@
 import { Class } from 'type-fest';
 
-import { AuthenticationManagementBase } from '../service/AuthenticationManagementBase';
+import { AuthenticationManagementBase } from '../services/AuthenticationManagementBase';
 import { AuthenticationManagementAction } from '../types';
-import { CheckUniqueService } from '../service/CheckUniqueService';
-import { IdentityChangeService } from '../service/IdentityChangeService';
-import { PasswordChangeService } from '../service/PasswordChangeService';
-import { ResendVerifySignupService } from '../service/ResendVerifySignupService';
-import { ResetPwdLongService } from '../service/ResetPwdLongService';
-import { ResetPwdShortService } from '../service/ResetPwdShortService';
-import { SendResetPwdService } from '../service/SendResetPwdService';
-import { VerifySignupLongService } from '../service/VerifySignupLongService';
-import { VerifySignupSetPasswordLongService } from '../service/VerifySignupSetPasswordLongService';
-import { VerifySignupSetPasswordShortService } from '../service/VerifySignupSetPasswordShortService';
-import { VerifySignupShortService } from '../service/VerifySignupShort';
+import { CheckUniqueService } from '../services/CheckUniqueService';
+import { IdentityChangeService } from '../services/IdentityChangeService';
+import { PasswordChangeService } from '../services/PasswordChangeService';
+import { ResendVerifySignupService } from '../services/ResendVerifySignupService';
+import { ResetPwdLongService } from '../services/ResetPwdLongService';
+import { ResetPwdShortService } from '../services/ResetPwdShortService';
+import { SendResetPwdService } from '../services/SendResetPwdService';
+import { VerifySignupLongService } from '../services/VerifySignupLongService';
+import { VerifySignupSetPasswordLongService } from '../services/VerifySignupSetPasswordLongService';
+import { VerifySignupSetPasswordShortService } from '../services/VerifySignupSetPasswordShortService';
+import { VerifySignupShortService } from '../services/VerifySignupShort';
 
 const actionServiceClassMap: Record<Exclude<AuthenticationManagementAction, 'options'>, Class<AuthenticationManagementBase<unknown, unknown>>> = {
   checkUnique: CheckUniqueService,

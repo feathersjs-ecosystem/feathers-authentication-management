@@ -4,14 +4,25 @@ import feathers, { Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
 import helpers from '../src/helpers';
-import { AuthenticationManagementService, CheckUniqueService, IdentityChangeService, PasswordChangeService, ResendVerifySignupService, ResetPwdLongService, ResetPwdShortService, SendResetPwdService, VerifySignupLongService, VerifySignupSetPasswordLongService, VerifySignupSetPasswordShortService, VerifySignupShortService } from '../src/service';
 import {
-  AuthenticationManagementServiceOptions,
+  AuthenticationManagementService,
+  IdentityChangeService,
+  PasswordChangeService,
+  ResendVerifySignupService,
+  ResetPwdLongService,
+  ResetPwdShortService,
+  SendResetPwdService,
+  VerifySignupLongService,
+  VerifySignupSetPasswordLongService,
+  VerifySignupSetPasswordShortService,
+  VerifySignupShortService,
+  CheckUniqueService
+} from '../src/services';
+import {
   AuthenticationManagementConfigureOptions
 } from '../src/types';
 
 import "@feathersjs/transport-commons";
-import { GeneralError } from '@feathersjs/errors';
 
 const optionsDefault: Omit<AuthenticationManagementConfigureOptions, 'app'> = {
   service: '/users', // need exactly this for test suite
@@ -316,7 +327,6 @@ describe('scaffolding.js', () => {
       const app = feathers();
       app.configure(services);
       app.use("am", new AuthenticationManagementService({ app }));
-      app.use("am/1", new CheckUniqueService({ app }));
       app.use("am/2", new IdentityChangeService({ app }));
       app.use("am/3", new PasswordChangeService({ app }));
       app.use("am/4", new ResendVerifySignupService({ app }));
@@ -327,6 +337,7 @@ describe('scaffolding.js', () => {
       app.use("am/9", new VerifySignupSetPasswordLongService({ app }));
       app.use("am/10", new VerifySignupSetPasswordShortService({ app }));
       app.use("am/11", new VerifySignupShortService({ app }));
+      app.use("am/1", new CheckUniqueService({ app }));
       app.setup();
 
       const servicePaths = Object.keys(app.services);
