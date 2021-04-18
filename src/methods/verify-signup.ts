@@ -1,12 +1,12 @@
 import { BadRequest } from '@feathersjs/errors';
 import { Query } from '@feathersjs/feathers';
 import makeDebug from 'debug';
-import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
-import getUserData from './helpers/get-user-data';
-import notifier from './helpers/notifier';
-import isDateAfterNow from './helpers/is-date-after-now';
-import { SanitizedUser, VerifySignupOptions, VerifySignupWithShortTokenOptions, Tokens, User, VerifyChanges, IdentifyUser } from './types';
+import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
+import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
+import getUserData from '../helpers/get-user-data';
+import notifier from '../helpers/notifier';
+import isDateAfterNow from '../helpers/is-date-after-now';
+import { SanitizedUser, VerifySignupOptions, VerifySignupWithShortTokenOptions, Tokens, User, VerifyChanges, IdentifyUser } from '../types';
 
 const debug = makeDebug('authLocalMgnt:verifySignup');
 

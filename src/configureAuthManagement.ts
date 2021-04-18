@@ -63,20 +63,22 @@ const getSeparateServicesPaths = (
   return servicePaths;
 };
 
+const defaultPath = 'authManagement';
+
 export const defaultConfigureOptions = {
-  path: 'authManagement',
+  path: defaultPath,
   useSeparateServices: {
-    checkUnique: 'authManagement/check-unique',
-    identityChange: 'authManagement/identity-change',
-    passwordChange: 'authManagement/password-change',
-    resendVerifySignup: 'authManagement/resend-verify-signup',
-    resetPwdLong: 'authManagement/reset-password-long',
-    resetPwdShort: 'authManagement/reset-password-short',
-    sendResetPwd: 'authManagement/send-reset-pwd',
-    verifySignupLong: 'authManagement/verify-signup-long',
-    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
-    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
-    verifySignupShort: 'authManagement/verify-signup-short'
+    checkUnique: `${defaultPath}/check-unique`,
+    identityChange: `${defaultPath}/identity-change`,
+    passwordChange: `${defaultPath}/password-change`,
+    resendVerifySignup: `${defaultPath}/resend-verify-signup`,
+    resetPwdLong: `${defaultPath}/reset-password-long`,
+    resetPwdShort: `${defaultPath}/reset-password-short`,
+    sendResetPwd: `${defaultPath}/send-reset-pwd`,
+    verifySignupLong: `${defaultPath}/verify-signup-long`,
+    verifySignupSetPasswordLong: `${defaultPath}/verify-signup-set-password-long`,
+    verifySignupSetPasswordShort: `${defaultPath}/verify-signup-set-password-short`,
+    verifySignupShort: `${defaultPath}/verify-signup-short`
   }
 };
 

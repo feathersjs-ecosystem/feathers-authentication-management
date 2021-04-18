@@ -2,13 +2,6 @@ import { Application, Id } from '@feathersjs/feathers';
 
 //#region general
 
-export type HookResult = User | User[] | { data: User | User[], total: number };
-
-export interface VerifyChanges {
-  [key: string]: unknown
-  [key: number]: unknown
-}
-
 export interface User {
   isVerified: boolean
   verifyToken: string
@@ -20,6 +13,13 @@ export interface User {
   resetExpires: Date | number // unix
   resetAttempts: number
   password: string
+  [key: string]: unknown
+  [key: number]: unknown
+}
+
+export type HookResult = User | User[] | { data: User | User[], total: number };
+
+export interface VerifyChanges {
   [key: string]: unknown
   [key: number]: unknown
 }

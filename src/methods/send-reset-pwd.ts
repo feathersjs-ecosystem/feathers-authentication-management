@@ -1,13 +1,13 @@
 import makeDebug from 'debug';
-import concatIDAndHash from './helpers/concat-id-and-hash';
-import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
-import getLongToken from './helpers/get-long-token';
-import getShortToken from './helpers/get-short-token';
-import getUserData from './helpers/get-user-data';
-import hashPassword from './helpers/hash-password';
-import notifier from './helpers/notifier';
+import concatIDAndHash from '../helpers/concat-id-and-hash';
+import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
+import getLongToken from '../helpers/get-long-token';
+import getShortToken from '../helpers/get-short-token';
+import getUserData from '../helpers/get-user-data';
+import hashPassword from '../helpers/hash-password';
+import notifier from '../helpers/notifier';
 import { Id } from '@feathersjs/feathers';
-import { IdentifyUser, SanitizedUser, SendResetPwdOptions } from './types';
+import { IdentifyUser, SanitizedUser, SendResetPwdOptions } from '../types';
 
 const debug = makeDebug('authLocalMgnt:sendResetPwd');
 

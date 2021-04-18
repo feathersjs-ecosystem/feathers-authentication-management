@@ -3,7 +3,7 @@ import { SetRequired } from 'type-fest';
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupShort, SanitizedUser, VerifySignupWithShortTokenOptions } from '../types';
-import { verifySignupWithShortToken } from '../verify-signup';
+import { verifySignupWithShortToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 export class VerifySignupShortService extends AuthenticationManagementBase<DataVerifySignupShort, SanitizedUser> {

@@ -2,7 +2,7 @@ import { SetRequired } from 'type-fest';
 
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { resetPwdWithShortToken } from '../reset-password';
+import { resetPwdWithShortToken } from '../methods/reset-password';
 import {
   DataResetPwdShort,
   SanitizedUser,

@@ -2,7 +2,7 @@ import { SetRequired } from 'type-fest';
 
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { resetPwdWithLongToken } from '../reset-password';
+import { resetPwdWithLongToken } from '../methods/reset-password';
 import { SanitizedUser, ResetPasswordOptions, DataResetPwdLong } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 

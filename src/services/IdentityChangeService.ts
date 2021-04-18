@@ -2,7 +2,7 @@ import { SetRequired } from 'type-fest';
 
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import identityChange from '../identity-change';
+import identityChange from '../methods/identity-change';
 import { SanitizedUser, IdentityChangeOptions, DataIdentityChange } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 

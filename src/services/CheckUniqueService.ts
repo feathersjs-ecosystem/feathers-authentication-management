@@ -1,6 +1,6 @@
 import { SetRequired } from 'type-fest';
 
-import checkUnique from '../check-unique';
+import checkUnique from '../methods/check-unique';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataCheckUnique, CheckUniqueOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';

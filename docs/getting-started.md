@@ -59,7 +59,7 @@ app
   At least one of these props must be provided whenever a short token is used,
   as the short token alone is too susceptible to brute force attack.
 - `passwordField: string = 'password'`: Prop name of the password field.
-- `useSeparateServices: boolean | Record<action, string> = true`: Registers the following services which are also accessible on the client:
+- `useSeparateServices: boolean | Record<action, string> = false`: Registers the following services which are also accessible on the client:
   - `checkUnique`: `${path}/check-unique'`
   - `identityChange`: `${path}/identity-change`,
   - `passwordChange`: `${path}/password-change`,
@@ -205,6 +205,7 @@ app.service("authManagement").before({
 Now we are ready to set up some hooks to actually get our service to work. For this we need to adapt the `users.hooks.js` file. We need to do a couple of things here.
 
 - Import the verification hooks from feathers authentication management by adding this line to the top: `const { addVerification, removeVerification } = require(‘feathers-authentication-management’).hooks;`
+<!-- TODO -->
 - Import our `notifier` by adding this line: `const accountService = require(‘../authmanagement/notifier’);`
 - Then add `addVerification()` to the before create hook to add verification to our user object. This needs to be after the `hashPassword()` hook. What this code does is that it adds some extra fields to our user objects and generates a token.
 - Finally, we need to add two after create hooks to our `/users` service. One to call our notifier function and one to remove the verification again. That looks like this:

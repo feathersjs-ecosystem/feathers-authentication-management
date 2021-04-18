@@ -34,14 +34,14 @@ import {
 } from '../types';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { makeDefaultOptions } from '.';
-import checkUnique from '../check-unique';
-import identityChange from '../identity-change';
-import passwordChange from '../password-change';
-import resendVerifySignup from '../resend-verify-signup';
-import { resetPwdWithLongToken, resetPwdWithShortToken } from '../reset-password';
-import sendResetPwd from '../send-reset-pwd';
-import { verifySignupWithLongToken, verifySignupWithShortToken } from '../verify-signup';
-import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from '../verify-signup-set-password';
+import checkUnique from '../methods/check-unique';
+import identityChange from '../methods/identity-change';
+import passwordChange from '../methods/password-change';
+import resendVerifySignup from '../methods/resend-verify-signup';
+import { resetPwdWithLongToken, resetPwdWithShortToken } from '../methods/reset-password';
+import sendResetPwd from '../methods/send-reset-pwd';
+import { verifySignupWithLongToken, verifySignupWithShortToken } from '../methods/verify-signup';
+import { verifySignupSetPasswordWithLongToken, verifySignupSetPasswordWithShortToken } from '../methods/verify-signup-set-password';
 
 const debug = makeDebug('authLocalMgnt:service');
 

@@ -1,14 +1,14 @@
 import { BadRequest } from '@feathersjs/errors';
 import { Query } from '@feathersjs/feathers';
 import makeDebug from 'debug';
-import comparePasswords from './helpers/compare-passwords';
-import deconstructId from './helpers/deconstruct-id';
-import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
-import getUserData from './helpers/get-user-data';
-import hashPassword from './helpers/hash-password';
-import notifier from './helpers/notifier';
-import { HookResult, IdentifyUser, ResetPasswordOptions, ResetPwdWithShortTokenOptions, SanitizedUser, Tokens } from './types';
+import comparePasswords from '../helpers/compare-passwords';
+import deconstructId from '../helpers/deconstruct-id';
+import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
+import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
+import getUserData from '../helpers/get-user-data';
+import hashPassword from '../helpers/hash-password';
+import notifier from '../helpers/notifier';
+import { HookResult, IdentifyUser, ResetPasswordOptions, ResetPwdWithShortTokenOptions, SanitizedUser, Tokens } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
 

@@ -2,7 +2,7 @@ import { SetRequired } from 'type-fest';
 
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import sendResetPwd from '../send-reset-pwd';
+import sendResetPwd from '../methods/send-reset-pwd';
 import { DataSendResetPwd, SanitizedUser, SendResetPwdOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 

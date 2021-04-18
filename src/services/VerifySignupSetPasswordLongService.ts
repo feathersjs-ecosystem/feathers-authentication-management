@@ -3,7 +3,7 @@ import { SetRequired } from 'type-fest';
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordOptions } from '../types';
-import { verifySignupSetPasswordWithLongToken } from '../verify-signup-set-password';
+import { verifySignupSetPasswordWithLongToken } from '../methods/verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase<DataVerifySignupSetPasswordLong, SanitizedUser> {

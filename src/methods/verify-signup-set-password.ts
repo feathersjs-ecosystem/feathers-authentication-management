@@ -1,10 +1,10 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import ensureObjPropsValid from './helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from './helpers/ensure-values-are-strings';
-import getUserData from './helpers/get-user-data';
-import hashPassword from './helpers/hash-password';
-import notifier from './helpers/notifier';
+import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
+import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
+import getUserData from '../helpers/get-user-data';
+import hashPassword from '../helpers/hash-password';
+import notifier from '../helpers/notifier';
 import {
   IdentifyUser,
   SanitizedUser,
@@ -13,7 +13,7 @@ import {
   VerifyChanges,
   VerifySignupSetPasswordOptions,
   VerifySignupSetPasswordWithShortTokenOptions
-} from './types';
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:verifySignupSetPassword');
 
