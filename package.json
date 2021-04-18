@@ -45,7 +45,7 @@
     "coverage": "nyc npm run mocha",
     "test": "npm run coverage",
     "compile": "shx rm -rf dist/ && tsc",
-    "docs": "vuepress dev docs"
+    "docs": "vitepress dev docs"
   },
   "semistandard": {
     "env": [
@@ -75,7 +75,6 @@
     "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
-    "@vuepress/plugin-active-header-links": "^1.8.2",
     "chai": "^4.3.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.20.0",
@@ -89,7 +88,6 @@
     "shx": "^0.3.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5",
-    "vuepress": "^1.8.2",
-    "vuepress-theme-default-prefers-color-scheme": "^2.0.0"
+    "vitepress": "^0.13.0"
   }
 }

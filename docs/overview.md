@@ -2,11 +2,11 @@
 title: Overview
 ---
 
-# Overview
+# {{ $frontmatter.title }}
 
-![npm](https://img.shields.io/npm/v/feathers-authentication-management)
+![npm](https://img.shields.io/npm/v/feathers-authentication-management) 
 <!--![GitHub Workflow Status](https://img.shields.io/github/workflow/status/feathersjs-ecosystem/feathers-authentication-management/Node.js%20CI)-->
-![npm](https://img.shields.io/npm/dm/feathers-authentication-management)
+![npm](https://img.shields.io/npm/dm/feathers-authentication-management) 
 [![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE)
 
 Sign up verification, forgotten password reset, and other capabilities for local authentication.

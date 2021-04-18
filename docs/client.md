@@ -2,7 +2,7 @@
 title: Client
 ---
 
-# Client
+# {{ $frontmatter.title }}
 
 The service may be called on the client using
 

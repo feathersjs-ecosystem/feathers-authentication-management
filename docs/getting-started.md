@@ -2,7 +2,7 @@
 title: Getting Started
 ---
 
-# Getting Started
+# {{ $frontmatter.title }}
 
 ## Installation
 

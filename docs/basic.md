@@ -1,5 +1,5 @@
 ---
-title: Basic
+title: Basic Usage
 ---
 
-# Basic Usage
+# {{ $frontmatter.title }}

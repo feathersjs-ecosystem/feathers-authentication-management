@@ -2,7 +2,7 @@
 title: Services
 ---
 
-# Services
+# {{ $frontmatter.title }}
 
 ## AuthenticationManagementService
 

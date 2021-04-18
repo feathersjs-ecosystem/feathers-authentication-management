@@ -2,7 +2,7 @@
 title: Advanced Usage
 ---
 
-# Advanced Usage
+# {{ $frontmatter.title }}
 
 [[toc]]
 
