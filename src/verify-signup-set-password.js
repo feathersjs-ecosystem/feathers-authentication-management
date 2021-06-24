@@ -69,7 +69,8 @@ async function verifySignupSetPassword (options, query, tokens, password, field,
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password, field);
+    // Commented to fix a security issue where password is set even if token don't match.
+    // await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password, field);
 
     throw new errors.BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
