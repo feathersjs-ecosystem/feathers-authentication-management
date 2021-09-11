@@ -1,10 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithLongToken } from '../methods/reset-password';
-import { SanitizedUser, ResetPasswordOptions, DataResetPwdLong } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
+  SanitizedUser,
+  ResetPasswordOptions,
+  DataResetPwdLong
+} from '../types';
 
 export class ResetPwdLongService extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser> {
   options: ResetPasswordOptions;

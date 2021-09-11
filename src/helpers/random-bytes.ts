@@ -1,7 +1,9 @@
-import crypto from 'crypto';
+import { randomBytes as _randomBytes } from 'crypto';
 
-export default async function randomBytes (len: number): Promise<string> {
+export default async function randomBytes (
+  len: number
+): Promise<string> {
   return await new Promise((resolve, reject) => {
-    crypto.randomBytes(len, (err, buf) => err ? reject(err) : resolve(buf.toString('hex')));
+    _randomBytes(len, (err, buf) => err ? reject(err) : resolve(buf.toString('hex')));
   });
 }

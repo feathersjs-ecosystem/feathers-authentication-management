@@ -1,8 +1,10 @@
 import { defaultVerifyDelay } from './config';
 
-function makeDateTime (options1?: { delay?: number }): number {
-  options1 = options1 || {};
-  return Date.now() + (options1.delay || defaultVerifyDelay);
+function makeDateTime (
+  options?: { delay?: number }
+): number {
+  options = options || {};
+  return Date.now() + (options.delay || defaultVerifyDelay);
 }
 
 export default makeDateTime;

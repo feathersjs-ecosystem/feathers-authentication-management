@@ -3,7 +3,7 @@ import { LocalStrategy } from '@feathersjs/authentication-local';
 import { Application } from '@feathersjs/feathers';
 import { authentication as config } from './config';
 
-export default (app: Application, options?) => {
+export default (app: Application, options?: any) => {
   if (options) {
     app.set('authentication', options);
   } else {

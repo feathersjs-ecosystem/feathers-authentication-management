@@ -16,12 +16,13 @@ import { VerifySignupSetPasswordLongService } from './VerifySignupSetPasswordLon
 import { VerifySignupSetPasswordShortService } from './VerifySignupSetPasswordShortService';
 import { VerifySignupShortService } from './VerifySignupShort';
 
-import {
+import sanitizeUserForClient from '../helpers/sanitize-user-for-client';
+
+import type {
   AuthenticationManagementServiceOptionsDefault,
   NotificationType,
   User
 } from '../types';
-import sanitizeUserForClient from '../helpers/sanitize-user-for-client';
 
 const services = {
   AuthenticationManagementService,

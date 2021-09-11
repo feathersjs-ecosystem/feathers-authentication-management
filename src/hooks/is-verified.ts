@@ -1,15 +1,19 @@
 
 import { BadRequest } from '@feathersjs/errors';
-import { HookContext } from '@feathersjs/feathers';
 import { checkContext } from 'feathers-hooks-common';
 
-export default function isVerified (): ((hook: HookContext) => HookContext) {
-  return (hook: HookContext): HookContext => {
-    checkContext(hook, 'before');
+import type { HookContext } from '@feathersjs/feathers';
 
-    if (!hook.params?.user?.isVerified) {
+/**
+ * Throws if `context.params?.user?.isVerified` is not true
+ */
+export default function isVerified (): ((context: HookContext) => HookContext) {
+  return (context: HookContext): HookContext => {
+    checkContext(context, 'before');
+
+    if (!context.params?.user?.isVerified) {
       throw new BadRequest('User\'s email is not yet verified.');
     }
-    return hook;
+    return context;
   };
 }

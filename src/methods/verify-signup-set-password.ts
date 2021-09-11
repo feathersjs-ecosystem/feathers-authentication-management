@@ -4,8 +4,10 @@ import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
 import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
 import getUserData from '../helpers/get-user-data';
 import hashPassword from '../helpers/hash-password';
+import isDateAfterNow from '../helpers/is-date-after-now';
 import notifier from '../helpers/notifier';
-import {
+
+import type {
   IdentifyUser,
   SanitizedUser,
   Tokens,
@@ -85,7 +87,7 @@ async function verifySignupSetPassword (
 
   const user2 = await eraseVerifyPropsSetPassword(
     user1,
-    user1.verifyExpires > Date.now(),
+    isDateAfterNow(user1.verifyExpires),
     user1.verifyChanges || {},
     password
   );

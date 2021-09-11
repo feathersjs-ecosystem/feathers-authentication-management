@@ -1,6 +1,10 @@
 import { GeneralError } from '@feathersjs/errors';
 
-export default function ensureHasAllKeys<K extends string> (obj: Record<K, unknown>, keys: K[], identifier: string): void {
+export default function ensureHasAllKeys<K extends string> (
+  obj: Record<K, unknown>,
+  keys: K[],
+  identifier: string
+): void {
   const missingKeys = keys.filter(key => !Object.prototype.hasOwnProperty.call(obj, key));
 
   if (missingKeys.length) {

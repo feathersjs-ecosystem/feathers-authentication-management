@@ -4,7 +4,12 @@ import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import getUserData from '../helpers/get-user-data';
 import notifier from '../helpers/notifier';
-import { IdentifyUser, ResendVerifySignupOptions, SanitizedUser } from '../types';
+
+import type {
+  IdentifyUser,
+  ResendVerifySignupOptions,
+  SanitizedUser
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:resendVerifySignup');
 

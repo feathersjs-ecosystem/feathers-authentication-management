@@ -1,10 +1,15 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { DataVerifySignupLong, SanitizedUser, VerifySignupOptions } from '../types';
+
 import { verifySignupWithLongToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
+  DataVerifySignupLong,
+  SanitizedUser,
+  VerifySignupOptions
+} from '../types';
 
 export class VerifySignupLongService extends AuthenticationManagementBase<DataVerifySignupLong, SanitizedUser> {
   options: VerifySignupOptions;

@@ -2,7 +2,10 @@
 import randomBytes from './random-bytes';
 import randomDigits from './random-digits';
 
-export default async function getShortToken (len: number, ifDigits: boolean): Promise<string> {
+export default async function getShortToken (
+  len: number,
+  ifDigits: boolean
+): Promise<string> {
   if (ifDigits) {
     return randomDigits(len);
   }

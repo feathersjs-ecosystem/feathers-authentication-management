@@ -1,10 +1,10 @@
-import { SetRequired } from 'type-fest';
-
 import checkUnique from '../methods/check-unique';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { DataCheckUnique, CheckUniqueOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from './index';
+
+import type { SetRequired } from 'type-fest';
+import type { DataCheckUnique, CheckUniqueOptions } from '../types';
 
 export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUnique, unknown> {
   options: CheckUniqueOptions;

@@ -1,10 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '.';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { DataVerifySignupShort, SanitizedUser, VerifySignupWithShortTokenOptions } from '../types';
 import { verifySignupWithShortToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import { SetRequired } from 'type-fest';
+import {
+  DataVerifySignupShort,
+  SanitizedUser,
+  VerifySignupWithShortTokenOptions
+} from '../types';
 
 export class VerifySignupShortService extends AuthenticationManagementBase<DataVerifySignupShort, SanitizedUser> {
   options: VerifySignupWithShortTokenOptions;

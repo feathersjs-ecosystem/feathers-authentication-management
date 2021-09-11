@@ -20,6 +20,8 @@ export { VerifySignupSetPasswordLongService } from './services/VerifySignupSetPa
 export { VerifySignupSetPasswordShortService } from './services/VerifySignupSetPasswordShortService';
 export { VerifySignupShortService } from './services/VerifySignupShort';
 
+export * from './types';
+
 // commonjs
 if (typeof module !== 'undefined') {
   module.exports = Object.assign(configure, module.exports);
