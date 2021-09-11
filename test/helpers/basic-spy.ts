@@ -33,45 +33,39 @@
 
 function SpyOn (fcn) {
   const stack = [];
+  return {
+    // spy on function without a callback
+    // not being part of prototype chain allows callers to set 'this'
+    callWith: function(...args) {
+      const myStackOffset = stack.length;
+      stack.push({ args: clone(args) });
+      const result = fcn.apply(this, args);
+      stack[myStackOffset].result = result; // can handle recursion
 
-  // spy on function without a callback
-  // not being part of prototype chain allows callers to set 'this'
+      return result;
+    },
+    // spy on function with a callback
+    // not being part of prototype chain allows callers to set 'this'
+    callWithCb: function (...args) {
+      const myStackOffset = stack.length;
+      stack.push({ args: args.slice(0, -1) });
 
-  this.callWith = function (...args) {
-    const myStackOffset = stack.length;
-    stack.push({ args: clone(args) });
-    const result = fcn.apply(this, args);
-    stack[myStackOffset].result = result; // can handle recursion
+      args[args.length - 1] = cbWrapper(args[args.length - 1]);
+      fcn.apply(this, args);
 
-    return result;
-  };
+      function cbWrapper (fcnCb) {
+        return function cbWrapperInner (...args1) {
+          stack[myStackOffset].result = args1;
 
-  // spy on function with a callback
-  // not being part of prototype chain allows callers to set 'this'
-
-  this.callWithCb = function (...args) {
-    const myStackOffset = stack.length;
-    stack.push({ args: args.slice(0, -1) });
-
-    args[args.length - 1] = cbWrapper(args[args.length - 1]);
-    fcn.apply(this, args);
-
-    function cbWrapper (fcnCb) {
-      return function cbWrapperInner (...args1) {
-        stack[myStackOffset].result = args1;
-
-        fcnCb.apply(this, args1);
-      };
+          fcnCb.apply(this, args1);
+        };
+      }
+    },
+    // return spy info
+    result: function () {
+      return stack;
     }
   };
-
-  // return spy info
-
-  this.result = function () {
-    return stack;
-  };
-
-  return this;
 }
 
 export default SpyOn;
