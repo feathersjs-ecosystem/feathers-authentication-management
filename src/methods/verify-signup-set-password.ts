@@ -77,7 +77,7 @@ async function verifySignupSetPassword (
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password);
+    await eraseVerifyProps(user1, user1.isVerified, {});
 
     throw new BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
@@ -94,6 +94,23 @@ async function verifySignupSetPassword (
 
   const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);
+
+  async function eraseVerifyProps (
+    user: User,
+    isVerified: boolean,
+    verifyChanges: VerifyChanges
+  ): Promise<User> {
+    const patchToUser = Object.assign({}, verifyChanges || {}, {
+      isVerified,
+      verifyToken: null,
+      verifyShortToken: null,
+      verifyExpires: null,
+      verifyChanges: {}
+    });
+
+    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    return result;
+  }
 
   async function eraseVerifyPropsSetPassword (
     user: User,
