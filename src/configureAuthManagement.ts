@@ -108,7 +108,7 @@ export default function authenticationLocalManagement (
 ): (app: Application) => void {
   debug('service being configured.');
 
-  docs = docs ?? {};
+  docs ??= {};
 
   return function (app) {
     const defaultOptions = makeDefaultConfigureOptions();

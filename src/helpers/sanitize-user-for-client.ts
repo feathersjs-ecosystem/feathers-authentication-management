@@ -1,11 +1,12 @@
 
 import cloneObject from './clone-object';
-import {
+
+import type {
   User
 } from '../types';
 
-export default function sanitizeUserForClient (user1: User): Record<string, unknown> {
-  const user = cloneObject<User>(user1);
+export default function sanitizeUserForClient (_user: User): Record<string, unknown> {
+  const user = cloneObject<User>(_user);
 
   delete user.password;
   delete user.verifyExpires;

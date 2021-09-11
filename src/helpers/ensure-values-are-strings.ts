@@ -1,9 +1,12 @@
 
 import { BadRequest } from '@feathersjs/errors';
 
-export default function ensureValuesAreStrings (...rest: string[]): void {
-  if (!rest.every(str => typeof str === 'string')) {
-    throw new BadRequest('Expected string value. (authLocalMgnt)',
+export default function ensureValuesAreStrings (
+  ...values: string[]
+): void {
+  if (!values.every(str => typeof str === 'string')) {
+    throw new BadRequest(
+      'Expected string value. (authLocalMgnt)',
       { errors: { $className: 'badParams' } }
     );
   }

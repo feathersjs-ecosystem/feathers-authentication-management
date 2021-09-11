@@ -1,5 +1,5 @@
 import { MethodNotAllowed } from '@feathersjs/errors';
-import { Params } from '@feathersjs/feathers';
+import type { Params } from '@feathersjs/feathers';
 
 export abstract class AuthenticationManagementBase<T, R> {
   publish: unknown;
@@ -8,7 +8,9 @@ export abstract class AuthenticationManagementBase<T, R> {
 
   async create (data: T, params?: Params): Promise<R> {
     if (Array.isArray(data)) {
-      return await Promise.reject(new MethodNotAllowed('authManagement does not handle multiple entries'));
+      return await Promise.reject(
+        new MethodNotAllowed('authManagement does not handle multiple entries')
+      );
     }
 
     return await this._create(data, params);

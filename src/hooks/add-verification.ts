@@ -1,19 +1,27 @@
 import { GeneralError } from '@feathersjs/errors';
-import { HookContext } from '@feathersjs/feathers';
 import { checkContext } from 'feathers-hooks-common';
 import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
-import { AuthenticationManagementService } from '../services';
 import { defaultConfigureOptions } from '../configureAuthManagement';
 
-export default function addVerification (path?: string): ((hook: HookContext) => Promise<HookContext>) {
+import type { HookContext } from '@feathersjs/feathers';
+import type { AuthenticationManagementService } from '../services';
+
+/**
+ *
+ * @param [path='authManagement'] the servicePath for your authManagement service
+ * @returns
+ */
+export default function addVerification (
+  path?: string
+): ((context: HookContext) => Promise<HookContext>) {
   path = path || defaultConfigureOptions.path; // default: 'authManagement'
-  return async (hook: HookContext): Promise<HookContext> => {
-    checkContext(hook, 'before', ['create', 'patch', 'update']);
+  return async (context: HookContext): Promise<HookContext> => {
+    checkContext(context, 'before', ['create', 'patch', 'update']);
 
     try {
-      const { options } = (hook.app.service(path) as AuthenticationManagementService);
+      const { options } = (context.app.service(path) as AuthenticationManagementService);
 
       const [longToken, shortToken] = await Promise.all([
         getLongToken(options.longTokenLen),
@@ -21,21 +29,21 @@ export default function addVerification (path?: string): ((hook: HookContext) =>
       ]);
 
       if (
-        (hook.method === 'patch' || hook.method === 'update') &&
-        !!hook.params.user &&
-        !options.identifyUserProps.some(ensureFieldHasChanged(hook.data, hook.params.user))
+        (context.method === 'patch' || context.method === 'update') &&
+        !!context.params.user &&
+        !options.identifyUserProps.some(ensureFieldHasChanged(context.data, context.params.user))
       ) {
-        return hook;
+        return context;
       }
 
-      hook.data.isVerified = false;
+      context.data.isVerified = false;
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      hook.data.verifyExpires = Date.now() + options.delay;
-      hook.data.verifyToken = longToken;
-      hook.data.verifyShortToken = shortToken;
-      hook.data.verifyChanges = {};
+      context.data.verifyExpires = Date.now() + options.delay;
+      context.data.verifyToken = longToken;
+      context.data.verifyShortToken = shortToken;
+      context.data.verifyChanges = {};
 
-      return hook;
+      return context;
     } catch (err) {
       throw new GeneralError(err);
     }

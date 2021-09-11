@@ -4,8 +4,10 @@ import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
 import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
 import getUserData from '../helpers/get-user-data';
 import hashPassword from '../helpers/hash-password';
+import isDateAfterNow from '../helpers/is-date-after-now';
 import notifier from '../helpers/notifier';
-import {
+
+import type {
   IdentifyUser,
   SanitizedUser,
   Tokens,
@@ -75,7 +77,7 @@ async function verifySignupSetPassword (
   ]);
 
   if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyPropsSetPassword(user1, user1.isVerified, {}, password);
+    await eraseVerifyProps(user1, user1.isVerified, {});
 
     throw new BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
@@ -85,13 +87,30 @@ async function verifySignupSetPassword (
 
   const user2 = await eraseVerifyPropsSetPassword(
     user1,
-    user1.verifyExpires > Date.now(),
+    isDateAfterNow(user1.verifyExpires),
     user1.verifyChanges || {},
     password
   );
 
   const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);
+
+  async function eraseVerifyProps (
+    user: User,
+    isVerified: boolean,
+    verifyChanges: VerifyChanges
+  ): Promise<User> {
+    const patchToUser = Object.assign({}, verifyChanges || {}, {
+      isVerified,
+      verifyToken: null,
+      verifyShortToken: null,
+      verifyExpires: null,
+      verifyChanges: {}
+    });
+
+    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    return result;
+  }
 
   async function eraseVerifyPropsSetPassword (
     user: User,

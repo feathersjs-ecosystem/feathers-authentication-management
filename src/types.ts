@@ -1,4 +1,4 @@
-import { Application, Id } from '@feathersjs/feathers';
+import { Application, Id, Paginated } from '@feathersjs/feathers';
 
 //#region general
 
@@ -17,7 +17,9 @@ export interface User {
   [key: number]: unknown
 }
 
-export type HookResult = User | User[] | { data: User | User[], total: number };
+export type ArrayOrPaginated<T> = T[] | Paginated<T>;
+
+export type UsersArrayOrPaginated = ArrayOrPaginated<User>;
 
 export interface VerifyChanges {
   [key: string]: unknown
