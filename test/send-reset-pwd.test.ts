@@ -64,7 +64,7 @@ const users_Id: UserTestDB[] = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`send-reset-pwd.js ${pagination} ${idType}`, function () {
+    describe(`send-reset-pwd.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {

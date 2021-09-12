@@ -104,7 +104,7 @@ function organization () {
   });
 }
 
-describe('scaffolding.js', () => {
+describe('scaffolding.ts', () => {
   describe('can configure 1 service', () => {
     let app: Application;
 

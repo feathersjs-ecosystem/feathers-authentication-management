@@ -8,7 +8,7 @@ import {
   aboutEqualDateTime
 } from './helpers';
 
-describe('add-verification.test.js', function () {
+describe('add-verification.test.ts', function () {
   this.timeout(timeoutEachTest);
 
   let app: Application;

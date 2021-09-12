@@ -2,7 +2,7 @@
 import { assert } from 'chai';
 import { SpyOn } from './helpers';
 
-describe('spy-on.test.js', () => {
+describe('spy-on.test.ts', () => {
   it('works with functions without callbacks', () => {
     const spy = SpyOn(test);
     spy.callWith(1, 2, 3);

@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import isVerified from '../src/hooks/is-verified';
 import { timeoutEachTest } from './helpers/config';
 
-describe('is-verified.test.js', function () {
+describe('is-verified.test.ts', function () {
   this.timeout(timeoutEachTest);
   let context;
 

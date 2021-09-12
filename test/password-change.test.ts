@@ -55,7 +55,7 @@ const usersId: UserTestLocal[] = [
 ];
 
 // Tests
-describe('password-change.js', function () {
+describe('password-change.ts', function () {
   this.timeout(timeoutEachTest);
 
   describe('bcrypt', function () {

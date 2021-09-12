@@ -103,7 +103,7 @@ const usersId: UserTestLocal[] = [
 // Tests
 ['_id' /* 'id' */].forEach(idType => {
   ['paginated' /* 'non-paginated' */].forEach(pagination => {
-    describe(`reset-pwd-short.js ${pagination} ${idType}`, function () {
+    describe(`reset-pwd-short.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {

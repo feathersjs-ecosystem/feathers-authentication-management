@@ -95,7 +95,7 @@ const users_Id: UserTestDB[] = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`verify-signup-long.js ${pagination} ${idType}`, function () {
+    describe(`verify-signup-long.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {

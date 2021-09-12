@@ -84,7 +84,7 @@ const usersId = [
 // Tests
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`reset-pwd-long.js ${pagination} ${idType}`, function () {
+    describe(`reset-pwd-long.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {

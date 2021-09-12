@@ -44,7 +44,7 @@ const authLocalMgntFake = function () {
 };
 
 // Tests
-describe('client.test.js', () => {
+describe('client.test.ts', () => {
   describe('instantiate', () => {
     it('exists', () => {
       assert.isFunction(AuthManagement);

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import randomDigits from '../src/helpers/random-digits';
 import randomBytes from '../src/helpers/random-bytes';
 
-describe('randoms.js', () => {
+describe('randoms.ts', () => {
   describe('randomDigits', () => {
     it('correct length', () => {
       const str = randomDigits(6);

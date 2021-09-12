@@ -6,7 +6,7 @@ import {
 
 let context;
 
-describe('remove-verification.test.js', () => {
+describe('remove-verification.test.ts', () => {
   beforeEach(() => {
     context = {
       type: 'after',

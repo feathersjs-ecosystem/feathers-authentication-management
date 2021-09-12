@@ -24,7 +24,7 @@ const users_Id = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`check-unique.test.js ${pagination} ${idType}`, function () {
+    describe(`check-unique.test.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('standard', () => {
