@@ -1,6 +1,7 @@
 import makeDebug from 'debug';
-import { User, Notifier, NotificationType } from '../types';
 import sanitizeUserForNotifier from './sanitize-user-for-notifier';
+
+import type { User, Notifier, NotificationType } from '../types';
 
 const debug = makeDebug('authLocalMgnt:notifier');
 

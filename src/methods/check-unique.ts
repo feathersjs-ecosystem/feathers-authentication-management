@@ -1,8 +1,12 @@
 import { BadRequest } from '@feathersjs/errors';
 import isNullsy from '../helpers/is-nullsy';
 import makeDebug from 'debug';
-import { Id } from '@feathersjs/feathers';
-import { CheckUniqueOptions, IdentifyUser } from '../types';
+
+import type { Id } from '@feathersjs/feathers';
+import type {
+  CheckUniqueOptions,
+  IdentifyUser
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:checkUnique');
 

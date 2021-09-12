@@ -1,21 +1,21 @@
 import { HookContext } from '@feathersjs/feathers';
-
 import { checkContext, getItems, replaceItems } from 'feathers-hooks-common';
-import { User } from '../types';
+
+import type { User } from '../types';
 
 export default function removeVerification (
   ifReturnTokens?: boolean
-): ((hook: HookContext) => HookContext) {
-  return (hook: HookContext): HookContext => {
-    checkContext(hook, 'after');
+): ((context: HookContext) => HookContext) {
+  return (context: HookContext): HookContext => {
+    checkContext(context, 'after');
     // Retrieve the items from the hook
-    const items: User | User[] = getItems(hook);
+    const items: User | User[] = getItems(context);
     if (!items) return;
     const isArray = Array.isArray(items);
     const users = ((isArray) ? items : [items]) as User[];
 
     users.forEach(user => {
-      if (!('isVerified' in user) && hook.method === 'create') {
+      if (!('isVerified' in user) && context.method === 'create') {
         /* eslint-disable no-console */
         console.warn('Property isVerified not found in user properties. (removeVerification)');
         console.warn('Have you added authManagement\'s properties to your model? (Refer to README.md)');
@@ -23,7 +23,7 @@ export default function removeVerification (
         /* eslint-enable */
       }
 
-      if (hook.params.provider && user) { // noop if initiated by server
+      if (context.params.provider && user) { // noop if initiated by server
         delete user.verifyExpires;
         delete user.resetExpires;
         delete user.verifyChanges;
@@ -36,7 +36,7 @@ export default function removeVerification (
       }
     });
     // Replace the items within the hook
-    replaceItems(hook, isArray ? users : users[0]);
-    return hook;
+    replaceItems(context, isArray ? users : users[0]);
+    return context;
   };
 }

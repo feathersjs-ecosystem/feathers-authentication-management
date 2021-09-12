@@ -1,10 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import identityChange from '../methods/identity-change';
-import { SanitizedUser, IdentityChangeOptions, DataIdentityChange } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
+  SanitizedUser,
+  IdentityChangeOptions,
+  DataIdentityChange
+} from '../types';
 
 export class IdentityChangeService extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser> {
   options: IdentityChangeOptions;

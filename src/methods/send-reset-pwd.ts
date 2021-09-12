@@ -6,8 +6,10 @@ import getShortToken from '../helpers/get-short-token';
 import getUserData from '../helpers/get-user-data';
 import hashPassword from '../helpers/hash-password';
 import notifier from '../helpers/notifier';
-import { Id } from '@feathersjs/feathers';
-import { IdentifyUser, SanitizedUser, SendResetPwdOptions } from '../types';
+import isDateAfterNow from '../helpers/is-date-after-now';
+
+import type { Id } from '@feathersjs/feathers';
+import type { IdentifyUser, SanitizedUser, SendResetPwdOptions } from '../types';
 
 const debug = makeDebug('authLocalMgnt:sendResetPwd');
 
@@ -29,7 +31,7 @@ export default async function sendResetPwd (
     // Use existing token when it's not hashed,
     options.reuseResetToken && user1.resetToken && user1.resetToken.includes('___') &&
     // and remaining time exceeds half of resetDelay
-    user1.resetExpires > Date.now() + options.resetDelay / 2
+    isDateAfterNow(user1.resetExpires, options.resetDelay / 2)
   ) {
     await notifier(options.notifier, 'sendResetPwd', user1, notifierOptions);
     return options.sanitizeUserForClient(user1);

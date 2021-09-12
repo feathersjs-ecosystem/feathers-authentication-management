@@ -1,5 +1,4 @@
 import { BadRequest } from '@feathersjs/errors';
-import { Query } from '@feathersjs/feathers';
 import makeDebug from 'debug';
 import comparePasswords from '../helpers/compare-passwords';
 import deconstructId from '../helpers/deconstruct-id';
@@ -8,7 +7,17 @@ import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
 import getUserData from '../helpers/get-user-data';
 import hashPassword from '../helpers/hash-password';
 import notifier from '../helpers/notifier';
-import { HookResult, IdentifyUser, ResetPasswordOptions, ResetPwdWithShortTokenOptions, SanitizedUser, Tokens } from '../types';
+
+import type { Query } from '@feathersjs/feathers';
+
+import type {
+  UsersArrayOrPaginated,
+  IdentifyUser,
+  ResetPasswordOptions,
+  ResetPwdWithShortTokenOptions,
+  SanitizedUser,
+  Tokens
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
 
@@ -46,11 +55,12 @@ async function resetPassword (
   debug('resetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
-  let users: HookResult;
+  let users: UsersArrayOrPaginated;
 
   if (tokens.resetToken) {
     const id = deconstructId(tokens.resetToken);
-    users = await usersService.get(id);
+    const user = await usersService.get(id);
+    users = [user];
   } else if (tokens.resetShortToken) {
     users = await usersService.find({ query });
   } else {
@@ -75,9 +85,10 @@ async function resetPassword (
         tokens[key],
         user1[key] as string,
         () =>
-          new BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
-            errors: { $className: 'incorrectToken' }
-          })
+          new BadRequest(
+            'Reset Token is incorrect. (authLocalMgnt)',
+            { errors: { $className: 'incorrectToken' } }
+          )
       );
     }
   });

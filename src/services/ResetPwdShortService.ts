@@ -1,14 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithShortToken } from '../methods/reset-password';
-import {
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
   DataResetPwdShort,
   SanitizedUser,
   ResetPwdWithShortTokenOptions
 } from '../types';
-import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 export class ResetPwdShortService extends AuthenticationManagementBase<DataResetPwdShort, SanitizedUser> {
   options: ResetPwdWithShortTokenOptions;

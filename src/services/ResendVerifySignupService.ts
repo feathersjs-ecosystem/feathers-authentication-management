@@ -1,10 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import resendVerifySignup from '../methods/resend-verify-signup';
-import { SanitizedUser, ResendVerifySignupOptions, DataResendVerifySignup } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
+  SanitizedUser,
+  ResendVerifySignupOptions,
+  DataResendVerifySignup
+} from '../types';
 
 export class ResendVerifySignupService extends AuthenticationManagementBase<DataResendVerifySignup, SanitizedUser> {
   options: ResendVerifySignupOptions;

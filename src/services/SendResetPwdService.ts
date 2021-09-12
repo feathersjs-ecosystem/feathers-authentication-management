@@ -1,10 +1,14 @@
-import { SetRequired } from 'type-fest';
-
 import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import sendResetPwd from '../methods/send-reset-pwd';
-import { DataSendResetPwd, SanitizedUser, SendResetPwdOptions } from '../types';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+
+import type { SetRequired } from 'type-fest';
+import type {
+  DataSendResetPwd,
+  SanitizedUser,
+  SendResetPwdOptions
+} from '../types';
 
 export class SendResetPwdService extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser> {
   options: SendResetPwdOptions;
