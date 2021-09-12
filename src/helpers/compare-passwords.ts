@@ -1,4 +1,3 @@
-
 import { compare } from 'bcryptjs';
 
 export default async function comparePasswords (

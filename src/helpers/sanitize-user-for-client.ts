@@ -1,4 +1,3 @@
-
 import cloneObject from './clone-object';
 
 import type {

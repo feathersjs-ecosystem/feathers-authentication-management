@@ -1,4 +1,3 @@
-
 import { BadRequest } from '@feathersjs/errors';
 
 export default function ensureObjPropsValid (

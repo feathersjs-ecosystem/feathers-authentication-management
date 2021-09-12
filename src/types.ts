@@ -1,4 +1,4 @@
-import { Application, Id, Paginated } from '@feathersjs/feathers';
+import type { Application, Id, Paginated, Query } from '@feathersjs/feathers';
 
 //#region general
 
@@ -34,10 +34,7 @@ export interface Tokens {
   verifyToken?: string
 }
 
-export interface IdentifyUser {
-  [key: string]: string
-  [key: number]: string
-}
+export type IdentifyUser = Query;
 
 export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions: Record<string, unknown>) => unknown;
 export type SanitizeUserForClient = (user: Partial<User>) => SanitizedUser;
@@ -74,6 +71,8 @@ export type ActionPathMap<T> = {
 };
 
 export type UseSeparateServicesOption = boolean | Partial<ActionPathMap<boolean | string>>;
+
+export type GetUserDataCheckProps = ('isNotVerified' | 'isNotVerifiedOrHasVerifyChanges' | 'isVerified' | 'verifyNotExpired' | 'resetNotExpired')[];
 
 //#region options
 

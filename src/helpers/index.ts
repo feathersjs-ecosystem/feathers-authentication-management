@@ -1,4 +1,3 @@
-
 import cloneObject from './clone-object';
 import comparePasswords from './compare-passwords';
 import concatIDAndHash from './concat-id-and-hash';

@@ -2,14 +2,15 @@ import { BadRequest } from '@feathersjs/errors';
 
 import type {
   UsersArrayOrPaginated,
-  User
+  User,
+  GetUserDataCheckProps
 } from '../types';
 
 export default function getUserData (
   data: UsersArrayOrPaginated,
-  fieldsToChecks?: string[]
+  checks?: GetUserDataCheckProps
 ): User {
-  fieldsToChecks ??= [];
+  checks ??= [];
   if (Array.isArray(data) ? data.length === 0 : data.total === 0) {
     throw new BadRequest(
       'User not found.',
@@ -28,7 +29,7 @@ export default function getUserData (
   }
 
   if (
-    fieldsToChecks.includes('isNotVerified') &&
+    checks.includes('isNotVerified') &&
     user.isVerified
   ) {
     throw new BadRequest(
@@ -38,7 +39,7 @@ export default function getUserData (
   }
 
   if (
-    fieldsToChecks.includes('isNotVerifiedOrHasVerifyChanges') &&
+    checks.includes('isNotVerifiedOrHasVerifyChanges') &&
     user.isVerified &&
     !Object.keys(user.verifyChanges || {}).length
   ) {
@@ -49,7 +50,7 @@ export default function getUserData (
   }
 
   if (
-    fieldsToChecks.includes('isVerified') &&
+    checks.includes('isVerified') &&
     !user.isVerified
   ) {
     throw new BadRequest(
@@ -59,7 +60,7 @@ export default function getUserData (
   }
 
   if (
-    fieldsToChecks.includes('verifyNotExpired') &&
+    checks.includes('verifyNotExpired') &&
     user.verifyExpires < Date.now()
   ) {
     throw new BadRequest(
@@ -69,7 +70,7 @@ export default function getUserData (
   }
 
   if (
-    fieldsToChecks.includes('resetNotExpired') &&
+    checks.includes('resetNotExpired') &&
     user.resetExpires < Date.now()
   ) {
     throw new BadRequest(

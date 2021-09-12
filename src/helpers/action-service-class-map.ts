@@ -1,5 +1,3 @@
-import { Class } from 'type-fest';
-
 import { AuthenticationManagementBase } from '../services/AuthenticationManagementBase';
 import { AuthenticationManagementAction } from '../types';
 import { CheckUniqueService } from '../services/CheckUniqueService';
@@ -13,6 +11,8 @@ import { VerifySignupLongService } from '../services/VerifySignupLongService';
 import { VerifySignupSetPasswordLongService } from '../services/VerifySignupSetPasswordLongService';
 import { VerifySignupSetPasswordShortService } from '../services/VerifySignupSetPasswordShortService';
 import { VerifySignupShortService } from '../services/VerifySignupShort';
+
+import type { Class } from 'type-fest';
 
 const actionServiceClassMap: Record<Exclude<AuthenticationManagementAction, 'options'>, Class<AuthenticationManagementBase<unknown, unknown>>> = {
   checkUnique: CheckUniqueService,

@@ -1,4 +1,4 @@
-import { Id } from '@feathersjs/feathers';
+import type { Id } from '@feathersjs/feathers';
 
 export default function concatIDAndHash (
   id: Id,
