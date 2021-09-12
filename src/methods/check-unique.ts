@@ -5,7 +5,8 @@ import makeDebug from 'debug';
 import type { Id } from '@feathersjs/feathers';
 import type {
   CheckUniqueOptions,
-  IdentifyUser
+  IdentifyUser,
+  UsersArrayOrPaginated
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:checkUnique');
@@ -30,8 +31,8 @@ export default async function checkUnique (
   meta = meta || {};
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
-  const allProps = [];
+  const usersServiceId = usersService.id;
+  const errProps = [];
 
   const keys = Object.keys(identifyUser).filter(
     key => !isNullsy(identifyUser[key])
@@ -40,12 +41,17 @@ export default async function checkUnique (
   try {
     for (let i = 0, ilen = keys.length; i < ilen; i++) {
       const prop = keys[i];
-      const users = await usersService.find({ query: { [prop]: identifyUser[prop].trim() } });
-      const items = Array.isArray(users) ? users : users.data;
-      const isNotUnique = items.length > 1 ||
-        (items.length === 1 && items[0][usersServiceIdName] !== ownId);
+      const params = { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 } }
+      if (!isNullsy(ownId)) {
+        params.query[usersServiceId] = { $ne: ownId };
+      }
+      const users: UsersArrayOrPaginated = await usersService.find(params);
+      const length = Array.isArray(users) ? users.length : users.total;
+      const isNotUnique = length > 0;
 
-      allProps.push(isNotUnique ? prop : null);
+      if (isNotUnique) {
+        errProps.push(prop);
+      }
     }
   } catch (err) {
     throw new BadRequest(
@@ -53,8 +59,6 @@ export default async function checkUnique (
       { errors: { msg: err.message, $className: 'unexpected' } }
     );
   }
-
-  const errProps = allProps.filter(prop => prop);
 
   if (errProps.length) {
     const errs = {};
