@@ -3,7 +3,7 @@ import { BadRequest } from '@feathersjs/errors';
 
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import checkUnique from '../methods/check-unique';
 import identityChange from '../methods/identity-change';
 import passwordChange from '../methods/password-change';

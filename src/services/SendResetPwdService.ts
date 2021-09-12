@@ -1,4 +1,4 @@
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import sendResetPwd from '../methods/send-reset-pwd';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';

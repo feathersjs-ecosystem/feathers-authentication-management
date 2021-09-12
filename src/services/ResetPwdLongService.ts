@@ -1,4 +1,4 @@
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithLongToken } from '../methods/reset-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';

@@ -1,4 +1,4 @@
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import resendVerifySignup from '../methods/resend-verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';

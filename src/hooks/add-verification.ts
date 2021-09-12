@@ -3,7 +3,7 @@ import { checkContext } from 'feathers-hooks-common';
 import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
-import { defaultConfigureOptions } from '../configureAuthManagement';
+import { defaultConfigureOptions } from '../options';
 
 import type { HookContext } from '@feathersjs/feathers';
 import type { AuthenticationManagementService } from '../services';

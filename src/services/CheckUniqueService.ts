@@ -1,7 +1,7 @@
 import checkUnique from '../methods/check-unique';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
-import { makeDefaultOptions } from './index';
+import { makeDefaultOptions } from '../options';
 
 import type { SetRequired } from 'type-fest';
 import type { DataCheckUnique, CheckUniqueOptions } from '../types';
