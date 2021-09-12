@@ -11,7 +11,8 @@ import notifier from '../helpers/notifier';
 import type {
   IdentifyUser,
   PasswordChangeOptions,
-  SanitizedUser
+  SanitizedUser,
+  UsersArrayOrPaginated
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:passwordChange');
@@ -34,12 +35,12 @@ export default async function passwordChange (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
 
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users = await usersService.find({ query: identifyUser });
+  const users: UsersArrayOrPaginated = await usersService.find({ query: identifyUser });
   const user1 = getUserData(users);
 
   try {
@@ -50,7 +51,7 @@ export default async function passwordChange (
     });
   }
 
-  const user2 = await usersService.patch(user1[usersServiceIdName], {
+  const user2 = await usersService.patch(user1[usersServiceId], {
     password: await hashPassword(app, password, passwordField)
   });
 

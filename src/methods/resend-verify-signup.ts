@@ -8,7 +8,8 @@ import notifier from '../helpers/notifier';
 import type {
   IdentifyUser,
   ResendVerifySignupOptions,
-  SanitizedUser
+  SanitizedUser,
+  UsersArrayOrPaginated
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resendVerifySignup');
@@ -33,13 +34,13 @@ export default async function resendVerifySignup (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
 
   ensureObjPropsValid(identifyUser,
     identifyUserProps.concat('verifyToken', 'verifyShortToken')
   );
 
-  const users = await usersService.find({ query: identifyUser });
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
   const user1 = getUserData(users, ['isNotVerified']);
 
   const [ verifyToken, verifyShortToken ] = await Promise.all([
@@ -47,7 +48,7 @@ export default async function resendVerifySignup (
     getShortToken(shortTokenLen, shortTokenDigits)
   ])
 
-  const user2 = await usersService.patch(user1[usersServiceIdName], {
+  const user2 = await usersService.patch(user1[usersServiceId], {
     isVerified: false,
     verifyExpires: Date.now() + delay,
     verifyToken,

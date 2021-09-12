@@ -9,7 +9,7 @@ import notifier from '../helpers/notifier';
 import isDateAfterNow from '../helpers/is-date-after-now';
 
 import type { Id } from '@feathersjs/feathers';
-import type { IdentifyUser, SanitizedUser, SendResetPwdOptions } from '../types';
+import type { IdentifyUser, SanitizedUser, SendResetPwdOptions, UsersArrayOrPaginated } from '../types';
 
 const debug = makeDebug('authLocalMgnt:sendResetPwd');
 
@@ -19,49 +19,65 @@ export default async function sendResetPwd (
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('sendResetPwd');
-  const usersService = options.app.service(options.service);
-  const usersServiceIdName = usersService.id;
 
-  ensureObjPropsValid(identifyUser, options.identifyUserProps);
+  const {
+    app,
+    identifyUserProps,
+    longTokenLen,
+    passwordField,
+    resetAttempts,
+    resetDelay,
+    reuseResetToken,
+    sanitizeUserForClient,
+    service,
+    shortTokenDigits,
+    shortTokenLen,
+    skipIsVerifiedCheck
+  } = options;
 
-  const users = await usersService.find({ query: identifyUser });
-  const user1 = getUserData(users, options.skipIsVerifiedCheck ? [] : ['isVerified']);
+  const usersService = app.service(service);
+  const usersServiceId = usersService.id;
+
+  ensureObjPropsValid(identifyUser, identifyUserProps);
+
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
+  const user1 = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
     // Use existing token when it's not hashed,
-    options.reuseResetToken && user1.resetToken && user1.resetToken.includes('___') &&
+    reuseResetToken && user1.resetToken && user1.resetToken.includes('___') &&
     // and remaining time exceeds half of resetDelay
-    isDateAfterNow(user1.resetExpires, options.resetDelay / 2)
+    isDateAfterNow(user1.resetExpires, resetDelay / 2)
   ) {
     await notifier(options.notifier, 'sendResetPwd', user1, notifierOptions);
-    return options.sanitizeUserForClient(user1);
+    return sanitizeUserForClient(user1);
   }
 
   const [ resetToken, resetShortToken ] = await Promise.all([
-    getLongToken(options.longTokenLen),
-    getShortToken(options.shortTokenLen, options.shortTokenDigits)
+    getLongToken(longTokenLen),
+    getShortToken(shortTokenLen, shortTokenDigits)
   ])
 
   const user2 = Object.assign(user1, {
-    resetExpires: Date.now() + options.resetDelay,
-    resetAttempts: options.resetAttempts,
-    resetToken: concatIDAndHash(user1[usersServiceIdName] as Id, resetToken),
+    resetExpires: Date.now() + resetDelay,
+    resetAttempts: resetAttempts,
+    resetToken: concatIDAndHash(user1[usersServiceId] as Id, resetToken),
     resetShortToken: resetShortToken
   });
 
   await notifier(options.notifier, 'sendResetPwd', user2, notifierOptions);
 
   const [ resetToken3, resetShortToken3 ] = await Promise.all([
-    options.reuseResetToken ? user2.resetToken : hashPassword(options.app, user2.resetToken, options.passwordField),
-    options.reuseResetToken ? user2.resetShortToken : await hashPassword(options.app, user2.resetShortToken, options.passwordField)
+    reuseResetToken ? user2.resetToken : hashPassword(app, user2.resetToken, passwordField),
+    reuseResetToken ? user2.resetShortToken : await hashPassword(app, user2.resetShortToken, passwordField)
   ])
 
-  const user3 = await usersService.patch(user2[usersServiceIdName], {
+  const user3 = await usersService.patch(user2[usersServiceId], {
     resetExpires: user2.resetExpires,
     resetAttempts: user2.resetAttempts,
     resetToken: resetToken3,
     resetShortToken: resetShortToken3
   });
 
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 }

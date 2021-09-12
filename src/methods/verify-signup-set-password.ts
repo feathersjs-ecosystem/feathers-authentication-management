@@ -61,12 +61,12 @@ export async function verifySignupSetPasswordWithShortToken (
 
 async function verifySignupSetPassword (
   options: VerifySignupSetPasswordOptions,
-  query: IdentifyUser,
+  identifyUser: IdentifyUser,
   tokens: Tokens,
   password: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
-  debug('verifySignupSetPassword', query, tokens, password);
+  debug('verifySignupSetPassword', identifyUser, tokens, password);
 
   const {
     app,
@@ -76,9 +76,9 @@ async function verifySignupSetPassword (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
 
-  const users = await usersService.find({ query });
+  const users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
   const user1 = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
@@ -116,7 +116,7 @@ async function verifySignupSetPassword (
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
     return result;
   }
 
@@ -137,7 +137,7 @@ async function verifySignupSetPassword (
       password: hashedPassword
     });
 
-    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
     return result;
   }
 }

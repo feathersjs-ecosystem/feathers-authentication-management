@@ -30,7 +30,13 @@ export async function resetPwdWithLongToken (
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetToken, password);
 
-  return await resetPassword(options, { resetToken }, { resetToken }, password, notifierOptions);
+  return await resetPassword(
+    options,
+    { resetToken },
+    { resetToken },
+    password,
+    notifierOptions
+  );
 }
 
 export async function resetPwdWithShortToken (
@@ -43,17 +49,23 @@ export async function resetPwdWithShortToken (
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  return await resetPassword(options, identifyUser, { resetShortToken }, password, notifierOptions);
+  return await resetPassword(
+    options,
+    identifyUser,
+    { resetShortToken },
+    password,
+    notifierOptions
+  );
 }
 
 async function resetPassword (
   options: ResetPasswordOptions,
-  query: Query,
+  identifyUser: IdentifyUser,
   tokens: Tokens,
   password: string,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
-  debug('resetPassword', query, tokens, password);
+  debug('resetPassword', identifyUser, tokens, password);
 
   const {
     app,
@@ -65,7 +77,7 @@ async function resetPassword (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
   let users: UsersArrayOrPaginated;
 
   if (tokens.resetToken) {
@@ -73,7 +85,7 @@ async function resetPassword (
     const user = await usersService.get(id);
     users = [user];
   } else if (tokens.resetShortToken) {
-    users = await usersService.find({ query });
+    users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
   } else {
     throw new BadRequest(
       'resetToken and resetShortToken are missing. (authLocalMgnt)',
@@ -109,13 +121,13 @@ async function resetPassword (
     await Promise.all(tokenChecks);
   } catch (err) {
     if (user1.resetAttempts > 0) {
-      await usersService.patch(user1[usersServiceIdName], {
+      await usersService.patch(user1[usersServiceId], {
         resetAttempts: user1.resetAttempts - 1
       });
 
       throw err;
     } else {
-      await usersService.patch(user1[usersServiceIdName], {
+      await usersService.patch(user1[usersServiceId], {
         resetToken: null,
         resetAttempts: null,
         resetShortToken: null,
@@ -129,7 +141,7 @@ async function resetPassword (
     }
   }
 
-  const user2 = await usersService.patch(user1[usersServiceIdName], {
+  const user2 = await usersService.patch(user1[usersServiceId], {
     password: await hashPassword(app, password, passwordField),
     resetExpires: null,
     resetAttempts: null,

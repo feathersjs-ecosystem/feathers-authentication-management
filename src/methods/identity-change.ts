@@ -11,7 +11,8 @@ import notifier from '../helpers/notifier';
 import type {
   IdentifyUser,
   IdentityChangeOptions,
-  SanitizedUser
+  SanitizedUser,
+  UsersArrayOrPaginated
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:identityChange');
@@ -28,7 +29,7 @@ export default async function identityChange (
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);
   const usersService = options.app.service(options.service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
   const {
     delay,
     identifyUserProps,
@@ -41,7 +42,7 @@ export default async function identityChange (
   ensureObjPropsValid(identifyUser, identifyUserProps);
   ensureObjPropsValid(changesIdentifyUser, identifyUserProps);
 
-  const users = await usersService.find({ query: identifyUser });
+  const users: UsersArrayOrPaginated = await usersService.find({ query: identifyUser });
   const user1 = getUserData(users);
 
   try {
@@ -57,7 +58,7 @@ export default async function identityChange (
     getShortToken(shortTokenLen, shortTokenDigits)
   ])
 
-  const user2 = await usersService.patch(user1[usersServiceIdName], {
+  const user2 = await usersService.patch(user1[usersServiceId], {
     verifyExpires: Date.now() + delay,
     verifyToken,
     verifyShortToken,

@@ -27,7 +27,12 @@ export async function verifySignupWithLongToken (
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyToken);
 
-  const result = await verifySignup(options, { verifyToken }, { verifyToken }, notifierOptions);
+  const result = await verifySignup(
+    options,
+    { verifyToken },
+    { verifyToken },
+    notifierOptions
+  );
   return result;
 }
 
@@ -40,17 +45,22 @@ export async function verifySignupWithShortToken (
   ensureValuesAreStrings(verifyShortToken);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const result = await verifySignup(options, identifyUser, { verifyShortToken }, notifierOptions);
+  const result = await verifySignup(
+    options,
+    identifyUser,
+    { verifyShortToken },
+    notifierOptions
+  );
   return result;
 }
 
 async function verifySignup (
   options: VerifySignupOptions,
-  query: Query,
+  identifyUser: IdentifyUser,
   tokens: Tokens,
   notifierOptions = {}
 ): Promise<SanitizedUser> {
-  debug('verifySignup', query, tokens);
+  debug('verifySignup', identifyUser, tokens);
 
   const {
     app,
@@ -59,9 +69,9 @@ async function verifySignup (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceIdName = usersService.id;
+  const usersServiceId = usersService.id;
 
-  const users = await usersService.find({ query });
+  const users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
   const user1 = getUserData(users, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']);
 
   if (!Object.keys(tokens).every(key => tokens[key] === user1[key])) {
@@ -86,7 +96,7 @@ async function verifySignup (
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
     return result;
   }
 }
