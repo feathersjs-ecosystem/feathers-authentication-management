@@ -1,11 +1,20 @@
-import configure from './configureAuthManagement';
-import hooks from './hooks';
+import setup from './setupAuthManagement';
 
-// @ts-expect-error assign object to a function
-configure.hooks = hooks;
+import addVerification from './hooks/add-verification';
+import isVerified from './hooks/is-verified';
+import removeVerification from './hooks/remove-verification';
 
-export default configure;
-export { hooks };
+export default setup;
+
+export const hooks = {
+  addVerification,
+  isVerified,
+  removeVerification
+};
+
+export { addVerification };
+export { isVerified };
+export { removeVerification };
 
 export { AuthenticationManagementService } from './services/AuthenticationManagementService';
 export { CheckUniqueService } from './services/CheckUniqueService';
@@ -20,7 +29,9 @@ export { VerifySignupSetPasswordLongService } from './services/VerifySignupSetPa
 export { VerifySignupSetPasswordShortService } from './services/VerifySignupSetPasswordShortService';
 export { VerifySignupShortService } from './services/VerifySignupShort';
 
+export * from './types';
+
 // commonjs
 if (typeof module !== 'undefined') {
-  module.exports = Object.assign(configure, module.exports);
+  module.exports = Object.assign(setup, module.exports);
 }

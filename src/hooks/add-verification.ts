@@ -5,7 +5,7 @@ import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
 import { AuthenticationManagementService } from '../services';
-import { defaultConfigureOptions } from '../configureAuthManagement';
+import { defaultConfigureOptions } from '../options';
 
 export default function addVerification (path?: string): ((hook: HookContext) => Promise<HookContext>) {
   path = path || defaultConfigureOptions.path; // default: 'authManagement'

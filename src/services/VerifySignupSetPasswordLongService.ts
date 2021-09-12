@@ -1,6 +1,6 @@
 import { SetRequired } from 'type-fest';
 
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordOptions } from '../types';
 import { verifySignupSetPasswordWithLongToken } from '../methods/verify-signup-set-password';

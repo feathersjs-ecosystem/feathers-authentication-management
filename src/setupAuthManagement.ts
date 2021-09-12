@@ -4,12 +4,11 @@ import actionServiceClassMap from './helpers/action-service-class-map';
 import {
   AuthenticationManagementAction,
   AuthenticationManagementConfigureOptions,
-  AuthenticationManagementServiceOptions,
-  AuthenticationManagementServiceOptionsDefault
+  AuthenticationManagementServiceOptions
 } from './types';
 import { AuthenticationManagementService } from './services/AuthenticationManagementService';
 import { Application } from '@feathersjs/feathers';
-import { makeDefaultOptions } from './services';
+import { makeDefaultConfigureOptions } from './options';
 
 const debug = makeDebug('authLocalMgnt:service');
 
@@ -63,47 +62,8 @@ const getSeparateServicesPaths = (
   return servicePaths;
 };
 
-const defaultPath = 'authManagement';
-
-export const defaultConfigureOptions = {
-  path: defaultPath,
-  useSeparateServices: {
-    checkUnique: `${defaultPath}/check-unique`,
-    identityChange: `${defaultPath}/identity-change`,
-    passwordChange: `${defaultPath}/password-change`,
-    resendVerifySignup: `${defaultPath}/resend-verify-signup`,
-    resetPwdLong: `${defaultPath}/reset-password-long`,
-    resetPwdShort: `${defaultPath}/reset-password-short`,
-    sendResetPwd: `${defaultPath}/send-reset-pwd`,
-    verifySignupLong: `${defaultPath}/verify-signup-long`,
-    verifySignupSetPasswordLong: `${defaultPath}/verify-signup-set-password-long`,
-    verifySignupSetPasswordShort: `${defaultPath}/verify-signup-set-password-short`,
-    verifySignupShort: `${defaultPath}/verify-signup-short`
-  }
-};
-
-export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigureOptions => {
-  const defaultServiceOptions: AuthenticationManagementServiceOptionsDefault = makeDefaultOptions([
-    'service',
-    'notifier',
-    'longTokenLen',
-    'shortTokenLen',
-    'shortTokenDigits',
-    'resetDelay',
-    'delay',
-    'resetAttempts',
-    'reuseResetToken',
-    'identifyUserProps',
-    'sanitizeUserForClient',
-    'skipIsVerifiedCheck',
-    'passwordField'
-  ]);
-
-  return Object.assign({}, defaultServiceOptions, defaultConfigureOptions);
-};
-
 export default function authenticationLocalManagement (
-  providedOptions?: Partial<AuthenticationManagementConfigureOptions>,
+  _options?: Partial<AuthenticationManagementConfigureOptions>,
   docs?: Record<string, unknown>
 ): (app: Application) => void {
   debug('service being configured.');
@@ -115,12 +75,12 @@ export default function authenticationLocalManagement (
     const options: AuthenticationManagementServiceOptions & AuthenticationManagementConfigureOptions = Object.assign(
       {},
       defaultOptions,
-      providedOptions,
+      _options,
       {
         app
       });
     const { path } = options;
-    const useSeparateServices = getSeparateServicesPaths(path, providedOptions);
+    const useSeparateServices = getSeparateServicesPaths(path, _options);
     options.useSeparateServices = useSeparateServices;
 
     app.use(options.path, new AuthenticationManagementService(options, docs));
@@ -132,5 +92,3 @@ export default function authenticationLocalManagement (
     }
   };
 }
-
-export { AuthenticationManagementService };

@@ -1,6 +1,6 @@
 import { SetRequired } from 'type-fest';
 
-import { makeDefaultOptions } from '.';
+import { makeDefaultOptions } from '../options';
 import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { DataVerifySignupShort, SanitizedUser, VerifySignupWithShortTokenOptions } from '../types';
 import { verifySignupWithShortToken } from '../methods/verify-signup';
