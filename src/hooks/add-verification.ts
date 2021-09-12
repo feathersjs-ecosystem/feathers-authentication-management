@@ -23,11 +23,6 @@ export default function addVerification (
     try {
       const { options } = (context.app.service(path) as AuthenticationManagementService);
 
-      const [longToken, shortToken] = await Promise.all([
-        getLongToken(options.longTokenLen),
-        getShortToken(options.shortTokenLen, options.shortTokenDigits)
-      ]);
-
       if (
         (context.method === 'patch' || context.method === 'update') &&
         !!context.params.user &&
@@ -35,6 +30,11 @@ export default function addVerification (
       ) {
         return context;
       }
+
+      const [longToken, shortToken] = await Promise.all([
+        getLongToken(options.longTokenLen),
+        getShortToken(options.shortTokenLen, options.shortTokenDigits)
+      ]);
 
       context.data.isVerified = false;
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
