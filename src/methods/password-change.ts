@@ -24,11 +24,20 @@ export default async function passwordChange (
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('passwordChange', oldPassword, password);
-  const usersService = options.app.service(options.service);
+
+  const {
+    app,
+    identifyUserProps,
+    passwordField,
+    sanitizeUserForClient,
+    service
+  } = options;
+
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
 
   ensureValuesAreStrings(oldPassword, password);
-  ensureObjPropsValid(identifyUser, options.identifyUserProps);
+  ensureObjPropsValid(identifyUser, identifyUserProps);
 
   const users = await usersService.find({ query: identifyUser });
   const user1 = getUserData(users);
@@ -42,9 +51,9 @@ export default async function passwordChange (
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    password: await hashPassword(options.app, password, options.passwordField)
+    password: await hashPassword(app, password, passwordField)
   });
 
   const user3 = await notifier(options.notifier, 'passwordChange', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 }

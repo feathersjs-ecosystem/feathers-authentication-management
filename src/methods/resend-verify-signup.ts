@@ -21,23 +21,39 @@ export default async function resendVerifySignup (
   notifierOptions: Record<string, unknown>
 ): Promise<SanitizedUser> {
   debug('identifyUser=', identifyUser);
-  const usersService = options.app.service(options.service);
+  const {
+    app,
+    service,
+    delay,
+    identifyUserProps,
+    longTokenLen,
+    sanitizeUserForClient,
+    shortTokenDigits,
+    shortTokenLen
+  } = options;
+
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
 
   ensureObjPropsValid(identifyUser,
-    options.identifyUserProps.concat('verifyToken', 'verifyShortToken')
+    identifyUserProps.concat('verifyToken', 'verifyShortToken')
   );
 
   const users = await usersService.find({ query: identifyUser });
   const user1 = getUserData(users, ['isNotVerified']);
 
+  const [ verifyToken, verifyShortToken ] = await Promise.all([
+    getLongToken(longTokenLen),
+    getShortToken(shortTokenLen, shortTokenDigits)
+  ])
+
   const user2 = await usersService.patch(user1[usersServiceIdName], {
     isVerified: false,
-    verifyExpires: Date.now() + options.delay,
-    verifyToken: await getLongToken(options.longTokenLen),
-    verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits)
+    verifyExpires: Date.now() + delay,
+    verifyToken,
+    verifyShortToken
   });
 
   const user3 = await notifier(options.notifier, 'resendVerifySignup', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 }

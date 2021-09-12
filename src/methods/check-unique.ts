@@ -21,10 +21,15 @@ export default async function checkUnique (
 ): Promise<null> {
   debug('checkUnique', identifyUser, ownId, meta);
 
+  const {
+    app,
+    service
+  } = options;
+
   ownId = ownId || null;
   meta = meta || {};
 
-  const usersService = options.app.service(options.service);
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
   const allProps = [];
 
@@ -39,10 +44,12 @@ export default async function checkUnique (
       const items = Array.isArray(users) ? users : users.data;
       const isNotUnique = items.length > 1 ||
         (items.length === 1 && items[0][usersServiceIdName] !== ownId);
+
       allProps.push(isNotUnique ? prop : null);
     }
   } catch (err) {
-    throw new BadRequest(meta.noErrMsg ? null : 'checkUnique unexpected error.',
+    throw new BadRequest(
+      meta.noErrMsg ? null : 'checkUnique unexpected error.',
       { errors: { msg: err.message, $className: 'unexpected' } }
     );
   }
@@ -53,7 +60,8 @@ export default async function checkUnique (
     const errs = {};
     errProps.forEach(prop => { errs[prop] = 'Already taken.'; });
 
-    throw new BadRequest(meta.noErrMsg ? null : 'Values already taken.',
+    throw new BadRequest(
+      meta.noErrMsg ? null : 'Values already taken.',
       { errors: errs }
     );
   }

@@ -67,7 +67,15 @@ async function verifySignupSetPassword (
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('verifySignupSetPassword', query, tokens, password);
-  const usersService = options.app.service(options.service);
+
+  const {
+    app,
+    passwordField,
+    sanitizeUserForClient,
+    service
+  } = options;
+
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
 
   const users = await usersService.find({ query });
@@ -93,7 +101,7 @@ async function verifySignupSetPassword (
   );
 
   const user3 = await notifier(options.notifier, 'verifySignupSetPassword', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 
   async function eraseVerifyProps (
     user: User,
@@ -118,7 +126,7 @@ async function verifySignupSetPassword (
     verifyChanges: VerifyChanges,
     password: string
   ): Promise<User> {
-    const hashedPassword = await hashPassword(options.app, password, options.passwordField);
+    const hashedPassword = await hashPassword(app, password, passwordField);
 
     const patchToUser = Object.assign({}, verifyChanges || {}, {
       isVerified,

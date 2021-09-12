@@ -52,10 +52,15 @@ export default async function identityChange (
     );
   }
 
+  const [ verifyToken, verifyShortToken ] = await Promise.all([
+    getLongToken(longTokenLen),
+    getShortToken(shortTokenLen, shortTokenDigits)
+  ])
+
   const user2 = await usersService.patch(user1[usersServiceIdName], {
     verifyExpires: Date.now() + delay,
-    verifyToken: await getLongToken(longTokenLen),
-    verifyShortToken: await getShortToken(shortTokenLen, shortTokenDigits),
+    verifyToken,
+    verifyShortToken,
     verifyChanges: changesIdentifyUser
   });
 

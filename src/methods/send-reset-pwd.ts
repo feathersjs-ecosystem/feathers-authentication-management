@@ -37,25 +37,30 @@ export default async function sendResetPwd (
     return options.sanitizeUserForClient(user1);
   }
 
+  const [ resetToken, resetShortToken ] = await Promise.all([
+    getLongToken(options.longTokenLen),
+    getShortToken(options.shortTokenLen, options.shortTokenDigits)
+  ])
+
   const user2 = Object.assign(user1, {
     resetExpires: Date.now() + options.resetDelay,
     resetAttempts: options.resetAttempts,
-    resetToken: concatIDAndHash(user1[usersServiceIdName] as Id, await getLongToken(options.longTokenLen)),
-    resetShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits)
+    resetToken: concatIDAndHash(user1[usersServiceIdName] as Id, resetToken),
+    resetShortToken: resetShortToken
   });
 
   await notifier(options.notifier, 'sendResetPwd', user2, notifierOptions);
+
+  const [ resetToken3, resetShortToken3 ] = await Promise.all([
+    options.reuseResetToken ? user2.resetToken : hashPassword(options.app, user2.resetToken, options.passwordField),
+    options.reuseResetToken ? user2.resetShortToken : await hashPassword(options.app, user2.resetShortToken, options.passwordField)
+  ])
+
   const user3 = await usersService.patch(user2[usersServiceIdName], {
     resetExpires: user2.resetExpires,
     resetAttempts: user2.resetAttempts,
-    resetToken:
-      options.reuseResetToken
-        ? user2.resetToken
-        : await hashPassword(options.app, user2.resetToken, options.passwordField),
-    resetShortToken:
-      options.reuseResetToken
-        ? user2.resetShortToken
-        : await hashPassword(options.app, user2.resetShortToken, options.passwordField)
+    resetToken: resetToken3,
+    resetShortToken: resetShortToken3
   });
 
   return options.sanitizeUserForClient(user3);

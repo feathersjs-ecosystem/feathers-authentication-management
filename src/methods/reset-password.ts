@@ -16,7 +16,8 @@ import type {
   ResetPasswordOptions,
   ResetPwdWithShortTokenOptions,
   SanitizedUser,
-  Tokens
+  Tokens,
+  GetUserDataCheckProps
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
@@ -53,7 +54,17 @@ async function resetPassword (
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('resetPassword', query, tokens, password);
-  const usersService = options.app.service(options.service);
+
+  const {
+    app,
+    service,
+    skipIsVerifiedCheck,
+    reuseResetToken,
+    passwordField,
+    sanitizeUserForClient
+  } = options;
+
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
   let users: UsersArrayOrPaginated;
 
@@ -64,16 +75,17 @@ async function resetPassword (
   } else if (tokens.resetShortToken) {
     users = await usersService.find({ query });
   } else {
-    throw new BadRequest('resetToken and resetShortToken are missing. (authLocalMgnt)', {
-      errors: { $className: 'missingToken' }
-    });
+    throw new BadRequest(
+      'resetToken and resetShortToken are missing. (authLocalMgnt)',
+      { errors: { $className: 'missingToken' } }
+    );
   }
 
-  const checkProps = options.skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
+  const checkProps: GetUserDataCheckProps = skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
   const user1 = getUserData(users, checkProps);
 
   const tokenChecks = Object.keys(tokens).map(async key => {
-    if (options.reuseResetToken) {
+    if (reuseResetToken) {
       // Comparing token directly as reused resetToken is not hashed
       if (tokens[key] !== user1[key]) {
         throw new BadRequest('Reset Token is incorrect. (authLocalMgnt)', {
@@ -110,14 +122,15 @@ async function resetPassword (
         resetExpires: null
       });
 
-      throw new BadRequest('Invalid token. Get for a new one. (authLocalMgnt)', {
-        errors: { $className: 'invalidToken' }
+      throw new BadRequest(
+        'Invalid token. Get for a new one. (authLocalMgnt)',
+        { errors: { $className: 'invalidToken' }
       });
     }
   }
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
-    password: await hashPassword(options.app, password, options.passwordField),
+    password: await hashPassword(app, password, passwordField),
     resetExpires: null,
     resetAttempts: null,
     resetToken: null,
@@ -125,5 +138,5 @@ async function resetPassword (
   });
 
   const user3 = await notifier(options.notifier, 'resetPwd', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 }

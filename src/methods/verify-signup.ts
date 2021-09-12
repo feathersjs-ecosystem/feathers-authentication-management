@@ -51,7 +51,14 @@ async function verifySignup (
   notifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('verifySignup', query, tokens);
-  const usersService = options.app.service(options.service);
+
+  const {
+    app,
+    sanitizeUserForClient,
+    service
+  } = options;
+
+  const usersService = app.service(service);
   const usersServiceIdName = usersService.id;
 
   const users = await usersService.find({ query });
@@ -60,14 +67,15 @@ async function verifySignup (
   if (!Object.keys(tokens).every(key => tokens[key] === user1[key])) {
     await eraseVerifyProps(user1, user1.isVerified);
 
-    throw new BadRequest('Invalid token. Get for a new one. (authLocalMgnt)',
+    throw new BadRequest(
+      'Invalid token. Get for a new one. (authLocalMgnt)',
       { errors: { $className: 'badParam' } }
     );
   }
 
   const user2 = await eraseVerifyProps(user1, isDateAfterNow(user1.verifyExpires), user1.verifyChanges || {});
   const user3 = await notifier(options.notifier, 'verifySignup', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  return sanitizeUserForClient(user3);
 
   async function eraseVerifyProps (user: User, isVerified: boolean, verifyChanges?: VerifyChanges): Promise<User> {
     const patchToUser = Object.assign({}, verifyChanges ?? {}, {
