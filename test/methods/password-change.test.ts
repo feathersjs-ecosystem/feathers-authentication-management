@@ -2,17 +2,17 @@ import { assert } from 'chai';
 import bcrypt from 'bcryptjs';
 import feathers, { Application } from '@feathersjs/feathers';
 import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../src/index';
-import { authentication as authConfig } from './helpers/config';
+import authLocalMgnt from '../../src/index';
+import { authentication as authConfig } from '../test-helpers/config';
 
 import {
   SpyOn,
   authenticationService as authService
-} from './helpers';
-import hashPassword from '../src/helpers/hash-password';
-import { timeoutEachTest } from './helpers/config';
-import { UserTestDB, UserTestLocal } from './helpers/types';
-import { AuthenticationManagementService } from '../src/services';
+} from '../test-helpers';
+import hashPassword from '../../src/helpers/hash-password';
+import { timeoutEachTest } from '../test-helpers/config';
+import { UserTestDB, UserTestLocal } from '../test-helpers/types';
+import { AuthenticationManagementService } from '../../src/services';
 
 const makeUsersService = options =>
   function (app) {

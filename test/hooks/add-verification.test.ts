@@ -1,12 +1,12 @@
 import { assert } from 'chai';
 import feathers, { Application, HookContext } from '@feathersjs/feathers';
-import authLocalMgnt from "../src/index";
-import { addVerification } from '../src/hooks';
-import { timeoutEachTest } from './helpers/config';
+import authLocalMgnt from "../../src/index";
+import { addVerification } from '../../src/hooks';
+import { timeoutEachTest } from '../test-helpers/config';
 import {
   makeDateTime,
   aboutEqualDateTime
-} from './helpers';
+} from '../test-helpers';
 
 describe('add-verification.test.ts', function () {
   this.timeout(timeoutEachTest);

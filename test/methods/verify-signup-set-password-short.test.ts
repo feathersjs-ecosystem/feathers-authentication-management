@@ -3,13 +3,13 @@ import { assert } from 'chai';
 import feathers, { Application } from '@feathersjs/feathers';
 import feathersMemory, { Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
-import authLocalMgnt from '../src/index';
+import authLocalMgnt from '../../src/index';
 import {
   SpyOn,
   authenticationService as authService
-} from './helpers';
-import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
-import { AuthenticationManagementService } from '../src/services';
+} from '../test-helpers';
+import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { AuthenticationManagementService } from '../../src/services';
 
 const now = Date.now();
 

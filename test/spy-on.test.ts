@@ -1,6 +1,6 @@
 
 import { assert } from 'chai';
-import { SpyOn } from './helpers';
+import { SpyOn } from './test-helpers';
 
 describe('spy-on.test.ts', () => {
   it('works with functions without callbacks', () => {

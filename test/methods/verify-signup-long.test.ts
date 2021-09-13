@@ -1,11 +1,11 @@
 import { assert } from 'chai';
 import feathers, { Application } from '@feathersjs/feathers';
 import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../src/index';
-import {SpyOn} from './helpers';
-import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
-import { UserTestDB, UserTestLocal } from './helpers/types';
-import { AuthenticationManagementService } from '../src/services';
+import authLocalMgnt from '../../src/index';
+import {SpyOn} from '../test-helpers';
+import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { UserTestDB, UserTestLocal } from '../test-helpers/types';
+import { AuthenticationManagementService } from '../../src/services';
 
 const now = Date.now();
 
@@ -19,46 +19,36 @@ const usersId: UserTestLocal[] = [
   {
     id: 'a',
     email: 'a',
-    username: 'aa',
     isVerified: false,
     verifyToken: '000',
-    verifyShortToken: '00099',
     verifyExpires: now + maxTimeAllTests
   },
   {
     id: 'b',
     email: 'b',
-    username: 'bb',
     isVerified: false,
     verifyToken: null,
-    verifyShortToken: null,
     verifyExpires: null
   },
   {
     id: 'c',
     email: 'c',
-    username: 'cc',
     isVerified: false,
     verifyToken: '111',
-    verifyShortToken: '11199',
     verifyExpires: now - maxTimeAllTests
   },
   {
     id: 'd',
     email: 'd',
-    username: 'dd',
     isVerified: true,
     verifyToken: '222',
-    verifyShortToken: '22299',
     verifyExpires: now - maxTimeAllTests
   },
   {
     id: 'e',
     email: 'e',
-    username: 'ee',
     isVerified: true,
     verifyToken: '800',
-    verifyShortToken: '80099',
     verifyExpires: now + maxTimeAllTests,
     verifyChanges: { cellphone: '800' }
   }
@@ -68,46 +58,36 @@ const users_Id: UserTestDB[] = [
   {
     _id: 'a',
     email: 'a',
-    username: 'aa',
     isVerified: false,
     verifyToken: '000',
-    verifyShortToken: '00099',
     verifyExpires: now + maxTimeAllTests
   },
   {
     _id: 'b',
     email: 'b',
-    username: 'bb',
     isVerified: false,
     verifyToken: null,
-    verifyShortToken: null,
     verifyExpires: null
   },
   {
     _id: 'c',
     email: 'c',
-    username: 'cc',
     isVerified: false,
     verifyToken: '111',
-    verifyShortToken: '11199',
     verifyExpires: now - maxTimeAllTests
   },
   {
     _id: 'd',
     email: 'd',
-    username: 'dd',
     isVerified: true,
     verifyToken: '222',
-    verifyShortToken: '22299',
     verifyExpires: now - maxTimeAllTests
   },
   {
     _id: 'e',
     email: 'e',
-    username: 'ee',
     isVerified: true,
     verifyToken: '800',
-    verifyShortToken: '80099',
     verifyExpires: now + maxTimeAllTests,
     verifyChanges: { cellphone: '800' }
   }
@@ -115,7 +95,7 @@ const users_Id: UserTestDB[] = [
 
 ['_id', 'id'].forEach(idType => {
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`verify-signUp-short.ts ${pagination} ${idType}`, function () {
+    describe(`verify-signup-long.ts ${pagination} ${idType}`, function () {
       this.timeout(timeoutEachTest);
 
       describe('basic', () => {
@@ -133,11 +113,7 @@ const users_Id: UserTestDB[] = [
               paginate: pagination === 'paginated'
             })
           );
-          app.configure(
-            authLocalMgnt({
-              identifyUserProps: ['email', 'username']
-            })
-          );
+          app.configure(authLocalMgnt({}));
           app.setup();
           authLocalMgntService = app.service('authManagement');
 
@@ -150,11 +126,8 @@ const users_Id: UserTestDB[] = [
         it('verifies valid token if not verified', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                user: { email: db[0].email }
-              }
+              action: 'verifySignupLong',
+              value: '000'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -174,11 +147,8 @@ const users_Id: UserTestDB[] = [
         it('verifies valid token if verifyChanges', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '80099',
-                user: { email: db[4].email }
-              }
+              action: 'verifySignupLong',
+              value: '800'
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -200,12 +170,10 @@ const users_Id: UserTestDB[] = [
         it('user is sanitized', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                user: { username: db[0].username }
-              }
+              action: 'verifySignupLong',
+              value: '000'
             });
+            const user = await usersService.get(result.id || result._id);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(result.verifyToken, undefined, 'verifyToken not undefined');
@@ -218,72 +186,16 @@ const users_Id: UserTestDB[] = [
           }
         });
 
-        it('handles multiple user ident', async () => {
+        it('error on verified user without verifyChange', async () => {
           try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                user: { email: db[0].email, username: db[0].username }
+            result = await authLocalMgntService.create(
+              {
+                action: 'verifySignupLong',
+                value: '222'
               }
-            });
+            );
 
-            assert.strictEqual(result.isVerified, true, 'isVerified not true');
-            assert.strictEqual(result.verifyToken, undefined, 'verifyToken not undefined');
-            assert.strictEqual(result.verifyShortToken, undefined, 'verifyShortToken not undefined');
-            assert.strictEqual(result.verifyExpires, undefined, 'verifyExpires not undefined');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
-        });
-
-        it('requires user ident', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                user: {}
-              }
-            });
-
-            assert(false, 'unexpectedly succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-
-        it('throws on non-configured user ident', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                // was this right?
-                user: { email: undefined, verifyShortToken: '00099' }
-              }
-            });
-
-            assert(false, 'unexpectedly succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-
-        it('error on unverified user', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '22299',
-                user: { email: db[3].email }
-              }
-            });
-
-            assert(false, 'unexpectedly succeeded.');
+            assert(false, 'unexpectedly succeeded');
           } catch (err) {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
@@ -293,45 +205,25 @@ const users_Id: UserTestDB[] = [
         it('error on expired token', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '11199',
-                user: { username: db[2].username }
-              }
+              action: 'verifySignupLong',
+              value: '111'
             });
 
-            assert(false, 'unexpectedly succeeded.');
+            assert(false, 'unexpectedly succeeded');
           } catch (err) {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
           }
         });
 
-        it('error on user not found', async () => {
+        it('error on token not found', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '999',
-                user: { email: '999' }
-              }
+              action: 'verifySignupLong',
+              value: '999'
             });
 
-            assert(false, 'unexpectedly succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-
-        it('error incorrect token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: { token: '999', user: { email: db[0].email } }
-            });
-
-            assert(false, 'unexpectedly succeeded.');
+            assert(false, 'unexpectedly succeeded');
           } catch (err) {
             assert.isString(err.message);
             assert.isNotFalse(err.message);
@@ -340,13 +232,12 @@ const users_Id: UserTestDB[] = [
       });
 
       describe('with notification', () => {
-        let spyNotifier;
-
         let app: Application;
         let usersService: Service;
         let authLocalMgntService: AuthenticationManagementService;
         let db;
         let result;
+        let spyNotifier;
 
         beforeEach(async () => {
           spyNotifier = SpyOn(notifier);
@@ -360,7 +251,6 @@ const users_Id: UserTestDB[] = [
           );
           app.configure(
             authLocalMgnt({
-              // maybe reset identifyUserProps
               notifier: spyNotifier.callWith
             })
           );
@@ -376,12 +266,9 @@ const users_Id: UserTestDB[] = [
         it('verifies valid token', async () => {
           try {
             result = await authLocalMgntService.create({
-              action: 'verifySignupShort',
-              value: {
-                token: '00099',
-                user: { email: db[0].email },
-              },
-              notifierOptions: { transport: 'sms' },
+              action: 'verifySignupLong',
+              value: '000',
+              notifierOptions: { transport: 'sms' }
             });
             const user = await usersService.get(result.id || result._id);
 
@@ -389,9 +276,7 @@ const users_Id: UserTestDB[] = [
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
             assert.strictEqual(user.verifyToken, null, 'verifyToken not null');
-            assert.strictEqual(user.verifyShortToken, null, 'verifyShortToken not null');
             assert.strictEqual(user.verifyExpires, null, 'verifyExpires not null');
-            assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
 
             assert.deepEqual(spyNotifier.result()[0].args, [
               'verifySignup',

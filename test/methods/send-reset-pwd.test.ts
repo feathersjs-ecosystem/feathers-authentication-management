@@ -1,17 +1,17 @@
 import { assert } from 'chai';
 import feathers, { Application } from '@feathersjs/feathers';
 import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../src/index';
-import authService from './helpers/authenticationService';
+import authLocalMgnt from '../../src/index';
+import authService from '../test-helpers/authenticationService';
 
-import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
+import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
 import {
   makeDateTime as helpersMakeDateTime,
   SpyOn,
   aboutEqualDateTime
-} from './helpers';
-import { UserTestDB, UserTestLocal } from './helpers/types';
-import { AuthenticationManagementService } from '../src/services';
+} from '../test-helpers';
+import { UserTestDB, UserTestLocal } from '../test-helpers/types';
+import { AuthenticationManagementService } from '../../src/services';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};

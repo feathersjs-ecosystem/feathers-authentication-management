@@ -2,7 +2,7 @@
 import { assert } from 'chai';
 import {
   removeVerification
-} from '../src/hooks';
+} from '../../src/hooks';
 
 let context;
 

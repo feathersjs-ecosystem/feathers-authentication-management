@@ -1,7 +1,7 @@
 
 import { assert } from 'chai';
-import isVerified from '../src/hooks/is-verified';
-import { timeoutEachTest } from './helpers/config';
+import isVerified from '../../src/hooks/is-verified';
+import { timeoutEachTest } from '../test-helpers/config';
 
 describe('is-verified.test.ts', function () {
   this.timeout(timeoutEachTest);

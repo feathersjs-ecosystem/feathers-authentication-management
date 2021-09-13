@@ -1,13 +1,13 @@
 import { assert } from 'chai';
 import feathers, { Application } from '@feathersjs/feathers';
-import authService from './helpers/authenticationService';
+import authService from '../test-helpers/authenticationService';
 
 import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../src/index';
-import { SpyOn } from './helpers';
-import { hashPassword } from '../src/helpers';
-import { timeoutEachTest, maxTimeAllTests } from './helpers/config';
-import { AuthenticationManagementService } from '../src/services';
+import authLocalMgnt from '../../src/index';
+import { SpyOn } from '../test-helpers';
+import { hashPassword } from '../../src/helpers';
+import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { AuthenticationManagementService } from '../../src/services';
 
 const now = Date.now();
 
