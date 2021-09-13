@@ -37,7 +37,6 @@ export default function addVerification (
       ]);
 
       context.data.isVerified = false;
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       context.data.verifyExpires = Date.now() + options.delay;
       context.data.verifyToken = longToken;
       context.data.verifyShortToken = shortToken;

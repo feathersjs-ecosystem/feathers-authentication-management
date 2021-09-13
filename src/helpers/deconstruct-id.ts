@@ -1,6 +1,8 @@
 import { BadRequest } from '@feathersjs/errors';
 
-export default function deconstructId (token: string): string {
+export default function deconstructId (
+  token: string
+): string {
   if (!token.includes('___')) {
     throw new BadRequest(
       'Token is not in the correct format.',

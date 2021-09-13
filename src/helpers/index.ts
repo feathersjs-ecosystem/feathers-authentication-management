@@ -9,6 +9,7 @@ import getLongToken from './get-long-token';
 import getShortToken from './get-short-token';
 import getUserData from './get-user-data';
 import hashPassword from './hash-password';
+import isDateAfterNow from './is-date-after-now';
 import isNullsy from './is-nullsy';
 import notifier from './notifier';
 import randomBytes from './random-bytes';
@@ -28,6 +29,7 @@ const helpers = {
   getShortToken,
   getUserData,
   hashPassword,
+  isDateAfterNow,
   isNullsy,
   notifier,
   randomBytes, // for testing, make safe from hacking
