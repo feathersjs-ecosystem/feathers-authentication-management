@@ -4,6 +4,7 @@ import feathersMemory from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import helpers from '../src/helpers';
 import { User } from '../src/types';
+import { addSeconds } from "date-fns"
 
 const makeUsersService = options =>
   function (app) {
@@ -124,6 +125,106 @@ describe('helpers.test.ts', () => {
     });
   })
 
+  it("deconstructId", () => {
+    const id = helpers.deconstructId("123___456");
+    assert.strictEqual(id, "123", "extracts id");
+
+    assert.throws(
+      () => helpers.deconstructId("this is__a test")
+    )
+  });
+
+  it("ensureFieldHasChanges", () => {
+    const ensureForNulls = helpers.ensureFieldHasChanged(null, null);
+    assert.notOk(ensureForNulls('password'), "returns false for nulls");
+
+    const ensureForChanged = helpers.ensureFieldHasChanged({ password: "1" }, { password: "2" });
+    assert.ok(ensureForChanged('password'), "changed password");
+
+    const ensureForUnchanged = helpers.ensureFieldHasChanged({ password: "1" }, { password: "1" });
+    assert.ok(ensureForChanged('password'), "password did not change")
+  });
+
+  it("ensureValuesAreStrings", () => {
+    assert.doesNotThrow(
+      () => helpers.ensureValuesAreStrings(),
+      "does not throw on empty array"
+    )
+
+    assert.doesNotThrow(
+      () => helpers.ensureValuesAreStrings("1", "2", "3"),
+      "does not throw on string array"
+    )
+
+    assert.doesNotThrow(
+      // @ts-expect-error anything other than string is not allowed
+      () => helpers.ensureValuesAreStrings("1", "2", 3),
+      "does throw on mixed array"
+    )
+  })
+
+  describe("getUserData", () => {
+    it("throws with no users", () => {
+      assert.throws(
+        () => helpers.getUserData([])
+      );
+
+      assert.throws(
+        () => helpers.getUserData({ data: [], limit: 10, skip: 0, total: 0 })
+      )
+    })
+
+    it("throws with users > 1", () => {
+      assert.throws(
+        () => helpers.getUserData([
+          // @ts-expect-error some props missing
+          { id: 1, email: "test@test.de" },
+          // @ts-expect-error some props missing
+          { id: 2, email: "test2@test.de" }
+        ])
+      )
+
+      assert.throws(
+        () => helpers.getUserData({
+          data: [
+            // @ts-expect-error some props missing
+            { id: 1, email: "test@test.de" },
+            // @ts-expect-error some props missing
+            { id: 2, email: "test2@test.de" }
+          ],
+          limit: 10,
+          skip: 0,
+          total: 2
+      })
+      )
+    });
+  });
+
+  it("hashPassword", async () => {
+    let rejected = false;
+    try {
+      // @ts-expect-error field is missing
+      await helpers.hashPassword(feathers(), "123")
+    } catch {
+      rejected = true;
+    }
+
+    assert.ok(rejected, "rejected");
+  })
+
+  it("isDateAfterNow", () => {
+    const now = new Date();
+    const nowPlus1 = addSeconds(now, 1);
+
+    assert.ok(helpers.isDateAfterNow(nowPlus1.getTime()), "unix is after now");
+    assert.ok(helpers.isDateAfterNow(nowPlus1), "date obj is after now");
+
+    assert.notOk(helpers.isDateAfterNow(now.getTime()), "now as unix returns false")
+    assert.notOk(helpers.isDateAfterNow(now), "now as date obj returns false")
+
+    assert.ok(helpers.isDateAfterNow(now.getTime(), -1000), "now as unix with delay returns true");
+    assert.ok(helpers.isDateAfterNow(now, -1000), "now as date obj with delay returns true");
+  })
 });
 
 function customSanitizeUserForClient (user) {
