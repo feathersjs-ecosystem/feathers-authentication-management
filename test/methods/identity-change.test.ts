@@ -1,210 +1,201 @@
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../../src/index';
+import { MemoryServiceOptions, Service } from 'feathers-memory';
+import authLocalMgnt, { DataIdentityChange, DataIdentityChangeWithAction } from '../../src/index';
 import {
   SpyOn,
   authenticationService as authService
 } from '../test-helpers';
 import hashPassword from '../../src/helpers/hash-password';
 import { timeoutEachTest } from '../test-helpers/config';
-import { UserTestDB, UserTestLocal } from '../test-helpers/types';
-import { AuthenticationManagementService } from '../../src/services';
+import { IdentityChangeService } from '../../src/services';
 
-const makeUsersService = options =>
-  function (app) {
-    app.use('/users', feathersMemory(options));
-  };
-
-// users DB
-const users_Id: UserTestDB[] = [
-  { _id: 'a', email: 'a', plainPassword: 'aa', isVerified: false },
-  { _id: 'b', email: 'b', plainPassword: 'bb', isVerified: true }
-];
-
-const usersId: UserTestLocal[] = [
-  { id: 'a', email: 'a', plainPassword: 'aa', isVerified: false },
-  { id: 'b', email: 'b', plainPassword: 'bb', isVerified: true }
-];
+const withAction = (
+  data: DataIdentityChange
+): DataIdentityChangeWithAction => {
+  // @ts-ignore
+  return Object.assign({ action: "identityChange" }, data);
+}
 
 // Tests
 ['_id', 'id'].forEach(idType => {
+  // users DB
+  const users = [
+    { [idType]: 'a', email: 'a', plainPassword: 'aa', isVerified: false },
+    { [idType]: 'b', email: 'b', plainPassword: 'bb', isVerified: true }
+  ];
+
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`identity-change.ts ${pagination} ${idType}`, function () {
-      this.timeout(timeoutEachTest);
+    [{
+      name: "authManagement.create",
+      callMethod: (app: Application, data: DataIdentityChange) => {
+        return app.service("authManagement").create(withAction(data));
+      }
+    }, {
+      name: "authManagement.identityChange",
+      callMethod: (app: Application, data: DataIdentityChange) => {
+        return app.service("authManagement").identityChange(data);
+      }
+    }, {
+      name: "authManagement/identity-change",
+      callMethod: (app: Application, data: DataIdentityChange) => {
+        return app.service("authManagement/identity-change").create(data);
+      }
+    }].forEach(({ name, callMethod }) => {
+      describe(`identity-change.ts ${pagination} ${idType} ${name}`, function () {
+        this.timeout(timeoutEachTest);
 
-      describe('standard', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('standard', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(authLocalMgnt({}));
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers));
+            app.configure(authLocalMgnt({}));
+            app.use("authManagement/identity-change", new IdentityChangeService({
+              app
+            }))
+            app.setup();
+            usersService = app.service('users');
 
-          // Ugly but makes test much faster
-          if (!users_Id[0].password) {
-            users_Id[0].password = await hashPassword(
-              app,
-              users_Id[0].plainPassword,
-              'password'
-            );
-            users_Id[1].password = await hashPassword(
-              app,
-              users_Id[1].plainPassword,
-              'password'
-            );
+            // Ugly but makes test much faster
+            if (!users[0].password) {
+              users[0].password = await hashPassword(
+                app,
+                users[0].plainPassword,
+                'password'
+              );
+              users[1].password = await hashPassword(
+                app,
+                users[1].plainPassword,
+                'password'
+              );
+            }
 
-            usersId[0].password = users_Id[0].password;
-            usersId[1].password = users_Id[1].password;
-          }
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+          it('updates verified user', async () => {
+            const userRec = clone(users[1]);
 
-        it('updates verified user', async () => {
-          try {
-            const userRec = clone(users_Id[1]);
-
-            result = await authLocalMgntService.create({
-              action: 'identityChange',
+            const result = await callMethod(app, {
               value: {
                 user: { email: userRec.email },
                 password: userRec.plainPassword,
                 changes: { email: 'b@b' }
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
-            assert.strictEqual(result.isVerified, true, 'isVerified not true');
-            assert.equal(user.email, userRec.email);
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+            assert.strictEqual(result.isVerified, true);
+            assert.strictEqual(user.email, userRec.email);
+          });
 
-        it('updates unverified user', async () => {
-          try {
-            const userRec = clone(users_Id[0]);
+          it('updates unverified user', async () => {
+            const userRec = clone(users[0]);
 
-            result = await authLocalMgntService.create({
-              action: 'identityChange',
+            const result = await callMethod(app, {
               value: {
                 user: { email: userRec.email },
                 password: userRec.plainPassword,
                 changes: { email: 'a@a' }
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
-            assert.strictEqual(
-              result.isVerified,
-              false,
-              'isVerified not false'
-            );
-            assert.equal(user.email, userRec.email);
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+            assert.strictEqual(result.isVerified, false);
+            assert.strictEqual(user.email, userRec.email);
+          });
 
-        it('error on wrong password', async () => {
-          try {
-            const userRec = clone(users_Id[0]);
+          it('error on wrong password', async () => {
+            const userRec = clone(users[0]);
 
-            result = await authLocalMgntService.create({
-              action: 'identityChange',
-              value: {
-                user: { email: userRec.email },
-                password: 'ghghghg',
-                changes: { email: 'a@a' }
+            await assert.rejects(
+              callMethod(app, {
+                value: {
+                  user: { email: userRec.email },
+                  password: 'ghghghg',
+                  changes: { email: 'a@a' }
+                }
+              }),
+              (err: any) => {
+                assert.strictEqual(err.name, "BadRequest");
+                assert.strictEqual(err.message, "Password is incorrect.");
+                return true;
               }
-            });
-
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
+            )
+          });
         });
-      });
 
-      describe('with notification', () => {
-        let spyNotifier;
+        describe('with notification', () => {
+          let spyNotifier;
 
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          spyNotifier = SpyOn(notifier);
+          beforeEach(async () => {
+            spyNotifier = SpyOn(notifier);
 
-          app = feathers();
-          app.use('/authentication', authService(app));
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          app.configure(
-            makeUsersService({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                notifier: spyNotifier.callWith
+              })
+            );
+            app.use("authManagement/identity-change", new IdentityChangeService({
+              app,
               notifier: spyNotifier.callWith
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }));
+            app.setup();
+            usersService = app.service('users');
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            await usersService.remove(null);
+            await usersService.create(clone(users));
 
-        it('updates verified user', async () => {
-          try {
-            const userRec = clone(users_Id[1]);
+          });
 
-            result = await authLocalMgntService.create({
-              action: 'identityChange',
+          it('updates verified user', async () => {
+            const userRec = clone(users[1]);
+
+            const result = await callMethod(app, {
               value: {
                 user: { email: userRec.email },
                 password: userRec.plainPassword,
                 changes: { email: 'b@b' }
               },
-              notifierOptions: {transport: 'sms'},
+              notifierOptions: {transport: 'sms'}
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
-            assert.strictEqual(result.isVerified, true, 'isVerified not true');
+            assert.strictEqual(result.isVerified, true, `'${name}': isVerified not true`);
 
-            assert.equal(user.email, user.email);
-            assert.deepEqual(user.verifyChanges, { email: 'b@b' });
+            assert.strictEqual(user.email, userRec.email, `'${name}': email is corrent`);
+            assert.deepStrictEqual(user.verifyChanges, { email: 'b@b' });
 
             const spy = spyNotifier.result()[0].args;
 
-            assert.deepEqual(spy, [
+            assert.deepStrictEqual(spy, [
               'identityChange',
               Object.assign(
                 {},
@@ -220,23 +211,23 @@ const usersId: UserTestLocal[] = [
               { transport: "sms" },
             ]);
 
-            assert.strictEqual(user.isVerified, true, 'isVerified not false');
-            assert.isString(user.verifyToken, 'verifyToken not String');
-            assert.equal(
+            assert.strictEqual(user.isVerified, true, `'${name}': isVerified not false`);
+            assert.strictEqual(typeof user.verifyToken, "string", `'${name}': verifyToken not String`);
+            assert.strictEqual(
               user.verifyToken.length,
               30,
-              'verify token wrong length'
+              `'${name}': verify token wrong length`
             );
-            assert.equal(
+            assert.strictEqual(
               user.verifyShortToken.length,
               6,
-              'verify short token wrong length'
+              `'${name}': verify short token wrong length`
             );
-            assert.match(user.verifyShortToken, /^[0-9]+$/);
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
+
+            const match = user.verifyShortToken.match(/^[0-9]+$/);
+
+            assert.strictEqual(match[0].length, 6, `'${name}': matches number`);
+          });
         });
       });
     });

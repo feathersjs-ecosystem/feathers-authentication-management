@@ -1,5 +1,4 @@
-
-import { assert } from 'chai';
+import assert from 'assert';
 import {
   removeVerification
 } from '../../src/hooks';
@@ -29,13 +28,13 @@ describe('remove-verification.test.ts', () => {
     assert.doesNotThrow(() => { removeVerification()(context); });
 
     const user = context.result;
-    assert.property(user, 'isVerified');
-    assert.equal(user.isVerified, true);
-    assert.notProperty(user, 'verifyToken');
-    assert.notProperty(user, 'verifyExpires');
-    assert.notProperty(user, 'resetToken');
-    assert.notProperty(user, 'resetExpires');
-    assert.notProperty(user, 'verifyChanges');
+    assert.ok(user.isVerified);
+    assert.strictEqual(user.isVerified, true);
+    assert.strictEqual(user.verifyToken, undefined);
+    assert.strictEqual(user.verifyExpires, undefined);
+    assert.strictEqual(user.resetToken, undefined);
+    assert.strictEqual(user.resetExpires, undefined);
+    assert.strictEqual(user.verifyChanges, undefined);
   });
 
   it('works with unverified user', () => {
@@ -44,13 +43,13 @@ describe('remove-verification.test.ts', () => {
     assert.doesNotThrow(() => { removeVerification()(context); });
 
     const user = context.result;
-    assert.property(user, 'isVerified');
-    assert.equal(user.isVerified, false);
-    assert.notProperty(user, 'verifyToken');
-    assert.notProperty(user, 'verifyExpires');
-    assert.notProperty(user, 'resetToken');
-    assert.notProperty(user, 'resetExpires');
-    assert.notProperty(user, 'verifyChanges');
+    assert.strictEqual(user.isVerified, false);
+    assert.strictEqual(user.isVerified, false);
+    assert.strictEqual(user.verifyToken, undefined);
+    assert.strictEqual(user.verifyExpires, undefined);
+    assert.strictEqual(user.resetToken, undefined);
+    assert.strictEqual(user.resetExpires, undefined);
+    assert.strictEqual(user.verifyChanges, undefined);
   });
 
   it('works if addVerification not run', () => {
@@ -61,16 +60,18 @@ describe('remove-verification.test.ts', () => {
 
   it('noop if server initiated', () => {
     context.params.provider = undefined;
-    assert.doesNotThrow(() => { removeVerification()(context); });
+    assert.doesNotThrow(
+      () => { removeVerification()(context); }
+    );
 
     const user = context.result;
-    assert.property(user, 'isVerified');
-    assert.equal(user.isVerified, true);
-    assert.property(user, 'verifyToken');
-    assert.property(user, 'verifyExpires');
-    assert.property(user, 'resetToken');
-    assert.property(user, 'resetExpires');
-    assert.property(user, 'verifyChanges');
+    assert.ok(user.isVerified);
+    assert.strictEqual(user.isVerified, true);
+    assert.ok(user.verifyToken);
+    assert.ok(user.verifyExpires);
+    assert.ok(user.resetToken);
+    assert.ok(user.resetExpires);
+    assert.ok(user.verifyChanges);
   });
 
   it('works with multiple verified user', () => {
@@ -78,13 +79,13 @@ describe('remove-verification.test.ts', () => {
     assert.doesNotThrow(() => { removeVerification()(context); });
 
     context.result.forEach(user => {
-      assert.property(user, 'isVerified');
-      assert.equal(user.isVerified, true);
-      assert.notProperty(user, 'verifyToken');
-      assert.notProperty(user, 'verifyExpires');
-      assert.notProperty(user, 'resetToken');
-      assert.notProperty(user, 'resetExpires');
-      assert.notProperty(user, 'verifyChanges');
+      assert.ok(user.isVerified);
+      assert.strictEqual(user.isVerified, true);
+      assert.strictEqual(user.verifyToken, undefined);
+      assert.strictEqual(user.verifyExpires, undefined);
+      assert.strictEqual(user.resetToken, undefined);
+      assert.strictEqual(user.resetExpires, undefined);
+      assert.strictEqual(user.verifyChanges, undefined);
     });
   });
 

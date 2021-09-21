@@ -1,7 +1,7 @@
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../../src/index';
+import { MemoryServiceOptions, Service } from 'feathers-memory';
+import authLocalMgnt, { DataSendResetPwd, DataSendResetPwdWithAction } from '../../src/index';
 import authService from '../test-helpers/authenticationService';
 
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
@@ -10,8 +10,7 @@ import {
   SpyOn,
   aboutEqualDateTime
 } from '../test-helpers';
-import { UserTestDB, UserTestLocal } from '../test-helpers/types';
-import { AuthenticationManagementService } from '../../src/services';
+import { AuthenticationManagementService, SendResetPwdService } from '../../src/services';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};
@@ -19,133 +18,121 @@ function makeDateTime(options1?) {
   return helpersMakeDateTime(options1);
 }
 
-const now = Date.now();
-const timeout = timeoutEachTest;
-
-const makeUsersService = options =>
-  function (app) {
-    Object.assign(options, { multi: true });
-    app.use('/users', feathersMemory(options));
-  };
-
-const usersId: UserTestLocal[] = [
-  {
-    id: 'a',
-    email: 'a',
-    isVerified: false,
-    verifyToken: '000',
-    verifyExpires: now + maxTimeAllTests
-  },
-  {
-    id: 'b',
-    email: 'b',
-    isVerified: true,
-    verifyToken: null,
-    verifyExpires: null
-  }
-];
-
-const users_Id: UserTestDB[] = [
-  {
-    _id: 'a',
-    email: 'a',
-    isVerified: false,
-    verifyToken: '000',
-    verifyExpires: now + maxTimeAllTests
-  },
-  {
-    _id: 'b',
-    email: 'b',
-    isVerified: true,
-    verifyToken: null,
-    verifyExpires: null
-  }
-];
+const withAction = (
+  data: DataSendResetPwd
+): DataSendResetPwdWithAction => {
+  // @ts-ignore
+  return Object.assign({ action: "sendResetPwd" }, data);
+}
 
 ['_id', 'id'].forEach(idType => {
+  const now = Date.now();
+  const users = [
+    {
+      [idType]: 'a',
+      email: 'a',
+      isVerified: false,
+      verifyToken: '000',
+      verifyExpires: now + maxTimeAllTests
+    },
+    {
+      [idType]: 'b',
+      email: 'b',
+      isVerified: true,
+      verifyToken: null,
+      verifyExpires: null
+    }
+  ];
+
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`send-reset-pwd.ts ${pagination} ${idType}`, function () {
-      this.timeout(timeoutEachTest);
+    [{
+      name: "authManagement.create",
+      callMethod: (app: Application, data: DataSendResetPwd) => {
+        return app.service("authManagement").create(withAction(data));
+      }
+    }, {
+      name: "authManagement.sendResetPassword",
+      callMethod: (app: Application, data: DataSendResetPwd) => {
+        return app.service("authManagement").sendResetPassword(data);
+      }
+    }, {
+      name: "authManagement/send-reset-password",
+      callMethod: (app: Application, data: DataSendResetPwd) => {
+        return app.service("authManagement/send-reset-password").create(data);
+      }
+    }].forEach(({ name, callMethod }) => {
+      describe(`send-reset-pwd.ts ${pagination} ${idType} ${name}`, function () {
+        this.timeout(timeoutEachTest);
 
-      describe('basic', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('basic', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(authLocalMgnt({}));
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
 
-        it('updates verified user', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            app.configure(authLocalMgnt({}));
+            app.use("authManagement/send-reset-password", new SendResetPwdService({
+              app
+            }))
+            app.setup();
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('updates verified user', async function () {
+            const result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.isString(user.resetToken, 'resetToken not String');
-            assert.equal(user.resetToken.length, 60, 'reset token wrong length');
-            assert.equal(user.resetShortToken.length, 60, 'reset short token wrong length');
+            assert.strictEqual(typeof user.resetToken, 'string', 'resetToken not String');
+            assert.strictEqual(user.resetToken.length, 60, 'reset token wrong length');
+            assert.strictEqual(user.resetShortToken.length, 60, 'reset short token wrong length');
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
-        });
+          });
 
-        it('error on unverified user', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
-              value: { email: 'a' }
-            });
+          it('error on unverified user', async function () {
+            try {
+              const result = await callMethod(app, {
+                value: { email: 'a' }
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User is not verified.');
+            }
+          });
 
-        it('error on email not found', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
-              value: { email: 'x' }
-            });
+          it('error on email not found', async function () {
+            try {
+              const result = await callMethod(app, {
+                value: { email: 'x' }
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User not found.')
+            }
+          });
 
-        it('user is sanitized', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+          it('user is sanitized', async function () {
+            const result = await callMethod(app, {
               value: { email: 'b' }
             });
 
@@ -153,255 +140,243 @@ const users_Id: UserTestDB[] = [
             assert.strictEqual(result.resetToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetShortToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetExpires, undefined, 'resetExpires not undefined');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+          });
         });
-      });
 
-      describe('length can change (digits)', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('length can change (digits)', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          app.configure(
-            makeUsersService({
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                resetDelay: 200,
+                reuseResetToken: true,
+              })
+            );
+            app.use("authManagement/send-reset-password", new SendResetPwdService({
+              app,
               resetDelay: 200,
               reuseResetToken: true,
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
 
-        it('token is reusable with options.reuseResetToken', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('token is reusable with options.reuseResetToken', async function () {
+            let result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user1 = await usersService.get(result.id || result._id);
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            const user1 = await usersService.get(result[idType]);
+            result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user2 = await usersService.get(result.id || result._id);
+            const user2 = await usersService.get(result[idType]);
 
-            assert.equal(user1.resetToken, user2.resetToken, 'reset token has changed');
-            assert.equal(user1.resetShortToken, user2.resetShortToken, 'reset short token has changed');
-            assert.equal(user1.resetExpires, user2.resetExpires, 'reset expires wrong has changed');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
-        });
+            assert.strictEqual(user1.resetToken, user2.resetToken, 'reset token has changed');
+            assert.strictEqual(user1.resetShortToken, user2.resetShortToken, 'reset short token has changed');
+            assert.strictEqual(user1.resetExpires, user2.resetExpires, 'reset expires wrong has changed');
+          });
 
-        it('token is not reused after half reset time', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+          it('token is not reused after half reset time', async function () {
+            let result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user1 = await usersService.get(result.id || result._id);
+            const user1 = await usersService.get(result[idType]);
 
             await new Promise(resolve => setTimeout(resolve, 110));
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user2 = await usersService.get(result.id || result._id);
+            const user2 = await usersService.get(result[idType]);
 
             assert.notEqual(user1.resetToken, user2.resetToken, 'reset token has not changed');
             assert.notEqual(user1.resetShortToken, user2.resetShortToken, 'reset short token has not changed');
             assert.notEqual(user1.resetExpires, user2.resetExpires, 'reset expires wrong has not changed');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+          });
         });
-      });
 
-      describe('length can change (digits)', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('length can change (digits)', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          app.configure(
-            makeUsersService({
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                longTokenLen: 10,
+                shortTokenLen: 9,
+                shortTokenDigits: true
+              })
+            );
+            app.use("authManagement/send-reset-password", new SendResetPwdService({
+              app,
               longTokenLen: 10,
               shortTokenLen: 9,
               shortTokenDigits: true
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
 
-        it('updates verified user', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('updates verified user', async function () {
+            const result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.isString(user.resetToken, 'resetToken not String');
-            assert.equal(user.resetToken.length, 60, 'reset token wrong length');
-            assert.equal(user.resetShortToken.length, 60, 'reset short token wrong length');
+            assert.strictEqual(typeof user.resetToken, 'string', 'resetToken not String');
+            assert.strictEqual(user.resetToken.length, 60, 'reset token wrong length');
+            assert.strictEqual(user.resetShortToken.length, 60, 'reset short token wrong length');
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+          });
         });
-      });
 
-      describe('length can change (alpha)', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('length can change (alpha)', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          app.configure(
-            makeUsersService({
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                longTokenLen: 10,
+                shortTokenLen: 9,
+                shortTokenDigits: false
+              })
+            );
+            app.use("authManagement/send-reset-password", new SendResetPwdService({
+              app,
               longTokenLen: 10,
               shortTokenLen: 9,
               shortTokenDigits: false
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
 
-        it('updates verified user', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('updates verified user', async function () {
+            const result = await callMethod(app, {
               value: { email: 'b' }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.isString(user.resetToken, 'resetToken not String');
-            assert.equal(user.resetToken.length, 60, 'reset token wrong length');
-            assert.equal(user.resetShortToken.length, 60, 'reset short token wrong length');
+            assert.strictEqual(typeof user.resetToken, 'string', 'resetToken not String');
+            assert.strictEqual(user.resetToken.length, 60, 'reset token wrong length');
+            assert.strictEqual(user.resetShortToken.length, 60, 'reset short token wrong length');
             assert.match(user.resetShortToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+          });
         });
-      });
 
-      describe('with notification', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
-        let spyNotifier;
+        describe('with notification', () => {
+          let app: Application;
+          let usersService: Service;
+          let spyNotifier;
 
-        beforeEach(async () => {
-          spyNotifier = SpyOn(notifier);
+          beforeEach(async () => {
+            spyNotifier = SpyOn(notifier);
 
-          app = feathers();
-          app.use('/authentication', authService(app));
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-          app.configure(
-            makeUsersService({
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                longTokenLen: 15,
+                shortTokenLen: 6,
+                shortTokenDigits: true,
+                notifier: spyNotifier.callWith
+              })
+            );
+            app.use("authManagement/send-reset-password", new SendResetPwdService({
+              app,
               longTokenLen: 15,
               shortTokenLen: 6,
               shortTokenDigits: true,
               notifier: spyNotifier.callWith
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
 
-        it('is called', async function () {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'sendResetPwd',
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('is called', async function () {
+            const result = await callMethod(app, {
               value: { email: 'b' },
               notifierOptions: { transport: 'sms' }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
-            assert.isString(user.resetToken, 'resetToken not String');
-            assert.equal(user.resetToken.length, 60, 'reset token wrong length');
+            assert.strictEqual(typeof user.resetToken, 'string', 'resetToken not String');
+            assert.strictEqual(user.resetToken.length, 60, 'reset token wrong length');
             assert.match(user.resetToken, /^\$2[ayb]\$.{56}$/);
             aboutEqualDateTime(user.resetExpires, makeDateTime());
 
@@ -411,11 +386,8 @@ const users_Id: UserTestDB[] = [
               resetShortToken: user.resetShortToken
             });
 
-            assert.deepEqual(expected, ['sendResetPwd', sanitizeUserForEmail(user), { transport: 'sms' }]);
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+            assert.deepStrictEqual(expected, ['sendResetPwd', sanitizeUserForEmail(user), { transport: 'sms' }]);
+          });
         });
       });
     });

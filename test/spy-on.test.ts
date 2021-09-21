@@ -1,5 +1,5 @@
 
-import { assert } from 'chai';
+import assert from 'assert';
 import { SpyOn } from './test-helpers';
 
 describe('spy-on.test.ts', () => {
@@ -8,7 +8,7 @@ describe('spy-on.test.ts', () => {
     spy.callWith(1, 2, 3);
     spy.callWith(4, 5, 6);
 
-    assert.deepEqual(spy.result(), [
+    assert.deepStrictEqual(spy.result(), [
       { args: [1, 2, 3], result: ['y', false, [1, 2, 3]] },
       { args: [4, 5, 6], result: ['y', false, [4, 5, 6]] }
     ]);
@@ -21,14 +21,14 @@ describe('spy-on.test.ts', () => {
     spy.callWithCb(1, 2, 3, (x, y, z) => {
       assert.strictEqual(x, 'a');
       assert.strictEqual(y, true);
-      assert.deepEqual(z, [1, 2, 3]);
+      assert.deepStrictEqual(z, [1, 2, 3]);
 
       spy.callWithCb(8, 9, 0, (x, y, z) => {
         assert.strictEqual(x, 'a');
         assert.strictEqual(y, true);
-        assert.deepEqual(z, [8, 9, 0]);
+        assert.deepStrictEqual(z, [8, 9, 0]);
 
-        assert.deepEqual(spy.result(), [
+        assert.deepStrictEqual(spy.result(), [
           { args: [1, 2, 3], result: ['a', true, [1, 2, 3]] },
           { args: [8, 9, 0], result: ['a', true, [8, 9, 0]] }
         ]);

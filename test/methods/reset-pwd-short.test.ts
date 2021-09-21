@@ -1,7 +1,7 @@
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { Service } from 'feathers-memory';
-import authLocalMgnt from '../../src/index';
+import { MemoryServiceOptions, Service } from 'feathers-memory';
+import authLocalMgnt, { DataResetPwdShort, DataResetPwdShortWithAction } from '../../src/index';
 
 import {
   SpyOn,
@@ -9,161 +9,137 @@ import {
 } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { UserTestDB, UserTestLocal } from '../test-helpers/types';
-import { AuthenticationManagementService } from '../../src/services';
-
-const now = Date.now();
-
-const makeUsersService = options =>
-  function (app) {
-    app.use('/users', feathersMemory(options));
-  };
+import { AuthenticationManagementService, ResetPwdShortService } from '../../src/services';
 
 const fieldToHash = 'resetShortToken';
-const users_Id: UserTestDB[] = [
-  // The added time interval must be longer than it takes to run ALL the tests
-  {
-    _id: 'a',
-    email: 'a',
-    username: 'aa',
-    isVerified: true,
-    resetToken: '000',
-    resetShortToken: '00099',
-    resetExpires: now + maxTimeAllTests
-  },
-  {
-    _id: 'b',
-    email: 'b',
-    username: 'bb',
-    isVerified: true,
-    resetToken: null,
-    resetShortToken: null,
-    resetExpires: null
-  },
-  {
-    _id: 'c',
-    email: 'c',
-    username: 'cc',
-    isVerified: true,
-    resetToken: '111',
-    resetShortToken: '11199',
-    resetExpires: now - maxTimeAllTests
-  },
-  {
-    _id: 'd',
-    email: 'd',
-    username: 'dd',
-    isVerified: false,
-    resetToken: '222',
-    resetShortToken: '22299',
-    resetExpires: now - maxTimeAllTests
-  }
-];
 
-const usersId: UserTestLocal[] = [
-  // The added time interval must be longer than it takes to run ALL the tests
-  {
-    id: 'a',
-    email: 'a',
-    username: 'aa',
-    isVerified: true,
-    resetToken: '000',
-    resetShortToken: '00099',
-    resetExpires: now + maxTimeAllTests
-  },
-  {
-    id: 'b',
-    email: 'b',
-    username: 'bb',
-    isVerified: true,
-    resetToken: null,
-    resetShortToken: null,
-    resetExpires: null
-  },
-  {
-    id: 'c',
-    email: 'c',
-    username: 'cc',
-    isVerified: true,
-    resetToken: '111',
-    resetShortToken: '11199',
-    resetExpires: now - maxTimeAllTests
-  },
-  {
-    id: 'd',
-    email: 'd',
-    username: 'dd',
-    isVerified: false,
-    resetToken: '222',
-    resetShortToken: '22299',
-    resetExpires: now - maxTimeAllTests
-  }
-];
+const withAction = (
+  data: DataResetPwdShort
+): DataResetPwdShortWithAction => {
+  // @ts-ignore
+  return Object.assign({ action: "resetPwdShort" }, data);
+}
 
 // Tests
 ['_id' /* 'id' */].forEach(idType => {
+  const now = Date.now();
+  const users = [
+    // The added time interval must be longer than it takes to run ALL the tests
+    {
+      [idType]: 'a',
+      email: 'a',
+      username: 'aa',
+      isVerified: true,
+      resetToken: '000',
+      resetShortToken: '00099',
+      resetExpires: now + maxTimeAllTests
+    },
+    {
+      [idType]: 'b',
+      email: 'b',
+      username: 'bb',
+      isVerified: true,
+      resetToken: null,
+      resetShortToken: null,
+      resetExpires: null
+    },
+    {
+      [idType]: 'c',
+      email: 'c',
+      username: 'cc',
+      isVerified: true,
+      resetToken: '111',
+      resetShortToken: '11199',
+      resetExpires: now - maxTimeAllTests
+    },
+    {
+      [idType]: 'd',
+      email: 'd',
+      username: 'dd',
+      isVerified: false,
+      resetToken: '222',
+      resetShortToken: '22299',
+      resetExpires: now - maxTimeAllTests
+    }
+  ];
   ['paginated' /* 'non-paginated' */].forEach(pagination => {
-    describe(`reset-pwd-short.ts ${pagination} ${idType}`, function () {
-      this.timeout(timeoutEachTest);
+    [{
+      name: "authManagement.create",
+      callMethod: (app: Application, data: DataResetPwdShort) => {
+        return app.service("authManagement").create(withAction(data));
+      }
+    }, {
+      name: "authManagement.resetPasswordShort",
+      callMethod: (app: Application, data: DataResetPwdShort) => {
+        return app.service("authManagement").resetPasswordShort(data);
+      }
+    }, {
+      name: "authManagement/reset-password-short",
+      callMethod: (app: Application, data: DataResetPwdShort) => {
+        return app.service("authManagement/reset-password-short").create(data);
+      }
+    }].forEach(({ name, callMethod }) => {
+      describe(`reset-pwd-short.ts ${pagination} ${idType} ${name}`, function () {
+        this.timeout(timeoutEachTest);
 
-      describe('basic', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('basic', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
-              identifyUserProps: ['email', 'username']
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
-
-          // Ugly but makes test much faster
-          if (users_Id[0][fieldToHash].length < 15) {
-            for (let i = 0, ilen = users_Id.length; i < ilen; i++) {
-              if (!users_Id[i][fieldToHash]) continue;
-              const hashed = await hashPassword(
-                app,
-                users_Id[i][fieldToHash],
-                'resetShortToken'
-              );
-              users_Id[i][fieldToHash] = hashed;
-              usersId[i][fieldToHash] = hashed;
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
             }
-          }
+            app.use("/users", new Service(optionsUsers))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.configure(
+              authLocalMgnt({
+                identifyUserProps: ['email', 'username']
+              })
+            );
+            app.use("authManagement/reset-password-short", new ResetPwdShortService({
+              app,
+              identifyUserProps: ['email', 'username']
+            }));
 
-        it('verifies valid token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
+            app.setup();
+
+            // Ugly but makes test much faster
+            if (users[0][fieldToHash].length < 15) {
+              for (let i = 0, ilen = users.length; i < ilen; i++) {
+                if (!users[i][fieldToHash]) continue;
+                const hashed = await hashPassword(
+                  app,
+                  users[i][fieldToHash],
+                  'resetShortToken'
+                );
+                users[i][fieldToHash] = hashed;
+              }
+            }
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('verifies valid token', async () => {
+            const result = await callMethod(app, {
               value: {
                 token: '00099',
                 password: '123456',
                 user: {
-                  username: db[0].username
+                  username: users[0].username
                 }
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
               result.isVerified,
@@ -183,27 +159,21 @@ const usersId: UserTestLocal[] = [
               null,
               'resetExpires not null'
             );
-            assert.isString(user.password, 'password not a string');
-            assert.equal(user.password.length, 60, 'password wrong length');
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+            assert.strictEqual(typeof user.password, 'string', 'password not a string');
+            assert.strictEqual(user.password.length, 60, 'password wrong length');
+          });
 
-        it('user is sanitized', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
+          it('user is sanitized', async () => {
+            const result = await callMethod(app, {
               value: {
                 token: '00099',
                 password: '123456',
                 user: {
-                  username: db[0].username
+                  username: users[0].username
                 }
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(
@@ -222,28 +192,22 @@ const usersId: UserTestLocal[] = [
               'resetExpires not undefined'
             );
 
-            assert.isString(user.password, 'password not a string');
-            assert.equal(user.password.length, 60, 'password wrong length');
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+            assert.strictEqual(typeof user.password, 'string', 'password not a string');
+            assert.strictEqual(user.password.length, 60, 'password wrong length');
+          });
 
-        it('handles multiple user ident', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
+          it('handles multiple user ident', async () => {
+            const result = await callMethod(app, {
               value: {
                 token: '00099',
                 password: '123456',
                 user: {
-                  email: db[0].email,
-                  username: db[0].username
+                  email: users[0].email,
+                  username: users[0].username
                 }
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(
@@ -262,183 +226,170 @@ const usersId: UserTestLocal[] = [
               'resetExpires not undefined'
             );
 
-            assert.isString(user.password, 'password not a string');
-            assert.equal(user.password.length, 60, 'password wrong length');
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+            assert.strictEqual(typeof user.password, 'string', 'password not a string');
+            assert.strictEqual(user.password.length, 60, 'password wrong length');
+          });
 
-        it('requires user ident', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {}
-              }
-            });
-
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-
-        it('throws on non-configured user ident', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {
-                  email: db[0].email,
-                  resetShortToken: '00099'
+          it('requires user ident', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '00099',
+                  password: '123456',
+                  user: {}
                 }
-              }
-            });
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User info is not valid. (authLocalMgnt)');
+            }
+          });
 
-        it('error on unverified user', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '22299',
-                password: '123456',
-                user: {
-                  email: db[3].email
+          it('throws on non-configured user ident', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '00099',
+                  password: '123456',
+                  user: {
+                    email: users[0].email,
+                    resetShortToken: '00099'
+                  }
                 }
-              }
-            });
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User info is not valid. (authLocalMgnt)');
+            }
+          });
 
-        it('error on expired token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '11199',
-                password: '123456',
-                user: {
-                  username: db[2].username
+          it('error on unverified user', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '22299',
+                  password: '123456',
+                  user: {
+                    email: users[3].email
+                  }
                 }
-              }
-            });
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User is not verified.');
+            }
+          });
 
-        it('error on user not found', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '999',
-                password: '123456',
-                user: {
-                  email: '999'
+          it('error on expired token', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '11199',
+                  password: '123456',
+                  user: {
+                    username: users[2].username
+                  }
                 }
-              }
-            });
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'Password reset token has expired.');
+            }
+          });
 
-        it('error incorrect token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
-              value: {
-                token: '999',
-                password: '123456',
-                user: {
-                  email: db[0].email
+          it('error on user not found', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '999',
+                  password: '123456',
+                  user: {
+                    email: '999'
+                  }
                 }
-              }
-            });
+              });
 
-            assert(false, 'unexpected succeeded.');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User not found.')
+            }
+          });
+
+          it('error incorrect token', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '999',
+                  password: '123456',
+                  user: {
+                    email: users[0].email
+                  }
+                }
+              });
+
+              assert.fail('unexpected succeeded.');
+            } catch (err) {
+              assert.strictEqual(err.message, 'Invalid token. Get for a new one. (authLocalMgnt)');
+            }
+          });
         });
-      });
 
-      describe('with notification', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
-        let spyNotifier;
+        describe('with notification', () => {
+          let app: Application;
+          let usersService: Service;
+          let authLocalMgntService: AuthenticationManagementService;
+          let spyNotifier;
 
-        beforeEach(async () => {
-          spyNotifier = SpyOn(notifier);
+          beforeEach(async () => {
+            spyNotifier = SpyOn(notifier);
 
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
+            app = feathers();
+            app.use('/authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
-              // maybe reset identifyUserProps
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                // maybe reset identifyUserProps
+                notifier: spyNotifier.callWith
+              })
+            );
+            app.use("authManagement/reset-password-short", new ResetPwdShortService({
+              app,
               notifier: spyNotifier.callWith
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }));
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
+            authLocalMgntService = app.service('authManagement');
 
-        it('verifies valid token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'resetPwdShort',
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('verifies valid token', async () => {
+            const result = await callMethod(app, {
               value: {
                 token: '00099',
                 password: '123456',
                 user: {
-                  email: db[0].email
+                  email: users[0].email
                 }
               },
               notifierOptions: {transport: 'sms'},
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
               result.isVerified,
@@ -454,30 +405,26 @@ const usersId: UserTestLocal[] = [
               'resetExpires not null'
             );
 
-            const hash = user.password;
-            assert.isString(hash, 'password not a string');
-            assert.equal(hash.length, 60, 'password wrong length');
+            assert.strictEqual(typeof user.password, 'string', 'password not a string');
+            assert.strictEqual(user.password.length, 60, 'password wrong length');
 
-            assert.deepEqual(spyNotifier.result()[0].args, [
+            assert.deepStrictEqual(spyNotifier.result()[0].args, [
               'resetPwd',
               Object.assign({}, sanitizeUserForEmail(user)),
               {transport: 'sms'}
             ]);
-          } catch (err) {
-            console.log(err);
-            assert.strictEqual(err, null, 'err code set');
-          }
-        });
+          });
 
-        it('verifies reset with short tokens works with generated tokens', async () => {
-          const i = 0;
-          await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: db[i].email } });
-          await authLocalMgntService.create({ action: 'resetPwdShort',
-            value: {
-              token: spyNotifier.result()[0].args[1].resetShortToken,
-              password: '123456',
-              user: { email: db[i].email }
-            }
+          it('verifies reset with short tokens works with generated tokens', async () => {
+            const i = 0;
+            await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: users[i].email } });
+            await callMethod(app, {
+              value: {
+                token: spyNotifier.result()[0].args[1].resetShortToken,
+                password: '123456',
+                user: { email: users[i].email }
+              }
+            });
           });
         });
       });

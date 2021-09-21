@@ -1,5 +1,5 @@
 
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
@@ -120,8 +120,8 @@ describe('scaffolding.ts', () => {
       const usersService = app.service('/users');
 
       const user = await usersService.create({ username: 'John Doe' });
-      assert.equal(user.username, 'John Doe');
-      assert.equal(user.verifyShortToken.length, 8);
+      assert.strictEqual(user.username, 'John Doe');
+      assert.strictEqual(user.verifyShortToken.length, 8);
     });
 
     it('can call service', async () => {
@@ -129,8 +129,8 @@ describe('scaffolding.ts', () => {
 
       const { options } = authLocalMgntService;
 
-      assert.property(options, 'app');
-      assert.property(options, 'notifier');
+      assert.ok(options.app);
+      assert.ok(options.notifier);
       delete options.app;
       delete options.notifier;
 
@@ -151,8 +151,7 @@ describe('scaffolding.ts', () => {
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
-      //@ts-expect-error thinks options has options
-      assert.deepEqual(options, expected);
+      assert.deepStrictEqual(options, expected);
 
       Object.values(useSeparateServices).forEach(path => {
         const service = app.service(path);
@@ -205,14 +204,14 @@ describe('scaffolding.ts', () => {
       // create a user item
       const result = await usersService.create({ username: 'John Doe' });
 
-      assert.equal(result.username, 'John Doe');
-      assert.equal(result.verifyShortToken.length, 8);
+      assert.strictEqual(result.username, 'John Doe');
+      assert.strictEqual(result.verifyShortToken.length, 8);
 
       // create an organization item
       const result1 = await organizationsService.create({ organization: 'Black Ice' });
 
-      assert.equal(result1.organization, 'Black Ice');
-      assert.equal(result1.verifyShortToken.length, 10);
+      assert.strictEqual(result1.organization, 'Black Ice');
+      assert.strictEqual(result1.verifyShortToken.length, 10);
     });
 
     it('can call services', async () => {
@@ -222,8 +221,8 @@ describe('scaffolding.ts', () => {
       // call the user instance
       const { options } = authLocalMgntService;
 
-      assert.property(options, 'app');
-      assert.property(options, 'notifier');
+      assert.ok(options.app);
+      assert.ok(options.notifier);
       delete options.app;
       delete options.notifier;
 
@@ -244,8 +243,7 @@ describe('scaffolding.ts', () => {
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
-      //@ts-expect-error thinks options has options
-      assert.deepEqual(options, expected);
+      assert.deepStrictEqual(options, expected);
 
       Object.values(useSeparateServices).forEach(path => {
         const service = app.service(path);
@@ -255,8 +253,8 @@ describe('scaffolding.ts', () => {
       // call the organization instance
       const options1 = authMgntOrgService.options;
 
-      assert.property(options1, 'app');
-      assert.property(options1, 'notifier');
+      assert.ok(options1.app);
+      assert.ok(options1.notifier);
       delete options1.app;
       delete options1.notifier;
 
@@ -277,8 +275,7 @@ describe('scaffolding.ts', () => {
       const expected1 = Object.assign({}, optionsDefault, orgMgntOptions, { useSeparateServices: useSeparateServicesOrg });
       delete expected1.notifier;
 
-      //@ts-expect-error thinks options has options
-      assert.deepEqual(options1, expected1);
+      assert.deepStrictEqual(options1, expected1);
 
       Object.values(useSeparateServicesOrg).forEach(path => {
         const service = app.service(path);
@@ -298,10 +295,9 @@ describe('scaffolding.ts', () => {
 
     it('can disable all separate services with \'false\'', async () => {
       const app = makeApp({ useSeparateServices: false });
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
 
       const servicePaths = Object.keys(app.services);
-      assert.deepEqual(servicePaths.sort(), ["authManagement", "organizations", "users"].sort(), 'has no other services')
+      assert.deepStrictEqual(servicePaths.sort(), ["authManagement", "organizations", "users"].sort(), 'has no other services')
     });
 
     it('can disable certain services', async () => {
@@ -310,8 +306,8 @@ describe('scaffolding.ts', () => {
         verifySignupShort: false
       } });
 
-      assert.notOk(app.service("authManagement/check-unique"), "does not have 'checkUnique' service");
-      assert.notOk(app.service("authManagement/verify-signup-short"), "does not have 'verifySignupShort' service");
+      assert.ok(!app.service("authManagement/check-unique"), "does not have 'checkUnique' service");
+      assert.ok(!app.service("authManagement/verify-signup-short"), "does not have 'verifySignupShort' service");
     });
 
     it('can set custom service paths', async () => {

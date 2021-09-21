@@ -1,5 +1,4 @@
-
-import { assert } from 'chai';
+import assert from 'assert';
 import isVerified from '../../src/hooks/is-verified';
 import { timeoutEachTest } from '../test-helpers/config';
 

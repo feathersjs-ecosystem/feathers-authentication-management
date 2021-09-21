@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers from '@feathersjs/feathers';
 import feathersMemory from 'feathers-memory';
 import authLocalMgnt from '../src/index';
@@ -121,7 +121,7 @@ describe('helpers.test.ts', () => {
         value: { email: 'a' }
       });
 
-      assert.isUndefined(result.sensitiveData);
+      assert.strictEqual(result.sensitiveData, undefined);
     });
   })
 
@@ -136,7 +136,7 @@ describe('helpers.test.ts', () => {
 
   it("ensureFieldHasChanges", () => {
     const ensureForNulls = helpers.ensureFieldHasChanged(null, null);
-    assert.notOk(ensureForNulls('password'), "returns false for nulls");
+    assert.ok(!ensureForNulls('password'), "returns false for nulls");
 
     const ensureForChanged = helpers.ensureFieldHasChanged({ password: "1" }, { password: "2" });
     assert.ok(ensureForChanged('password'), "changed password");
@@ -156,10 +156,10 @@ describe('helpers.test.ts', () => {
       "does not throw on string array"
     )
 
-    assert.doesNotThrow(
+    assert.throws(
       // @ts-expect-error anything other than string is not allowed
       () => helpers.ensureValuesAreStrings("1", "2", 3),
-      "does throw on mixed array"
+      "throws on mixed array"
     )
   })
 
@@ -219,8 +219,8 @@ describe('helpers.test.ts', () => {
     assert.ok(helpers.isDateAfterNow(nowPlus1.getTime()), "unix is after now");
     assert.ok(helpers.isDateAfterNow(nowPlus1), "date obj is after now");
 
-    assert.notOk(helpers.isDateAfterNow(now.getTime()), "now as unix returns false")
-    assert.notOk(helpers.isDateAfterNow(now), "now as date obj returns false")
+    assert.ok(!helpers.isDateAfterNow(now.getTime()), "now as unix returns false")
+    assert.ok(!helpers.isDateAfterNow(now), "now as date obj returns false")
 
     assert.ok(helpers.isDateAfterNow(now.getTime(), -1000), "now as unix with delay returns true");
     assert.ok(helpers.isDateAfterNow(now, -1000), "now as date obj with delay returns true");

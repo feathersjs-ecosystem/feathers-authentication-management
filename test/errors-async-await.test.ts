@@ -1,5 +1,4 @@
-
-import { assert } from 'chai';
+import assert from 'assert';
 import errors from '@feathersjs/errors';
 
 describe('errors-async-await.ts', () => {
@@ -8,18 +7,18 @@ describe('errors-async-await.ts', () => {
       it('successful', async () => {
         try {
           const result = await service('ok');
-          assert.equal(result, 'service ok');
+          assert.strictEqual(result, 'service ok');
         } catch (err) {
-          assert(false, `unexpected error: ${err.message}`);
+          assert.fail(`unexpected error: ${err.message}`);
         }
       });
 
       it('throw', async () => {
         try {
           const result = await service('throw');
-          assert.equal(result, 'service ok');
+          assert.strictEqual(result, 'service ok');
         } catch (err) {
-          assert.equal(err.message, 'service throw');
+          assert.strictEqual(err.message, 'service throw');
         }
       });
     });
@@ -28,20 +27,20 @@ describe('errors-async-await.ts', () => {
       it('successful', () => {
         return service('ok')
           .then(result => {
-            assert.equal(result, 'service ok');
+            assert.strictEqual(result, 'service ok');
           })
           .catch(err => {
-            assert(false, `unexpected error: ${err.message}`);
+            assert.fail(`unexpected error: ${err.message}`);
           });
       });
 
       it('throw', () => {
         return service('throw')
           .then(result => {
-            assert(false, `unexpectedly succeeded`);
+            assert.fail(`unexpectedly succeeded`);
           })
           .catch(err => {
-            assert.equal(err.message, 'service throw');
+            assert.strictEqual(err.message, 'service throw');
           });
       });
     });
@@ -52,18 +51,18 @@ describe('errors-async-await.ts', () => {
       it('successful', async () => {
         try {
           const result = await service('passwordChange', 'ok');
-          assert.equal(result, 'passwordChange ok');
+          assert.strictEqual(result, 'passwordChange ok');
         } catch (err) {
-          assert(false, `unexpected error: ${err.message}`);
+          assert.fail(`unexpected error: ${err.message}`);
         }
       });
 
       it('throw', async () => {
         try {
           const result = await service('passwordChange', 'throw');
-          assert.equal(result, 'service ok');
+          assert.strictEqual(result, 'service ok');
         } catch (err) {
-          assert.equal(err.message, 'passwordChange throw');
+          assert.strictEqual(err.message, 'passwordChange throw');
         }
       });
     });
@@ -72,20 +71,20 @@ describe('errors-async-await.ts', () => {
       it('successful', () => {
         return service('passwordChange', 'ok')
           .then(result => {
-            assert.equal(result, 'passwordChange ok');
+            assert.strictEqual(result, 'passwordChange ok');
           })
           .catch(err => {
-            assert(false, `unexpected error: ${err.message}`);
+            assert.fail(`unexpected error: ${err.message}`);
           });
       });
 
       it('throw', () => {
         return service('passwordChange', 'throw')
           .then(result => {
-            assert(false, `unexpectedly succeeded`);
+            assert.fail(`unexpectedly succeeded`);
           })
           .catch(err => {
-            assert.equal(err.message, 'passwordChange throw');
+            assert.strictEqual(err.message, 'passwordChange throw');
           });
       });
     });
@@ -96,18 +95,18 @@ describe('errors-async-await.ts', () => {
       it('successful', async () => {
         try {
           const result = await service('passwordChange', 'ensureValuesAreStrings', 'ok');
-          assert.equal(result, 'ensureValuesAreStrings ok');
+          assert.strictEqual(result, 'ensureValuesAreStrings ok');
         } catch (err) {
-          assert(false, `unexpected error: ${err.message}`);
+          assert.fail(`unexpected error: ${err.message}`);
         }
       });
 
       it('throw', async () => {
         try {
           const result = await service('passwordChange', 'ensureValuesAreStrings', 'throw');
-          assert.equal(result, 'service ok');
+          assert.strictEqual(result, 'service ok');
         } catch (err) {
-          assert.equal(err.message, 'ensureValuesAreStrings throw');
+          assert.strictEqual(err.message, 'ensureValuesAreStrings throw');
         }
       });
     });
@@ -116,20 +115,20 @@ describe('errors-async-await.ts', () => {
       it('successful', () => {
         return service('passwordChange', 'ensureValuesAreStrings', 'ok')
           .then(result => {
-            assert.equal(result, 'ensureValuesAreStrings ok');
+            assert.strictEqual(result, 'ensureValuesAreStrings ok');
           })
           .catch(err => {
-            assert(false, `unexpected error: ${err.message}`);
+            assert.fail(`unexpected error: ${err.message}`);
           });
       });
 
       it('throw', () => {
         return service('passwordChange', 'ensureValuesAreStrings', 'throw')
           .then(result => {
-            assert(false, `unexpectedly succeeded`);
+            assert.fail(`unexpectedly succeeded`);
           })
           .catch(err => {
-            assert.equal(err.message, 'ensureValuesAreStrings throw');
+            assert.strictEqual(err.message, 'ensureValuesAreStrings throw');
           });
       });
     });

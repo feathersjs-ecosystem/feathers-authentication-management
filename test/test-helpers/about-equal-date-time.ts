@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import assert from "assert";
 
 function aboutEqualDateTime (
   time1: number,
@@ -8,7 +8,7 @@ function aboutEqualDateTime (
 ) {
   delta = delta || 600;
   const diff = Math.abs(time1 - time2);
-  assert.isAtMost(diff, delta, msg || `times differ by ${diff}ms`);
+  assert.ok(diff <= delta, msg || `times differ by ${diff}ms`);
 }
 
 export default aboutEqualDateTime;

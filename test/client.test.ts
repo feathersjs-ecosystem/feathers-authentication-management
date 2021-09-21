@@ -1,5 +1,5 @@
 
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import AuthManagement from '../src/client';
 import { AuthenticationManagementClient } from '../src/types';
@@ -47,7 +47,7 @@ const authLocalMgntFake = function () {
 describe('client.test.ts', () => {
   describe('instantiate', () => {
     it('exists', () => {
-      assert.isFunction(AuthManagement);
+      assert.strictEqual(typeof AuthManagement, 'function');
     });
   });
 
@@ -65,8 +65,8 @@ describe('client.test.ts', () => {
     it('checkUnique', async () => {
       await authManagement.checkUnique({ username: 'john a' }, null, true);
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'checkUnique', value: { username: 'john a' }, ownId: null, meta: { noErrMsg: true }
       });
     });
@@ -74,8 +74,8 @@ describe('client.test.ts', () => {
     it('resendVerify', async () => {
       await authManagement.resendVerifySignup({ email: 'a@a.com'}, { b: 'b' });
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'resendVerifySignup',
         value: { email: 'a@a.com' },
         notifierOptions: { b: 'b' }
@@ -85,15 +85,15 @@ describe('client.test.ts', () => {
     it('verifySignupLong', async () => {
       await authManagement.verifySignupLong('000');
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, { action: 'verifySignupLong', value: '000' });
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, { action: 'verifySignupLong', value: '000' });
     });
 
     it('verifySignupShort', async () => {
       await authManagement.verifySignupShort('000', { email: 'a@a.com' });
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'verifySignupShort',
         value: { token: '000', user: { email: 'a@a.com' } }
       });
@@ -102,8 +102,8 @@ describe('client.test.ts', () => {
     it('sendResetPwd', async () => {
       await authManagement.sendResetPwd({ email: 'a@a.com'}, { b: 'b' });
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'sendResetPwd',
         value: { email: 'a@a.com' },
         notifierOptions: { b: 'b' }
@@ -113,8 +113,8 @@ describe('client.test.ts', () => {
     it('resetPwdLong', async () => {
       await authManagement.resetPwdLong('000', '12345678');
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'resetPwdLong',
         value: { token: '000', password: '12345678' }
       });
@@ -123,8 +123,8 @@ describe('client.test.ts', () => {
     it('resetPwdShort', async () => {
       await authManagement.resetPwdShort('000', { email: 'a@a.com' }, '12345678');
 
-      assert.deepEqual(spyParams, {});
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyParams, {});
+      assert.deepStrictEqual(spyData, {
         action: 'resetPwdShort',
         value: { token: '000', user: { email: 'a@a.com' }, password: '12345678' }
       });
@@ -133,7 +133,7 @@ describe('client.test.ts', () => {
     it('passwordChange', async () => {
       await authManagement.passwordChange('12345678', 'password', { email: 'a' });
 
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyData, {
         action: 'passwordChange', value: { user: { email: 'a' }, oldPassword: '12345678', password: 'password' }
       });
     });
@@ -141,7 +141,7 @@ describe('client.test.ts', () => {
     it('identityChange', async () => {
       await authManagement.identityChange('12345678', { email: 'b@b.com' }, { username: 'q' });
 
-      assert.deepEqual(spyData, {
+      assert.deepStrictEqual(spyData, {
         action: 'identityChange',
         value: { user: { username: 'q' },
           password: '12345678',
@@ -152,19 +152,19 @@ describe('client.test.ts', () => {
     it('authenticate is verified', async () => {
       const result = await authManagement.authenticate('ok', 'bb');
 
-      assert.equal(spyAuthenticateEmail, 'ok');
-      assert.equal(spyAuthenticatePassword, 'bb');
-      assert.deepEqual(result, usersDb[1]);
+      assert.strictEqual(spyAuthenticateEmail, 'ok');
+      assert.strictEqual(spyAuthenticatePassword, 'bb');
+      assert.deepStrictEqual(result, usersDb[1]);
     });
 
     it('authenticate is not verified', async () => {
       try {
         await authManagement.authenticate('bad', '12345678');
 
-        assert(false, 'unexpected succeeded.');
+        assert.fail('unexpected succeeded.');
       } catch (err) {
-        assert.equal(spyAuthenticateEmail, 'bad');
-        assert.equal(spyAuthenticatePassword, '12345678');
+        assert.strictEqual(spyAuthenticateEmail, 'bad');
+        assert.strictEqual(spyAuthenticatePassword, '12345678');
         assert.notEqual(err, null);
       }
     });

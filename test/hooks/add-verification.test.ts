@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application, HookContext } from '@feathersjs/feathers';
 import authLocalMgnt from "../../src/index";
 import { addVerification } from '../../src/hooks';
@@ -33,22 +33,17 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt());
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.isString(user.verifyToken, 'verifyToken not String');
-        assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(typeof user.verifyToken, 'string', 'verifyToken not String');
+      assert.strictEqual(user.verifyToken.length, 30, 'verify token wrong length');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('delay option works', async () => {
@@ -63,22 +58,17 @@ describe('add-verification.test.ts', function () {
         app
       };
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.isString(user.verifyToken, 'verifyToken not String');
-        assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(typeof user.verifyToken, 'string', 'verifyToken not String');
+      assert.strictEqual(user.verifyToken.length, 30, 'verify token wrong length');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime(options));
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
   });
 
@@ -88,22 +78,17 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt(options));
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.isString(user.verifyToken, 'verifyToken not String');
-        assert.equal(user.verifyToken.length, (options.longTokenLen) * 2, 'verify token wrong length');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/); // small chance of false negative
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(typeof user.verifyToken, 'string', 'verifyToken not String');
+      assert.strictEqual(user.verifyToken.length, (options.longTokenLen) * 2, 'verify token wrong length');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/); // small chance of false negative
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
   });
 
@@ -113,20 +98,15 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt(options));
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('produces alpha short token', async () => {
@@ -134,20 +114,15 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt(options));
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.doesNotMatch(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('length option works with digits', async () => {
@@ -155,20 +130,15 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt(options));
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.equal(user.verifyShortToken.length, 7, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(user.verifyShortToken.length, 7, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('length option works with alpha', async () => {
@@ -176,20 +146,15 @@ describe('add-verification.test.ts', function () {
       app.configure(authLocalMgnt(options));
       app.setup();
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.equal(user.verifyShortToken.length, 9, 'verify short token wrong length');
-        assert.notMatch(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(user.verifyShortToken.length, 9, 'verify short token wrong length');
+      assert.doesNotMatch(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
   });
 
@@ -200,22 +165,17 @@ describe('add-verification.test.ts', function () {
       //@ts-ignore
       context.method = 'patch';
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.isString(user.verifyToken, 'verifyToken not String');
-        assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(typeof user.verifyToken, 'string', 'verifyToken not String');
+      assert.strictEqual(user.verifyToken.length, 30, 'verify token wrong length');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('works with update', async () => {
@@ -224,22 +184,17 @@ describe('add-verification.test.ts', function () {
       //@ts-ignore
       context.method = 'update';
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.strictEqual(user.isVerified, false, 'isVerified not false');
-        assert.isString(user.verifyToken, 'verifyToken not String');
-        assert.equal(user.verifyToken.length, 30, 'verify token wrong length');
-        assert.equal(user.verifyShortToken.length, 6, 'verify short token wrong length');
-        assert.match(user.verifyShortToken, /^[0-9]+$/);
-        aboutEqualDateTime(user.verifyExpires, makeDateTime());
-        assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.strictEqual(user.isVerified, false, 'isVerified not false');
+      assert.strictEqual(typeof user.verifyToken, 'string', 'verifyToken not String');
+      assert.strictEqual(user.verifyToken.length, 30, 'verify token wrong length');
+      assert.strictEqual(user.verifyShortToken.length, 6, 'verify short token wrong length');
+      assert.match(user.verifyShortToken, /^[0-9]+$/);
+      aboutEqualDateTime(user.verifyExpires, makeDateTime());
+      assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
     });
 
     it('does not modify context if email not updated', async () => {
@@ -249,16 +204,11 @@ describe('add-verification.test.ts', function () {
       context.method = 'update';
       context.params.user.email = 'a@a.com';
 
-      try {
-        //@ts-ignore
-        const ctx = await addVerification()(context);
-        const user = ctx.data;
+      //@ts-ignore
+      const ctx = await addVerification()(context);
+      const user = ctx.data;
 
-        assert.deepEqual(user, { email: 'a@a.com', password: '0000000000' }, 'ctx.data modified');
-      } catch (err) {
-        console.log(err);
-        assert(false, 'unexpected error');
-      }
+      assert.deepStrictEqual(user, { email: 'a@a.com', password: '0000000000' }, 'ctx.data modified');
     });
   });
 });

@@ -1,94 +1,92 @@
 
-import { assert } from 'chai';
+import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { Service } from 'feathers-memory';
+import feathersMemory, { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
-import authLocalMgnt from '../../src/index';
+import authLocalMgnt, { DataVerifySignupSetPasswordLong, DataVerifySignupSetPasswordLongWithAction } from '../../src/index';
 import {
   SpyOn,
   authenticationService as authService
 } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { AuthenticationManagementService } from '../../src/services';
+import { AuthenticationManagementService, VerifySignupSetPasswordLongService } from '../../src/services';
 
-const now = Date.now();
-
-const makeUsersService = (options) =>
-  function (app) {
-    Object.assign(options, { multi: true });
-    app.use('/users', feathersMemory(options));
-  };
-
-const usersId = [
-  { id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
-  { id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
-  { id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { id: 'e',
-    email: 'e',
-    isVerified: true,
-    verifyToken: '800',
-    verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } }
-];
-
-const users_Id = [
-  { _id: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
-  { _id: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
-  { _id: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
-  { _id: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
-  { _id: 'e',
-    email: 'e',
-    isVerified: true,
-    verifyToken: '800',
-    verifyExpires: now + maxTimeAllTests,
-    verifyChanges: { cellphone: '800' } }
-];
+const withAction = (
+  data: DataVerifySignupSetPasswordLong
+): DataVerifySignupSetPasswordLongWithAction => {
+  // @ts-ignore
+  return Object.assign({ action: "verifySignupSetPasswordLong" }, data);
+}
 
 ['_id', 'id'].forEach(idType => {
+  const now = Date.now();
+  const users = [
+    { [idType]: 'a', email: 'a', isVerified: false, verifyToken: '000', verifyExpires: now + maxTimeAllTests },
+    { [idType]: 'b', email: 'b', isVerified: false, verifyToken: null, verifyExpires: null },
+    { [idType]: 'c', email: 'c', isVerified: false, verifyToken: '111', verifyExpires: now - maxTimeAllTests },
+    { [idType]: 'd', email: 'd', isVerified: true, verifyToken: '222', verifyExpires: now - maxTimeAllTests },
+    { [idType]: 'e', email: 'e', isVerified: true, verifyToken: '800', verifyExpires: now + maxTimeAllTests, verifyChanges: { cellphone: '800' } }
+  ];
+
   ['paginated', 'non-paginated'].forEach(pagination => {
-    describe(`verify-signup-set-password-long.ts ${pagination} ${idType}`, function () {
-      this.timeout(timeoutEachTest);
+    [{
+      name: "authManagement.create",
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
+        return app.service("authManagement").create(withAction(data));
+      }
+    }, {
+      name: "authManagement.verifySignupSetPasswordLong",
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
+        return app.service("authManagement").verifySignupSetPasswordLong(data);
+      }
+    }, {
+      name: "authManagement/verify-signup-set-password-long",
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
+        return app.service("authManagement/verify-signup-set-password-long").create(data);
+      }
+    }].forEach(({ name, callMethod }) => {
+      describe(`verify-signup-set-password-long.ts ${pagination} ${idType} ${name}`, function () {
+        this.timeout(timeoutEachTest);
 
-      describe('basic', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
+        describe('basic', () => {
+          let app: Application;
+          let usersService: Service;
 
-        beforeEach(async () => {
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
+          beforeEach(async () => {
+            app = feathers();
+            app.use('/authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(authLocalMgnt({}));
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.configure(authLocalMgnt({}));
+            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService({
+              app
+            }))
 
-        it('verifies valid token and sets password if not verified', async () => {
-          try {
+            app.setup();
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('verifies valid token and sets password if not verified', async () => {
             const password = '123456';
 
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
+            const result = await callMethod(app, {
               value: {
                 token: '000',
                 password
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
@@ -96,25 +94,19 @@ const users_Id = [
             assert.strictEqual(user.verifyToken, null, 'verifyToken not null');
             assert.strictEqual(user.verifyShortToken, null, 'verifyShortToken not null');
             assert.strictEqual(user.verifyExpires, null, 'verifyExpires not null');
-            assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-            assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
-        });
+            assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
+            assert.ok(bcrypt.compareSync(password, user.password), 'password is not hashed value');
+          });
 
-        it('verifies valid token and sets password if verifyChanges', async () => {
-          try {
+          it('verifies valid token and sets password if verifyChanges', async () => {
             const password = '123456';
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
+            const result = await callMethod(app, {
               value: {
                 token: '800',
                 password
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
@@ -122,153 +114,135 @@ const users_Id = [
             assert.strictEqual(user.verifyToken, null, 'verifyToken not null');
             assert.strictEqual(user.verifyShortToken, null, 'verifyShortToken not null');
             assert.strictEqual(user.verifyExpires, null, 'verifyExpires not null');
-            assert.deepEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
-            assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
+            assert.deepStrictEqual(user.verifyChanges, {}, 'verifyChanges not empty object');
+            assert.ok(bcrypt.compareSync(password, user.password), 'password is not hashed value');
             assert.strictEqual(user.cellphone, '800', 'cellphone wrong');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
-        });
+          });
 
-        it('user is sanitized', async () => {
-          try {
+          it('user is sanitized', async () => {
             const password = '123456';
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
+            const result = await callMethod(app, {
               value: {
                 token: '000',
                 password
               }
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(result.verifyToken, undefined, 'verifyToken not undefined');
             assert.strictEqual(result.verifyShortToken, undefined, 'verifyShortToken not undefined');
             assert.strictEqual(result.verifyExpires, undefined, 'verifyExpires not undefined');
             assert.strictEqual(result.verifyChanges, undefined, 'verifyChanges not undefined');
-            assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+            assert.ok(bcrypt.compareSync(password, user.password), 'password is not hashed value');
+          });
+
+          it('error on verified user without verifyChange', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '222',
+                  password: '12456'
+                }
+              });
+
+              assert.fail('unexpectedly succeeded');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User is already verified & not awaiting changes.');
+            }
+          });
+
+          it('error on expired token', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '111',
+                  password: '123456'
+                }
+              });
+
+              assert.fail('unexpectedly succeeded');
+            } catch (err) {
+              assert.strictEqual(err.message, 'Verification token has expired.');
+            }
+          });
+
+          it('error on token not found', async () => {
+            try {
+              const result = await callMethod(app, {
+                value: {
+                  token: '999',
+                  password: '123456'
+                }
+              });
+
+              assert.fail('unexpectedly succeeded');
+            } catch (err) {
+              assert.strictEqual(err.message, 'User not found.');
+            }
+          });
         });
 
-        it('error on verified user without verifyChange', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
-              value: {
-                token: '222',
-                password: '12456'
-              }
-            });
+        describe('with notification', () => {
+          let app: Application;
+          let usersService: Service;
+          let spyNotifier;
 
-            assert(false, 'unexpectedly succeeded');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
+          beforeEach(async () => {
+            spyNotifier = SpyOn(notifier);
 
-        it('error on expired token', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
-              value: {
-                token: '111',
-                password: '123456'
-              }
-            });
+            app = feathers();
+            app.use('/authentication', authService(app));
 
-            assert(false, 'unexpectedly succeeded');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-
-        it('error on token not found', async () => {
-          try {
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
-              value: {
-                token: '999',
-                password: '123456'
-              }
-            });
-
-            assert(false, 'unexpectedly succeeded');
-          } catch (err) {
-            assert.isString(err.message);
-            assert.isNotFalse(err.message);
-          }
-        });
-      });
-
-      describe('with notification', () => {
-        let app: Application;
-        let usersService: Service;
-        let authLocalMgntService: AuthenticationManagementService;
-        let db;
-        let result;
-        let spyNotifier;
-
-        beforeEach(async () => {
-          spyNotifier = SpyOn(notifier);
-
-          app = feathers();
-          app.use('/authentication', authService(app));
-          app.configure(
-            makeUsersService({
+            const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
-              id: idType,
-              paginate: pagination === 'paginated'
-            })
-          );
-          app.configure(
-            authLocalMgnt({
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("/users", new Service(optionsUsers))
+
+            app.configure(
+              authLocalMgnt({
+                notifier: spyNotifier.callWith
+              })
+            );
+            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService({
+              app,
               notifier: spyNotifier.callWith
-            })
-          );
-          app.setup();
-          authLocalMgntService = app.service('authManagement');
+            }))
 
-          usersService = app.service('users');
-          await usersService.remove(null);
-          db = clone(idType === '_id' ? users_Id : usersId);
-          await usersService.create(db);
-        });
+            app.setup();
 
-        it('verifies valid token and sets password', async () => {
-          try {
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('verifies valid token and sets password', async () => {
             const password = '123456';
-            result = await authLocalMgntService.create({
-              action: 'verifySignupSetPasswordLong',
+            const result = await callMethod(app, {
               value: {
                 token: '000',
                 password,
               },
               notifierOptions: { transport: 'sms' },
             });
-            const user = await usersService.get(result.id || result._id);
+            const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
             assert.strictEqual(user.isVerified, true, 'isVerified not true');
             assert.strictEqual(user.verifyToken, null, 'verifyToken not null');
             assert.strictEqual(user.verifyExpires, null, 'verifyExpires not null');
-            assert.isOk(bcrypt.compareSync(password, user.password), 'password is not hashed value');
-            assert.deepEqual(spyNotifier.result()[0].args, [
+            assert.ok(bcrypt.compareSync(password, user.password), 'password is not hashed value');
+            assert.deepStrictEqual(spyNotifier.result()[0].args, [
               'verifySignupSetPassword',
               Object.assign({}, sanitizeUserForEmail(user)),
               { transport: 'sms' }
             ]);
-          } catch (err) {
-            console.log(err);
-            assert(false, 'err code set');
-          }
+          });
         });
       });
     });
