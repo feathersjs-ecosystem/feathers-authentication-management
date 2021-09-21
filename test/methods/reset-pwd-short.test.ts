@@ -79,7 +79,7 @@ const withAction = (
         return app.service("authManagement/reset-password-short").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`reset-pwd-short.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`reset-pwd-short.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

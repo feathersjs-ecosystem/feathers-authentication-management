@@ -104,7 +104,7 @@ function organization () {
   });
 }
 
-describe('scaffolding.ts', () => {
+describe('scaffolding.test.ts', () => {
   describe('can configure 1 service', () => {
     let app: Application;
 
@@ -157,6 +157,41 @@ describe('scaffolding.ts', () => {
         const service = app.service(path);
         assert.ok(service, `registered service at: '${path}'`);
       });
+    });
+
+    it('create({ action: "options" }) returns options', async () => {
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+
+      const { options } = authLocalMgntService;
+
+      assert.deepStrictEqual(
+        await authLocalMgntService.create({ action: 'options' }),
+        options
+      );
+    });
+
+    it('rejects with no action', async () => {
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+
+      await assert.rejects(
+        //@ts-ignore
+        authLocalMgntService.create(),
+        "rejects without object"
+      )
+
+      await assert.rejects(
+        //@ts-ignore
+        authLocalMgntService.create({}),
+        "rejects with empty object"
+      )
+
+      await assert.rejects(
+        authLocalMgntService.create({
+          //@ts-ignore
+          action: "topSecretActionThatDefinitelyDoesntExist"
+        }),
+        "rejects with unknown action"
+      )
     });
 
     it("does not call publish on authManagement", async () => {

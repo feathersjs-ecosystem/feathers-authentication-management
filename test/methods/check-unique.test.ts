@@ -36,7 +36,7 @@ const withAction = (
         return app.service("authManagement/check-unique").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`check-unique.test.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`check-unique.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('standard', () => {

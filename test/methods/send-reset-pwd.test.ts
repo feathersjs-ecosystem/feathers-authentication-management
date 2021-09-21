@@ -61,7 +61,7 @@ const withAction = (
         return app.service("authManagement/send-reset-password").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`send-reset-pwd.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`send-reset-pwd.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

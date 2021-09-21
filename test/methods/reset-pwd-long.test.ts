@@ -71,7 +71,7 @@ const withAction = (
         return app.service("authManagement/reset-password-long").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`reset-pwd-long.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`reset-pwd-long.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

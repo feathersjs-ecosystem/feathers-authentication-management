@@ -71,7 +71,7 @@ const withAction = (
         return app.service("authManagement/verify-signup-long").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`verify-signup-long.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`verify-signup-long.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

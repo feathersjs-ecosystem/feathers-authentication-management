@@ -84,7 +84,7 @@ describe('password-change.ts', function () {
           return app.service("authManagement/password-change").create(data);
         }
       }].forEach(({ name, callMethod }) => {
-        describe(`passwordChange ${pagination} ${idType} ${name}`, () => {
+        describe(`password-change.test.ts ${idType} ${pagination} ${name}`, () => {
           describe('standard', () => {
             let app: Application;
             let usersService: Service;

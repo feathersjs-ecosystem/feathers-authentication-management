@@ -42,7 +42,7 @@ const withAction = (
         return app.service("authManagement/identity-change").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`identity-change.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`identity-change.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('standard', () => {

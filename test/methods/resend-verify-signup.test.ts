@@ -64,7 +64,7 @@ const withAction = (
         return app.service("authManagement/resend-verify-signup").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`resend-verify-signup.test.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`resend-verify-signup.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         function basicTest1 (desc, values) {

@@ -45,7 +45,7 @@ const withAction = (
         return app.service("authManagement/verify-signup-set-password-long").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`verify-signup-set-password-long.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`verify-signup-set-password-long.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

@@ -52,7 +52,7 @@ const withAction = (
         return app.service("authManagement/verify-signup-set-password-short").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`verify-signup-set-password-short.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`verify-signup-set-password-short.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

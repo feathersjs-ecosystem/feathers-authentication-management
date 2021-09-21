@@ -81,7 +81,7 @@ const withAction = (
         return app.service("authManagement/verify-signup-short").create(data);
       }
     }].forEach(({ name, callMethod }) => {
-      describe(`verify-signUp-short.ts ${pagination} ${idType} ${name}`, function () {
+      describe(`verify-signup-short.test.ts ${idType} ${pagination} ${name}`, function () {
         this.timeout(timeoutEachTest);
 
         describe('basic', () => {

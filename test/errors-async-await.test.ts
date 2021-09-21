@@ -1,7 +1,7 @@
 import assert from 'assert';
 import errors from '@feathersjs/errors';
 
-describe('errors-async-await.ts', () => {
+describe('errors-async-await.test.ts', () => {
   describe('1 deep', () => {
     describe('call as async function', () => {
       it('successful', async () => {
