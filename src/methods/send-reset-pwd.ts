@@ -69,7 +69,7 @@ export default async function sendResetPwd (
 
   const [ resetToken3, resetShortToken3 ] = await Promise.all([
     reuseResetToken ? user2.resetToken : hashPassword(app, user2.resetToken, passwordField),
-    reuseResetToken ? user2.resetShortToken : await hashPassword(app, user2.resetShortToken, passwordField)
+    reuseResetToken ? user2.resetShortToken : hashPassword(app, user2.resetShortToken, passwordField)
   ])
 
   const user3 = await usersService.patch(user2[usersServiceId], {

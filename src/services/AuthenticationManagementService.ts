@@ -108,7 +108,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
     );
   }
 
-  async identyChange (data: DataIdentityChange): Promise<SanitizedUser> {
+  async identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
     return await this._identityChange(data);
   }
 
