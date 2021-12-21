@@ -15,7 +15,7 @@ module.exports = {
         { text: "Getting Started", link: "/getting-started" },
         { text: "Configuration", link: "/configuration" },
         { text: "Service Calls", link: "/service-calls" },
-        { text: "Advanced Usage", link: "/advanced" },
+        { text: "OLD: Advanced Usage", link: "/old_advanced" },
         { text: "OLD: Getting Started", link: "/old_getting-started" },
         { text: "OLD: Services", link: "/old_services" },
         { text: "OLD: Client", link: "/old_client" },
