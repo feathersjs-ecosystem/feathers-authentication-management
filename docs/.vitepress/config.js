@@ -13,12 +13,9 @@ module.exports = {
       "/": [
         { text: "Overview", link: "/overview" },
         { text: "Getting Started", link: "/getting-started" },
+        { text: "Process Flows", link: "/process-flows" },
         { text: "Configuration", link: "/configuration" },
         { text: "Service Calls", link: "/service-calls" },
-        { text: "OLD: Advanced Usage", link: "/old_advanced" },
-        { text: "OLD: Getting Started", link: "/old_getting-started" },
-        { text: "OLD: Services", link: "/old_services" },
-        { text: "OLD: Client", link: "/old_client" },
       ],
     },
   },

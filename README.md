@@ -18,13 +18,13 @@ Versions >= 1.x are expected to work with [Feathers v3](https://buzzard.docs.fea
 
 ### Developers
 
-Refer to [Documentation](./docs.md).
+Refer to [Documentation](./docs).
 
 Read a [step-by-step guide](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) created by Imre Gelens
 
 ### Maintainers
 
-Refer to our [guidelines](./development.md).
+Refer to our [guidelines](./development).
 
 ## License
 
