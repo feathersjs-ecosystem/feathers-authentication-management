@@ -4,25 +4,27 @@ title: Getting Started
 
 # {{ $frontmatter.title }}
 
-Prerequisite for the installation of the `feathers-authentication-management` service is an existing Feathers application configured with local authentication.
+## Introduction
+
+Prerequisite for the installation of the `feathers-authentication-management` service is an Feathers application configured with local authentication.
 
 This guide demonstrates the installation and configuration of `feathers-authentication-management` in three steps:
 
 1. Installation of the `feathers-authentication-management` service and of an additional service, which performs the user notifications.
 
-2. Extension of the `users` model.
+2. Extension of the users model.
 
-3. Extension of the `users` hooks.
+3. Extension of the users service hooks.
 
 4. Implementation of the notifier function.
 
 The functionality of the `feathers-authentication-management` service will be demonstrated using two example actions: `resendVerifySignup` and `verifySignup`, i. e. the sending of an e-mail containing a verification link and the sending of a confirmation e-mail after successful verification, respectively.
 
-For example, the full process for the verification of an e-mail address spans seven steps as shown in the following figure:
+The full process for the verification of an e-mail address spans seven steps as shown in the following figure:
 
 ![resendVerifySignup.png](./images/resendVerifySignup.png)
 
-Not all functions are provided by the service, some parts have to be implemented on the client side. The service is only responsible for steps 2 (token creation) and 6 (token verification). It triggers steps 3 (sending of the verification link including the token) and step 7 (sending of a verified e-mail) by calling the custom notifier function. In general, the token link is opened in the client, which sends it back to the `feathers-authentication-management` service in the Feathers app. The client side implementation is not part of this documentation, but it covers a full description of all necessary [Service Calls](./service-calls).
+Not all steps are performed by the service, some parts have to be implemented on the client side. The service is only responsible for steps 2 (token creation) and 6 (token verification). It triggers steps 3 (sending of the verification link including the token) and 7 (sending of a confirmation e-mail) by calling the custom notifier function. In general, the token link is opened in the client, which sends it back to the `feathers-authentication-management` service in the Feathers app. The details of the client side implementation is not part of this documentation, but the necessary steps are covered at the end of this chapter.
 
 ## Installation
 
@@ -52,17 +54,13 @@ The notifier function is used to create the contents various e-mails and send th
 
 `feathers-authentication-management` requires several additional fields in the `user` model:
 
-| Field           | Field Type   | Description                                                           |
-| --------------- | ------------ | --------------------------------------------------------------------- |
-| `isVerified`    | Boolean      | Indicates if the user's e-mail address has been verified.             |
-| `verifyToken`   | String       | The verification token generated for verification e-mails.            |
-| `verifyExpires` | Date\|Number | Expiration date of the verification token.                            |
-| `verifyChanges` | String[]     | An array that tracks e.g. the change of an e-mail address.            |
-| `resetToken`    | String       | The reset token generated for password reset e-mails.                 |
-| `resetExpires`  | Date\|Number | Expiration date of the reset token.                                   |
-| `resetAttempts` | Number       | Amount of incorrect reset submissions left before token invalidation. |
+| Field           | Field Type   | Description                                                |
+| --------------- | ------------ | ---------------------------------------------------------- |
+| `isVerified`    | Boolean      | Indicates if the user's e-mail address has been verified.  |
+| `verifyToken`   | String       | The verification token generated for verification e-mails. |
+| `verifyExpires` | Date\|Number | Expiration date of the verification token.                 |
 
-The table contains only the necessary fields for our example with e-mail notifications. A full list of fields is described in chapter [Configuration](./configuration#user-model-fields).
+The table contains only the necessary fields for our example with verification e-mails. A full list of fields is described in chapter [Configuration](./configuration#user-model-fields).
 
 ::: info
 Make sure that the `users` model contains the fields described above and also that the `users` table in your database is extended with these fields.
@@ -120,9 +118,15 @@ The `create` `after` method is also extended with a call of the `notifier` funct
 
 ## Implementation of the notifier function
 
-The notifier function is used by `feathers-authentication-management` to create and send the user's notifications. It is called with three parameters: `type` describing the kind of action, the `user` object and an additional `notifierOptions` object. Depending on `type`, the function creates the content of the e-mails and sends them using the `feathers-mailer` service.
+The notifier function is used by `feathers-authentication-management` to create and send the user's notifications. It is called with three parameters:
 
-The following example shows a minimal version for sending e-mail after the service actions `resendVerifySignup` and `verifySignup`. For the first one, a token link has to be created and to be added to the e-mail content. This token has been generated by `feathers-authentication-management` and can be found in the `user` object data.
+- `type` describing the kind of action,
+- the `user` object,
+- an additional `notifierOptions` object.
+
+Depending on the value of `type`, the function creates the content of an e-mail and sends it using the `feathers-mailer` service.
+
+The following example shows a minimal version for sending an e-mail after the service actions `resendVerifySignup` and `verifySignup`. For the first one, a token link has to be created and to be added to the e-mail content. This token has been generated by `feathers-authentication-management` and can be found in the `user` object data.
 
 ```js
 // nofifier.js
@@ -135,7 +139,7 @@ module.exports = (app) => {
             from: "test@localhost",
             to: user.email,
             subject: "Please confirm your e-mail address",
-            text: getLink("verify", user.verifyToken),
+            text: "Click here: " + getLink("verify", user.verifyToken),
           });
           break;
 
@@ -167,3 +171,20 @@ module.exports = (app) => {
   }
 };
 ```
+
+## Client side implementation
+
+The link in the verification e-mail should lead to the client part of your application. The client sends the verification token to the `feathers-authentication-management` service, e. g. by using a POST request as follows:
+
+```js
+// Endpoint: /authManagement
+// Request body:
+{
+  action: 'verifySignupLong',
+  value: // the verifyToken,
+}
+```
+
+More details and alternative request methods can be found in chapter [Service Calls](./service-calls).
+
+Finally, the services compares the token and triggers a confirmation e-mail after successful validation.

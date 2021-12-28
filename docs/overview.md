@@ -15,7 +15,7 @@ Sign up verification, forgotten password reset, and other capabilities for local
 
 This project is built for [Feathers](http://feathersjs.com) – an open source framework for real-time applications and REST APIs.
 
-The Feathers core provides a [LocalStrategy](https://docs.feathersjs.com/api/authentication/local.html) for authenticating users with a username/email and password combination. However, it does not include methods such as the verification of a user's e-mail address or sending a password reset link. The purpose of `feathers-authentication-management` is to extend Feathers's local authentication with such functionalities.
+The Feathers core provides a [LocalStrategy](https://docs.feathersjs.com/api/authentication/local.html) for authenticating users with a username/e-mail and password combination. However, it does not include methods such as the verification of a user's e-mail address or sending a password reset link. The purpose of `feathers-authentication-management` is to extend Feathers's local authentication with such functionalities.
 
 ### Features
 
@@ -34,7 +34,13 @@ Details about settings and the implementation of a notifier function can be foun
 
 ### Help
 
-Open an issue or come talk on the Feathers Slack ([slack.feathersjs.com](slack.feathersjs.com)).
+- Open an issue or come talk on the Feathers Slack ([slack.feathersjs.com](slack.feathersjs.com)).
+
+- Additional resources:
+
+  - [Setting up email verification in FeathersJS](https://hackernoon.com/setting-up-email-verification-in-feathersjs-ce764907e4f2) – The classic how-to by Imre Gelens (02/2018).
+
+  - [The how and why of 2FA using Twilio and Feathers.js — Simple 2FA tutorial](https://harryhopalot.medium.com/the-how-and-why-of-2fa-using-twilio-and-feathers-js-simple-2fa-tutorial-e64a930a57a8) – Medium article by Harry Blakiston Houston (06/2018),
 
 ### License
 

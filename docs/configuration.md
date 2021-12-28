@@ -4,15 +4,15 @@ title: Configuration
 
 # {{ $frontmatter.title }}
 
-The `feathers-authentication-management` service is configured as several positions of a Feathers application:
+The `feathers-authentication-management` service is configured at several positions of a Feathers application:
 
-1. Import of the service with some options to the app.
+1. Attaching of the service with options to the Feathers app.
 
-2. Extension of the user model with some new fields required by the service.
+2. Extension of the user model with new fields required by the service.
 
 3. Extension of the create hooks in the users service.
 
-4. Implementation of a custom notifier function to send e-mails, SMS, or use any other communication channel configured in you application.
+4. Implementation of a custom notifier function to send e-mails, SMS, or use any other communication channel configured in your application.
 
 ## Service Options
 
@@ -27,15 +27,15 @@ Possible `options` are:
 | Field                   | Field Type                              | Description                                                                                                                                                                                                                                                                                                                                                            |
 | ----------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `service`               | String                                  | The path of the service for user items, e.g. `/users` (default) or `/organization`.                                                                                                                                                                                                                                                                                    |
-| `path`                  | String                                  | The path to associate with this service. Default `authManagement`.                                                                                                                                                                                                                                                                                                     |
-| `skipIsVerifiedCheck`   | Boolean                                 | If `false` (default) it is impossible to reset password if email is not verified.                                                                                                                                                                                                                                                                                      |
-| `sanitizeUserForClient` | User object                             | By default, **THE USER OBJECT IS IN THE RESPONSE** of e. g.a password reset request. To reply with empty object use `sanitizeUserForClient: () => ({})`.                                                                                                                                                                                                               |
+| `path`                  | String                                  | The path to associate with this service. Default is `/authManagement`.                                                                                                                                                                                                                                                                                                 |
+| `skipIsVerifiedCheck`   | Boolean                                 | If `false` (default) it is impossible to reset passwords even if e-mail is not verified.                                                                                                                                                                                                                                                                               |
+| `sanitizeUserForClient` | User object                             | By default, **THE USER OBJECT IS IN THE RESPONSE** e. g. of a password reset request. To reply with empty object use `sanitizeUserForClient: () => ({})`.                                                                                                                                                                                                              |
 | `notifier`              | `function(type, user, notifierOptions)` | Returns a Promise with the [notifier function](#notifier-function).                                                                                                                                                                                                                                                                                                    |
-| `longTokenLen`          | Number                                  | Half the length of the long token. Default is 15, giving tokens of 30 characters.length.                                                                                                                                                                                                                                                                               |
-| `shortTokenLen`         | Number                                  | Length of short token (default: 6)..                                                                                                                                                                                                                                                                                                                                   |
-| `shortTokenDigits`      | Boolean                                 | If short token contain only digits (`true`, default) or also characters (`false`).                                                                                                                                                                                                                                                                                     |
+| `longTokenLen`          | Number                                  | Half the length of the long token. Default is 15, giving tokens of 30 characters length.                                                                                                                                                                                                                                                                               |
+| `shortTokenLen`         | Number                                  | Length of short token (default: 6).                                                                                                                                                                                                                                                                                                                                    |
+| `shortTokenDigits`      | Boolean                                 | If `true` (default) short tokens contain only digits. Otherwise also characters.                                                                                                                                                                                                                                                                                       |
 | `delay`                 | Number                                  | Lifetime for e-mail verification tokens in ms. Default is 5\*24\*60\*60\*1000 = 432000000 (5 days).                                                                                                                                                                                                                                                                    |
-| `resetDelay`            | Number                                  | Lifetime for password reset token in ms. Default is 2\*60\*60\*1000 = 7200000 (2 hours).                                                                                                                                                                                                                                                                               |
+| `resetDelay`            | Number                                  | Lifetime for password reset tokens in ms. Default is 2\*60\*60\*1000 = 7200000 (2 hours).                                                                                                                                                                                                                                                                              |
 | `resetAttempts`         | Number                                  | Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0.                                                                                                                                                                                                                                              |
 | `reuseResetToken`       | Boolean                                 | Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is `false`.                                                                                                                                                                                                                    |
 | `identifyUserProps`     | String                                  | Property names in the `user` item which uniquely identify the user, e.g. `['username', 'email', 'cellphone']`. The default is `['email']`. Only these properties may be changed with verification by the service. At least one of these properties must be provided whenever a short token is used, as the short token alone is too susceptible to brute force attack. |
@@ -45,26 +45,26 @@ The `docs` parameter is the representation of the service swagger documentation.
 
 ## User Model Fields
 
-The user model has to be extended with several fields that are used by `feathers-authentication-management` methods. Which fields are necessary depend strongly on the use case and the used transport mechanism. Possible fields are:
+The user model has to be extended with new fields that are used by `feathers-authentication-management`. Not all of these fields are required. Which fields are necessary depend strongly on your use case and the communication channel. Possible fields are:
 
 | Field              | Field Type   | Description                                                           |
 | ------------------ | ------------ | --------------------------------------------------------------------- |
 | `isVerified`       | Boolean      | Indicates if the user's e-mail address has been verified.             |
 | `verifyToken`      | String       | A long verification token generated for verification e-mails.         |
-| `verifyShortToken` | String       | A short verification token generated e. g. for verification SMS       |
+| `verifyShortToken` | String       | A short verification token generated e. g. for verification SMS.      |
 | `verifyExpires`    | Date\|Number | Expiration date of the verification token.                            |
-| `verifyChanges`    | String[]     | An array that tracks e.g. the change of an e-mail address.            |
+| `verifyChanges`    | String[]     | An array that tracks e. g. the change of an e-mail address.           |
 | `resetToken`       | String       | A long reset token generated for password reset e-mails.              |
 | `resetShortToken`  | String       | A short reset token generated e. g. for password reset SMS.           |
 | `resetExpires`     | Date\|Number | Expiration date of the reset token.                                   |
 | `resetAttempts`    | Number       | Amount of incorrect reset submissions left before token invalidation. |
 | `preferredComm`    | String       | The preferred way to notify the user. One of `identifyUserProps`      |
 
-All necessary fields have to be added to the `users` database table and to the `users` model.
+All necessary fields have to be added to the `users` database table and to the `users` model as well.
 
 ## Service Hooks
 
-The `feathers-authentication-management` service does not itself handle creation of a new user account nor the sending of the initial sign up verification request. Instead hooks are provided for you to use with the `users` service `create` method. If you set a service path other than the default of `'authManagement'`, the custom path name must be passed into the hook.
+The `feathers-authentication-management` service does not handle creation of a new user account nor the sending of the initial sign up verification notification. Instead hooks are provided to be used with the `users` service `create` method. If you set a service path other than the default of `'/authManagement'`, the custom path name must be passed into the hook.
 
 ### addVerification
 

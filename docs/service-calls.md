@@ -4,17 +4,17 @@ title: Service Calls
 
 # {{ $frontmatter.title }}
 
-The `feathers-authentication-management` service can be called using various methods externally from the client as well as internally from the server. On client side, you can use the [Feathers client](https://docs.feathersjs.com/api/client.html), plain and simple HTTP requests, or any other request library your frontend framework provides.
+The `feathers-authentication-management` service can be called using various methods. These can be external calls from the client as well as internal calls within the server. On client side, you can use the [Feathers client](https://docs.feathersjs.com/api/client.html), plain and simple HTTP requests, or any other request library your frontend framework provides.
 
 The service may be called using
 
 - Direct Feathers service calls,
 - HTTP requests on the Feathers API,
-- Provided service wrappers.
+- Provided service wrappers (see last section).
 
 ## Comparison of Old with New Service Calls
 
-In the first versions of the `feathers-authentication-management` service, the data objects of the service requests contained the name of the action, for example `sendResetPwd` in case of a password reset request:
+In the first versions of this service, the data objects of the service requests contained the name of the action, for example `'sendResetPwd'` in case of a password reset request:
 
 ```js
 app.service("authManagement").create({
@@ -51,10 +51,9 @@ For the reference, in the following table the new service endpoints are compared
 | `/verify-signup-set-password-short` | `action: 'verifySignupSetPasswordShort'` |
 | `//verify-signup-short`             | `action: 'verifySignupShort'`            |
 
-In the following list of all service calls only the new service endpoints are used.
-
 ## List of Service Calls
 
+Only the new service endpoints are used in the following list of all service calls.
 All service calls return a promise.
 
 ### checkUnique
@@ -166,9 +165,7 @@ Verifies a given long verification token.
 
 ```js
 app.service('authManagement/verify-signup-long').create({
-  value: {
-    value: verifyToken, // compares to .verifyToken
-  },
+  value: verifyToken, // compares to .verifyToken
 }
 ```
 
