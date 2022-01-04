@@ -1,32 +1,39 @@
-import { HookContext } from '@feathersjs/feathers';
-import { checkContext, getItems, replaceItems } from 'feathers-hooks-common';
+import { HookContext } from "@feathersjs/feathers";
+import { checkContext, getItems, replaceItems } from "feathers-hooks-common";
 
-import type { User } from '../types';
+import type { User } from "../types";
 
 /**
  * Sanitize users. After-hook for '/users' service.
  */
-export default function removeVerification (
+export default function removeVerification(
   ifReturnTokens?: boolean
-): ((context: HookContext) => HookContext) {
+): (context: HookContext) => HookContext {
   return (context: HookContext): HookContext => {
-    checkContext(context, 'after');
+    checkContext(context, "after");
     // Retrieve the items from the hook
     const items: User | User[] = getItems(context);
     if (!items) return;
     const isArray = Array.isArray(items);
-    const users = ((isArray) ? items : [items]) as User[];
+    const users = (isArray ? items : [items]) as User[];
 
-    users.forEach(user => {
-      if (!('isVerified' in user) && context.method === 'create') {
+    users.forEach((user) => {
+      if (!("isVerified" in user) && context.method === "create") {
         /* eslint-disable no-console */
-        console.warn('Property isVerified not found in user properties. (removeVerification)');
-        console.warn('Have you added authManagement\'s properties to your model? (Refer to README.md)');
-        console.warn('Have you added the addVerification hook on users::create?');
+        console.warn(
+          "Property isVerified not found in user properties. (removeVerification)"
+        );
+        console.warn(
+          "Have you added authManagement's properties to your model? (Refer to README)"
+        );
+        console.warn(
+          "Have you added the addVerification hook on users::create?"
+        );
         /* eslint-enable */
       }
 
-      if (context.params.provider && user) { // noop if initiated by server
+      if (context.params.provider && user) {
+        // noop if initiated by server
         delete user.verifyExpires;
         delete user.resetExpires;
         delete user.verifyChanges;
