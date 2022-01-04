@@ -27,7 +27,7 @@ export { SendResetPwdService } from './services/SendResetPwdService';
 export { VerifySignupLongService } from './services/VerifySignupLongService';
 export { VerifySignupSetPasswordLongService } from './services/VerifySignupSetPasswordLongService';
 export { VerifySignupSetPasswordShortService } from './services/VerifySignupSetPasswordShortService';
-export { VerifySignupShortService } from './services/VerifySignupShort';
+export { VerifySignupShortService } from './services/VerifySignupShortService';
 
 export * from './types';
 

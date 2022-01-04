@@ -13,17 +13,18 @@ export interface User {
   resetExpires: Date | number // unix
   resetAttempts: number
   password: string
-  [key: string]: unknown
-  [key: number]: unknown
+  [key: string]: any
+  [key: number]: any
 }
 
 export type ArrayOrPaginated<T> = T[] | Paginated<T>;
 
 export type UsersArrayOrPaginated = ArrayOrPaginated<User>;
+export type NotifierOptions = Record<string, any>
 
 export interface VerifyChanges {
-  [key: string]: unknown
-  [key: number]: unknown
+  [key: string]: any
+  [key: number]: any
 }
 
 // TODO: explicit
@@ -36,7 +37,7 @@ export interface Tokens {
 
 export type IdentifyUser = Query;
 
-export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions: Record<string, unknown>) => unknown;
+export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions: NotifierOptions) => any;
 export type SanitizeUserForClient = (user: Partial<User>) => SanitizedUser;
 
 export type SanitizedUser = Partial<User>;
@@ -70,15 +71,12 @@ export type ActionPathMap<T> = {
   [key in Exclude<AuthenticationManagementAction, 'options'>]: T
 };
 
-export type UseSeparateServicesOption = boolean | Partial<ActionPathMap<boolean | string>>;
-
 export type GetUserDataCheckProps = ('isNotVerified' | 'isNotVerifiedOrHasVerifyChanges' | 'isVerified' | 'verifyNotExpired' | 'resetNotExpired')[];
 
 //#region options
 
-export interface AuthenticationManagementConfigureOptions {
+export interface AuthenticationManagementServiceOptions {
   service: string
-  path: string
   skipIsVerifiedCheck: boolean
   notifier: Notifier
   longTokenLen: number
@@ -91,113 +89,111 @@ export interface AuthenticationManagementConfigureOptions {
   identifyUserProps: string[]
   sanitizeUserForClient: (user: User) => Partial<User>
   passwordField: string
-  // identifyUser: IdentifyUser // TODO ?
-  useSeparateServices: UseSeparateServicesOption
 }
 
-export interface AuthenticationManagementServiceOptions extends Omit<AuthenticationManagementConfigureOptions, 'path' | 'useSeparateServices'> {
-  app: Application
-}
+export type AuthenticationManagementSetupOptions = AuthenticationManagementServiceOptions & { path: string }
 
-export type AuthenticationManagementServiceOptionsDefault = Omit<AuthenticationManagementServiceOptions, 'app'>;
+export type VerifySignupLongServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'notifier' |
+  'sanitizeUserForClient'>;
 
-export type VerifySignupOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'notifier' |
-'sanitizeUserForClient'>;
+export type VerifySignupOptions = VerifySignupLongServiceOptions & { app: Application };
 
-export interface VerifySignupWithShortTokenOptions extends VerifySignupOptions {
+export type VerifySignupShortServiceOptions = VerifySignupLongServiceOptions & {
   identifyUserProps: string[]
 }
+export type VerifySignupWithShortTokenOptions = VerifySignupShortServiceOptions & { app: Application };
 
-export type VerifySignupSetPasswordOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'sanitizeUserForClient' |
-'notifier' |
-'passwordField'>;
+export type VerifySignupSetPasswordLongServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'sanitizeUserForClient' |
+  'notifier' |
+  'passwordField'>;
+export type VerifySignupSetPasswordOptions = VerifySignupSetPasswordLongServiceOptions & { app: Application };
 
-export type PasswordChangeOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+export type PasswordChangeServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'identifyUserProps' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
+export type PasswordChangeOptions = PasswordChangeServiceOptions & { app: Application };
 
-export type VerifySignupSetPasswordWithShortTokenOptions =
-VerifySignupSetPasswordOptions & Pick<AuthenticationManagementServiceOptions, 'identifyUserProps'>;
+export type VerifySignupSetPasswordShortServiceOptions = VerifySignupSetPasswordLongServiceOptions
+  & Pick<AuthenticationManagementServiceOptions, 'identifyUserProps'>;
+export type VerifySignupSetPasswordWithShortTokenOptions = VerifySignupSetPasswordShortServiceOptions & { app: Application };
 
-export type ResetPasswordOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'skipIsVerifiedCheck' |
-'reuseResetToken' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+export type ResetPasswordServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'skipIsVerifiedCheck' |
+  'reuseResetToken' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
+export type ResetPasswordOptions = ResetPasswordServiceOptions & { app: Application };
 
-export interface ResetPwdWithShortTokenOptions extends ResetPasswordOptions {
+export type ResetPwdWithShortServiceOptions = ResetPasswordServiceOptions & {
   identifyUserProps: string[]
 }
+export type ResetPwdWithShortTokenOptions = ResetPwdWithShortServiceOptions & { app: Application }
 
-export type ResendVerifySignupOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'delay' |
-'longTokenLen' |
-'shortTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'sanitizeUserForClient'>;
+export type ResendVerifySignupServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'identifyUserProps' |
+  'delay' |
+  'longTokenLen' |
+  'shortTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'sanitizeUserForClient'>;
+export type ResendVerifySignupOptions = ResendVerifySignupServiceOptions & { app: Application };
 
-export type IdentityChangeOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'delay' |
-'longTokenLen' |
-'shortTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+export type IdentityChangeServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'identifyUserProps' |
+  'delay' |
+  'longTokenLen' |
+  'shortTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
+export type IdentityChangeOptions = IdentityChangeServiceOptions & { app: Application };
 
-export type CheckUniqueOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service'>;
+export type CheckUniqueServiceOptions = Pick<AuthenticationManagementServiceOptions, 'service'>;
+export type CheckUniqueOptions = CheckUniqueServiceOptions & { app: Application };
 
-export type SendResetPwdOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'skipIsVerifiedCheck' |
-'reuseResetToken' |
-'resetDelay' |
-'sanitizeUserForClient' |
-'resetAttempts' |
-'shortTokenLen' |
-'longTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'passwordField'>;
+export type SendResetPwdServiceOptions = Pick<AuthenticationManagementServiceOptions,
+  'service' |
+  'identifyUserProps' |
+  'skipIsVerifiedCheck' |
+  'reuseResetToken' |
+  'resetDelay' |
+  'sanitizeUserForClient' |
+  'resetAttempts' |
+  'shortTokenLen' |
+  'longTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'passwordField'>;
+
+export type SendResetPwdOptions = SendResetPwdServiceOptions & { app: Application };
 
 //#endregion
 
 //#region client
 export interface AuthenticationManagementClient {
   checkUnique: (identifyUser: IdentifyUser, ownId: Id, ifErrMsg: boolean) => Promise<void>
-  resendVerifySignup: (identifyUser: IdentifyUser, notifierOptions: Record<string, unknown>) => Promise<void>
+  resendVerifySignup: (identifyUser: IdentifyUser, notifierOptions: NotifierOptions) => Promise<void>
   verifySignupLong: (verifyToken: string) => Promise<void>
   verifySignupShort: (verifyToken: string, identifyUser: IdentifyUser) => Promise<void>
-  sendResetPwd: (IdentifyUser: IdentifyUser, notifierOptions: Record<string, unknown>) => Promise<void>
+  sendResetPwd: (IdentifyUser: IdentifyUser, notifierOptions: NotifierOptions) => Promise<void>
   resetPwdLong: (resetToken: string, password: string) => Promise<void>
   resetPwdShort: (resetShortToken: string, identifyUser: IdentifyUser, password: string) => Promise<void>
   passwordChange: (oldPassword: string, password: string, identifyUser: IdentifyUser) => Promise<void>
-  identityChange: (password: string, changesIdentifyUser: Record<string, unknown>, identifyUser: IdentifyUser) => Promise<void>
-  authenticate: (email: string, password: string, cb?: (err: Error | null, user?: Partial<User>) => void) => Promise<unknown>
+  identityChange: (password: string, changesIdentifyUser: NotifierOptions, identifyUser: IdentifyUser) => Promise<void>
+  authenticate: (email: string, password: string, cb?: (err: Error | null, user?: Partial<User>) => void) => Promise<any>
 }
 
 //#endregion
@@ -232,11 +228,11 @@ export interface DataCheckUniqueWithAction extends DataCheckUnique {
 
 export interface DataIdentityChange {
   value: {
-    changes: Record<string, unknown>
+    changes: Record<string, any>
     password: string
     user: IdentifyUser
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataIdentityChangeWithAction extends DataIdentityChange {
@@ -249,7 +245,7 @@ export interface DataPasswordChange {
     password: string
     user: IdentifyUser
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataPasswordChangeWithAction extends DataPasswordChange {
@@ -259,7 +255,7 @@ export interface DataPasswordChangeWithAction extends DataPasswordChange {
 // TODO: notifierOptions
 export interface DataResendVerifySignup {
   value: IdentifyUser
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataResendVerifySignupWithAction extends DataResendVerifySignup {
@@ -271,7 +267,7 @@ export interface DataResetPwdLong {
     password: string
     token: string
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataResetPwdLongWithAction extends DataResetPwdLong {
@@ -284,7 +280,7 @@ export interface DataResetPwdShort {
     token: string
     user: IdentifyUser
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataResetPwdShortWithAction extends DataResetPwdShort {
@@ -293,7 +289,7 @@ export interface DataResetPwdShortWithAction extends DataResetPwdShort {
 
 export interface DataSendResetPwd {
   value: IdentifyUser
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataSendResetPwdWithAction extends DataSendResetPwd {
@@ -302,7 +298,7 @@ export interface DataSendResetPwdWithAction extends DataSendResetPwd {
 
 export interface DataVerifySignupLong {
   value: string
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataVerifySignupLongWithAction extends DataVerifySignupLong {
@@ -314,7 +310,7 @@ export interface DataVerifySignupSetPasswordLong {
     password: string
     token: string
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySignupSetPasswordLong {
@@ -327,7 +323,7 @@ export interface DataVerifySignupSetPasswordShort {
     token: string
     user: IdentifyUser
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataVerifySignupSetPasswordShortWithAction extends DataVerifySignupSetPasswordShort {
@@ -339,7 +335,7 @@ export interface DataVerifySignupShort {
     token: string
     user: IdentifyUser
   }
-  notifierOptions?: Record<string, unknown>
+  notifierOptions?: NotifierOptions
 }
 
 export interface DataVerifySignupShortWithAction extends DataVerifySignupShort {

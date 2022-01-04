@@ -10,7 +10,7 @@ import { SendResetPwdService } from '../services/SendResetPwdService';
 import { VerifySignupLongService } from '../services/VerifySignupLongService';
 import { VerifySignupSetPasswordLongService } from '../services/VerifySignupSetPasswordLongService';
 import { VerifySignupSetPasswordShortService } from '../services/VerifySignupSetPasswordShortService';
-import { VerifySignupShortService } from '../services/VerifySignupShort';
+import { VerifySignupShortService } from '../services/VerifySignupShortService';
 
 import type { Class } from 'type-fest';
 

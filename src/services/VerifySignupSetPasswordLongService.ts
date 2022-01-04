@@ -1,23 +1,22 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { verifySignupSetPasswordWithLongToken } from '../methods/verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import { SetRequired } from 'type-fest';
 import {
   DataVerifySignupSetPasswordLong,
   SanitizedUser,
-  VerifySignupSetPasswordOptions
+  VerifySignupSetPasswordOptions,
+  VerifySignupSetPasswordLongServiceOptions
 } from '../types';
+import { Application } from '@feathersjs/feathers';
 
-export class VerifySignupSetPasswordLongService extends AuthenticationManagementBase<DataVerifySignupSetPasswordLong, SanitizedUser> {
-  options: VerifySignupSetPasswordOptions;
+export class VerifySignupSetPasswordLongService
+  extends AuthenticationManagementBase<DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordLongServiceOptions> {
 
-  constructor (options: SetRequired<Partial<VerifySignupSetPasswordOptions>, 'app'>) {
-    super();
+    constructor (app: Application, options?: Partial<VerifySignupSetPasswordLongServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<VerifySignupSetPasswordOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'notifier',
       'sanitizeUserForClient',
@@ -28,7 +27,7 @@ export class VerifySignupSetPasswordLongService extends AuthenticationManagement
 
   async _create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithLongToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.password,
       data.notifierOptions

@@ -61,9 +61,7 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers));
             app.configure(authLocalMgnt({}));
-            app.use("authManagement/identity-change", new IdentityChangeService({
-              app
-            }))
+            app.use("authManagement/identity-change", new IdentityChangeService(app))
             app.setup();
             usersService = app.service('users');
 
@@ -163,8 +161,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/identity-change", new IdentityChangeService({
-              app,
+            app.use("authManagement/identity-change", new IdentityChangeService(app, {
               notifier: spyNotifier.callWith
             }));
             app.setup();

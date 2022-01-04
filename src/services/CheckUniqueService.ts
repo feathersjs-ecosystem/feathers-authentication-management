@@ -1,24 +1,26 @@
 import checkUnique from '../methods/check-unique';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from '../options';
 
-import type { SetRequired } from 'type-fest';
-import type { DataCheckUnique, CheckUniqueOptions } from '../types';
+import type {
+  DataCheckUnique,
+  CheckUniqueServiceOptions
+} from '../types';
+import { Application } from '@feathersjs/feathers';
 
-export class CheckUniqueService extends AuthenticationManagementBase<DataCheckUnique, unknown> {
-  options: CheckUniqueOptions;
+export class CheckUniqueService
+  extends AuthenticationManagementBase<DataCheckUnique, null, CheckUniqueServiceOptions> {
 
-  constructor (options: SetRequired<Partial<CheckUniqueOptions>, 'app'>) {
-    super();
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<CheckUniqueOptions, 'app'> = makeDefaultOptions(['service']);
+  constructor (app: Application, options?: Partial<CheckUniqueServiceOptions>) {
+    super(app);
+
+    const defaultOptions = makeDefaultOptions(['service']);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataCheckUnique): Promise<unknown> {
+  async _create (data: DataCheckUnique): Promise<null> {
     return await checkUnique(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.ownId,
       data.meta

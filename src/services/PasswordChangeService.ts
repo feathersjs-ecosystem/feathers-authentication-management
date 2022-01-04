@@ -1,23 +1,22 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import passwordChange from '../methods/password-change';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   SanitizedUser,
   DataPasswordChange,
-  PasswordChangeOptions
+  PasswordChangeOptions,
+  PasswordChangeServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class PasswordChangeService extends AuthenticationManagementBase<DataPasswordChange, SanitizedUser> {
-  options: PasswordChangeOptions;
+export class PasswordChangeService
+  extends AuthenticationManagementBase<DataPasswordChange, SanitizedUser, PasswordChangeServiceOptions> {
 
-  constructor (options: SetRequired<Partial<PasswordChangeOptions>, 'app'>) {
-    super();
+    constructor (app: Application, options?: Partial<PasswordChangeOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<PasswordChangeOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'notifier',
       'identifyUserProps',
@@ -29,7 +28,7 @@ export class PasswordChangeService extends AuthenticationManagementBase<DataPass
 
   async _create (data: DataPasswordChange): Promise<SanitizedUser> {
     return await passwordChange(
-      this.options,
+      this.optionsWithApp,
       data.value.user,
       data.value.oldPassword,
       data.value.password,

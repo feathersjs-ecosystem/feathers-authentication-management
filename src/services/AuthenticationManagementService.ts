@@ -2,7 +2,6 @@ import makeDebug from 'debug';
 import { BadRequest } from '@feathersjs/errors';
 
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { makeDefaultOptions } from '../options';
 import checkUnique from '../methods/check-unique';
 import identityChange from '../methods/identity-change';
@@ -18,8 +17,6 @@ import {
   verifySignupSetPasswordWithLongToken,
   verifySignupSetPasswordWithShortToken
 } from '../methods/verify-signup-set-password';
-
-import type { SetRequired } from 'type-fest';
 
 import type {
   AuthenticationManagementData,
@@ -49,45 +46,32 @@ import type {
   DataVerifySignupShortWithAction,
   SanitizedUser
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
 const debug = makeDebug('authLocalMgnt:service');
 
 type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOptions | unknown;
 
-export class AuthenticationManagementService extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes> {
+export class AuthenticationManagementService
+  extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes, AuthenticationManagementServiceOptions> {
   docs: unknown;
-  options: AuthenticationManagementServiceOptions;
 
   constructor (
-    options: SetRequired<Partial<AuthenticationManagementServiceOptions>, 'app'>,
+    app: Application,
+    options?: Partial<AuthenticationManagementServiceOptions>,
     docs?: unknown
   ) {
-    super();
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<AuthenticationManagementServiceOptions, 'app'> = makeDefaultOptions([
-      'service',
-      'skipIsVerifiedCheck',
-      'notifier',
-      'longTokenLen',
-      'shortTokenLen',
-      'shortTokenDigits',
-      'resetDelay',
-      'delay',
-      'resetAttempts',
-      'reuseResetToken',
-      'identifyUserProps',
-      'sanitizeUserForClient',
-      'passwordField'
-    ]);
-    this.options = Object.assign(defaultOptions, options);
+    const defaultOptions = makeDefaultOptions();
+    this.options = Object.assign({}, defaultOptions, options);
 
     this.docs = docs;
   }
 
   async _checkUnique (data: DataCheckUnique): Promise<unknown> {
     return await checkUnique(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.ownId,
       data.meta
@@ -100,7 +84,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
     return await identityChange(
-      this.options,
+      this.optionsWithApp,
       data.value.user,
       data.value.password,
       data.value.changes,
@@ -114,7 +98,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _passwordChange (data: DataPasswordChange): Promise<SanitizedUser> {
     return await passwordChange(
-      this.options,
+      this.optionsWithApp,
       data.value.user,
       data.value.oldPassword,
       data.value.password,
@@ -128,7 +112,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _resendVerifySignup (data: DataResendVerifySignup): Promise<SanitizedUser> {
     return await resendVerifySignup(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.notifierOptions
     );
@@ -140,7 +124,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _resetPasswordLong (data: DataResetPwdLong): Promise<SanitizedUser> {
     return await resetPwdWithLongToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.password,
       data.notifierOptions
@@ -153,7 +137,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _resetPasswordShort (data: DataResetPwdShort): Promise<SanitizedUser> {
     return await resetPwdWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.value.password,
@@ -167,7 +151,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _sendResetPassword (data: DataSendResetPwd): Promise<SanitizedUser> {
     return await sendResetPwd(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.notifierOptions
     );
@@ -179,7 +163,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _verifySignupLong (data: DataVerifySignupLong): Promise<SanitizedUser> {
     return await verifySignupWithLongToken(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.notifierOptions
     );
@@ -191,7 +175,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _verifySignupShort (data: DataVerifySignupShort): Promise<SanitizedUser> {
     return await verifySignupWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.notifierOptions
@@ -204,7 +188,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithLongToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.password,
       data.notifierOptions
@@ -217,7 +201,7 @@ export class AuthenticationManagementService extends AuthenticationManagementBas
 
   async _verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.value.password,

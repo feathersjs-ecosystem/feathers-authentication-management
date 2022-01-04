@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithLongToken } from '../methods/reset-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   SanitizedUser,
-  ResetPasswordOptions,
-  DataResetPwdLong
+  DataResetPwdLong,
+  ResetPasswordServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class ResetPwdLongService extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser> {
-  options: ResetPasswordOptions;
+export class ResetPwdLongService
+  extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser, ResetPasswordServiceOptions> {
 
-  constructor (options: SetRequired<Partial<ResetPasswordOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<ResetPasswordServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<ResetPasswordOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'skipIsVerifiedCheck',
       'notifier',
@@ -30,7 +28,7 @@ export class ResetPwdLongService extends AuthenticationManagementBase<DataResetP
 
   async _create (data: DataResetPwdLong): Promise<SanitizedUser> {
     return await resetPwdWithLongToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.password,
       data.notifierOptions

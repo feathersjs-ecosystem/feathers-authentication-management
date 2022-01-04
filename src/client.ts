@@ -5,7 +5,8 @@ import { AuthenticationManagementService } from './services';
 import {
   AuthenticationManagementClient,
   IdentifyUser,
-  User
+  User,
+  NotifierOptions
 } from './types';
 // Wrapper for client interface to feathers-authenticate-management
 
@@ -32,7 +33,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
         meta: { noErrMsg: ifErrMsg }
       });
     },
-    resendVerifySignup: async (identifyUser: IdentifyUser, notifierOptions = {}) => {
+    resendVerifySignup: async (identifyUser: IdentifyUser, notifierOptions: NotifierOptions = {}) => {
       await authManagement.create({
         action: 'resendVerifySignup',
         value: identifyUser,
@@ -56,7 +57,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
       });
     },
 
-    sendResetPwd: async (identifyUser: IdentifyUser, notifierOptions = {}) => {
+    sendResetPwd: async (identifyUser: IdentifyUser, notifierOptions: NotifierOptions = {}) => {
       await authManagement.create({
         action: 'sendResetPwd',
         value: identifyUser,

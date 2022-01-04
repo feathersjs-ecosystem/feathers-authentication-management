@@ -1,7 +1,7 @@
 
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { MemoryServiceOptions, Service } from 'feathers-memory';
+import { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
 import authLocalMgnt, { DataVerifySignupSetPasswordLong, DataVerifySignupSetPasswordLongWithAction } from '../../src/index';
 import {
@@ -9,7 +9,7 @@ import {
   authenticationService as authService
 } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { AuthenticationManagementService, VerifySignupSetPasswordLongService } from '../../src/services';
+import { VerifySignupSetPasswordLongService } from '../../src/services';
 
 const withAction = (
   data: DataVerifySignupSetPasswordLong
@@ -66,9 +66,7 @@ const withAction = (
             app.use("/users", new Service(optionsUsers))
 
             app.configure(authLocalMgnt({}));
-            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService({
-              app
-            }))
+            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app))
 
             app.setup();
 
@@ -208,8 +206,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService({
-              app,
+            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app, {
               notifier: spyNotifier.callWith
             }))
 

@@ -1,7 +1,0 @@
-.editorconfig
-.jshintrc
-.travis.yml
-.istanbul.yml
-.idea/
-!src/
-test/

@@ -4,13 +4,14 @@ import _pick from 'lodash/pick';
 import sanitizeUserForClient from './helpers/sanitize-user-for-client';
 
 import type {
-  AuthenticationManagementConfigureOptions,
-  AuthenticationManagementServiceOptionsDefault,
   NotificationType,
-  User
+  User,
+  AuthenticationManagementServiceOptions
 } from './types';
 
-export const optionsDefault: AuthenticationManagementServiceOptionsDefault = {
+export const defaultPath = 'authManagement';
+
+export const optionsDefault: AuthenticationManagementServiceOptions = {
   service: '/users', // need exactly this for test suite
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   notifier: async (type: NotificationType, user: User, notifierOptions) => {},
@@ -27,47 +28,11 @@ export const optionsDefault: AuthenticationManagementServiceOptionsDefault = {
   passwordField: 'password'
 };
 
-export function makeDefaultOptions<K extends keyof AuthenticationManagementServiceOptionsDefault> (keys: K[]): Pick<AuthenticationManagementServiceOptionsDefault, K> {
+export function makeDefaultOptions<K extends keyof AuthenticationManagementServiceOptions> (
+  keys?: K[]
+): Pick<AuthenticationManagementServiceOptions, K> {
   const options = _cloneDeep(optionsDefault);
+  if (!keys) { return options; }
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return _pick(options, keys);
 }
-
-const defaultPath = 'authManagement';
-
-export const defaultConfigureOptions = {
-  path: defaultPath,
-  useSeparateServices: {
-    checkUnique: `${defaultPath}/check-unique`,
-    identityChange: `${defaultPath}/identity-change`,
-    passwordChange: `${defaultPath}/password-change`,
-    resendVerifySignup: `${defaultPath}/resend-verify-signup`,
-    resetPwdLong: `${defaultPath}/reset-password-long`,
-    resetPwdShort: `${defaultPath}/reset-password-short`,
-    sendResetPwd: `${defaultPath}/send-reset-pwd`,
-    verifySignupLong: `${defaultPath}/verify-signup-long`,
-    verifySignupSetPasswordLong: `${defaultPath}/verify-signup-set-password-long`,
-    verifySignupSetPasswordShort: `${defaultPath}/verify-signup-set-password-short`,
-    verifySignupShort: `${defaultPath}/verify-signup-short`
-  }
-};
-
-export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigureOptions => {
-  const defaultServiceOptions: AuthenticationManagementServiceOptionsDefault = makeDefaultOptions([
-    'service',
-    'notifier',
-    'longTokenLen',
-    'shortTokenLen',
-    'shortTokenDigits',
-    'resetDelay',
-    'delay',
-    'resetAttempts',
-    'reuseResetToken',
-    'identifyUserProps',
-    'sanitizeUserForClient',
-    'skipIsVerifiedCheck',
-    'passwordField'
-  ]);
-
-  return Object.assign({}, defaultServiceOptions, defaultConfigureOptions);
-};

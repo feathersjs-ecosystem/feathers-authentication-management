@@ -14,7 +14,8 @@ import type {
   User,
   VerifyChanges,
   VerifySignupSetPasswordOptions,
-  VerifySignupSetPasswordWithShortTokenOptions
+  VerifySignupSetPasswordWithShortTokenOptions,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:verifySignupSetPassword');
@@ -23,7 +24,7 @@ export async function verifySignupSetPasswordWithLongToken (
   options: VerifySignupSetPasswordOptions,
   verifyToken: string,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyToken, password);
 
@@ -42,7 +43,7 @@ export async function verifySignupSetPasswordWithShortToken (
   verifyShortToken: string,
   identifyUser: IdentifyUser,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -64,7 +65,7 @@ async function verifySignupSetPassword (
   identifyUser: IdentifyUser,
   tokens: Tokens,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('verifySignupSetPassword', identifyUser, tokens, password);
 

@@ -86,7 +86,7 @@ const withAction = (
               app.use("/users", new Service(optionsUsers))
 
               app.configure(authLocalMgnt({}));
-              app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({ app }))
+              app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app))
               app.setup();
               authLocalMgntService = app.service('authManagement');
 
@@ -226,8 +226,7 @@ const withAction = (
                 longTokenLen: 10
               })
             );
-            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({
-              app,
+            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
               longTokenLen: 10
             }))
 
@@ -290,8 +289,7 @@ const withAction = (
                 shortTokenLen: 8
               })
             );
-            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({
-              app,
+            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
               longTokenLen: 15,
               shortTokenLen: 8
             }))
@@ -356,8 +354,7 @@ const withAction = (
                 shortTokenDigits: false
               })
             );
-            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({
-              app,
+            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
               longTokenLen: 15, // need to reset this
               shortTokenLen: 9,
               shortTokenDigits: false
@@ -423,8 +420,7 @@ const withAction = (
                 shortTokenDigits: false
               })
             );
-            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({
-              app,
+            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
               longTokenLen: 15, // need to reset this
               shortTokenLen: 6,
               shortTokenDigits: false
@@ -529,8 +525,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService({
-              app,
+            app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
               longTokenLen: 15, // need to reset this
               shortTokenLen: 6,
               shortTokenDigits: true,
