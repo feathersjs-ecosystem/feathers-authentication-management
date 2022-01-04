@@ -32,6 +32,14 @@
   "directories": {
     "src": "src"
   },
+  "files": [
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "src/**",
+    "lib/**",
+    "dist/**"
+  ],
   "scripts": {
     "preversion": "npm run lint && npm run test && npm run compile",
     "publish": "git push origin --tags && npm run changelog && git push origin",

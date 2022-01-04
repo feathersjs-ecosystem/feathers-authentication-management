@@ -34,14 +34,6 @@ Although we generally accept many PRs they can be rejected for many reasons. We 
 
 Before running the tests from the `test/` folder `npm test` will run ESlint. You can check your code changes individually by running `npm run lint`.
 
-### ES6 compilation
-
-Feathers uses [Babel](https://babeljs.io/) to leverage the latest developments of the JavaScript language. All code and samples are currently written in ES2015. To transpile the code in this repository run
-
-> npm run compile
-
-__Note:__ `npm test` will run the compilation automatically before the tests.
-
 ### Tests
 
 [Mocha](http://mochajs.org/) tests are located in the `test/` folder and can be run using the `npm run mocha` or `npm test` (with ESLint and code coverage) command.

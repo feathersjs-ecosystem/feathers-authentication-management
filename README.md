@@ -2,10 +2,10 @@
 
 ## feathers-authentication-management
 
-[![Build Status](https://travis-ci.org/feathersjs-ecosystem/feathers-authentication-management.png?branch=master)](https://travis-ci.org/feathersjs-ecosystem/feathers-authentication-management)
+[![Build Status](https://img.shields.io/github/workflow/status/feathers-ecosystem/feathers-authentication-management/Node.js%20CI)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/actions/workflows/node.js.yml?query=branch%3Amaster)
 [![Code Climate](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/gpa.svg)](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management)
 [![Test Coverage](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/coverage.svg)](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/coverage)
-[![Dependency Status](https://img.shields.io/david/feathersjs-ecosystem/feathers-authentication-management.svg?style=flat-square)](https://david-dm.org/feathersjs-ecosystem/feathers-authentication-management)
+[![Dependency Status](https://img.shields.io/librariesio/release/npm/feathers-authentication-management)](https://libraries.io/npm/feathers-authentication-management)
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
 
 **Sign up verification, forgotten password reset, and other capabilities for local authentication.**
