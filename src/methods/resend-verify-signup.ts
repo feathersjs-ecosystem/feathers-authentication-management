@@ -9,7 +9,8 @@ import type {
   IdentifyUser,
   ResendVerifySignupOptions,
   SanitizedUser,
-  UsersArrayOrPaginated
+  UsersArrayOrPaginated,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resendVerifySignup');
@@ -19,7 +20,7 @@ const debug = makeDebug('authLocalMgnt:resendVerifySignup');
 export default async function resendVerifySignup (
   options: ResendVerifySignupOptions,
   identifyUser: IdentifyUser,
-  notifierOptions: Record<string, unknown>
+  notifierOptions: NotifierOptions
 ): Promise<SanitizedUser> {
   debug('identifyUser=', identifyUser);
   const {

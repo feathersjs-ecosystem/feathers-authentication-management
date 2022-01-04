@@ -9,14 +9,20 @@ import notifier from '../helpers/notifier';
 import isDateAfterNow from '../helpers/is-date-after-now';
 
 import type { Id } from '@feathersjs/feathers';
-import type { IdentifyUser, SanitizedUser, SendResetPwdOptions, UsersArrayOrPaginated } from '../types';
+import type {
+  IdentifyUser,
+  SanitizedUser,
+  SendResetPwdOptions,
+  UsersArrayOrPaginated,
+  NotifierOptions
+} from '../types';
 
 const debug = makeDebug('authLocalMgnt:sendResetPwd');
 
 export default async function sendResetPwd (
   options: SendResetPwdOptions,
   identifyUser: IdentifyUser,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('sendResetPwd');
 

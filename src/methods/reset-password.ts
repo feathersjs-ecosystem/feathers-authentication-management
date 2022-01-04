@@ -8,8 +8,6 @@ import getUserData from '../helpers/get-user-data';
 import hashPassword from '../helpers/hash-password';
 import notifier from '../helpers/notifier';
 
-import type { Query } from '@feathersjs/feathers';
-
 import type {
   UsersArrayOrPaginated,
   IdentifyUser,
@@ -17,7 +15,8 @@ import type {
   ResetPwdWithShortTokenOptions,
   SanitizedUser,
   Tokens,
-  GetUserDataCheckProps
+  GetUserDataCheckProps,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
@@ -26,7 +25,7 @@ export async function resetPwdWithLongToken (
   options: ResetPasswordOptions,
   resetToken: string,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetToken, password);
 
@@ -44,7 +43,7 @@ export async function resetPwdWithShortToken (
   resetShortToken: string,
   identifyUser: IdentifyUser,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -63,7 +62,7 @@ async function resetPassword (
   identifyUser: IdentifyUser,
   tokens: Tokens,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('resetPassword', identifyUser, tokens, password);
 

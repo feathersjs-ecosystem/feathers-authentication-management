@@ -12,7 +12,8 @@ import type {
   IdentifyUser,
   PasswordChangeOptions,
   SanitizedUser,
-  UsersArrayOrPaginated
+  UsersArrayOrPaginated,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:passwordChange');
@@ -22,7 +23,7 @@ export default async function passwordChange (
   identifyUser: IdentifyUser,
   oldPassword: string,
   password: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('passwordChange', oldPassword, password);
 

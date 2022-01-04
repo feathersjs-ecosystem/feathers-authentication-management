@@ -12,7 +12,8 @@ import type {
   IdentifyUser,
   IdentityChangeOptions,
   SanitizedUser,
-  UsersArrayOrPaginated
+  UsersArrayOrPaginated,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:identityChange');
@@ -24,7 +25,7 @@ export default async function identityChange (
   identifyUser: IdentifyUser,
   password: string,
   changesIdentifyUser: Record<string, unknown>,
-  notifierOptions: Record<string, unknown> = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);

@@ -6,8 +6,6 @@ import getUserData from '../helpers/get-user-data';
 import notifier from '../helpers/notifier';
 import isDateAfterNow from '../helpers/is-date-after-now';
 
-import type { Query } from '@feathersjs/feathers';
-
 import type {
   SanitizedUser,
   VerifySignupOptions,
@@ -15,7 +13,8 @@ import type {
   Tokens,
   User,
   VerifyChanges,
-  IdentifyUser
+  IdentifyUser,
+  NotifierOptions
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:verifySignup');
@@ -23,7 +22,7 @@ const debug = makeDebug('authLocalMgnt:verifySignup');
 export async function verifySignupWithLongToken (
   options: VerifySignupOptions,
   verifyToken: string,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyToken);
 
@@ -40,7 +39,7 @@ export async function verifySignupWithShortToken (
   options: VerifySignupWithShortTokenOptions,
   verifyShortToken: string,
   identifyUser: IdentifyUser,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyShortToken);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -58,7 +57,7 @@ async function verifySignup (
   options: VerifySignupOptions,
   identifyUser: IdentifyUser,
   tokens: Tokens,
-  notifierOptions = {}
+  notifierOptions: NotifierOptions = {}
 ): Promise<SanitizedUser> {
   debug('verifySignup', identifyUser, tokens);
 
