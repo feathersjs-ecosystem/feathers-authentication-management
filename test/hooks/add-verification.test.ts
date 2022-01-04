@@ -225,7 +225,7 @@ describe('add-verification.test.ts', function () {
     });
 
     it('works with no options', async () => {
-      app.use("custom-path", new AuthenticationManagementService({ app }));
+      app.use("custom-path", new AuthenticationManagementService(app));
       app.setup();
 
       const ctx = await addVerification("custom-path")(context);

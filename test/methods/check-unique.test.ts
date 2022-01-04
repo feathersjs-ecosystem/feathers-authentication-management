@@ -46,7 +46,7 @@ const withAction = (
           beforeEach(async () => {
             app = feathers();
             app.configure(authLocalMgnt({}));
-            app.use("/authManagement/check-unique", new CheckUniqueService({ app }));
+            app.use("/authManagement/check-unique", new CheckUniqueService(app));
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
               id: idType

@@ -103,7 +103,7 @@ describe('password-change.ts', function () {
               app.use("/users", new Service(optionsUsers))
 
               app.configure(authLocalMgnt({}));
-              app.use("authManagement/password-change", new PasswordChangeService({ app }))
+              app.use("authManagement/password-change", new PasswordChangeService(app))
 
               app.setup();
 
@@ -197,8 +197,7 @@ describe('password-change.ts', function () {
                 })
               );
 
-              app.use("authManagement/password-change", new PasswordChangeService({
-                app,
+              app.use("authManagement/password-change", new PasswordChangeService(app, {
                 notifier: spyNotifier.callWith
               }))
 

@@ -20,14 +20,14 @@ import {
   CheckUniqueService
 } from '../src';
 import {
+  AuthenticationManagementServiceOptions,
   AuthenticationManagementSetupOptions
 } from '../src/types';
 
 import "@feathersjs/transport-commons";
 
-const optionsDefault: Omit<AuthenticationManagementSetupOptions, 'app'> = {
+const optionsDefault: AuthenticationManagementServiceOptions = {
   service: '/users', // need exactly this for test suite
-  path: "authManagement",
   notifier: () => Promise.resolve(),
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
@@ -116,9 +116,8 @@ describe('scaffolding.test.ts', () => {
 
       const { options } = authLocalMgntService;
 
-      assert.ok(options.app);
+      assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.app;
       delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
@@ -195,8 +194,7 @@ describe('scaffolding.test.ts', () => {
     beforeEach(() => {
       app = feathers();
       app.configure(socketio());
-      const opts = Object.assign({ app, path: "authManagement" }, userMgntOptions)
-      app.use("/authManagement", new AuthenticationManagementService(opts));
+      app.use("/authManagement", new AuthenticationManagementService(app, userMgntOptions));
       app.configure(services);
       app.setup();
     });
@@ -214,9 +212,8 @@ describe('scaffolding.test.ts', () => {
 
       const { options } = authLocalMgntService;
 
-      assert.ok(options.app);
+      assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.app;
       delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
@@ -323,9 +320,8 @@ describe('scaffolding.test.ts', () => {
       // call the user instance
       const { options } = authLocalMgntService;
 
-      assert.ok(options.app);
+      assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.app;
       delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
@@ -336,9 +332,8 @@ describe('scaffolding.test.ts', () => {
       // call the organization instance
       const options1 = authMgntOrgService.options;
 
-      assert.ok(options1.app);
+      assert.ok(authMgntOrgService.app);
       assert.ok(options1.notifier);
-      delete options1.app;
       delete options1.notifier;
 
       const expected1 = Object.assign({}, optionsDefault, orgMgntOptions);
@@ -352,18 +347,18 @@ describe('scaffolding.test.ts', () => {
     it("can register all services independently at custom routes", () => {
       const app = feathers();
       app.configure(services);
-      app.use("am", new AuthenticationManagementService({ app }));
-      app.use("am/2", new IdentityChangeService({ app }));
-      app.use("am/3", new PasswordChangeService({ app }));
-      app.use("am/4", new ResendVerifySignupService({ app }));
-      app.use("am/5", new ResetPwdLongService({ app }));
-      app.use("am/6", new ResetPwdShortService({ app }));
-      app.use("am/7", new SendResetPwdService({ app }));
-      app.use("am/8", new VerifySignupLongService({ app }));
-      app.use("am/9", new VerifySignupSetPasswordLongService({ app }));
-      app.use("am/10", new VerifySignupSetPasswordShortService({ app }));
-      app.use("am/11", new VerifySignupShortService({ app }));
-      app.use("am/1", new CheckUniqueService({ app }));
+      app.use("am", new AuthenticationManagementService(app));
+      app.use("am/2", new IdentityChangeService(app));
+      app.use("am/3", new PasswordChangeService(app));
+      app.use("am/4", new ResendVerifySignupService(app));
+      app.use("am/5", new ResetPwdLongService(app));
+      app.use("am/6", new ResetPwdShortService(app));
+      app.use("am/7", new SendResetPwdService(app));
+      app.use("am/8", new VerifySignupLongService(app));
+      app.use("am/9", new VerifySignupSetPasswordLongService(app));
+      app.use("am/10", new VerifySignupSetPasswordShortService(app));
+      app.use("am/11", new VerifySignupShortService(app));
+      app.use("am/1", new CheckUniqueService(app));
       app.setup();
 
       const servicePaths = Object.keys(app.services);
@@ -377,7 +372,7 @@ describe('scaffolding.test.ts', () => {
       })
     });
 
-    it("fails without options: { app }", () => {
+    it("fails without options: app", () => {
       const app = feathers();
       app.configure(services);
       const classes = [
@@ -398,12 +393,7 @@ describe('scaffolding.test.ts', () => {
       classes.forEach(Service => {
         //@ts-expect-error
         assert.throws(() => new Service());
-      })
-
-      classes.forEach(Service => {
-        //@ts-expect-error
-        assert.throws(() => new Service({}));
-      })
+      });
     })
   });
 });

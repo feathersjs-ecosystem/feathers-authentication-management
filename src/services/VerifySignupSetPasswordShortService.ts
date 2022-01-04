@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { verifySignupSetPasswordWithShortToken } from '../methods/verify-signup-set-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   DataVerifySignupSetPasswordShort,
   SanitizedUser,
-  VerifySignupSetPasswordWithShortTokenOptions
+  VerifySignupSetPasswordShortServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class VerifySignupSetPasswordShortService extends AuthenticationManagementBase<DataVerifySignupSetPasswordShort, SanitizedUser> {
-  options: VerifySignupSetPasswordWithShortTokenOptions;
+export class VerifySignupSetPasswordShortService
+  extends AuthenticationManagementBase<DataVerifySignupSetPasswordShort, SanitizedUser, VerifySignupSetPasswordShortServiceOptions> {
 
-  constructor (options: SetRequired<Partial<VerifySignupSetPasswordWithShortTokenOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<VerifySignupSetPasswordShortServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<VerifySignupSetPasswordWithShortTokenOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'notifier',
       'sanitizeUserForClient',
@@ -29,7 +27,7 @@ export class VerifySignupSetPasswordShortService extends AuthenticationManagemen
 
   async _create (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.value.password,

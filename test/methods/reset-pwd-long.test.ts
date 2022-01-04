@@ -93,9 +93,7 @@ const withAction = (
             app.use("/users", new Service(optionsUsers))
 
             app.configure(authLocalMgnt({}));
-            app.use("authManagement/reset-password-long", new ResetPwdLongService({
-              app
-            }));
+            app.use("authManagement/reset-password-long", new ResetPwdLongService(app));
 
             app.setup();
 
@@ -235,8 +233,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/reset-password-long", new ResetPwdLongService({
-              app,
+            app.use("authManagement/reset-password-long", new ResetPwdLongService(app, {
               notifier: spyNotifier.callWith
             }));
             app.setup();
@@ -360,8 +357,7 @@ const withAction = (
                 reuseResetToken: true
               })
             );
-            app.use("authManagement/reset-password-long", new ResetPwdLongService({
-              app,
+            app.use("authManagement/reset-password-long", new ResetPwdLongService(app, {
               notifier: spyNotifier.callWith,
               reuseResetToken: true
             }));
@@ -435,8 +431,7 @@ const withAction = (
                 resetAttempts: 1
               })
             );
-            app.use("authManagement/reset-password-long", new ResetPwdLongService({
-              app,
+            app.use("authManagement/reset-password-long", new ResetPwdLongService(app, {
               notifier: spyNotifier.callWith
             }));
 

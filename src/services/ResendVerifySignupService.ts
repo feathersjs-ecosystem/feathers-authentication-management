@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import resendVerifySignup from '../methods/resend-verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   SanitizedUser,
-  ResendVerifySignupOptions,
-  DataResendVerifySignup
+  DataResendVerifySignup,
+  ResendVerifySignupServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class ResendVerifySignupService extends AuthenticationManagementBase<DataResendVerifySignup, SanitizedUser> {
-  options: ResendVerifySignupOptions;
+export class ResendVerifySignupService
+  extends AuthenticationManagementBase<DataResendVerifySignup, SanitizedUser, ResendVerifySignupServiceOptions> {
 
-  constructor (options: SetRequired<Partial<ResendVerifySignupOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<ResendVerifySignupServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<ResendVerifySignupOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'notifier',
       'longTokenLen',
@@ -27,12 +25,13 @@ export class ResendVerifySignupService extends AuthenticationManagementBase<Data
       'identifyUserProps',
       'sanitizeUserForClient'
     ]);
+
     this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataResendVerifySignup): Promise<SanitizedUser> {
     return await resendVerifySignup(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.notifierOptions
     );

@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { resetPwdWithShortToken } from '../methods/reset-password';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   DataResetPwdShort,
   SanitizedUser,
-  ResetPwdWithShortTokenOptions
+  ResetPwdWithShortServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class ResetPwdShortService extends AuthenticationManagementBase<DataResetPwdShort, SanitizedUser> {
-  options: ResetPwdWithShortTokenOptions;
+export class ResetPwdShortService
+  extends AuthenticationManagementBase<DataResetPwdShort, SanitizedUser, ResetPwdWithShortServiceOptions> {
 
-  constructor (options: SetRequired<Partial<ResetPwdWithShortTokenOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<ResetPwdWithShortServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<ResetPwdWithShortTokenOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'skipIsVerifiedCheck',
       'reuseResetToken',
@@ -32,7 +30,7 @@ export class ResetPwdShortService extends AuthenticationManagementBase<DataReset
 
   async _create (data: DataResetPwdShort): Promise<SanitizedUser> {
     return await resetPwdWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.value.password,

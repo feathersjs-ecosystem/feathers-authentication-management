@@ -1,7 +1,7 @@
 
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersMemory, { MemoryServiceOptions, Service } from 'feathers-memory';
+import { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
 import authLocalMgnt, { DataVerifySignupSetPasswordShort, DataVerifySignupSetPasswordShortWithAction } from '../../src/index';
 import {
@@ -9,7 +9,7 @@ import {
   authenticationService as authService
 } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { AuthenticationManagementService, VerifySignupSetPasswordShortService } from '../../src/services';
+import { VerifySignupSetPasswordShortService } from '../../src/services';
 
 const withAction = (
   data: DataVerifySignupSetPasswordShort
@@ -77,8 +77,7 @@ const withAction = (
                 identifyUserProps: ['email', 'username']
               })
             );
-            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService({
-              app,
+            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, {
               identifyUserProps: ['email', 'username']
             }));
             app.setup();
@@ -286,8 +285,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService({
-              app,
+            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, {
               notifier: spyNotifier.callWith
             }));
 

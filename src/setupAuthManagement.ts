@@ -2,7 +2,7 @@ import makeDebug from 'debug';
 import type { Application } from '@feathersjs/feathers';
 
 import { AuthenticationManagementService } from './services/AuthenticationManagementService';
-import { makeDefaultSetupOptions } from './options';
+import { defaultPath, makeDefaultOptions } from './options';
 import { AuthenticationManagementSetupOptions } from './types';
 
 const debug = makeDebug('authLocalMgnt:service');
@@ -16,16 +16,15 @@ export default function authenticationLocalManagement (
   docs ??= {};
 
   return function (app) {
-    const defaultOptions = makeDefaultSetupOptions();
+    const defaultOptions = makeDefaultOptions();
     const options = Object.assign(
       {},
       defaultOptions,
-      _options,
-      {
-        app
-      }
+      _options
     );
 
-    app.use(options.path, new AuthenticationManagementService(options, docs));
+    const path = _options?.path || defaultPath;
+
+    app.use(path, new AuthenticationManagementService(app, options, docs));
   };
 }

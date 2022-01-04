@@ -10,7 +10,7 @@ import { SendResetPwdService } from './SendResetPwdService';
 import { VerifySignupLongService } from './VerifySignupLongService';
 import { VerifySignupSetPasswordLongService } from './VerifySignupSetPasswordLongService';
 import { VerifySignupSetPasswordShortService } from './VerifySignupSetPasswordShortService';
-import { VerifySignupShortService } from './VerifySignupShort';
+import { VerifySignupShortService } from './VerifySignupShortService';
 
 const services = {
   AuthenticationManagementService,

@@ -82,9 +82,7 @@ const withAction = (
             app.use("/users", new Service(optionsUsers))
 
             app.configure(authLocalMgnt({}));
-            app.use("authManagement/send-reset-password", new SendResetPwdService({
-              app
-            }))
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app))
             app.setup();
 
             usersService = app.service('users');
@@ -166,8 +164,7 @@ const withAction = (
                 reuseResetToken: true,
               })
             );
-            app.use("authManagement/send-reset-password", new SendResetPwdService({
-              app,
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app, {
               resetDelay: 200,
               reuseResetToken: true,
             }))
@@ -236,8 +233,7 @@ const withAction = (
                 shortTokenDigits: true
               })
             );
-            app.use("authManagement/send-reset-password", new SendResetPwdService({
-              app,
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app, {
               longTokenLen: 10,
               shortTokenLen: 9,
               shortTokenDigits: true
@@ -291,8 +287,7 @@ const withAction = (
                 shortTokenDigits: false
               })
             );
-            app.use("authManagement/send-reset-password", new SendResetPwdService({
-              app,
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app, {
               longTokenLen: 10,
               shortTokenLen: 9,
               shortTokenDigits: false
@@ -350,8 +345,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/send-reset-password", new SendResetPwdService({
-              app,
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app, {
               longTokenLen: 15,
               shortTokenLen: 6,
               shortTokenDigits: true,

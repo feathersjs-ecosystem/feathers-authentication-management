@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import sendResetPwd from '../methods/send-reset-pwd';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   DataSendResetPwd,
   SanitizedUser,
-  SendResetPwdOptions
+  SendResetPwdServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class SendResetPwdService extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser> {
-  options: SendResetPwdOptions;
+export class SendResetPwdService
+  extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser, SendResetPwdServiceOptions> {
 
-  constructor (options: SetRequired<Partial<SendResetPwdOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<SendResetPwdServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<SendResetPwdOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'identifyUserProps',
       'skipIsVerifiedCheck',
@@ -36,7 +34,7 @@ export class SendResetPwdService extends AuthenticationManagementBase<DataSendRe
 
   async _create (data: DataSendResetPwd): Promise<SanitizedUser> {
     return await sendResetPwd(
-      this.options,
+      this.optionsWithApp,
       data.value,
       data.notifierOptions
     );

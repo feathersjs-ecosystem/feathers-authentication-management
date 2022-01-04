@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import { verifySignupWithShortToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import { SetRequired } from 'type-fest';
 import {
   DataVerifySignupShort,
   SanitizedUser,
-  VerifySignupWithShortTokenOptions
+  VerifySignupShortServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class VerifySignupShortService extends AuthenticationManagementBase<DataVerifySignupShort, SanitizedUser> {
-  options: VerifySignupWithShortTokenOptions;
+export class VerifySignupShortService
+  extends AuthenticationManagementBase<DataVerifySignupShort, SanitizedUser, VerifySignupShortServiceOptions> {
 
-  constructor (options: SetRequired<Partial<VerifySignupWithShortTokenOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<VerifySignupShortServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<VerifySignupWithShortTokenOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions = makeDefaultOptions([
       'service',
       'notifier',
       'sanitizeUserForClient',
@@ -29,7 +27,7 @@ export class VerifySignupShortService extends AuthenticationManagementBase<DataV
 
   async _create (data: DataVerifySignupShort): Promise<SanitizedUser> {
     return await verifySignupWithShortToken(
-      this.options,
+      this.optionsWithApp,
       data.value.token,
       data.value.user,
       data.notifierOptions

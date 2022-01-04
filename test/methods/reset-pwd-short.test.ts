@@ -104,8 +104,7 @@ const withAction = (
                 identifyUserProps: ['email', 'username']
               })
             );
-            app.use("authManagement/reset-password-short", new ResetPwdShortService({
-              app,
+            app.use("authManagement/reset-password-short", new ResetPwdShortService(app, {
               identifyUserProps: ['email', 'username']
             }));
 
@@ -365,8 +364,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/reset-password-short", new ResetPwdShortService({
-              app,
+            app.use("authManagement/reset-password-short", new ResetPwdShortService(app, {
               notifier: spyNotifier.callWith
             }));
 

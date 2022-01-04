@@ -4,13 +4,14 @@ import _pick from 'lodash/pick';
 import sanitizeUserForClient from './helpers/sanitize-user-for-client';
 
 import type {
-  AuthenticationManagementSetupOptions,
-  AuthenticationManagementServiceOptionsDefault,
   NotificationType,
-  User
+  User,
+  AuthenticationManagementServiceOptions
 } from './types';
 
-export const optionsDefault: AuthenticationManagementServiceOptionsDefault = {
+export const defaultPath = 'authManagement';
+
+export const optionsDefault: AuthenticationManagementServiceOptions = {
   service: '/users', // need exactly this for test suite
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   notifier: async (type: NotificationType, user: User, notifierOptions) => {},
@@ -27,34 +28,11 @@ export const optionsDefault: AuthenticationManagementServiceOptionsDefault = {
   passwordField: 'password'
 };
 
-export function makeDefaultOptions<K extends keyof AuthenticationManagementServiceOptionsDefault> (keys: K[]): Pick<AuthenticationManagementServiceOptionsDefault, K> {
+export function makeDefaultOptions<K extends keyof AuthenticationManagementServiceOptions> (
+  keys?: K[]
+): Pick<AuthenticationManagementServiceOptions, K> {
   const options = _cloneDeep(optionsDefault);
+  if (!keys) { return options; }
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return _pick(options, keys);
 }
-
-const defaultPath = 'authManagement';
-
-export const defaultSetupOptions = {
-  path: defaultPath
-};
-
-export const makeDefaultSetupOptions = (): AuthenticationManagementSetupOptions => {
-  const defaultServiceOptions: AuthenticationManagementServiceOptionsDefault = makeDefaultOptions([
-    'service',
-    'notifier',
-    'longTokenLen',
-    'shortTokenLen',
-    'shortTokenDigits',
-    'resetDelay',
-    'delay',
-    'resetAttempts',
-    'reuseResetToken',
-    'identifyUserProps',
-    'sanitizeUserForClient',
-    'skipIsVerifiedCheck',
-    'passwordField'
-  ]);
-
-  return Object.assign({}, defaultServiceOptions, defaultSetupOptions);
-};

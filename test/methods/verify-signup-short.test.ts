@@ -105,8 +105,7 @@ const withAction = (
                 identifyUserProps: ['email', 'username']
               })
             );
-            app.use("authManagement/verify-signup-short", new VerifySignupShortService({
-              app,
+            app.use("authManagement/verify-signup-short", new VerifySignupShortService(app, {
               identifyUserProps: ['email', 'username']
             }))
             app.setup();
@@ -298,8 +297,7 @@ const withAction = (
                 notifier: spyNotifier.callWith
               })
             );
-            app.use("authManagement/verify-signup-short", new VerifySignupShortService({
-              app,
+            app.use("authManagement/verify-signup-short", new VerifySignupShortService(app, {
               notifier: spyNotifier.callWith
             }))
             app.setup();

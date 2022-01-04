@@ -1,23 +1,21 @@
 import { makeDefaultOptions } from '../options';
-import ensureHasAllKeys from '../helpers/ensure-has-all-keys';
 import identityChange from '../methods/identity-change';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
-import type { SetRequired } from 'type-fest';
 import type {
   SanitizedUser,
-  IdentityChangeOptions,
-  DataIdentityChange
+  DataIdentityChange,
+  IdentityChangeServiceOptions
 } from '../types';
+import type { Application } from '@feathersjs/feathers';
 
-export class IdentityChangeService extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser> {
-  options: IdentityChangeOptions;
+export class IdentityChangeService
+  extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser, IdentityChangeServiceOptions> {
 
-  constructor (options: SetRequired<Partial<IdentityChangeOptions>, 'app'>) {
-    super();
+  constructor (app: Application, options?: Partial<IdentityChangeServiceOptions>) {
+    super(app);
 
-    ensureHasAllKeys(options, ['app'], this.constructor.name);
-    const defaultOptions: Omit<IdentityChangeOptions, 'app'> = makeDefaultOptions([
+    const defaultOptions: IdentityChangeServiceOptions = makeDefaultOptions([
       'service',
       'notifier',
       'longTokenLen',
@@ -28,12 +26,13 @@ export class IdentityChangeService extends AuthenticationManagementBase<DataIden
       'sanitizeUserForClient',
       'passwordField'
     ]);
+
     this.options = Object.assign(defaultOptions, options);
   }
 
   async _create (data: DataIdentityChange): Promise<SanitizedUser> {
     return await identityChange(
-      this.options,
+      this.optionsWithApp,
       data.value.user,
       data.value.password,
       data.value.changes,

@@ -3,7 +3,7 @@ import { checkContext } from 'feathers-hooks-common';
 import getLongToken from '../helpers/get-long-token';
 import getShortToken from '../helpers/get-short-token';
 import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
-import { defaultSetupOptions } from '../options';
+import { defaultPath } from '../options';
 
 import type { HookContext } from '@feathersjs/feathers';
 import type { AuthenticationManagementService } from '../services';
@@ -16,7 +16,7 @@ import type { AuthenticationManagementService } from '../services';
 export default function addVerification (
   path?: string
 ): ((context: HookContext) => Promise<HookContext>) {
-  path = path || defaultSetupOptions.path; // default: 'authManagement'
+  path = path || defaultPath; // default: 'authManagement'
   return async (context: HookContext): Promise<HookContext> => {
     checkContext(context, 'before', ['create', 'patch', 'update']);
 
