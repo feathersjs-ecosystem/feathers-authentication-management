@@ -4,7 +4,7 @@ import _pick from 'lodash/pick';
 import sanitizeUserForClient from './helpers/sanitize-user-for-client';
 
 import type {
-  AuthenticationManagementConfigureOptions,
+  AuthenticationManagementSetupOptions,
   AuthenticationManagementServiceOptionsDefault,
   NotificationType,
   User
@@ -35,11 +35,11 @@ export function makeDefaultOptions<K extends keyof AuthenticationManagementServi
 
 const defaultPath = 'authManagement';
 
-export const defaultConfigureOptions = {
+export const defaultSetupOptions = {
   path: defaultPath
 };
 
-export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigureOptions => {
+export const makeDefaultSetupOptions = (): AuthenticationManagementSetupOptions => {
   const defaultServiceOptions: AuthenticationManagementServiceOptionsDefault = makeDefaultOptions([
     'service',
     'notifier',
@@ -56,5 +56,5 @@ export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigure
     'passwordField'
   ]);
 
-  return Object.assign({}, defaultServiceOptions, defaultConfigureOptions);
+  return Object.assign({}, defaultServiceOptions, defaultSetupOptions);
 };

@@ -2,13 +2,13 @@ import makeDebug from 'debug';
 import type { Application } from '@feathersjs/feathers';
 
 import { AuthenticationManagementService } from './services/AuthenticationManagementService';
-import { makeDefaultConfigureOptions } from './options';
-import { AuthenticationManagementConfigureOptions } from './types';
+import { makeDefaultSetupOptions } from './options';
+import { AuthenticationManagementSetupOptions } from './types';
 
 const debug = makeDebug('authLocalMgnt:service');
 
 export default function authenticationLocalManagement (
-  _options?: Partial<AuthenticationManagementConfigureOptions>,
+  _options?: Partial<AuthenticationManagementSetupOptions>,
   docs?: Record<string, unknown>
 ): (app: Application) => void {
   debug('service being configured.');
@@ -16,7 +16,7 @@ export default function authenticationLocalManagement (
   docs ??= {};
 
   return function (app) {
-    const defaultOptions = makeDefaultConfigureOptions();
+    const defaultOptions = makeDefaultSetupOptions();
     const options = Object.assign(
       {},
       defaultOptions,

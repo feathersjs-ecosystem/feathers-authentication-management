@@ -20,12 +20,12 @@ import {
   CheckUniqueService
 } from '../src';
 import {
-  AuthenticationManagementConfigureOptions
+  AuthenticationManagementSetupOptions
 } from '../src/types';
 
 import "@feathersjs/transport-commons";
 
-const optionsDefault: Omit<AuthenticationManagementConfigureOptions, 'app'> = {
+const optionsDefault: Omit<AuthenticationManagementSetupOptions, 'app'> = {
   service: '/users', // need exactly this for test suite
   path: "authManagement",
   notifier: () => Promise.resolve(),
@@ -92,7 +92,7 @@ function organization () {
 }
 
 describe('scaffolding.test.ts', () => {
-  describe('can configure 1 service using app.configure', () => {
+  describe('can setup 1 service using app.configure', () => {
     let app: Application;
 
     beforeEach(() => {
@@ -189,7 +189,7 @@ describe('scaffolding.test.ts', () => {
     });
   });
 
-  describe('can configure 1 service using app.use', () => {
+  describe('can setup 1 service using app.use', () => {
     let app: Application;
 
     beforeEach(() => {
@@ -288,7 +288,7 @@ describe('scaffolding.test.ts', () => {
   });
 
 
-  describe('can configure 2 services', () => {
+  describe('can setup 2 services', () => {
     let app: Application;
 
     beforeEach(() => {

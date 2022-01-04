@@ -91,7 +91,7 @@ export interface AuthenticationManagementServiceOptions {
   passwordField: string
 }
 
-export type AuthenticationManagementConfigureOptions = Omit<AuthenticationManagementServiceOptions, 'app'> & { path: string }
+export type AuthenticationManagementSetupOptions = Omit<AuthenticationManagementServiceOptions, 'app'> & { path: string }
 
 export type AuthenticationManagementServiceOptionsDefault = Omit<AuthenticationManagementServiceOptions, 'app'>;
 
