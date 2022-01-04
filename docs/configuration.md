@@ -19,7 +19,11 @@ The `feathers-authentication-management` service is configured at several positi
 The `feathers-authentication-management` service is added to the Feathers app with
 
 ```js
-app.configure(authManagement({ options }, { docs }));
+const {
+  AuthenticationManagementService,
+} = require("feathers-authentication-management");
+
+app.use("/auth-management", new AuthenticationManagementService(options, docs));
 ```
 
 Possible `options` are:
