@@ -36,20 +36,7 @@ export function makeDefaultOptions<K extends keyof AuthenticationManagementServi
 const defaultPath = 'authManagement';
 
 export const defaultConfigureOptions = {
-  path: defaultPath,
-  useSeparateServices: {
-    checkUnique: `${defaultPath}/check-unique`,
-    identityChange: `${defaultPath}/identity-change`,
-    passwordChange: `${defaultPath}/password-change`,
-    resendVerifySignup: `${defaultPath}/resend-verify-signup`,
-    resetPwdLong: `${defaultPath}/reset-password-long`,
-    resetPwdShort: `${defaultPath}/reset-password-short`,
-    sendResetPwd: `${defaultPath}/send-reset-pwd`,
-    verifySignupLong: `${defaultPath}/verify-signup-long`,
-    verifySignupSetPasswordLong: `${defaultPath}/verify-signup-set-password-long`,
-    verifySignupSetPasswordShort: `${defaultPath}/verify-signup-set-password-short`,
-    verifySignupShort: `${defaultPath}/verify-signup-short`
-  }
+  path: defaultPath
 };
 
 export const makeDefaultConfigureOptions = (): AuthenticationManagementConfigureOptions => {

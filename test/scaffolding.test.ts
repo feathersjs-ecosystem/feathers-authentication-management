@@ -39,20 +39,7 @@ const optionsDefault: Omit<AuthenticationManagementConfigureOptions, 'app'> = {
   identifyUserProps: ['email'],
   sanitizeUserForClient: helpers.sanitizeUserForClient,
   skipIsVerifiedCheck: false,
-  passwordField: "password",
-  useSeparateServices: {
-    checkUnique: 'authManagement/check-unique',
-    identityChange: 'authManagement/identity-change',
-    passwordChange: 'authManagement/password-change',
-    resendVerifySignup: 'authManagement/resend-verify-signup',
-    resetPwdLong: 'authManagement/reset-password-long',
-    resetPwdShort: 'authManagement/reset-password-short',
-    sendResetPwd: 'authManagement/send-reset-pwd',
-    verifySignupLong: 'authManagement/verify-signup-long',
-    verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
-    verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
-    verifySignupShort: 'authManagement/verify-signup-short'
-  }
+  passwordField: "password"
 };
 
 const userMgntOptions = {
@@ -105,7 +92,7 @@ function organization () {
 }
 
 describe('scaffolding.test.ts', () => {
-  describe('can configure 1 service', () => {
+  describe('can configure 1 service using app.configure', () => {
     let app: Application;
 
     beforeEach(() => {
@@ -134,29 +121,10 @@ describe('scaffolding.test.ts', () => {
       delete options.app;
       delete options.notifier;
 
-      const useSeparateServices = {
-        checkUnique: 'authManagement/check-unique',
-        identityChange: 'authManagement/identity-change',
-        passwordChange: 'authManagement/password-change',
-        resendVerifySignup: 'authManagement/resend-verify-signup',
-        resetPwdLong: 'authManagement/reset-password-long',
-        resetPwdShort: 'authManagement/reset-password-short',
-        sendResetPwd: 'authManagement/send-reset-pwd',
-        verifySignupLong: 'authManagement/verify-signup-long',
-        verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
-        verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
-        verifySignupShort: 'authManagement/verify-signup-short'
-      }
-
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
       assert.deepStrictEqual(options, expected);
-
-      Object.values(useSeparateServices).forEach(path => {
-        const service = app.service(path);
-        assert.ok(service, `registered service at: '${path}'`);
-      });
     });
 
     it('create({ action: "options" }) returns options', async () => {
@@ -221,6 +189,105 @@ describe('scaffolding.test.ts', () => {
     });
   });
 
+  describe('can configure 1 service using app.use', () => {
+    let app: Application;
+
+    beforeEach(() => {
+      app = feathers();
+      app.configure(socketio());
+      const opts = Object.assign({ app, path: "authManagement" }, userMgntOptions)
+      app.use("/authManagement", new AuthenticationManagementService(opts));
+      app.configure(services);
+      app.setup();
+    });
+
+    it('can create an item', async () => {
+      const usersService = app.service('/users');
+
+      const user = await usersService.create({ username: 'John Doe' });
+      assert.strictEqual(user.username, 'John Doe');
+      assert.strictEqual(user.verifyShortToken.length, 8);
+    });
+
+    it('can call service', async () => {
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+
+      const { options } = authLocalMgntService;
+
+      assert.ok(options.app);
+      assert.ok(options.notifier);
+      delete options.app;
+      delete options.notifier;
+
+      const expected = Object.assign({}, optionsDefault, userMgntOptions);
+      delete expected.notifier;
+
+      assert.deepStrictEqual(options, expected);
+    });
+
+    it('create({ action: "options" }) returns options', async () => {
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+
+      const { options } = authLocalMgntService;
+
+      assert.deepStrictEqual(
+        await authLocalMgntService.create({ action: 'options' }),
+        options
+      );
+    });
+
+    it('rejects with no action', async () => {
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+
+      await assert.rejects(
+        //@ts-ignore
+        authLocalMgntService.create(),
+        "rejects without object"
+      )
+
+      await assert.rejects(
+        //@ts-ignore
+        authLocalMgntService.create({}),
+        "rejects with empty object"
+      )
+
+      await assert.rejects(
+        authLocalMgntService.create({
+          //@ts-ignore
+          action: "topSecretActionThatDefinitelyDoesntExist"
+        }),
+        "rejects with unknown action"
+      )
+    });
+
+    it("does not call publish on authManagement", async () => {
+      const usersService = app.service('/users');
+
+      const authManagementService = app.service("authManagement")
+
+      assert.ok(authManagementService, "registered the service");
+
+      let calledUserEvent = false;
+      let calledAuthMgmtEvent = false;
+
+      app.publish((data, context) => {
+        if (context.path === "users") {
+          calledUserEvent = true;
+        }
+        if (context.path === "authManagement") {
+          calledAuthMgmtEvent = true;
+          throw "it should not get here";
+        }
+      });
+
+      await usersService.create({ username: 'John Doe' });
+      await new Promise(resolve => setTimeout(resolve, 50));
+      assert.strictEqual(calledUserEvent, true, "published user data");
+      assert.strictEqual(calledAuthMgmtEvent, false, "not published authManagement data");
+    });
+  });
+
+
   describe('can configure 2 services', () => {
     let app: Application;
 
@@ -261,29 +328,10 @@ describe('scaffolding.test.ts', () => {
       delete options.app;
       delete options.notifier;
 
-      const useSeparateServices = {
-        checkUnique: 'authManagement/check-unique',
-        identityChange: 'authManagement/identity-change',
-        passwordChange: 'authManagement/password-change',
-        resendVerifySignup: 'authManagement/resend-verify-signup',
-        resetPwdLong: 'authManagement/reset-password-long',
-        resetPwdShort: 'authManagement/reset-password-short',
-        sendResetPwd: 'authManagement/send-reset-pwd',
-        verifySignupLong: 'authManagement/verify-signup-long',
-        verifySignupSetPasswordLong: 'authManagement/verify-signup-set-password-long',
-        verifySignupSetPasswordShort: 'authManagement/verify-signup-set-password-short',
-        verifySignupShort: 'authManagement/verify-signup-short'
-      }
-
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
       delete expected.notifier;
 
       assert.deepStrictEqual(options, expected);
-
-      Object.values(useSeparateServices).forEach(path => {
-        const service = app.service(path);
-        assert.ok(service, `registered service at: '${path}'`);
-      });
 
       // call the organization instance
       const options1 = authMgntOrgService.options;
@@ -293,64 +341,10 @@ describe('scaffolding.test.ts', () => {
       delete options1.app;
       delete options1.notifier;
 
-      const useSeparateServicesOrg = {
-        checkUnique: 'authManagement/org/check-unique',
-        identityChange: 'authManagement/org/identity-change',
-        passwordChange: 'authManagement/org/password-change',
-        resendVerifySignup: 'authManagement/org/resend-verify-signup',
-        resetPwdLong: 'authManagement/org/reset-password-long',
-        resetPwdShort: 'authManagement/org/reset-password-short',
-        sendResetPwd: 'authManagement/org/send-reset-pwd',
-        verifySignupLong: 'authManagement/org/verify-signup-long',
-        verifySignupSetPasswordLong: 'authManagement/org/verify-signup-set-password-long',
-        verifySignupSetPasswordShort: 'authManagement/org/verify-signup-set-password-short',
-        verifySignupShort: 'authManagement/org/verify-signup-short'
-      }
-
-      const expected1 = Object.assign({}, optionsDefault, orgMgntOptions, { useSeparateServices: useSeparateServicesOrg });
+      const expected1 = Object.assign({}, optionsDefault, orgMgntOptions);
       delete expected1.notifier;
 
       assert.deepStrictEqual(options1, expected1);
-
-      Object.values(useSeparateServicesOrg).forEach(path => {
-        const service = app.service(path);
-        assert.ok(service, `registered service at: '${path}'`);
-      });
-    });
-  });
-
-  describe('useSeparateServices', () => {
-    const makeApp = (options: Partial<AuthenticationManagementConfigureOptions>) => {
-      const app = feathers();
-      app.configure(authManagement(options));
-      app.configure(services);
-      app.setup();
-      return app;
-    }
-
-    it('can disable all separate services with \'false\'', async () => {
-      const app = makeApp({ useSeparateServices: false });
-
-      const servicePaths = Object.keys(app.services);
-      assert.deepStrictEqual(servicePaths.sort(), ["authManagement", "organizations", "users"].sort(), 'has no other services')
-    });
-
-    it('can disable certain services', async () => {
-      const app = makeApp({ useSeparateServices: {
-        checkUnique: false,
-        verifySignupShort: false
-      } });
-
-      assert.ok(!app.service("authManagement/check-unique"), "does not have 'checkUnique' service");
-      assert.ok(!app.service("authManagement/verify-signup-short"), "does not have 'verifySignupShort' service");
-    });
-
-    it('can set custom service paths', async () => {
-      const app = makeApp({ useSeparateServices: {
-        checkUnique: 'super-custom-service'
-      } });
-
-      assert.ok(app.service('super-custom-service'), 'registered on custom path');
     });
   });
 

@@ -59,18 +59,6 @@ app
   At least one of these props must be provided whenever a short token is used,
   as the short token alone is too susceptible to brute force attack.
 - `passwordField: string = 'password'`: Prop name of the password field.
-- `useSeparateServices: boolean | Record<action, string> = false`: Registers the following services which are also accessible on the client:
-  - `checkUnique`: `${path}/check-unique'`
-  - `identityChange`: `${path}/identity-change`,
-  - `passwordChange`: `${path}/password-change`,
-  - `resendVerifySignup`: `${path}/resend-verify-signup`,
-  - `resetPwdLong`: `${path}/reset-password-long`,
-  - `resetPwdShort`: `${path}/reset-password-short`,
-  - `sendResetPwd`: `${path}/send-reset-pwd`,
-  - `verifySignupLong`: `${path}/verify-signup-long`,
-  - `verifySignupSetPasswordLong`: `${path}/verify-signup-set-password-long`,
-  - `verifySignupSetPasswordShort`: `${path}/verify-signup-set-password-short`,
-  - `verifySignupShort`: `${path}/verify-signup-short`
 
 `docs` (optional) are:
 

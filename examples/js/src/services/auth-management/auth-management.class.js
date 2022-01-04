@@ -1,5 +1,5 @@
-const { AuthenticationManagementService } = require('../../../../../dist').services;
-// const { AuthenticationManagementService } = require('feathers-authentication-management').services;
+const { AuthenticationManagementService } = require('../../../../../dist');
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
 
 exports.AuthManagement = class AuthManagement extends AuthenticationManagementService {
 

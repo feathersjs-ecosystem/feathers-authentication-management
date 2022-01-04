@@ -70,15 +70,13 @@ export type ActionPathMap<T> = {
   [key in Exclude<AuthenticationManagementAction, 'options'>]: T
 };
 
-export type UseSeparateServicesOption = boolean | Partial<ActionPathMap<boolean | string>>;
-
 export type GetUserDataCheckProps = ('isNotVerified' | 'isNotVerifiedOrHasVerifyChanges' | 'isVerified' | 'verifyNotExpired' | 'resetNotExpired')[];
 
 //#region options
 
-export interface AuthenticationManagementConfigureOptions {
+export interface AuthenticationManagementServiceOptions {
+  app: Application
   service: string
-  path: string
   skipIsVerifiedCheck: boolean
   notifier: Notifier
   longTokenLen: number
@@ -91,98 +89,94 @@ export interface AuthenticationManagementConfigureOptions {
   identifyUserProps: string[]
   sanitizeUserForClient: (user: User) => Partial<User>
   passwordField: string
-  // identifyUser: IdentifyUser // TODO ?
-  useSeparateServices: UseSeparateServicesOption
 }
 
-export interface AuthenticationManagementServiceOptions extends Omit<AuthenticationManagementConfigureOptions, 'path' | 'useSeparateServices'> {
-  app: Application
-}
+export type AuthenticationManagementConfigureOptions = Omit<AuthenticationManagementServiceOptions, 'app'> & { path: string }
 
 export type AuthenticationManagementServiceOptionsDefault = Omit<AuthenticationManagementServiceOptions, 'app'>;
 
 export type VerifySignupOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'notifier' |
-'sanitizeUserForClient'>;
+  'app' |
+  'service' |
+  'notifier' |
+  'sanitizeUserForClient'>;
 
 export interface VerifySignupWithShortTokenOptions extends VerifySignupOptions {
   identifyUserProps: string[]
 }
 
 export type VerifySignupSetPasswordOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'sanitizeUserForClient' |
-'notifier' |
-'passwordField'>;
+  'app' |
+  'service' |
+  'sanitizeUserForClient' |
+  'notifier' |
+  'passwordField'>;
 
 export type PasswordChangeOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+  'app' |
+  'service' |
+  'identifyUserProps' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
 
 export type VerifySignupSetPasswordWithShortTokenOptions =
 VerifySignupSetPasswordOptions & Pick<AuthenticationManagementServiceOptions, 'identifyUserProps'>;
 
 export type ResetPasswordOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'skipIsVerifiedCheck' |
-'reuseResetToken' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+  'app' |
+  'service' |
+  'skipIsVerifiedCheck' |
+  'reuseResetToken' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
 
 export interface ResetPwdWithShortTokenOptions extends ResetPasswordOptions {
   identifyUserProps: string[]
 }
 
 export type ResendVerifySignupOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'delay' |
-'longTokenLen' |
-'shortTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'sanitizeUserForClient'>;
+  'app' |
+  'service' |
+  'identifyUserProps' |
+  'delay' |
+  'longTokenLen' |
+  'shortTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'sanitizeUserForClient'>;
 
 export type IdentityChangeOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'delay' |
-'longTokenLen' |
-'shortTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'sanitizeUserForClient' |
-'passwordField'>;
+  'app' |
+  'service' |
+  'identifyUserProps' |
+  'delay' |
+  'longTokenLen' |
+  'shortTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'sanitizeUserForClient' |
+  'passwordField'>;
 
 export type CheckUniqueOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service'>;
+  'app' |
+  'service'>;
 
 export type SendResetPwdOptions = Pick<AuthenticationManagementServiceOptions,
-'app' |
-'service' |
-'identifyUserProps' |
-'skipIsVerifiedCheck' |
-'reuseResetToken' |
-'resetDelay' |
-'sanitizeUserForClient' |
-'resetAttempts' |
-'shortTokenLen' |
-'longTokenLen' |
-'shortTokenDigits' |
-'notifier' |
-'passwordField'>;
+  'app' |
+  'service' |
+  'identifyUserProps' |
+  'skipIsVerifiedCheck' |
+  'reuseResetToken' |
+  'resetDelay' |
+  'sanitizeUserForClient' |
+  'resetAttempts' |
+  'shortTokenLen' |
+  'longTokenLen' |
+  'shortTokenDigits' |
+  'notifier' |
+  'passwordField'>;
 
 //#endregion
 
