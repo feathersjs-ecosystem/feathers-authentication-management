@@ -13,8 +13,6 @@ export default function authenticationLocalManagement (
 ): (app: Application) => void {
   debug('service being configured.');
 
-  docs ??= {};
-
   return function (app) {
     const defaultOptions = makeDefaultOptions();
     const options = Object.assign(
@@ -25,6 +23,13 @@ export default function authenticationLocalManagement (
 
     const path = _options?.path || defaultPath;
 
-    app.use(path, new AuthenticationManagementService(app, options, docs));
+    const service = new AuthenticationManagementService(app, options);
+
+    if (docs) {
+      // @ts-expect-error service does not have docs
+      service.docs = docs;
+    }
+
+    app.use(path, service);
   };
 }

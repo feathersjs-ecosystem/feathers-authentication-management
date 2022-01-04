@@ -53,7 +53,8 @@
     "coverage": "nyc npm run mocha",
     "test": "npm run mocha",
     "compile": "shx rm -rf dist/ && tsc",
-    "docs": "vitepress dev docs"
+    "docs": "vitepress dev docs",
+    "docs:build": "vitepress build docs"
   },
   "semistandard": {
     "env": [

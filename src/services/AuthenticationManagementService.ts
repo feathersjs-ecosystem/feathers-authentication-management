@@ -54,19 +54,15 @@ type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOpti
 
 export class AuthenticationManagementService
   extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes, AuthenticationManagementServiceOptions> {
-  docs: unknown;
 
   constructor (
     app: Application,
-    options?: Partial<AuthenticationManagementServiceOptions>,
-    docs?: unknown
+    options?: Partial<AuthenticationManagementServiceOptions>
   ) {
     super(app);
 
     const defaultOptions = makeDefaultOptions();
     this.options = Object.assign({}, defaultOptions, options);
-
-    this.docs = docs;
   }
 
   async _checkUnique (data: DataCheckUnique): Promise<unknown> {
@@ -240,7 +236,7 @@ export class AuthenticationManagementService
    * resend sign up verification notification
    * @param action action is 'resendVerifySignup'
    * @param value {IdentifyUser} the user with properties, e.g. {email}, {token: verifyToken}
-   * @param notifierOptions options passed to options.notifier, e.g. {preferredComm: 'cellphone'}
+   * @param notifierOptions options passed to options.notifier
    */
   async _create ({ action, value, notifierOptions }: DataResendVerifySignupWithAction): Promise<SanitizedUser>
   /**
@@ -268,7 +264,7 @@ export class AuthenticationManagementService
    * sign up or identityChange verification with long token
    * @param action action is 'verifySignupLong'
    * @param value // compares to user.verifyToken
-   * @param notifierOptions options passed to options.notifier, e.g. {preferredComm: 'cellphone'}
+   * @param notifierOptions options passed to options.notifier
    */
   async _create ({ action, value, notifierOptions }: DataVerifySignupLongWithAction): Promise<SanitizedUser>
   /**
