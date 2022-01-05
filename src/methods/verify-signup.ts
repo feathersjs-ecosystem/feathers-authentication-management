@@ -71,7 +71,10 @@ async function verifySignup (
   const usersServiceId = usersService.id;
 
   const users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
-  const user1 = getUserData(users, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']);
+  const user1 = getUserData(users, [
+    'isNotVerifiedOrHasVerifyChanges',
+    'verifyNotExpired'
+  ]);
 
   if (!Object.keys(tokens).every(key => tokens[key] === user1[key])) {
     await eraseVerifyProps(user1, user1.isVerified);
@@ -86,7 +89,11 @@ async function verifySignup (
   const user3 = await notifier(options.notifier, 'verifySignup', user2, notifierOptions);
   return sanitizeUserForClient(user3);
 
-  async function eraseVerifyProps (user: User, isVerified: boolean, verifyChanges?: VerifyChanges): Promise<User> {
+  async function eraseVerifyProps (
+    user: User,
+    isVerified: boolean,
+    verifyChanges?: VerifyChanges
+  ): Promise<User> {
     const patchToUser = Object.assign({}, verifyChanges ?? {}, {
       isVerified,
       verifyToken: null,

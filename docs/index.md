@@ -1,10 +1,12 @@
 ---
 home: true
-heroImage: /img/logo.svg
+heroImage: /logo.svg
 heroText: feathers-authentication-management
 tagLine: Sign up verification, forgotten password reset, and other capabilities for local authentication.
-actionText: Get Started
-actionLink: ./getting-started
+actions:
+  - text: Get Started
+    link: ./getting-started
+    type: primary
 features:
-footer: MIT Licensed | Copyright © 2021
+footer: MIT Licensed | Copyright © 2022
 ---

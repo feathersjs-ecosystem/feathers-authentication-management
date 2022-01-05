@@ -20,27 +20,18 @@ title: Best Practices
 // users.hooks.js
 before: {
   update: [
-    iff(isProvider('external'), preventChanges(
-      'isVerified',
-      'verifyToken',
-      'verifyShortToken',
-      'verifyExpires',
-      'verifyChanges',
-      'resetToken',
-      'resetShortToken',
-      'resetExpires'
-    )),
+    disallow("external")
   ],
   patch: [
     iff(isProvider('external'), preventChanges(
       'isVerified',
-      'verifyToken',
-      'verifyShortToken',
-      'verifyExpires',
-      'verifyChanges',
-      'resetToken',
-      'resetShortToken',
       'resetExpires'
+      'resetShortToken',
+      'resetToken',
+      'verifyChanges',
+      'verifyExpires',
+      'verifyShortToken',
+      'verifyToken',
     )),
   ],
 },

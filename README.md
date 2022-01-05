@@ -7,6 +7,7 @@
 [![Test Coverage](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/coverage.svg)](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/coverage)
 [![Dependency Status](https://img.shields.io/librariesio/release/npm/feathers-authentication-management)](https://libraries.io/npm/feathers-authentication-management)
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
+[![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE)
 
 **Sign up verification, forgotten password reset, and other capabilities for local authentication.**
 

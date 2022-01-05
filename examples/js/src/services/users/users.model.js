@@ -41,9 +41,6 @@ module.exports = function (app) {
     },
     resetAttempts: {
       type: DataTypes.NUMBER
-    },
-    preferredComm: {
-      type: DataTypes.STRING
     }
   }, {
     hooks: {

@@ -4,12 +4,16 @@ title: Overview
 
 # {{ $frontmatter.title }}
 
-![npm](https://img.shields.io/npm/v/feathers-authentication-management)
+<p align="center">
+  <img src="/logo.svg" width="250">
+</p>
 
-<!--![GitHub Workflow Status](https://img.shields.io/github/workflow/status/feathersjs-ecosystem/feathers-authentication-management/Node.js%20CI)-->
-
-![npm](https://img.shields.io/npm/dm/feathers-authentication-management)
-[![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE)
+![Build Status](https://img.shields.io/github/workflow/status/feathers-ecosystem/feathers-authentication-management/Node.js%20CI)
+![Code Climate](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/gpa.svg)
+![Test Coverage](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/coverage.svg)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/feathers-authentication-management)
+![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)
+![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)
 
 Sign up verification, forgotten password reset, and other capabilities for local authentication.
 
@@ -34,7 +38,7 @@ Details about settings and the implementation of a notifier function can be foun
 
 ### Help
 
-- Open an issue or come talk on the Feathers Slack ([slack.feathersjs.com](slack.feathersjs.com)).
+- Open an issue or come talk on the Feathers Slack ([slack.feathersjs.com](http://slack.feathersjs.com/)).
 
 - Additional resources:
 
@@ -44,4 +48,4 @@ Details about settings and the implementation of a notifier function can be foun
 
 ### License
 
-Licensed under the [MIT license](LICENSE).
+Licensed under the [MIT license](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE).

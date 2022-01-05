@@ -10,7 +10,7 @@ Some of the process flows related to this service are described in this chapter 
 
 The sign up verification process is an interplay between the Feathers backend, a client and a communication transport method such as e-mail. Its flow shown in the following figure:
 
-![resendVerifySignup.png](./images/resendVerifySignup.png)
+![resendVerifySignup.png](/images/resendVerifySignup.png)
 
 Some of these steps have to be implemented manually on client and server side, others are performed automatically by the `feathers-authentication-management` service.
 
@@ -22,7 +22,7 @@ The verification e-mail contains an URL with the long token as a parameter, or â
 
 A change or reset of a password is more secure, if the user is verified, e. g. by asking the user for a verification by e-mail. The following figure shows such as process flow:
 
-![sendResetPwd.png](./images/sendResetPwd.png)
+![sendResetPwd.png](/images/sendResetPwd.png)
 
 The client sends a [sendResetPwd](./service-calls#sendresetpwd) service call to the `feathers-authentication-management` service. The service creates a short and/or long password reset token, stores it to the user item, and triggers the notifier function to send the token to the user.
 

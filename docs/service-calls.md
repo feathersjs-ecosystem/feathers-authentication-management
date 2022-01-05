@@ -4,7 +4,7 @@ title: Service Calls
 
 # {{ $frontmatter.title }}
 
-The `feathers-authentication-management` service can be called using various methods. These can be external calls from the client as well as internal calls within the server. On client side, you can use the [Feathers client](https://docs.feathersjs.com/api/client.html), plain and simple HTTP requests, or any other request library your frontend framework provides.
+The `feathers-authentication-management` service methods can be called using various ways. These can be external calls from the client as well as internal calls within the server. On client side, you can use the [Feathers client](https://docs.feathersjs.com/api/client.html), plain and simple HTTP requests, or any other request library your frontend framework provides.
 
 The service may be called using
 
@@ -14,10 +14,21 @@ The service may be called using
 
 ## Comparison of Old with New Service Calls
 
-In the first versions of this service, the data objects of the service requests contained the name of the action, for example `'sendResetPwd'` in case of a password reset request:
+There are three ways of calling a method:
+1. Main service as `AuthenticationManagementService` with `create` and `action`
+2. Separate services (e.g. `SendResetPwdService`) with `create`
+3. Main service as `AuthenticationManagementService` with custom method (e.g. `sendResetPassword`)
+
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
 
 ```js
-app.service("authManagement").create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service("auth-management").create({
   action: "sendResetPwd",
   value: {
     email: "me@example.com",
@@ -25,48 +36,102 @@ app.service("authManagement").create({
 });
 ```
 
-The latest versions offer a new method, where the name of the action is added to the path of the service endpoint:
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
 
 ```js
-app.service("authManagement/send-reset-password").create({
+const { SendResetPwdService } = require('feathers-authentication-management');
+
+app.use("auth-management/send-reset-password", new SendResetPwdService(app));
+
+app.service("auth-management/send-reset-password").create({
   value: {
     email: "me@example.com",
   },
 });
 ```
 
-For the reference, in the following table the new service endpoints are compared with the old action names:
+  </CodeGroupItem>
 
-| New Service Endpoint                | Old Action Name                          |
-| ----------------------------------- | ---------------------------------------- |
-| `/check-unique`                     | `action: 'checkUnique'`                  |
-| `/identity-change`                  | `action: 'identityChange'`               |
-| `/password-change`                  | `action: 'passwordChange'`               |
-| `/resend-verify-signup`             | `action: 'resendVerifySignup'`           |
-| `/reset-password-long`              | `action: 'resetPwdLong'`                 |
-| `/reset-password-short`             | `action: 'resetPwdShort'`                |
-| `/send-reset-password`              | `action: 'sendResetPwd'`                 |
-| `/verify-signup-long`               | `action: 'verifySignupLong'`             |
-| `/verify-signup-set-password-long`  | `action: 'verifySignupSetPasswordLong'`  |
-| `/verify-signup-set-password-short` | `action: 'verifySignupSetPasswordShort'` |
-| `//verify-signup-short`             | `action: 'verifySignupShort'`            |
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service("auth-management").sendResetPassword({
+  value: {
+    email: "me@example.com",
+  },
+});
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 ## List of Service Calls
 
-Only the new service endpoints are used in the following list of all service calls.
 All service calls return a promise.
 
 ### checkUnique
 
 Checks if the properties are unique in the users items.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/check-unique').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'checkUnique',
   value: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
   ownId, // Excludes user with ownId from the search
   meta: { noErrMsg } // if return an error.message if not unique
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { CheckUniqueService } = require('feathers-authentication-management');
+
+app.use("auth-management/check-unique", new CheckUniqueService(app));
+
+app.service('auth-management/check-unique').create({
+  value: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
+  ownId, // Excludes user with ownId from the search
+  meta: { noErrMsg } // if return an error.message if not unique
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').checkUnique({
+  value: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
+  ownId, // Excludes user with ownId from the search
+  meta: { noErrMsg } // if return an error.message if not unique
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns `null` if the properties are unique (= already existing) in the users items. Otherwise rejects with `BadRequest`.
 
@@ -74,8 +139,17 @@ Returns `null` if the properties are unique (= already existing) in the users it
 
 Changes the communication address of a user, e. g. the e-mail address or a phone number.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/identity-change').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'identityChange',
   value: {
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     password, // current password for verification
@@ -84,14 +158,63 @@ app.service('authManagement/identity-change').create({
 }
 ```
 
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { IdentityChangeService } = require('feathers-authentication-management');
+
+app.use("auth-management/identity-change", new IdentityChangeService(app));
+
+app.service('auth-management/identity-change').create({
+  value: {
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    password, // current password for verification
+    changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+  },
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').identityChange({
+  value: {
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    password, // current password for verification
+    changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
+
 Returns the user object or rejects with `BadRequest`.
 
 ### passwordChange
 
 Changes the password of a user.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/password-change').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'passwordChange',
   value: {
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     oldPassword, // old password for verification
@@ -100,18 +223,101 @@ app.service('authManagement/password-change').create({
 }
 ```
 
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { PasswordChangeService } = require('feathers-authentication-management');
+
+app.use("auth-management/password-change", new PasswordChangeService(app));
+
+app.service('auth-management/password-change').create({
+  value: {
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    oldPassword, // old password for verification
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').passwordChange({
+  value: {
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    oldPassword, // old password for verification
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
+
 Returns the user object or rejects with `BadRequest`.
 
 ### resendVerifySignup
 
 Recreates a long and/or short verification token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/resend-verify-signup').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'resendVerifySignup',
   value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions: {}, // options passed to options.notifier, e.g. {preferredComm: 'cellphone'}
+  notifierOptions: {}, // options passed to options.notifier
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { ResendVerifySignupService } = require('feathers-authentication-management');
+
+app.use('auth-management/resend-verify-signup', new ResendVerifySignupService(app));
+
+app.service('auth-management/resend-verify-signup').create({
+  value: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions: {}, // options passed to options.notifier
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').resendVerifySignup({
+  value: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions: {}, // options passed to options.notifier
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -119,14 +325,64 @@ Returns the user object or rejects with `BadRequest`.
 
 Stores a new password. Requires a valid long `resetToken`.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/reset-password-long').create({
-   value: {
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'resetPwdLong',
+  value: {
+    token, // compares to resetToken
+    password, // new password
+  },
+}
+
+
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { ResetPwdLongService } = require('feathers-authentication-management');
+
+app.use('auth-management/reset-pwd-long', new ResetPwdLongService(app));
+
+app.service('auth-management/reset-pwd-long').create({
+  value: {
     token, // compares to resetToken
     password, // new password
   },
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').resetPasswordLong({
+  value: {
+    token, // compares to resetToken
+    password, // new password
+  },
+}
+
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -134,8 +390,35 @@ Returns the user object or rejects with `BadRequest`.
 
 Stores a new password. Requires a valid short `resetShortToken` and a property of the user object to identify the user.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/reset-password-short').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  value: {
+    action: 'resetPwdShort',
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .resetShortToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { ResetPwdShortService } = require('feathers-authentication-management');
+
+app.use('auth-management/reset-password-short', new ResetPwdShortService(app));
+
+app.service('auth-management/reset-password-short').create({
   value: {
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .resetShortToken
@@ -144,18 +427,83 @@ app.service('authManagement/reset-password-short').create({
 }
 ```
 
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').resetPasswordShort({
+  value: {
+    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .resetShortToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
+
 Returns the user object or rejects with `BadRequest`.
 
 ### sendResetPwd
 
 Creates a short and/or long password reset token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/send-reset-password').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'sendResetPwd',
   value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions, // options passed to options.notifier, e.g. {preferredComm: 'email'}
+  notifierOptions, // options passed to options.notifier
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { SendResetPwdService } = require('feathers-authentication-management');
+
+app.use("auth-management/send-reset-password", new SendResetPwdService(app));
+
+app.service('auth-management/send-reset-password').create({
+  value: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions, // options passed to options.notifier
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').sendResetPassword({
+  value: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions, // options passed to options.notifier
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -163,11 +511,52 @@ Returns the user object or rejects with `BadRequest`.
 
 Verifies a given long verification token.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/verify-signup-long').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'verifySignupLong',
   value: verifyToken, // compares to .verifyToken
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { VerifySignupLongService } = require('feathers-authentication-management');
+
+app.use("auth-management/verify-signup-long", new VerifySignupLongService(app));
+
+app.service('auth-management/verify-signup-long').create({
+  value: verifyToken, // compares to .verifyToken
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').verifySignupLong({
+  value: verifyToken, // compares to .verifyToken
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -175,14 +564,62 @@ Returns the user object or rejects with `BadRequest`.
 
 Verifies a given short verification token.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/verify-signup-short').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'verifySignupShort',
+  value: {
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
+  },
+}
+
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { VerifySignupShortService } = require('feathers-authentication-management');
+
+app.use("auth-management/verify-signup-short", new VerifySignupShortService(app));
+
+app.service('auth-management/verify-signup-short').create({
   value: {
     user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .verifyShortToken
   },
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').verifySignupShort({
+  value: {
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -190,8 +627,17 @@ Returns the user object or rejects with `BadRequest`.
 
 This is a combination of `verifySignupLong` and `resetPwdLong`: Verifies a given long verification token and stores the new password.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/verify-signup-set-password-long').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'verifySignupSetPasswordLong',
   value: {
     token, // compares to .verifyToken
     password, // new password
@@ -199,14 +645,61 @@ app.service('authManagement/verify-signup-set-password-long').create({
 }
 ```
 
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { VerifySignupSetPasswordLongService } = require('feathers-authentication-management');
+
+app.use("auth-management/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app));
+
+app.service('auth-management/verify-signup-set-password-long').create({
+  value: {
+    token, // compares to .verifyToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').verifySignupSetPasswordLong({
+  value: {
+    token, // compares to .verifyToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
+
 Returns the user object or rejects with `BadRequest`.
 
 ### verifySignupSetPasswordShort
 
 This is a combination of `verifySignupShort` and `resetPwdShort`: Verifies a given short verification token and stores the new password.
 
+<CodeGroup>
+
+  <CodeGroupItem title="Main Service" active>
+
 ```js
-app.service('authManagement/verify-signup-set-password-short').create({
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').create({
+  action: 'verifySignupSetPasswordShort',
   value: {
     user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .verifyShortToken
@@ -214,6 +707,46 @@ app.service('authManagement/verify-signup-set-password-short').create({
   },
 }
 ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Separate Service">
+
+```js
+const { VerifySignupSetPasswordShortService } = require('feathers-authentication-management');
+
+app.use("auth-management/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app));
+
+app.service('auth-management/verify-signup-set-password-short').create({
+  value: {
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="Custom Method">
+
+```js
+const { AuthenticationManagementService } = require('feathers-authentication-management');
+
+app.use('auth-management', new AuthenticationManagementService(app));
+
+app.service('auth-management').verifySignupSetPasswordShort({
+  value: {
+    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+    token, // compares to .verifyShortToken
+    password, // new password
+  },
+}
+```
+
+  </CodeGroupItem>
+  
+</CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
 

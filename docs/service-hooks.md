@@ -45,7 +45,7 @@ module.exports = {
     get: [authenticate("jwt")],
     create: [
       hashPassword("password"),
-      addVerification(), // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
+      addVerification("auth-management"), // adds .isVerified, .verifyExpires, .verifyToken, .verifyChanges
     ],
     update: [
       disallow("external"),
