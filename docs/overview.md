@@ -8,7 +8,7 @@ title: Overview
   <img src="/logo.svg" width="250">
 </p>
 
-![Build Status](https://img.shields.io/github/workflow/status/feathers-ecosystem/feathers-authentication-management/Node.js%20CI)
+![Build Status](https://img.shields.io/github/workflow/status/feathersjs-ecosystem/feathers-authentication-management/Node.js%20CI)
 ![Code Climate](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/gpa.svg)
 ![Test Coverage](https://codeclimate.com/github/feathersjs-ecosystem/feathers-authentication-management/badges/coverage.svg)
 ![Dependency Status](https://img.shields.io/librariesio/release/npm/feathers-authentication-management)
