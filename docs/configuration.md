@@ -23,7 +23,7 @@ const {
   AuthenticationManagementService,
 } = require("feathers-authentication-management");
 
-app.use("/auth-management", new AuthenticationManagementService(app, options, docs));
+app.use("/auth-management", new AuthenticationManagementService(app, options));
 ```
 
 Possible `options` are:
@@ -192,8 +192,8 @@ Throws, if requesting user is not verified (`params.user.isVerified`) and passes
 - **Example:**
 
 ```js
-const { authenticate } = require("feathers-authentication").hooks;
-const { isVerified } = require("feathers-authentication-management").hooks;
+const { authenticate } = require("@feathersjs/authentication").hooks;
+const { isVerified } = require("feathers-authentication-management");
 
 module.exports = {
   before: {
