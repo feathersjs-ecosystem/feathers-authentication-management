@@ -17,11 +17,14 @@ import {
   VerifySignupSetPasswordLongService,
   VerifySignupSetPasswordShortService,
   VerifySignupShortService,
-  CheckUniqueService
+  CheckUniqueService,
+  addVerification,
+  isVerified,
+  removeVerification
 } from '../src';
+
 import {
-  AuthenticationManagementServiceOptions,
-  AuthenticationManagementSetupOptions
+  AuthenticationManagementServiceOptions
 } from '../src/types';
 
 import "@feathersjs/transport-commons";
@@ -71,8 +74,7 @@ function user () {
   const service = app.service('/users');
 
   service.hooks({
-    // @ts-ignore
-    before: { create: authManagement.hooks.addVerification() }
+    before: { create: addVerification() }
   });
 }
 
@@ -86,12 +88,31 @@ function organization () {
   const service = app.service('/organizations');
 
   service.hooks({
-    // @ts-ignore
-    before: { create: authManagement.hooks.addVerification('authManagement/org') } // *** which one
+    before: { create: addVerification('authManagement/org') } // *** which one
   });
 }
 
 describe('scaffolding.test.ts', () => {
+  describe("exports all members", () => {
+    assert.ok([
+      AuthenticationManagementService,
+      IdentityChangeService,
+      PasswordChangeService,
+      ResendVerifySignupService,
+      ResetPwdLongService,
+      ResetPwdShortService,
+      SendResetPwdService,
+      VerifySignupLongService,
+      VerifySignupSetPasswordLongService,
+      VerifySignupSetPasswordShortService,
+      VerifySignupShortService,
+      CheckUniqueService,
+      addVerification,
+      isVerified,
+      removeVerification
+    ])
+  });
+
   describe('can setup 1 service using app.configure', () => {
     let app: Application;
 
