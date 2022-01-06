@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class SendResetPwdService
   extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser, SendResetPwdServiceOptions> {
-
   constructor (app: Application, options?: Partial<SendResetPwdServiceOptions>) {
     super(app);
 

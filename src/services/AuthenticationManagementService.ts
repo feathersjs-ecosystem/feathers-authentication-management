@@ -54,7 +54,6 @@ type AllResultTypes = null | SanitizedUser | AuthenticationManagementServiceOpti
 
 export class AuthenticationManagementService
   extends AuthenticationManagementBase<AuthenticationManagementData, AllResultTypes, AuthenticationManagementServiceOptions> {
-
   constructor (
     app: Application,
     options?: Partial<AuthenticationManagementServiceOptions>

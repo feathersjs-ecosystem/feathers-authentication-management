@@ -27,7 +27,6 @@ export interface VerifyChanges {
   [key: number]: any
 }
 
-// TODO: explicit
 export interface Tokens {
   resetToken?: string
   resetShortToken?: string

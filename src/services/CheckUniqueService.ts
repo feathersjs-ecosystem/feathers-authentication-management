@@ -10,7 +10,6 @@ import { Application } from '@feathersjs/feathers';
 
 export class CheckUniqueService
   extends AuthenticationManagementBase<DataCheckUnique, null, CheckUniqueServiceOptions> {
-
   constructor (app: Application, options?: Partial<CheckUniqueServiceOptions>) {
     super(app);
 

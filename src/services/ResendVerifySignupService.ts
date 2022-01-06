@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class ResendVerifySignupService
   extends AuthenticationManagementBase<DataResendVerifySignup, SanitizedUser, ResendVerifySignupServiceOptions> {
-
   constructor (app: Application, options?: Partial<ResendVerifySignupServiceOptions>) {
     super(app);
 

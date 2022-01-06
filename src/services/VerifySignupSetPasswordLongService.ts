@@ -5,15 +5,13 @@ import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import {
   DataVerifySignupSetPasswordLong,
   SanitizedUser,
-  VerifySignupSetPasswordOptions,
   VerifySignupSetPasswordLongServiceOptions
 } from '../types';
 import { Application } from '@feathersjs/feathers';
 
 export class VerifySignupSetPasswordLongService
   extends AuthenticationManagementBase<DataVerifySignupSetPasswordLong, SanitizedUser, VerifySignupSetPasswordLongServiceOptions> {
-
-    constructor (app: Application, options?: Partial<VerifySignupSetPasswordLongServiceOptions>) {
+  constructor (app: Application, options?: Partial<VerifySignupSetPasswordLongServiceOptions>) {
     super(app);
 
     const defaultOptions = makeDefaultOptions([

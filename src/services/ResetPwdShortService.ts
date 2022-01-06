@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class ResetPwdShortService
   extends AuthenticationManagementBase<DataResetPwdShort, SanitizedUser, ResetPwdWithShortServiceOptions> {
-
   constructor (app: Application, options?: Partial<ResetPwdWithShortServiceOptions>) {
     super(app);
 

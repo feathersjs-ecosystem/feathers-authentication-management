@@ -41,7 +41,7 @@ export default async function checkUnique (
   try {
     for (let i = 0, ilen = keys.length; i < ilen; i++) {
       const prop = keys[i];
-      const params = { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 } }
+      const params = { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 } };
       if (!isNullsy(ownId)) {
         params.query[usersServiceId] = { $ne: ownId };
       }

@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class IdentityChangeService
   extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser, IdentityChangeServiceOptions> {
-
   constructor (app: Application, options?: Partial<IdentityChangeServiceOptions>) {
     super(app);
 

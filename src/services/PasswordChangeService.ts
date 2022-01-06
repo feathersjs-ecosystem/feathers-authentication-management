@@ -12,8 +12,7 @@ import type { Application } from '@feathersjs/feathers';
 
 export class PasswordChangeService
   extends AuthenticationManagementBase<DataPasswordChange, SanitizedUser, PasswordChangeServiceOptions> {
-
-    constructor (app: Application, options?: Partial<PasswordChangeOptions>) {
+  constructor (app: Application, options?: Partial<PasswordChangeOptions>) {
     super(app);
 
     const defaultOptions = makeDefaultOptions([

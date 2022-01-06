@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class VerifySignupShortService
   extends AuthenticationManagementBase<DataVerifySignupShort, SanitizedUser, VerifySignupShortServiceOptions> {
-
   constructor (app: Application, options?: Partial<VerifySignupShortServiceOptions>) {
     super(app);
 

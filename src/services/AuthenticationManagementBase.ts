@@ -8,7 +8,7 @@ export abstract class AuthenticationManagementBase<T, R, O> {
 
   abstract _create (data: T, params?: Params): Promise<R>;
 
-  constructor(app: Application) {
+  constructor (app: Application) {
     if (!app) {
       throw new Error("Service from 'feathers-authentication-management' needs the 'app' as first constructor argument");
     }
@@ -26,7 +26,7 @@ export abstract class AuthenticationManagementBase<T, R, O> {
     return await this._create(data, params);
   }
 
-  protected get optionsWithApp() {
+  protected get optionsWithApp (): O & { app: Application } {
     return Object.assign({ app: this.app }, this.options);
   }
 

@@ -12,7 +12,6 @@ import { Application } from '@feathersjs/feathers';
 
 export class VerifySignupLongService
   extends AuthenticationManagementBase<DataVerifySignupLong, SanitizedUser, VerifySignupLongServiceOptions> {
-
   constructor (app: Application, options?: Partial<VerifySignupLongServiceOptions>) {
     super(app);
 

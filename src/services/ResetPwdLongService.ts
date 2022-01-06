@@ -11,7 +11,6 @@ import type { Application } from '@feathersjs/feathers';
 
 export class ResetPwdLongService
   extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser, ResetPasswordServiceOptions> {
-
   constructor (app: Application, options?: Partial<ResetPasswordServiceOptions>) {
     super(app);
 

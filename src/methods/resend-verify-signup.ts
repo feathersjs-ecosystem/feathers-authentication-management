@@ -41,13 +41,13 @@ export default async function resendVerifySignup (
     identifyUserProps.concat('verifyToken', 'verifyShortToken')
   );
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
   const user1 = getUserData(users, ['isNotVerified']);
 
-  const [ verifyToken, verifyShortToken ] = await Promise.all([
+  const [verifyToken, verifyShortToken] = await Promise.all([
     getLongToken(longTokenLen),
     getShortToken(shortTokenLen, shortTokenDigits)
-  ])
+  ]);
 
   const user2 = await usersService.patch(user1[usersServiceId], {
     isVerified: false,

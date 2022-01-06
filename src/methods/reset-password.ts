@@ -84,7 +84,7 @@ async function resetPassword (
     const user = await usersService.get(id);
     users = [user];
   } else if (tokens.resetShortToken) {
-    users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
+    users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
   } else {
     throw new BadRequest(
       'resetToken and resetShortToken are missing. (authLocalMgnt)',
@@ -135,8 +135,7 @@ async function resetPassword (
 
       throw new BadRequest(
         'Invalid token. Get for a new one. (authLocalMgnt)',
-        { errors: { $className: 'invalidToken' }
-      });
+        { errors: { $className: 'invalidToken' } });
     }
   }
 

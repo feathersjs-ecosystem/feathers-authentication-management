@@ -46,7 +46,7 @@ export default async function sendResetPwd (
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser ) });
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
   const user1 = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
@@ -59,10 +59,10 @@ export default async function sendResetPwd (
     return sanitizeUserForClient(user1);
   }
 
-  const [ resetToken, resetShortToken ] = await Promise.all([
+  const [resetToken, resetShortToken] = await Promise.all([
     getLongToken(longTokenLen),
     getShortToken(shortTokenLen, shortTokenDigits)
-  ])
+  ]);
 
   const user2 = Object.assign(user1, {
     resetExpires: Date.now() + resetDelay,
@@ -73,10 +73,10 @@ export default async function sendResetPwd (
 
   await notifier(options.notifier, 'sendResetPwd', user2, notifierOptions);
 
-  const [ resetToken3, resetShortToken3 ] = await Promise.all([
+  const [resetToken3, resetShortToken3] = await Promise.all([
     reuseResetToken ? user2.resetToken : hashPassword(app, user2.resetToken, passwordField),
     reuseResetToken ? user2.resetShortToken : hashPassword(app, user2.resetShortToken, passwordField)
-  ])
+  ]);
 
   const user3 = await usersService.patch(user2[usersServiceId], {
     resetExpires: user2.resetExpires,
