@@ -218,8 +218,8 @@ app.service('auth-management').create({
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     oldPassword, // old password for verification
     password, // new password
-    notifierOptions: {}, // optional - an object passed to notifier function
   },
+  notifierOptions: {} // optional - an object passed to notifier function
 }
 ```
 
