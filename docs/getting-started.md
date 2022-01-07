@@ -83,8 +83,7 @@ const notifier = require("./notifier");
 module.exports = function (app) {
   app.use(
     "/auth-management",
-    new AuthenticationManagementService({
-      app,
+    new AuthenticationManagementService(app, {
       notifier: notifier(app),
     })
   );
@@ -187,33 +186,6 @@ The following example shows a minimal version for sending an e-mail after the se
 ```js
 // services/auth-management/notifier.js
 module.exports = (app) => {
-  return {
-    notifier: function (type, user, notifierOptions) {
-      switch (type) {
-        case "resendVerifySignup":
-          return sendEmail({
-            from: "test@localhost",
-            to: user.email,
-            subject: "Please confirm your e-mail address",
-            text: "Click here: " + getLink("verify", user.verifyToken),
-          });
-          break;
-
-        case "verifySignup":
-          return sendEmail({
-            from: "test@localhost",
-            to: user.email,
-            subject: "E-Mail address verified",
-            text: "Registration process complete. Thanks for joining us!",
-          });
-          break;
-
-        default:
-          break;
-      }
-    },
-  };
-
   function getLink(type, hash) {
     return "http://localhost:3030/" + type + "?token=" + hash;
   }
@@ -225,6 +197,31 @@ module.exports = (app) => {
       console.error(err);
     }
   }
+
+  return (type, user, notifierOptions) => {
+    switch (type) {
+      case "resendVerifySignup":
+        return sendEmail({
+          from: "test@localhost",
+          to: user.email,
+          subject: "Please confirm your e-mail address",
+          text: "Click here: " + getLink("verify", user.verifyToken),
+        });
+        break;
+
+      case "verifySignup":
+        return sendEmail({
+          from: "test@localhost",
+          to: user.email,
+          subject: "E-Mail address verified",
+          text: "Registration process complete. Thanks for joining us!",
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
 };
 ```
 
