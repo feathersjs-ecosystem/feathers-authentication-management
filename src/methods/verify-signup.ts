@@ -12,7 +12,6 @@ import type {
   VerifySignupWithShortTokenOptions,
   Tokens,
   User,
-  VerifyChanges,
   IdentifyUser,
   NotifierOptions
 } from '../types';
@@ -92,7 +91,7 @@ async function verifySignup (
   async function eraseVerifyProps (
     user: User,
     isVerified: boolean,
-    verifyChanges?: VerifyChanges
+    verifyChanges?: Record<string, any>
   ): Promise<User> {
     const patchToUser = Object.assign({}, verifyChanges ?? {}, {
       isVerified,

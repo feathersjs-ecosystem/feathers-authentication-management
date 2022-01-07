@@ -12,7 +12,6 @@ import type {
   SanitizedUser,
   Tokens,
   User,
-  VerifyChanges,
   VerifySignupSetPasswordOptions,
   VerifySignupSetPasswordWithShortTokenOptions,
   NotifierOptions
@@ -107,7 +106,7 @@ async function verifySignupSetPassword (
   async function eraseVerifyProps (
     user: User,
     isVerified: boolean,
-    verifyChanges: VerifyChanges
+    verifyChanges: Record<string, any>
   ): Promise<User> {
     const patchToUser = Object.assign({}, verifyChanges || {}, {
       isVerified,
@@ -124,7 +123,7 @@ async function verifySignupSetPassword (
   async function eraseVerifyPropsSetPassword (
     user: User,
     isVerified: boolean,
-    verifyChanges: VerifyChanges,
+    verifyChanges: Record<string, any>,
     password: string
   ): Promise<User> {
     const hashedPassword = await hashPassword(app, password, passwordField);
