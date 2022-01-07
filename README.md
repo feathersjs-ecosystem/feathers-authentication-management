@@ -16,6 +16,10 @@
 [![Download Status](https://img.shields.io/npm/dm/feathers-authentication-management.svg?style=flat-square)](https://www.npmjs.com/package/feathers-authentication-management)
 [![GitHub license](https://img.shields.io/github/license/feathersjs-ecosystem/feathers-authentication-management)](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE)
 
+```bash
+npm i feathers-authentication-management@pre
+```
+
 ## ⭐️⭐️⭐️ Documentation 
 
 You need more information? Please have a look at our new docs at [feathers-a-m.netlify.app](https://feathers-a-m.netlify.app/).

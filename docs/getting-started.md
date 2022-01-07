@@ -32,18 +32,26 @@ The following command installs `feathers-authentication-management` and `feather
 
 <CodeGroup>
 
-  <CodeGroupItem title="NPM" active>
+  <CodeGroupItem title="npm" active>
 
 ```bash
-npm i feathers-authentication-management
+npm i feathers-authentication-management@pre
 ```
 
   </CodeGroupItem>
 
-  <CodeGroupItem title="YARN">
+  <CodeGroupItem title="yarn">
 
   ```bash
-  yarn add feathers-authentication-management
+  yarn add feathers-authentication-management@pre
+  ```
+
+  </CodeGroupItem>
+
+  <CodeGroupItem title="pnpm">
+
+  ```bash
+  pnpm install feathers-authentication-management@pre
   ```
 
   </CodeGroupItem>
