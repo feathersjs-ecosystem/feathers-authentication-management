@@ -14,8 +14,15 @@ import { VerifySignupSetPasswordShortService } from '../../src/services';
 const withAction = (
   data: DataVerifySignupSetPasswordShort
 ): DataVerifySignupSetPasswordShortWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "verifySignupSetPasswordShort" }, data);
+  return {
+    action: "verifySignupSetPasswordShort",
+    value: {
+      password: data.password,
+      token: data.token,
+      user: data.user
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -90,11 +97,9 @@ const withAction = (
           it('verifies valid token and sets password if not verified', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email },
-                password
-              }
+              token: '00099',
+              user: { email: users[0].email },
+              password
             });
             const user = await usersService.get(result[idType]);
 
@@ -110,11 +115,9 @@ const withAction = (
           it('verifies valid token and sets password if verifyChanges', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '80099',
-                user: { email: users[4].email },
-                password
-              }
+              token: '80099',
+              user: { email: users[4].email },
+              password
             });
             const user = await usersService.get(result[idType]);
 
@@ -132,11 +135,9 @@ const withAction = (
 
           it('user is sanitized', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { username: users[0].username },
-                password: '123456'
-              }
+              token: '00099',
+              user: { username: users[0].username },
+              password: '123456'
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -148,11 +149,9 @@ const withAction = (
 
           it('handles multiple user ident', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email, username: users[0].username },
-                password: '123456'
-              }
+              token: '00099',
+              user: { email: users[0].email, username: users[0].username },
+              password: '123456'
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -164,11 +163,9 @@ const withAction = (
           it('requires user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  user: {},
-                  password: '123456'
-                }
+                token: '00099',
+                user: {},
+                password: '123456'
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -180,12 +177,10 @@ const withAction = (
           it('throws on non-configured user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  //TODO: was this right?
-                  user: { email: undefined, verifyShortToken: '00099' },
-                  password: '123456'
-                }
+                token: '00099',
+                //TODO: was this right?
+                user: { email: undefined, verifyShortToken: '00099' },
+                password: '123456'
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -198,11 +193,9 @@ const withAction = (
             try {
               const password = '123456';
               const result = await callMethod(app, {
-                value: {
-                  token: '22299',
-                  user: { email: users[3].email },
-                  password
-                }
+                token: '22299',
+                user: { email: users[3].email },
+                password
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -215,11 +208,9 @@ const withAction = (
             try {
               const password = '123456';
               const result = await callMethod(app, {
-                value: {
-                  token: '11199',
-                  password,
-                  user: { username: users[2].username }
-                }
+                token: '11199',
+                password,
+                user: { username: users[2].username }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -232,11 +223,9 @@ const withAction = (
             try {
               const password = '123456';
               const result = await callMethod(app, {
-                value: {
-                  token: '999',
-                  user: { email: '999' },
-                  password
-                }
+                token: '999',
+                user: { email: '999' },
+                password
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -249,7 +238,9 @@ const withAction = (
             try {
               const password = '123456';
               const result = await callMethod(app, {
-                value: { token: '999', user: { email: users[0].email }, password }
+                token: '999',
+                user: { email: users[0].email },
+                password
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -299,11 +290,9 @@ const withAction = (
           it('verifies valid token and sets password', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email },
-                password,
-              },
+              token: '00099',
+              user: { email: users[0].email },
+              password,
               notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result.id || result._id);

@@ -21,30 +21,30 @@ import {
 import type {
   AuthenticationManagementData,
   AuthenticationManagementServiceOptions,
-  DataCheckUnique,
   DataCheckUniqueWithAction,
-  DataIdentityChange,
   DataIdentityChangeWithAction,
   DataOptions,
-  DataPasswordChange,
   DataPasswordChangeWithAction,
-  DataResendVerifySignup,
   DataResendVerifySignupWithAction,
-  DataResetPwdLong,
   DataResetPwdLongWithAction,
-  DataResetPwdShort,
   DataResetPwdShortWithAction,
-  DataSendResetPwd,
   DataSendResetPwdWithAction,
-  DataVerifySignupLong,
   DataVerifySignupLongWithAction,
-  DataVerifySignupSetPasswordLong,
   DataVerifySignupSetPasswordLongWithAction,
-  DataVerifySignupSetPasswordShort,
   DataVerifySignupSetPasswordShortWithAction,
-  DataVerifySignupShort,
   DataVerifySignupShortWithAction,
-  SanitizedUser
+  SanitizedUser,
+  DataCheckUnique,
+  DataIdentityChange,
+  DataPasswordChange,
+  DataResendVerifySignup,
+  DataResetPwdLong,
+  DataResetPwdShort,
+  DataSendResetPwd,
+  DataVerifySignupLong,
+  DataVerifySignupSetPasswordLong,
+  DataVerifySignupSetPasswordShort,
+  DataVerifySignupShort
 } from '../types';
 import type { Application } from '@feathersjs/feathers';
 
@@ -67,7 +67,7 @@ export class AuthenticationManagementService
   async _checkUnique (data: DataCheckUnique): Promise<unknown> {
     return await checkUnique(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.ownId,
       data.meta
     );
@@ -80,9 +80,9 @@ export class AuthenticationManagementService
   async _identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
     return await identityChange(
       this.optionsWithApp,
-      data.value.user,
-      data.value.password,
-      data.value.changes,
+      data.user,
+      data.password,
+      data.changes,
       data.notifierOptions
     );
   }
@@ -94,9 +94,9 @@ export class AuthenticationManagementService
   async _passwordChange (data: DataPasswordChange): Promise<SanitizedUser> {
     return await passwordChange(
       this.optionsWithApp,
-      data.value.user,
-      data.value.oldPassword,
-      data.value.password,
+      data.user,
+      data.oldPassword,
+      data.password,
       data.notifierOptions
     );
   }
@@ -108,7 +108,7 @@ export class AuthenticationManagementService
   async _resendVerifySignup (data: DataResendVerifySignup): Promise<SanitizedUser> {
     return await resendVerifySignup(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.notifierOptions
     );
   }
@@ -120,8 +120,8 @@ export class AuthenticationManagementService
   async _resetPasswordLong (data: DataResetPwdLong): Promise<SanitizedUser> {
     return await resetPwdWithLongToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.password,
+      data.token,
+      data.password,
       data.notifierOptions
     );
   }
@@ -133,9 +133,9 @@ export class AuthenticationManagementService
   async _resetPasswordShort (data: DataResetPwdShort): Promise<SanitizedUser> {
     return await resetPwdWithShortToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.user,
-      data.value.password,
+      data.token,
+      data.user,
+      data.password,
       data.notifierOptions
     );
   }
@@ -147,7 +147,7 @@ export class AuthenticationManagementService
   async _sendResetPassword (data: DataSendResetPwd): Promise<SanitizedUser> {
     return await sendResetPwd(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.notifierOptions
     );
   }
@@ -159,7 +159,7 @@ export class AuthenticationManagementService
   async _verifySignupLong (data: DataVerifySignupLong): Promise<SanitizedUser> {
     return await verifySignupWithLongToken(
       this.optionsWithApp,
-      data.value,
+      data.token,
       data.notifierOptions
     );
   }
@@ -171,8 +171,8 @@ export class AuthenticationManagementService
   async _verifySignupShort (data: DataVerifySignupShort): Promise<SanitizedUser> {
     return await verifySignupWithShortToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.user,
+      data.token,
+      data.user,
       data.notifierOptions
     );
   }
@@ -184,8 +184,8 @@ export class AuthenticationManagementService
   async _verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithLongToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.password,
+      data.token,
+      data.password,
       data.notifierOptions
     );
   }
@@ -197,9 +197,9 @@ export class AuthenticationManagementService
   async _verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithShortToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.user,
-      data.value.password,
+      data.token,
+      data.user,
+      data.password,
       data.notifierOptions
     );
   }
@@ -297,27 +297,72 @@ export class AuthenticationManagementService
 
     try {
       if (data.action === 'checkUnique') {
-        return await this._checkUnique(data);
+        return await this._checkUnique({
+          user: data.value,
+          meta: data.meta,
+          ownId: data.ownId
+        });
       } else if (data.action === 'resendVerifySignup') {
-        return await this._resendVerifySignup(data);
+        return await this._resendVerifySignup({
+          user: data.value,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'verifySignupLong') {
-        return await this._verifySignupLong(data);
+        return await this._verifySignupLong({
+          token: data.value,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'verifySignupShort') {
-        return await this._verifySignupShort(data);
+        return await this._verifySignupShort({
+          token: data.value.token,
+          user: data.value.user,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'verifySignupSetPasswordLong') {
-        return await this._verifySignupSetPasswordLong(data);
+        return await this._verifySignupSetPasswordLong({
+          password: data.value.password,
+          token: data.value.token,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'verifySignupSetPasswordShort') {
-        return await this._verifySignupSetPasswordShort(data);
+        return await this._verifySignupSetPasswordShort({
+          password: data.value.password,
+          token: data.value.token,
+          user: data.value.user,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'sendResetPwd') {
-        return await this._sendResetPassword(data);
+        return await this._sendResetPassword({
+          user: data.value,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'resetPwdLong') {
-        return await this._resetPasswordLong(data);
+        return await this._resetPasswordLong({
+          password: data.value.password,
+          token: data.value.token,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'resetPwdShort') {
-        return await this._resetPasswordShort(data);
+        return await this._resetPasswordShort({
+          password: data.value.password,
+          token: data.value.token,
+          user: data.value.user,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'passwordChange') {
-        return await this._passwordChange(data);
+        return await this._passwordChange({
+          oldPassword: data.value.oldPassword,
+          password: data.value.password,
+          user: data.value.user,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'identityChange') {
-        return await this._identityChange(data);
+        return await this._identityChange({
+          changes: data.value.changes,
+          password: data.value.password,
+          user: data.value.user,
+          notifierOptions: data.notifierOptions
+        });
       } else if (data.action === 'options') {
         return this.options;
       }

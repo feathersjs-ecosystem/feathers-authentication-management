@@ -16,8 +16,15 @@ import { AuthenticationManagementService, PasswordChangeService } from '../../sr
 const withAction = (
   data: DataPasswordChange
 ): DataPasswordChangeWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "passwordChange" }, data);
+  return {
+    action: "passwordChange",
+    value: {
+      oldPassword: data.oldPassword,
+      password: data.password,
+      user: data.user
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 // Tests
@@ -116,13 +123,11 @@ describe('password-change.ts', function () {
               const userRec = clone(users[1]);
 
               const result = await callMethod(app, {
-                value: {
-                  user: {
-                    email: userRec.email
-                  },
-                  oldPassword: userRec.plainPassword,
-                  password: userRec.plainNewPassword
-                }
+                user: {
+                  email: userRec.email
+                },
+                oldPassword: userRec.plainPassword,
+                password: userRec.plainNewPassword
               });
               const user = await usersService.get(result[idType]);
 
@@ -134,13 +139,11 @@ describe('password-change.ts', function () {
               const userRec = clone(users[0]);
 
               const result = await callMethod(app, {
-                value: {
-                  user: {
-                    email: userRec.email
-                  },
-                  oldPassword: userRec.plainPassword,
-                  password: userRec.plainNewPassword
-                }
+                user: {
+                  email: userRec.email
+                },
+                oldPassword: userRec.plainPassword,
+                password: userRec.plainNewPassword
               });
               const user = await usersService.get(result[idType]);
 
@@ -153,13 +156,11 @@ describe('password-change.ts', function () {
                 const userRec = clone(users[0]);
 
                 const result = await callMethod(app, {
-                  value: {
-                    user: {
-                      email: userRec.email
-                    },
-                    oldPassword: 'fdfgfghghj',
-                    password: userRec.plainNewPassword
-                  }
+                  user: {
+                    email: userRec.email
+                  },
+                  oldPassword: 'fdfgfghghj',
+                  password: userRec.plainNewPassword
                 });
                 const user = await usersService.get(result[idType]);
 
@@ -212,13 +213,11 @@ describe('password-change.ts', function () {
               const userRec = clone(users[1]);
 
               const result = await callMethod(app, {
-                value: {
-                  user: {
-                    email: userRec.email
-                  },
-                  oldPassword: userRec.plainPassword,
-                  password: userRec.plainNewPassword
+                user: {
+                  email: userRec.email
                 },
+                oldPassword: userRec.plainPassword,
+                password: userRec.plainNewPassword,
                 notifierOptions: {transport: 'sms'},
               });
               const user = await usersService.get(result[idType]);

@@ -34,7 +34,7 @@ export class SendResetPwdService
   async _create (data: DataSendResetPwd): Promise<SanitizedUser> {
     return await sendResetPwd(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.notifierOptions
     );
   }

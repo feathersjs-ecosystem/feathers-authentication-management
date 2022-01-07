@@ -13,8 +13,11 @@ import { AuthenticationManagementService, ResendVerifySignupService } from '../.
 const withAction = (
   data: DataResendVerifySignup
 ): DataResendVerifySignupWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "resendVerifySignup" }, data);
+  return {
+    action: "resendVerifySignup",
+    value: data.user,
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -102,7 +105,7 @@ const withAction = (
 
             it('updates unverified user', async () => {
               const result = await callMethod(app, {
-                value: values[0]
+                user: values[0]
               });
               const user = await usersService.get(result[idType]);
 
@@ -133,7 +136,7 @@ const withAction = (
 
             it('sanitizes user', async () => {
               const result = await callMethod(app, {
-                value: values[1]
+                user: values[1]
               });
 
               assert.strictEqual(
@@ -161,7 +164,7 @@ const withAction = (
             it('error on verified user', async () => {
               try {
                 const result = await callMethod(app, {
-                  value: values[2]
+                  user: values[2]
                 });
 
                 assert.fail('unexpectedly succeeded');
@@ -173,7 +176,7 @@ const withAction = (
             it('error on email not found', async () => {
               try {
                 const result = await callMethod(app, {
-                  value: values[3]
+                  user: values[3]
                 });
 
                 assert.fail('unexpectedly succeeded');
@@ -241,7 +244,7 @@ const withAction = (
             const verifyToken = '000';
 
             const result = await callMethod(app, {
-              value: { verifyToken }
+              user: { verifyToken }
             });
             const user = await usersService.get(result[idType]);
 
@@ -305,7 +308,7 @@ const withAction = (
             const verifyToken = '000';
 
             const result = await callMethod(app, {
-              value: { verifyToken }
+              user: { verifyToken }
             });
             const user = await usersService.get(result[idType]);
 
@@ -371,7 +374,7 @@ const withAction = (
             const verifyToken = '000';
 
             const result = await callMethod(app, {
-              value: { verifyToken }
+              user: { verifyToken }
             });
             const user = await usersService.get(result[idType]);
 
@@ -437,7 +440,7 @@ const withAction = (
             const verifyToken = '000';
 
             const result = await callMethod(app, {
-              value: {
+              user: {
                 verifyToken,
                 email: 'a'
               }
@@ -470,7 +473,7 @@ const withAction = (
 
             try {
               const result = await callMethod(app, {
-                value: {
+                user: {
                   verifyToken,
                   email: 'a',
                   username: 'Doexxxxxxx'
@@ -486,7 +489,7 @@ const withAction = (
           it('fails when hacks attempted', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
+                user: {
                   username: 'Doe'
                 }
               });
@@ -543,7 +546,7 @@ const withAction = (
             const email = 'a';
 
             const result = await callMethod(app, {
-              value: { email },
+              user: { email },
               notifierOptions: { transport: 'email' }
             });
             const user = await usersService.get(result[idType]);

@@ -7,7 +7,7 @@ export interface User {
   verifyToken: string
   verifyShortToken: string
   verifyExpires: Date | number // unix
-  verifyChanges: VerifyChanges
+  verifyChanges: Record<string, any>
   resetToken: string
   resetShortToken: string
   resetExpires: Date | number // unix
@@ -22,11 +22,6 @@ export type ArrayOrPaginated<T> = T[] | Paginated<T>;
 export type UsersArrayOrPaginated = ArrayOrPaginated<User>;
 export type NotifierOptions = Record<string, any>;
 
-export interface VerifyChanges {
-  [key: string]: any
-  [key: number]: any
-}
-
 export interface Tokens {
   resetToken?: string
   resetShortToken?: string
@@ -36,7 +31,7 @@ export interface Tokens {
 
 export type IdentifyUser = Query;
 
-export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions: NotifierOptions) => any;
+export type Notifier = (type: NotificationType, user: Partial<User>, notifierOptions?: NotifierOptions) => any;
 export type SanitizeUserForClient = (user: Partial<User>) => SanitizedUser;
 
 export type SanitizedUser = Partial<User>;
@@ -199,6 +194,10 @@ export interface AuthenticationManagementClient {
 
 //#region service data
 
+export interface WithNotifierOptions {
+  notifierOptions?: NotifierOptions
+}
+
 export type AuthenticationManagementData =
   DataCheckUniqueWithAction |
   DataIdentityChangeWithAction |
@@ -214,6 +213,15 @@ export type AuthenticationManagementData =
   DataVerifySignupShortWithAction;
 
 export interface DataCheckUnique {
+  user: IdentifyUser
+  ownId?: Id
+  meta?: {
+    noErrMsg: boolean
+  }
+}
+
+export interface DataCheckUniqueWithAction {
+  action: 'checkUnique'
   value: IdentifyUser
   ownId?: Id
   meta?: {
@@ -221,124 +229,130 @@ export interface DataCheckUnique {
   }
 }
 
-export interface DataCheckUniqueWithAction extends DataCheckUnique {
-  action: 'checkUnique'
+export interface DataIdentityChange extends WithNotifierOptions {
+  changes: Record<string, any>
+  password: string
+  user: IdentifyUser
 }
 
-export interface DataIdentityChange {
+export interface DataIdentityChangeWithAction extends WithNotifierOptions {
+  action: 'identityChange'
   value: {
     changes: Record<string, any>
     password: string
     user: IdentifyUser
   }
-  notifierOptions?: NotifierOptions
 }
 
-export interface DataIdentityChangeWithAction extends DataIdentityChange {
-  action: 'identityChange'
+export interface DataPasswordChange extends WithNotifierOptions {
+  oldPassword: string
+  password: string
+  user: IdentifyUser
 }
 
-export interface DataPasswordChange {
+export interface DataPasswordChangeWithAction extends WithNotifierOptions {
+  action: 'passwordChange'
   value: {
     oldPassword: string
     password: string
     user: IdentifyUser
   }
-  notifierOptions?: NotifierOptions
 }
 
-export interface DataPasswordChangeWithAction extends DataPasswordChange {
-  action: 'passwordChange'
+export interface DataResendVerifySignup extends WithNotifierOptions {
+  user: IdentifyUser
 }
 
-// TODO: notifierOptions
-export interface DataResendVerifySignup {
-  value: IdentifyUser
-  notifierOptions?: NotifierOptions
-}
-
-export interface DataResendVerifySignupWithAction extends DataResendVerifySignup {
+export interface DataResendVerifySignupWithAction extends WithNotifierOptions {
   action: 'resendVerifySignup'
-}
-
-export interface DataResetPwdLong {
-  value: {
-    password: string
-    token: string
-  }
-  notifierOptions?: NotifierOptions
-}
-
-export interface DataResetPwdLongWithAction extends DataResetPwdLong {
-  action: 'resetPwdLong'
-}
-
-export interface DataResetPwdShort {
-  value: {
-    password: string
-    token: string
-    user: IdentifyUser
-  }
-  notifierOptions?: NotifierOptions
-}
-
-export interface DataResetPwdShortWithAction extends DataResetPwdShort {
-  action: 'resetPwdShort'
-}
-
-export interface DataSendResetPwd {
   value: IdentifyUser
-  notifierOptions?: NotifierOptions
 }
 
-export interface DataSendResetPwdWithAction extends DataSendResetPwd {
+export interface DataResetPwdLong extends WithNotifierOptions {
+  password: string
+  token: string
+}
+
+export interface DataResetPwdLongWithAction extends WithNotifierOptions {
+  action: 'resetPwdLong'
+  value: {
+    password: string
+    token: string
+  }
+}
+
+export interface DataResetPwdShort extends WithNotifierOptions {
+  password: string
+  token: string
+  user: IdentifyUser
+}
+
+export interface DataResetPwdShortWithAction extends WithNotifierOptions {
+  action: 'resetPwdShort'
+  value: {
+    password: string
+    token: string
+    user: IdentifyUser
+  }
+}
+
+export interface DataSendResetPwd extends WithNotifierOptions {
+  user: IdentifyUser
+}
+
+export interface DataSendResetPwdWithAction extends WithNotifierOptions {
   action: 'sendResetPwd'
+  value: IdentifyUser
 }
 
-export interface DataVerifySignupLong {
-  value: string
-  notifierOptions?: NotifierOptions
+export interface DataVerifySignupLong extends WithNotifierOptions {
+  token: string
 }
 
-export interface DataVerifySignupLongWithAction extends DataVerifySignupLong {
+export interface DataVerifySignupLongWithAction extends WithNotifierOptions {
   action: 'verifySignupLong'
+  value: string
 }
 
-export interface DataVerifySignupSetPasswordLong {
-  value: {
-    password: string
-    token: string
-  }
-  notifierOptions?: NotifierOptions
+export interface DataVerifySignupSetPasswordLong extends WithNotifierOptions {
+  password: string
+  token: string
 }
 
-export interface DataVerifySignupSetPasswordLongWithAction extends DataVerifySignupSetPasswordLong {
+export interface DataVerifySignupSetPasswordLongWithAction extends WithNotifierOptions {
   action: 'verifySignupSetPasswordLong'
+  value: {
+    password: string
+    token: string
+  }
 }
 
-export interface DataVerifySignupSetPasswordShort {
+export interface DataVerifySignupSetPasswordShort extends WithNotifierOptions {
+  password: string
+  token: string
+  user: IdentifyUser
+}
+
+export interface DataVerifySignupSetPasswordShortWithAction extends WithNotifierOptions {
+  action: 'verifySignupSetPasswordShort'
   value: {
     password: string
     token: string
     user: IdentifyUser
   }
-  notifierOptions?: NotifierOptions
 }
 
-export interface DataVerifySignupSetPasswordShortWithAction extends DataVerifySignupSetPasswordShort {
-  action: 'verifySignupSetPasswordShort'
+export interface DataVerifySignupShort extends WithNotifierOptions {
+  token: string
+  user: IdentifyUser
 }
 
-export interface DataVerifySignupShort {
+export interface DataVerifySignupShortWithAction extends WithNotifierOptions {
+  action: 'verifySignupShort'
   value: {
     token: string
     user: IdentifyUser
   }
-  notifierOptions?: NotifierOptions
-}
-
-export interface DataVerifySignupShortWithAction extends DataVerifySignupShort {
-  action: 'verifySignupShort'
 }
 
 export interface DataOptions {

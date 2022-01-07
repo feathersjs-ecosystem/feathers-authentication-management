@@ -30,9 +30,9 @@ export class ResetPwdShortService
   async _create (data: DataResetPwdShort): Promise<SanitizedUser> {
     return await resetPwdWithShortToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.user,
-      data.value.password,
+      data.token,
+      data.user,
+      data.password,
       data.notifierOptions
     );
   }

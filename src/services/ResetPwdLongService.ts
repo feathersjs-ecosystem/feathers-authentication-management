@@ -28,8 +28,8 @@ export class ResetPwdLongService
   async _create (data: DataResetPwdLong): Promise<SanitizedUser> {
     return await resetPwdWithLongToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.password,
+      data.token,
+      data.password,
       data.notifierOptions
     );
   }

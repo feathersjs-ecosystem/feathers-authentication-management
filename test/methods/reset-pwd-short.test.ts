@@ -16,8 +16,15 @@ const fieldToHash = 'resetShortToken';
 const withAction = (
   data: DataResetPwdShort
 ): DataResetPwdShortWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "resetPwdShort" }, data);
+  return {
+    action: "resetPwdShort",
+    value: {
+      password: data.password,
+      token: data.token,
+      user: data.user
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 // Tests
@@ -130,12 +137,10 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {
-                  username: users[0].username
-                }
+              token: '00099',
+              password: '123456',
+              user: {
+                username: users[0].username
               }
             });
             const user = await usersService.get(result[idType]);
@@ -164,12 +169,10 @@ const withAction = (
 
           it('user is sanitized', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {
-                  username: users[0].username
-                }
+              token: '00099',
+              password: '123456',
+              user: {
+                username: users[0].username
               }
             });
             const user = await usersService.get(result[idType]);
@@ -197,13 +200,11 @@ const withAction = (
 
           it('handles multiple user ident', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {
-                  email: users[0].email,
-                  username: users[0].username
-                }
+              token: '00099',
+              password: '123456',
+              user: {
+                email: users[0].email,
+                username: users[0].username
               }
             });
             const user = await usersService.get(result[idType]);
@@ -232,11 +233,9 @@ const withAction = (
           it('requires user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  password: '123456',
-                  user: {}
-                }
+                token: '00099',
+                password: '123456',
+                user: {}
               });
 
               assert.fail('unexpected succeeded.');
@@ -248,13 +247,11 @@ const withAction = (
           it('throws on non-configured user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  password: '123456',
-                  user: {
-                    email: users[0].email,
-                    resetShortToken: '00099'
-                  }
+                token: '00099',
+                password: '123456',
+                user: {
+                  email: users[0].email,
+                  resetShortToken: '00099'
                 }
               });
 
@@ -267,12 +264,10 @@ const withAction = (
           it('error on unverified user', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '22299',
-                  password: '123456',
-                  user: {
-                    email: users[3].email
-                  }
+                token: '22299',
+                password: '123456',
+                user: {
+                  email: users[3].email
                 }
               });
 
@@ -285,12 +280,10 @@ const withAction = (
           it('error on expired token', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '11199',
-                  password: '123456',
-                  user: {
-                    username: users[2].username
-                  }
+                token: '11199',
+                password: '123456',
+                user: {
+                  username: users[2].username
                 }
               });
 
@@ -303,12 +296,10 @@ const withAction = (
           it('error on user not found', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '999',
-                  password: '123456',
-                  user: {
-                    email: '999'
-                  }
+                token: '999',
+                password: '123456',
+                user: {
+                  email: '999'
                 }
               });
 
@@ -321,12 +312,10 @@ const withAction = (
           it('error incorrect token', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '999',
-                  password: '123456',
-                  user: {
-                    email: users[0].email
-                  }
+                token: '999',
+                password: '123456',
+                user: {
+                  email: users[0].email
                 }
               });
 
@@ -378,12 +367,10 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                password: '123456',
-                user: {
-                  email: users[0].email
-                }
+              token: '00099',
+              password: '123456',
+              user: {
+                email: users[0].email
               },
               notifierOptions: {transport: 'sms'},
             });
@@ -417,11 +404,9 @@ const withAction = (
             const i = 0;
             await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: users[i].email } });
             await callMethod(app, {
-              value: {
-                token: spyNotifier.result()[0].args[1].resetShortToken,
-                password: '123456',
-                user: { email: users[i].email }
-              }
+              token: spyNotifier.result()[0].args[1].resetShortToken,
+              password: '123456',
+              user: { email: users[i].email }
             });
           });
         });

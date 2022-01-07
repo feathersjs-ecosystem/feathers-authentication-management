@@ -27,8 +27,8 @@ export class VerifySignupShortService
   async _create (data: DataVerifySignupShort): Promise<SanitizedUser> {
     return await verifySignupWithShortToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.user,
+      data.token,
+      data.user,
       data.notifierOptions
     );
   }

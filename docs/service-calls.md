@@ -46,7 +46,7 @@ const { SendResetPwdService } = require('feathers-authentication-management');
 app.use("auth-management/send-reset-password", new SendResetPwdService(app));
 
 app.service("auth-management/send-reset-password").create({
-  value: {
+  user: {
     email: "me@example.com",
   },
 });
@@ -62,7 +62,7 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service("auth-management").sendResetPassword({
-  value: {
+  user: {
     email: "me@example.com",
   },
 });
@@ -107,7 +107,7 @@ const { CheckUniqueService } = require('feathers-authentication-management');
 app.use("auth-management/check-unique", new CheckUniqueService(app));
 
 app.service('auth-management/check-unique').create({
-  value: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
+  user: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
   ownId, // Excludes user with ownId from the search
   meta: { noErrMsg } // if return an error.message if not unique
 }
@@ -123,7 +123,7 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').checkUnique({
-  value: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
+  user: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
   ownId, // Excludes user with ownId from the search
   meta: { noErrMsg } // if return an error.message if not unique
 }
@@ -155,6 +155,7 @@ app.service('auth-management').create({
     password, // current password for verification
     changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -168,11 +169,10 @@ const { IdentityChangeService } = require('feathers-authentication-management');
 app.use("auth-management/identity-change", new IdentityChangeService(app));
 
 app.service('auth-management/identity-change').create({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    password, // current password for verification
-    changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  password, // current password for verification
+  changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -186,11 +186,10 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').identityChange({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    password, // current password for verification
-    changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  password, // current password for verification
+  changes, // {email: 'a@a.com'} or {email: 'a@a.com', cellphone: '+1-800-555-1212'}
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -219,6 +218,7 @@ app.service('auth-management').create({
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     oldPassword, // old password for verification
     password, // new password
+    notifierOptions: {}, // optional - an object passed to notifier function
   },
 }
 ```
@@ -233,11 +233,10 @@ const { PasswordChangeService } = require('feathers-authentication-management');
 app.use("auth-management/password-change", new PasswordChangeService(app));
 
 app.service('auth-management/password-change').create({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    oldPassword, // old password for verification
-    password, // new password
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  oldPassword, // old password for verification
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -251,11 +250,10 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').passwordChange({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    oldPassword, // old password for verification
-    password, // new password
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  oldPassword, // old password for verification
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -281,7 +279,7 @@ app.use('auth-management', new AuthenticationManagementService(app));
 app.service('auth-management').create({
   action: 'resendVerifySignup',
   value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions: {}, // options passed to options.notifier
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -295,7 +293,7 @@ const { ResendVerifySignupService } = require('feathers-authentication-managemen
 app.use('auth-management/resend-verify-signup', new ResendVerifySignupService(app));
 
 app.service('auth-management/resend-verify-signup').create({
-  value: identifyUser, // {email}, {token: verifyToken}
+  user: identifyUser, // {email}, {token: verifyToken}
   notifierOptions: {}, // options passed to options.notifier
 }
 ```
@@ -310,7 +308,7 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').resendVerifySignup({
-  value: identifyUser, // {email}, {token: verifyToken}
+  user: identifyUser, // {email}, {token: verifyToken}
   notifierOptions: {}, // options passed to options.notifier
 }
 ```
@@ -340,6 +338,7 @@ app.service('auth-management').create({
     token, // compares to resetToken
     password, // new password
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 
 
@@ -355,10 +354,9 @@ const { ResetPwdLongService } = require('feathers-authentication-management');
 app.use('auth-management/reset-pwd-long', new ResetPwdLongService(app));
 
 app.service('auth-management/reset-pwd-long').create({
-  value: {
-    token, // compares to resetToken
-    password, // new password
-  },
+  token, // compares to resetToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -372,10 +370,9 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').resetPasswordLong({
-  value: {
-    token, // compares to resetToken
-    password, // new password
-  },
+  token, // compares to resetToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 
 ```
@@ -406,6 +403,7 @@ app.service('auth-management').create({
     token, // compares to .resetShortToken
     password, // new password
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -419,11 +417,10 @@ const { ResetPwdShortService } = require('feathers-authentication-management');
 app.use('auth-management/reset-password-short', new ResetPwdShortService(app));
 
 app.service('auth-management/reset-password-short').create({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .resetShortToken
-    password, // new password
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .resetShortToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -437,11 +434,10 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').resetPasswordShort({
-  value: {
-    user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .resetShortToken
-    password, // new password
-  },
+  user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .resetShortToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -467,7 +463,7 @@ app.use('auth-management', new AuthenticationManagementService(app));
 app.service('auth-management').create({
   action: 'sendResetPwd',
   value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions, // options passed to options.notifier
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -481,8 +477,8 @@ const { SendResetPwdService } = require('feathers-authentication-management');
 app.use("auth-management/send-reset-password", new SendResetPwdService(app));
 
 app.service('auth-management/send-reset-password').create({
-  value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions, // options passed to options.notifier
+  user: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -496,8 +492,8 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').sendResetPassword({
-  value: identifyUser, // {email}, {token: verifyToken}
-  notifierOptions, // options passed to options.notifier
+  user: identifyUser, // {email}, {token: verifyToken}
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -523,6 +519,7 @@ app.use('auth-management', new AuthenticationManagementService(app));
 app.service('auth-management').create({
   action: 'verifySignupLong',
   value: verifyToken, // compares to .verifyToken
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -536,7 +533,8 @@ const { VerifySignupLongService } = require('feathers-authentication-management'
 app.use("auth-management/verify-signup-long", new VerifySignupLongService(app));
 
 app.service('auth-management/verify-signup-long').create({
-  value: verifyToken, // compares to .verifyToken
+  token: verifyToken, // compares to .verifyToken
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -550,7 +548,8 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').verifySignupLong({
-  value: verifyToken, // compares to .verifyToken
+  token: verifyToken, // compares to .verifyToken
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -579,6 +578,7 @@ app.service('auth-management').create({
     user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .verifyShortToken
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 
 ```
@@ -593,10 +593,9 @@ const { VerifySignupShortService } = require('feathers-authentication-management
 app.use("auth-management/verify-signup-short", new VerifySignupShortService(app));
 
 app.service('auth-management/verify-signup-short').create({
-  value: {
-    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .verifyShortToken
-  },
+  user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .verifyShortToken
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -610,10 +609,9 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').verifySignupShort({
-  value: {
-    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .verifyShortToken
-  },
+  user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .verifyShortToken
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -642,6 +640,7 @@ app.service('auth-management').create({
     token, // compares to .verifyToken
     password, // new password
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -655,10 +654,9 @@ const { VerifySignupSetPasswordLongService } = require('feathers-authentication-
 app.use("auth-management/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app));
 
 app.service('auth-management/verify-signup-set-password-long').create({
-  value: {
-    token, // compares to .verifyToken
-    password, // new password
-  },
+  token, // compares to .verifyToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -672,10 +670,9 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').verifySignupSetPasswordLong({
-  value: {
-    token, // compares to .verifyToken
-    password, // new password
-  },
+  token, // compares to .verifyToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -705,6 +702,7 @@ app.service('auth-management').create({
     token, // compares to .verifyShortToken
     password, // new password
   },
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -718,11 +716,10 @@ const { VerifySignupSetPasswordShortService } = require('feathers-authentication
 app.use("auth-management/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app));
 
 app.service('auth-management/verify-signup-set-password-short').create({
-  value: {
-    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .verifyShortToken
-    password, // new password
-  },
+  user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .verifyShortToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -736,11 +733,10 @@ const { AuthenticationManagementService } = require('feathers-authentication-man
 app.use('auth-management', new AuthenticationManagementService(app));
 
 app.service('auth-management').verifySignupSetPasswordShort({
-  value: {
-    user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
-    token, // compares to .verifyShortToken
-    password, // new password
-  },
+  user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
+  token, // compares to .verifyShortToken
+  password, // new password
+  notifierOptions: {}, // optional - an object passed to notifier function
 }
 ```
 
@@ -749,51 +745,3 @@ app.service('auth-management').verifySignupSetPasswordShort({
 </CodeGroup>
 
 Returns the user object or rejects with `BadRequest`.
-
-## Provided Service Wrappers
-
-The wrappers return a Promise.
-
-```javascript
-<script src=".../feathers-authentication-management/lib/client.js"></script>
-  or
-import AuthManagement from 'feathers-authentication-management/lib/client';
-const app = feathers() ...
-const authManagement = new AuthManagement(app);
-
-// check props are unique in the users items
-authManagement.checkUnique(identifyUser, ownId, ifErrMsg)
-
-// resend sign up verification notification
-authManagement.resendVerifySignup(identifyUser, notifierOptions)
-
-// sign up or identityChange verification with long token
-authManagement.verifySignupLong(verifyToken)
-
-// sign up or identityChange verification with short token
-authManagement.verifySignupShort(verifyShortToken, identifyUser)
-
-// sign up or identityChange verification with long token
-authManagement.verifySignupSetPasswordLong(verifyToken, password)
-
-// sign up or identityChange verification with short token
-authManagement.verifySignupSetPasswordShort(verifyShortToken, identifyUser, password)
-
-// send forgotten password notification
-authManagement.sendResetPwd(identifyUser, notifierOptions)
-
-// forgotten password verification with long token
-authManagement.resetPwdLong(resetToken, password)
-
-// forgotten password verification with short token
-authManagement.resetPwdShort(resetShortToken, identifyUser, password)
-
-// change password
-authManagement.passwordChange(oldPassword, password, identifyUser)
-
-// change identity
-authManagement.identityChange(password, changesIdentifyUser, identifyUser)
-
-// Authenticate user and log on if user is verified. v0.x only.
-authManagement.authenticate(email, password)
-```

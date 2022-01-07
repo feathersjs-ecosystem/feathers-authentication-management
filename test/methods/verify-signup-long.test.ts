@@ -9,8 +9,11 @@ import { AuthenticationManagementService, VerifySignupLongService } from '../../
 const withAction = (
   data: DataVerifySignupLong
 ): DataVerifySignupLongWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "verifySignupLong" }, data);
+  return {
+    action: "verifySignupLong",
+    value: data.token,
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -101,7 +104,7 @@ const withAction = (
 
           it('verifies valid token if not verified', async () => {
             const result = await callMethod(app, {
-              value: '000'
+              token: '000'
             });
             const user = await usersService.get(result[idType]);
 
@@ -116,7 +119,7 @@ const withAction = (
 
           it('verifies valid token if verifyChanges', async () => {
             const result = await callMethod(app, {
-              value: '800'
+              token: '800'
             });
             const user = await usersService.get(result[idType]);
 
@@ -133,7 +136,7 @@ const withAction = (
 
           it('user is sanitized', async () => {
             const result = await callMethod(app, {
-              value: '000'
+              token: '000'
             });
             const user = await usersService.get(result[idType]);
 
@@ -147,7 +150,7 @@ const withAction = (
           it('error on verified user without verifyChange', async () => {
             try {
               const result = await callMethod(app, {
-                value: '222'
+                token: '222'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -159,7 +162,7 @@ const withAction = (
           it('error on expired token', async () => {
             try {
               const result = await callMethod(app, {
-                value: '111'
+                token: '111'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -171,7 +174,7 @@ const withAction = (
           it('error on token not found', async () => {
             try {
               const result = await callMethod(app, {
-                value: '999'
+                token: '999'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -218,7 +221,7 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: '000',
+              token: '000',
               notifierOptions: { transport: 'sms' }
             });
             const user = await usersService.get(result[idType]);

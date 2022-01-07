@@ -9,8 +9,14 @@ import { AuthenticationManagementService, VerifySignupShortService } from '../..
 const withAction = (
   data: DataVerifySignupShort
 ): DataVerifySignupShortWithAction => {
-  //@ts-ignore
-  return Object.assign({ action: "verifySignupShort" }, data);
+  return {
+    action: "verifySignupShort",
+    value: {
+      token: data.token,
+      user: data.user
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -117,10 +123,8 @@ const withAction = (
 
           it('verifies valid token if not verified', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email }
-              }
+              token: '00099',
+              user: { email: users[0].email }
             });
             const user = await usersService.get(result[idType]);
 
@@ -135,10 +139,8 @@ const withAction = (
 
           it('verifies valid token if verifyChanges', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '80099',
-                user: { email: users[4].email }
-              }
+              token: '80099',
+              user: { email: users[4].email }
             });
             const user = await usersService.get(result[idType]);
 
@@ -155,10 +157,8 @@ const withAction = (
 
           it('user is sanitized', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { username: users[0].username }
-              }
+              token: '00099',
+              user: { username: users[0].username }
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -170,9 +170,10 @@ const withAction = (
 
           it('handles multiple user ident', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email, username: users[0].username }
+              token: '00099',
+              user: {
+                email: users[0].email,
+                username: users[0].username
               }
             });
 
@@ -185,10 +186,8 @@ const withAction = (
           it('requires user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  user: {}
-                }
+                token: '00099',
+                user: {}
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -200,11 +199,9 @@ const withAction = (
           it('throws on non-configured user ident', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '00099',
-                  // was this right?
-                  user: { email: undefined, verifyShortToken: '00099' }
-                }
+                token: '00099',
+                // was this right?
+                user: { email: undefined, verifyShortToken: '00099' }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -216,10 +213,8 @@ const withAction = (
           it('error on unverified user', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '22299',
-                  user: { email: users[3].email }
-                }
+                token: '22299',
+                user: { email: users[3].email }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -231,10 +226,8 @@ const withAction = (
           it('error on expired token', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '11199',
-                  user: { username: users[2].username }
-                }
+                token: '11199',
+                user: { username: users[2].username }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -246,10 +239,8 @@ const withAction = (
           it('error on user not found', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '999',
-                  user: { email: '999' }
-                }
+                token: '999',
+                user: { email: '999' }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -261,7 +252,8 @@ const withAction = (
           it('error incorrect token', async () => {
             try {
               const result = await callMethod(app, {
-                value: { token: '999', user: { email: users[0].email } }
+                token: '999',
+                user: { email: users[0].email }
               });
 
               assert.fail('unexpectedly succeeded.');
@@ -309,10 +301,8 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: {
-                token: '00099',
-                user: { email: users[0].email },
-              },
+              token: '00099',
+              user: { email: users[0].email },
               notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result.id || result._id);

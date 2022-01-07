@@ -14,8 +14,14 @@ const fieldToHash = 'resetToken';
 const withAction = (
   data: DataResetPwdLong
 ): DataResetPwdLongWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "resetPwdLong" }, data);
+  return {
+    action: "resetPwdLong",
+    value: {
+      password: data.password,
+      token: data.token
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 // Tests
@@ -117,7 +123,8 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: { token: 'a___000', password: '123456' }
+              token: 'a___000',
+              password: '123456'
             });
             const user = await usersService.get(result[idType]);
 
@@ -145,7 +152,8 @@ const withAction = (
 
           it('user is sanitized', async () => {
             const result = await callMethod(app, {
-              value: { token: 'a___000', password: '123456' }
+              token: 'a___000',
+              password: '123456'
             });
             const user = await usersService.get(result[idType]);
 
@@ -172,7 +180,8 @@ const withAction = (
           it('error on unverified user', async () => {
             try {
               const result = await callMethod(app, {
-                value: { token: 'd___222', password: '123456' }
+                token: 'd___222',
+                password: '123456'
               });
 
               assert.fail('unexpected succeeded.');
@@ -184,7 +193,8 @@ const withAction = (
           it('error on expired token', async () => {
             try {
               const result = await callMethod(app, {
-                value: { token: 'c___111', password: '123456' }
+                token: 'c___111',
+                password: '123456'
               });
 
               assert.fail('unexpected succeeded.');
@@ -196,7 +206,8 @@ const withAction = (
           it('error on token not found', async () => {
             try {
               const result = await callMethod(app, {
-                value: { token: 'a___999', password: '123456' }
+                token: 'a___999',
+                password: '123456'
               });
 
               assert.fail('unexpected succeeded.');
@@ -259,7 +270,8 @@ const withAction = (
 
           it('verifies valid token', async () => {
             const result = await callMethod(app, {
-              value: { token: 'a___000', password: '123456' },
+              token: 'a___000',
+              password: '123456',
               notifierOptions: {transport: 'sms'},
             });
             const user = await usersService.get(result[idType]);
@@ -292,10 +304,8 @@ const withAction = (
             const i = 0;
             await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: users[i].email } });
             await callMethod(app, {
-              value: {
-                token: spyNotifier.result()[0].args[1].resetToken,
-                password: '123456'
-              }
+              token: spyNotifier.result()[0].args[1].resetToken,
+              password: '123456'
             });
           });
 
@@ -305,21 +315,17 @@ const withAction = (
 
             try {
               await callMethod(app, {
-                value: {
-                  token: 'a___999', // invalid token
-                  password: '123456',
-                  //user: { email: db[i].email },
-                }
+                token: 'a___999', // invalid token
+                password: '123456',
+                //user: { email: db[i].email },
               });
             } catch {}
 
             try {
               await callMethod(app, {
-                value: {
-                  token: spyNotifier.result()[0].args[1].resetToken,
-                  password: '123456',
-                  //user: { email: db[i].email },
-                }
+                token: spyNotifier.result()[0].args[1].resetToken,
+                password: '123456',
+                //user: { email: db[i].email },
               });
               assert.fail('unexpected succeeded.');
             } catch (err) {
@@ -394,11 +400,9 @@ const withAction = (
             );
 
             await callMethod(app, {
-              value: {
-                token: spyNotifier.result()[0].args[1].resetToken,
-                password: '123456',
-                //user: { email: db[i].email },
-              }
+              token: spyNotifier.result()[0].args[1].resetToken,
+              password: '123456',
+              //user: { email: db[i].email },
             });
           });
         });
@@ -464,22 +468,18 @@ const withAction = (
 
             try {
               await callMethod(app, {
-                value: {
-                  token: 'a___999', // invalid token
-                  password: '123456',
-                  //user: { email: db[i].email },
-                }
+                token: 'a___999', // invalid token
+                password: '123456',
+                //user: { email: db[i].email },
               });
             } catch {}
 
             user = await app.service("users").get('a');
 
             await callMethod(app, {
-              value: {
-                token: spyNotifier.result()[0].args[1].resetToken,
-                password: '123456',
-                //user: { email: db[i].email },
-              }
+              token: spyNotifier.result()[0].args[1].resetToken,
+              password: '123456',
+              //user: { email: db[i].email },
             });
           });
         });

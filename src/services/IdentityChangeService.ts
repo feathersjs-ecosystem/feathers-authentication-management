@@ -32,9 +32,9 @@ export class IdentityChangeService
   async _create (data: DataIdentityChange): Promise<SanitizedUser> {
     return await identityChange(
       this.optionsWithApp,
-      data.value.user,
-      data.value.password,
-      data.value.changes,
+      data.user,
+      data.password,
+      data.changes,
       data.notifierOptions
     );
   }

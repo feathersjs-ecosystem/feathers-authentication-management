@@ -14,8 +14,14 @@ import { VerifySignupSetPasswordLongService } from '../../src/services';
 const withAction = (
   data: DataVerifySignupSetPasswordLong
 ): DataVerifySignupSetPasswordLongWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "verifySignupSetPasswordLong" }, data);
+  return {
+    action: "verifySignupSetPasswordLong",
+    value: {
+      password: data.password,
+      token: data.token
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -79,10 +85,8 @@ const withAction = (
             const password = '123456';
 
             const result = await callMethod(app, {
-              value: {
-                token: '000',
-                password
-              }
+              token: '000',
+              password
             });
             const user = await usersService.get(result[idType]);
 
@@ -99,10 +103,8 @@ const withAction = (
           it('verifies valid token and sets password if verifyChanges', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '800',
-                password
-              }
+              token: '800',
+              password
             });
             const user = await usersService.get(result[idType]);
 
@@ -120,10 +122,8 @@ const withAction = (
           it('user is sanitized', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '000',
-                password
-              }
+              token: '000',
+              password
             });
             const user = await usersService.get(result[idType]);
 
@@ -138,10 +138,8 @@ const withAction = (
           it('error on verified user without verifyChange', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '222',
-                  password: '12456'
-                }
+                token: '222',
+                password: '12456'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -153,10 +151,8 @@ const withAction = (
           it('error on expired token', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '111',
-                  password: '123456'
-                }
+                token: '111',
+                password: '123456'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -168,10 +164,8 @@ const withAction = (
           it('error on token not found', async () => {
             try {
               const result = await callMethod(app, {
-                value: {
-                  token: '999',
-                  password: '123456'
-                }
+                token: '999',
+                password: '123456'
               });
 
               assert.fail('unexpectedly succeeded');
@@ -220,10 +214,8 @@ const withAction = (
           it('verifies valid token and sets password', async () => {
             const password = '123456';
             const result = await callMethod(app, {
-              value: {
-                token: '000',
-                password,
-              },
+              token: '000',
+              password,
               notifierOptions: { transport: 'sms' },
             });
             const user = await usersService.get(result[idType]);

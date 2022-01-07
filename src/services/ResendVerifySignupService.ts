@@ -31,7 +31,7 @@ export class ResendVerifySignupService
   async _create (data: DataResendVerifySignup): Promise<SanitizedUser> {
     return await resendVerifySignup(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.notifierOptions
     );
   }

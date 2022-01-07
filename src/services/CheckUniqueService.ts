@@ -20,7 +20,7 @@ export class CheckUniqueService
   async _create (data: DataCheckUnique): Promise<null> {
     return await checkUnique(
       this.optionsWithApp,
-      data.value,
+      data.user,
       data.ownId,
       data.meta
     );

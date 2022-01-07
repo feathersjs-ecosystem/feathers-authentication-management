@@ -26,7 +26,7 @@ export class VerifySignupLongService
   async _create (data: DataVerifySignupLong): Promise<SanitizedUser> {
     return await verifySignupWithLongToken(
       this.optionsWithApp,
-      data.value,
+      data.token,
       data.notifierOptions
     );
   }

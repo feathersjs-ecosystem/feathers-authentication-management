@@ -13,8 +13,15 @@ import { IdentityChangeService } from '../../src/services';
 const withAction = (
   data: DataIdentityChange
 ): DataIdentityChangeWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "identityChange" }, data);
+  return {
+    action: "identityChange",
+    value: {
+      changes: data.changes,
+      password: data.password,
+      user: data.user
+    },
+    notifierOptions: data.notifierOptions
+  }
 }
 
 // Tests
@@ -87,11 +94,9 @@ const withAction = (
             const userRec = clone(users[1]);
 
             const result = await callMethod(app, {
-              value: {
-                user: { email: userRec.email },
-                password: userRec.plainPassword,
-                changes: { email: 'b@b' }
-              }
+              user: { email: userRec.email },
+              password: userRec.plainPassword,
+              changes: { email: 'b@b' }
             });
             const user = await usersService.get(result[idType]);
 
@@ -103,11 +108,9 @@ const withAction = (
             const userRec = clone(users[0]);
 
             const result = await callMethod(app, {
-              value: {
-                user: { email: userRec.email },
-                password: userRec.plainPassword,
-                changes: { email: 'a@a' }
-              }
+              user: { email: userRec.email },
+              password: userRec.plainPassword,
+              changes: { email: 'a@a' }
             });
             const user = await usersService.get(result[idType]);
 
@@ -120,11 +123,9 @@ const withAction = (
 
             await assert.rejects(
               callMethod(app, {
-                value: {
-                  user: { email: userRec.email },
-                  password: 'ghghghg',
-                  changes: { email: 'a@a' }
-                }
+                user: { email: userRec.email },
+                password: 'ghghghg',
+                changes: { email: 'a@a' }
               }),
               (err: any) => {
                 assert.strictEqual(err.name, "BadRequest");
@@ -176,12 +177,10 @@ const withAction = (
             const userRec = clone(users[1]);
 
             const result = await callMethod(app, {
-              value: {
-                user: { email: userRec.email },
-                password: userRec.plainPassword,
-                changes: { email: 'b@b' }
-              },
-              notifierOptions: {transport: 'sms'}
+              user: { email: userRec.email },
+              password: userRec.plainPassword,
+              changes: { email: 'b@b' },
+              notifierOptions: { transport: 'sms' }
             });
             const user = await usersService.get(result[idType]);
 

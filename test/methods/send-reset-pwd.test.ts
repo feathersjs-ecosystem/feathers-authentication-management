@@ -21,8 +21,11 @@ function makeDateTime(options1?) {
 const withAction = (
   data: DataSendResetPwd
 ): DataSendResetPwdWithAction => {
-  // @ts-ignore
-  return Object.assign({ action: "sendResetPwd" }, data);
+  return {
+    action: "sendResetPwd",
+    value: data.user,
+    notifierOptions: data.notifierOptions
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -92,7 +95,7 @@ const withAction = (
 
           it('updates verified user', async function () {
             const result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user = await usersService.get(result[idType]);
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -108,7 +111,7 @@ const withAction = (
           it('error on unverified user', async function () {
             try {
               const result = await callMethod(app, {
-                value: { email: 'a' }
+                user: { email: 'a' }
               });
 
               assert.fail('unexpected succeeded.');
@@ -120,7 +123,7 @@ const withAction = (
           it('error on email not found', async function () {
             try {
               const result = await callMethod(app, {
-                value: { email: 'x' }
+                user: { email: 'x' }
               });
 
               assert.fail('unexpected succeeded.');
@@ -131,7 +134,7 @@ const withAction = (
 
           it('user is sanitized', async function () {
             const result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -178,11 +181,11 @@ const withAction = (
 
           it('token is reusable with options.reuseResetToken', async function () {
             let result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user1 = await usersService.get(result[idType]);
             result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user2 = await usersService.get(result[idType]);
 
@@ -193,13 +196,13 @@ const withAction = (
 
           it('token is not reused after half reset time', async function () {
             let result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user1 = await usersService.get(result[idType]);
 
             await new Promise(resolve => setTimeout(resolve, 110));
             result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user2 = await usersService.get(result[idType]);
 
@@ -248,7 +251,7 @@ const withAction = (
 
           it('updates verified user', async function () {
             const result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user = await usersService.get(result[idType]);
 
@@ -302,7 +305,7 @@ const withAction = (
 
           it('updates verified user', async function () {
             const result = await callMethod(app, {
-              value: { email: 'b' }
+              user: { email: 'b' }
             });
             const user = await usersService.get(result[idType]);
 
@@ -361,7 +364,7 @@ const withAction = (
 
           it('is called', async function () {
             const result = await callMethod(app, {
-              value: { email: 'b' },
+              user: { email: 'b' },
               notifierOptions: { transport: 'sms' }
             });
             const user = await usersService.get(result[idType]);

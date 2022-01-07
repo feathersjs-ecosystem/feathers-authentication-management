@@ -10,7 +10,8 @@ module.exports = {
     get: [],
     create: [
       // The user must be signed in before being allowed to change their password or communication values.
-      iff(isAction('passwordChange', 'identityChange'),
+      iff(
+        isAction('passwordChange', 'identityChange'),
         authenticate('jwt')
       )
     ],

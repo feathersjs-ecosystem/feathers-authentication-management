@@ -26,8 +26,8 @@ export class VerifySignupSetPasswordLongService
   async _create (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
     return await verifySignupSetPasswordWithLongToken(
       this.optionsWithApp,
-      data.value.token,
-      data.value.password,
+      data.token,
+      data.password,
       data.notifierOptions
     );
   }

@@ -28,9 +28,9 @@ export class PasswordChangeService
   async _create (data: DataPasswordChange): Promise<SanitizedUser> {
     return await passwordChange(
       this.optionsWithApp,
-      data.value.user,
-      data.value.oldPassword,
-      data.value.password,
+      data.user,
+      data.oldPassword,
+      data.password,
       data.notifierOptions
     );
   }

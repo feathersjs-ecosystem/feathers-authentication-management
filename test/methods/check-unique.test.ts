@@ -8,8 +8,12 @@ import { CheckUniqueService } from '../../src/services';
 const withAction = (
   data: DataCheckUnique
 ): DataCheckUniqueWithAction => {
-  //@ts-ignore
-  return Object.assign({ action: "checkUnique" }, data)
+  return {
+    action: "checkUnique",
+    meta: data.meta,
+    value: data.user,
+    ownId: data.ownId
+  }
 }
 
 ['_id', 'id'].forEach(idType => {
@@ -64,7 +68,7 @@ const withAction = (
           });
 
           it('returns a promise', async () => {
-            let res = callMethod(app, { value: { username: 'john a' }})
+            let res = callMethod(app, { user: { username: 'john a' }})
               .then(() => { })
               .catch(() => { });
 
@@ -73,16 +77,16 @@ const withAction = (
           });
 
           it('handles empty query', async () => {
-            await callMethod(app, { value: {} });
+            await callMethod(app, { user: {} });
           });
 
           it('handles empty query returning nothing', async () => {
-            await callMethod(app, { value: { username: 'hjhjhj' }});
+            await callMethod(app, { user: { username: 'hjhjhj' }});
           });
 
           it('finds single query on single item', async () => {
             try {
-              await callMethod(app, { value: { username: 'john a' }});
+              await callMethod(app, { user: { username: 'john a' }});
 
               assert.fail(`test unexpectedly succeeded`);
             } catch (err) {
@@ -94,7 +98,7 @@ const withAction = (
           it('handles noErrMsg option', async () => {
             try {
               await callMethod(app, {
-                value: { username: 'john a' },
+                user: { username: 'john a' },
                 meta: { noErrMsg: true }
               });
 
@@ -107,7 +111,7 @@ const withAction = (
 
           it('finds single query on multiple items', async () => {
               try {
-                await callMethod(app, { value: { username: 'john b' }});
+                await callMethod(app, { user: { username: 'john b' }});
 
                 assert.fail(`${name}: test unexpectedly succeeded`);
               } catch (err) {
@@ -118,7 +122,7 @@ const withAction = (
 
           it('finds multiple queries on same item', async () => {
             try {
-              await callMethod(app, { value: {
+              await callMethod(app, { user: {
                 username: 'john a', email: 'a'
               }});
 
@@ -131,7 +135,7 @@ const withAction = (
 
           it('finds multiple queries on different item', async () => {
             try {
-              await callMethod(app, { value: {
+              await callMethod(app, { user: {
                 username: 'john a',
                 email: 'b'
               }});
@@ -144,7 +148,7 @@ const withAction = (
           });
 
           it('ignores null & undefined queries', async () => {
-            await callMethod(app, { value: {
+            await callMethod(app, { user: {
               username: undefined,
               email: null
             }});
@@ -152,7 +156,7 @@ const withAction = (
 
           it('ignores current user on single item', async () => {
             await callMethod(app, {
-              value: { username: 'john a' },
+              user: { username: 'john a' },
               ownId: 'a'
             });
           });
@@ -160,7 +164,7 @@ const withAction = (
           it('cannot ignore current user on multiple items', async () => {
             try {
               await callMethod(app, {
-                value: { username: 'john b' },
+                user: { username: 'john b' },
                 ownId: 'b'
               });
 
