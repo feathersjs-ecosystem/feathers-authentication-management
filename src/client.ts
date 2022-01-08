@@ -1,14 +1,17 @@
-import { AuthenticationClient } from '@feathersjs/authentication-client';
-import { Application, Id } from '@feathersjs/feathers';
-import { AuthenticationManagementService } from './services';
+// Wrapper for client interface to feathers-authenticate-management
+
+import type { AuthenticationClient } from '@feathersjs/authentication-client';
+import type { Application, Id } from '@feathersjs/feathers';
+import { defaultPath } from './options';
+import type { AuthenticationManagementService } from './services';
 
 import {
   AuthenticationManagementClient,
   IdentifyUser,
   User,
-  NotifierOptions
+  NotifierOptions,
+  ClientOptions
 } from './types';
-// Wrapper for client interface to feathers-authenticate-management
 
 declare module '@feathersjs/feathers' {
   interface Application {
@@ -17,12 +20,18 @@ declare module '@feathersjs/feathers' {
   }
 }
 
-function AuthManagement (app: Application): AuthenticationManagementClient { // eslint-disable-line no-unused-vars
-  /* if (!(this instanceof AuthManagement)) {
-    return new AuthManagement(app);
-  } */
+const defaultOptions: ClientOptions = {
+  path: defaultPath
+};
 
-  const authManagement = app.service('authManagement') as AuthenticationManagementService;
+function makeClient (app: Application, _options?: Partial<ClientOptions>): AuthenticationManagementClient {
+  const options: ClientOptions = Object.assign({}, defaultOptions, _options);
+
+  const {
+    path
+  } = options;
+
+  const authManagement = app.service(path) as AuthenticationManagementService;
 
   const client: AuthenticationManagementClient = {
     checkUnique: async (identifyUser: IdentifyUser, ownId: Id, ifErrMsg: boolean) => {
@@ -33,7 +42,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
         meta: { noErrMsg: ifErrMsg }
       });
     },
-    resendVerifySignup: async (identifyUser: IdentifyUser, notifierOptions: NotifierOptions = {}) => {
+    resendVerifySignup: async (identifyUser: IdentifyUser, notifierOptions?: NotifierOptions) => {
       await authManagement.create({
         action: 'resendVerifySignup',
         value: identifyUser,
@@ -57,7 +66,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
       });
     },
 
-    sendResetPwd: async (identifyUser: IdentifyUser, notifierOptions: NotifierOptions = {}) => {
+    sendResetPwd: async (identifyUser: IdentifyUser, notifierOptions?: NotifierOptions) => {
       await authManagement.create({
         action: 'sendResetPwd',
         value: identifyUser,
@@ -111,7 +120,7 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
     authenticate: async (
       email: string,
       password: string,
-      cb: (err: Error | null, user?: Partial<User>) => void
+      cb?: (err: Error | null, user?: Partial<User>) => void
     ): Promise<unknown> => {
       let cbCalled = false;
 
@@ -141,9 +150,8 @@ function AuthManagement (app: Application): AuthenticationManagementClient { // 
   return client;
 }
 
-// TODO: client
-export default AuthManagement;
+export default makeClient;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = AuthManagement;
+  module.exports = makeClient;
 }

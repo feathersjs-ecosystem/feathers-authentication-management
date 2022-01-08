@@ -360,3 +360,7 @@ export interface DataOptions {
 }
 
 //#endregion
+
+export interface ClientOptions {
+  path: string
+}

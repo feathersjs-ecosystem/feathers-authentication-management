@@ -31,6 +31,8 @@ export { VerifySignupShortService } from './services/VerifySignupShortService';
 
 export * from './types';
 
+export { default as client } from './client';
+
 // commonjs
 if (typeof module !== 'undefined') {
   module.exports = Object.assign(setup, module.exports);
