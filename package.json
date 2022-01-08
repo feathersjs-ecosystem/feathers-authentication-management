@@ -43,7 +43,7 @@
   "scripts": {
     "preversion": "npm run lint && npm run test && npm run compile",
     "publish": "git push origin --tags && npm run changelog && git push origin",
-    "release:pre": "npm version prerelease && npm publish --tag pre",
+    "release:pre": "npm version prerelease --preid=pre && npm publish --tag pre",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",

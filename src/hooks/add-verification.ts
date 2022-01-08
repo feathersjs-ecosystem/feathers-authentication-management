@@ -23,24 +23,34 @@ export default function addVerification (
     try {
       const { options } = (context.app.service(path) as AuthenticationManagementService);
 
+      const dataArray = (Array.isArray(context.data))
+        ? context.data
+        : [context.data];
+
       if (
-        (context.method === 'patch' || context.method === 'update') &&
-        !!context.params.user &&
-        !options.identifyUserProps.some(ensureFieldHasChanged(context.data, context.params.user))
+        (['patch', 'update'].includes(context.method)) &&
+          !!context.params.user &&
+          dataArray.some(data => {
+            return !options.identifyUserProps.some(ensureFieldHasChanged(data, context.params.user));
+          })
       ) {
         return context;
       }
 
-      const [longToken, shortToken] = await Promise.all([
-        getLongToken(options.longTokenLen),
-        getShortToken(options.shortTokenLen, options.shortTokenDigits)
-      ]);
+      await Promise.all(
+        dataArray.map(async data => {
+          const [longToken, shortToken] = await Promise.all([
+            getLongToken(options.longTokenLen),
+            getShortToken(options.shortTokenLen, options.shortTokenDigits)
+          ]);
 
-      context.data.isVerified = false;
-      context.data.verifyExpires = Date.now() + options.delay;
-      context.data.verifyToken = longToken;
-      context.data.verifyShortToken = shortToken;
-      context.data.verifyChanges = {};
+          data.isVerified = false;
+          data.verifyExpires = Date.now() + options.delay;
+          data.verifyToken = longToken;
+          data.verifyShortToken = shortToken;
+          data.verifyChanges = {};
+        })
+      );
 
       return context;
     } catch (err) {
