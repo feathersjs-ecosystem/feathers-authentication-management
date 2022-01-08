@@ -11,18 +11,17 @@ Prerequisite for the installation of the `feathers-authentication-management` se
 This guide demonstrates the installation and configuration of `feathers-authentication-management` in three steps:
 
 1. Installation of the `feathers-authentication-management` service and of an additional service, which performs the user notifications.
-
 2. Extension of the users model.
-
 3. Extension of the users service hooks.
-
 4. Implementation of the notifier function.
 
 The functionality of the `feathers-authentication-management` service will be demonstrated using two example actions: `resendVerifySignup` and `verifySignup`, i. e. the sending of an e-mail containing a verification link and the sending of a confirmation e-mail after successful verification, respectively.
 
 The full process for the verification of an e-mail address spans seven steps as shown in the following figure:
 
-![resendVerifySignup.png](/images/resendVerifySignup.png)
+<p align="center">
+  <img src="/images/resendVerifySignup.png" class="medium-zoom-image">
+</p>
 
 Not all steps are performed by the service, some parts have to be implemented on the client side. The service is only responsible for steps 2 (token creation) and 6 (token verification). It triggers steps 3 (sending of the verification link including the token) and 7 (sending of a confirmation e-mail) by calling the custom notifier function. In general, the token link is opened in the client, which sends it back to the `feathers-authentication-management` service in the Feathers app. The details of the client side implementation is not part of this documentation, but the necessary steps are covered at the end of this chapter.
 
