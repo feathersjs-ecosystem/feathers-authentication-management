@@ -12,7 +12,7 @@ The service may be called using
 - HTTP requests on the Feathers API,
 - Provided service wrappers (see last section).
 
-## Comparison of Old with New Service Calls
+## Comparison of the different service calls
 
 There are three ways of calling a method:
 1. Main service as `AuthenticationManagementService` with `create` and `action`
@@ -24,9 +24,8 @@ There are three ways of calling a method:
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service("auth-management").create({
   action: "sendResetPwd",
@@ -41,9 +40,8 @@ app.service("auth-management").create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { SendResetPwdService } = require('feathers-authentication-management');
-
-app.use("auth-management/send-reset-password", new SendResetPwdService(app, options));
+// const { SendResetPwdService } = require('feathers-authentication-management');
+// app.use("auth-management/send-reset-password", new SendResetPwdService(app, options));
 
 app.service("auth-management/send-reset-password").create({
   user: {
@@ -57,9 +55,8 @@ app.service("auth-management/send-reset-password").create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service("auth-management").sendResetPassword({
   user: {
@@ -85,9 +82,8 @@ Checks if the properties are unique in the users items.
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'checkUnique',
@@ -102,9 +98,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { CheckUniqueService } = require('feathers-authentication-management');
-
-app.use("auth-management/check-unique", new CheckUniqueService(app, options));
+// const { CheckUniqueService } = require('feathers-authentication-management');
+// app.use("auth-management/check-unique", new CheckUniqueService(app, options));
 
 app.service('auth-management/check-unique').create({
   user: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
@@ -118,9 +113,8 @@ app.service('auth-management/check-unique').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').checkUnique({
   user: identifyUser, // e. g. {email: 'a@a.com'} or  {username: 'jane'}. Props with null or undefined are ignored.
@@ -144,9 +138,8 @@ Changes the communication address of a user, e. g. the e-mail address or a phone
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'identityChange',
@@ -164,9 +157,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { IdentityChangeService } = require('feathers-authentication-management');
-
-app.use("auth-management/identity-change", new IdentityChangeService(app, options));
+// const { IdentityChangeService } = require('feathers-authentication-management');
+// app.use("auth-management/identity-change", new IdentityChangeService(app, options));
 
 app.service('auth-management/identity-change').create({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -181,9 +173,8 @@ app.service('auth-management/identity-change').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').identityChange({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -208,9 +199,8 @@ Changes the password of a user.
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'passwordChange',
@@ -228,9 +218,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { PasswordChangeService } = require('feathers-authentication-management');
-
-app.use("auth-management/password-change", new PasswordChangeService(app, options));
+// const { PasswordChangeService } = require('feathers-authentication-management');
+// app.use("auth-management/password-change", new PasswordChangeService(app, options));
 
 app.service('auth-management/password-change').create({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -245,9 +234,8 @@ app.service('auth-management/password-change').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').passwordChange({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -272,9 +260,8 @@ Recreates a long and/or short verification token, stores it to the user item, an
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'resendVerifySignup',
@@ -288,9 +275,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { ResendVerifySignupService } = require('feathers-authentication-management');
-
-app.use('auth-management/resend-verify-signup', new ResendVerifySignupService(app, options));
+// const { ResendVerifySignupService } = require('feathers-authentication-management');
+// app.use('auth-management/resend-verify-signup', new ResendVerifySignupService(app, options));
 
 app.service('auth-management/resend-verify-signup').create({
   user: identifyUser, // {email}, {token: verifyToken}
@@ -303,9 +289,8 @@ app.service('auth-management/resend-verify-signup').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').resendVerifySignup({
   user: identifyUser, // {email}, {token: verifyToken}
@@ -328,9 +313,8 @@ Stores a new password. Requires a valid long `resetToken`.
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'resetPwdLong',
@@ -349,9 +333,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { ResetPwdLongService } = require('feathers-authentication-management');
-
-app.use('auth-management/reset-pwd-long', new ResetPwdLongService(app, options));
+// const { ResetPwdLongService } = require('feathers-authentication-management');
+// app.use('auth-management/reset-pwd-long', new ResetPwdLongService(app, options));
 
 app.service('auth-management/reset-pwd-long').create({
   token, // compares to resetToken
@@ -365,9 +348,8 @@ app.service('auth-management/reset-pwd-long').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').resetPasswordLong({
   token, // compares to resetToken
@@ -392,9 +374,8 @@ Stores a new password. Requires a valid short `resetShortToken` and a property o
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   value: {
@@ -412,9 +393,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { ResetPwdShortService } = require('feathers-authentication-management');
-
-app.use('auth-management/reset-password-short', new ResetPwdShortService(app, options));
+// const { ResetPwdShortService } = require('feathers-authentication-management');
+// app.use('auth-management/reset-password-short', new ResetPwdShortService(app, options));
 
 app.service('auth-management/reset-password-short').create({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -429,9 +409,8 @@ app.service('auth-management/reset-password-short').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').resetPasswordShort({
   user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -456,9 +435,8 @@ Creates a short and/or long password reset token, stores it to the user item, an
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'sendResetPwd',
@@ -472,9 +450,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { SendResetPwdService } = require('feathers-authentication-management');
-
-app.use("auth-management/send-reset-password", new SendResetPwdService(app, options));
+// const { SendResetPwdService } = require('feathers-authentication-management');
+// app.use("auth-management/send-reset-password", new SendResetPwdService(app, options));
 
 app.service('auth-management/send-reset-password').create({
   user: identifyUser, // {email}, {token: verifyToken}
@@ -487,9 +464,8 @@ app.service('auth-management/send-reset-password').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').sendResetPassword({
   user: identifyUser, // {email}, {token: verifyToken}
@@ -512,9 +488,8 @@ Verifies a given long verification token.
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'verifySignupLong',
@@ -528,9 +503,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { VerifySignupLongService } = require('feathers-authentication-management');
-
-app.use("auth-management/verify-signup-long", new VerifySignupLongService(app, options));
+// const { VerifySignupLongService } = require('feathers-authentication-management');
+// app.use("auth-management/verify-signup-long", new VerifySignupLongService(app, options));
 
 app.service('auth-management/verify-signup-long').create({
   token: verifyToken, // compares to .verifyToken
@@ -543,9 +517,8 @@ app.service('auth-management/verify-signup-long').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').verifySignupLong({
   token: verifyToken, // compares to .verifyToken
@@ -568,9 +541,8 @@ Verifies a given short verification token.
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'verifySignupShort',
@@ -588,9 +560,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { VerifySignupShortService } = require('feathers-authentication-management');
-
-app.use("auth-management/verify-signup-short", new VerifySignupShortService(app, options));
+// const { VerifySignupShortService } = require('feathers-authentication-management');
+// app.use("auth-management/verify-signup-short", new VerifySignupShortService(app, options));
 
 app.service('auth-management/verify-signup-short').create({
   user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -604,9 +575,8 @@ app.service('auth-management/verify-signup-short').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').verifySignupShort({
   user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -630,9 +600,8 @@ This is a combination of `verifySignupLong` and `resetPwdLong`: Verifies a given
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'verifySignupSetPasswordLong',
@@ -649,9 +618,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { VerifySignupSetPasswordLongService } = require('feathers-authentication-management');
-
-app.use("auth-management/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app, options));
+// const { VerifySignupSetPasswordLongService } = require('feathers-authentication-management');
+// app.use("auth-management/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app, options));
 
 app.service('auth-management/verify-signup-set-password-long').create({
   token, // compares to .verifyToken
@@ -665,9 +633,8 @@ app.service('auth-management/verify-signup-set-password-long').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').verifySignupSetPasswordLong({
   token, // compares to .verifyToken
@@ -691,9 +658,8 @@ This is a combination of `verifySignupShort` and `resetPwdShort`: Verifies a giv
   <CodeGroupItem title="Main Service" active>
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
   action: 'verifySignupSetPasswordShort',
@@ -711,9 +677,8 @@ app.service('auth-management').create({
   <CodeGroupItem title="Separate Service">
 
 ```js
-const { VerifySignupSetPasswordShortService } = require('feathers-authentication-management');
-
-app.use("auth-management/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, options));
+// const { VerifySignupSetPasswordShortService } = require('feathers-authentication-management');
+// app.use("auth-management/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, options));
 
 app.service('auth-management/verify-signup-set-password-short').create({
   user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
@@ -728,9 +693,8 @@ app.service('auth-management/verify-signup-set-password-short').create({
   <CodeGroupItem title="Custom Method">
 
 ```js
-const { AuthenticationManagementService } = require('feathers-authentication-management');
-
-app.use('auth-management', new AuthenticationManagementService(app, options));
+// const { AuthenticationManagementService } = require('feathers-authentication-management');
+// app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').verifySignupSetPasswordShort({
   user, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
