@@ -70,18 +70,47 @@ export type GetUserDataCheckProps = Array<'isNotVerified' | 'isNotVerifiedOrHasV
 //#region options
 
 export interface AuthenticationManagementServiceOptions {
+  /** The path of the service for user items.
+   * @default "/users" */
   service: string
+  /** If `false` (default) it is impossible to reset passwords even if e-mail is not verified.
+   * @default false */
   skipIsVerifiedCheck: boolean
+  /** The notifier function handles the sending of any notification depending on the action.
+   */
   notifier: Notifier
+  /** Half the length of the long token. Default is 15, giving tokens of 30 characters length.
+   * @default 15 */
   longTokenLen: number
+  /** Length of short token (e.g. for sms).
+   * @default 6 */
   shortTokenLen: number
+  /** If `true` short tokens contain only digits. Otherwise also characters.
+   * @default true */
   shortTokenDigits: boolean
+  /** Lifetime for password reset tokens in ms. Default is 2*60*60*1000 = 7200000 (2 hours).
+   * @default 7200000 */
   resetDelay: number
+  /** Lifetime for e-mail verification tokens in ms. Default is 5*24*60*60*1000 = 432000000 (5 days).
+   * @default 432000000
+  */
   delay: number
+  /** Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0.
+   * @default 0 */
   resetAttempts: number
+  /** Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is false.
+   * @default false */
   reuseResetToken: boolean
+  /** Property names in the user item which uniquely identify the user, e.g. `['username', 'email', 'cellphone']`. The default is `['email']`. Only these properties may be changed with verification by the service. At least one of these properties must be provided whenever a short token is used, as the short token alone is too susceptible to brute force attack.
+   * @default ['email']
+   */
   identifyUserProps: string[]
+  /** Used for sanitization reasions. By default, the user object is in the response e. g. of a password reset request. To reply with empty object use `() => ({})`.
+   * Deletes the following properties by default: `['password', 'verifyExpires', 'verifyToken', 'verifyShortToken', 'verifyChanges', 'resetExpires', 'resetToken', 'resetShortToken']`
+   */
   sanitizeUserForClient: (user: User) => Partial<User>
+  /** Property name of the password field on your `'/users'` service
+   * @default 'password' */
   passwordField: string
 }
 
