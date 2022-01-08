@@ -4,7 +4,7 @@ plugins:
 checks:
   argument-count:
     config:
-      threshold: 4
+      threshold: 5
   complex-logic:
     config:
       threshold: 4
@@ -19,7 +19,7 @@ checks:
       threshold: 20
   method-lines:
     config:
-      threshold: 50
+      threshold: 100
   nested-control-flow:
     config:
       threshold: 4
