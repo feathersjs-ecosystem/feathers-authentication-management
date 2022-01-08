@@ -2,7 +2,7 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0-pre.0...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0-pre.1...HEAD)
 
 **Merged pull requests:**
 
@@ -12,6 +12,10 @@
 - chore: move travis to github actions [\#162](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/162) ([fratzinger](https://github.com/fratzinger))
 - Bump y18n from 4.0.0 to 4.0.1 [\#161](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/161) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update docs.md [\#160](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/160) ([re1ro](https://github.com/re1ro))
+
+## [v4.0.0-pre.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0-pre.1) (2022-01-08)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0-pre.0...v4.0.0-pre.1)
 
 ## [v4.0.0-pre.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0-pre.0) (2022-01-07)
 
