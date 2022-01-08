@@ -1,6 +1,6 @@
 import { BadRequest } from '@feathersjs/errors';
 
-export default function ensureValuesAreStrings (
+export function ensureValuesAreStrings (
   ...values: string[]
 ): void {
   if (!values.every(str => typeof str === 'string')) {

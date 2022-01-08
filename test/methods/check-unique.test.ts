@@ -1,9 +1,12 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataCheckUnique, DataCheckUniqueWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataCheckUnique,
+  DataCheckUniqueWithAction,
+  CheckUniqueService
+} from '../../src/index';
 import { timeoutEachTest } from '../test-helpers/config';
-import { CheckUniqueService } from '../../src/services';
 
 const withAction = (
   data: DataCheckUnique

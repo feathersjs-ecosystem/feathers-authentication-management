@@ -7,7 +7,7 @@ import type { HookContext } from '@feathersjs/feathers';
 /**
  * Throws if `context.params?.user?.isVerified` is not true
  */
-export default function isVerified (): ((context: HookContext) => HookContext) {
+export function isVerified (): ((context: HookContext) => HookContext) {
   return (context: HookContext): HookContext => {
     checkContext(context, 'before');
 

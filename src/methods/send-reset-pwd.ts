@@ -1,12 +1,15 @@
 import makeDebug from 'debug';
-import concatIDAndHash from '../helpers/concat-id-and-hash';
-import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
-import getLongToken from '../helpers/get-long-token';
-import getShortToken from '../helpers/get-short-token';
-import getUserData from '../helpers/get-user-data';
-import hashPassword from '../helpers/hash-password';
-import notifier from '../helpers/notifier';
-import isDateAfterNow from '../helpers/is-date-after-now';
+
+import {
+  concatIDAndHash,
+  ensureObjPropsValid,
+  getLongToken,
+  getShortToken,
+  getUserData,
+  hashPassword,
+  notify,
+  isDateAfterNow
+} from '../helpers';
 
 import type { Id } from '@feathersjs/feathers';
 import type {
@@ -38,7 +41,8 @@ export default async function sendResetPwd (
     service,
     shortTokenDigits,
     shortTokenLen,
-    skipIsVerifiedCheck
+    skipIsVerifiedCheck,
+    notifier
   } = options;
 
   const usersService = app.service(service);
@@ -55,7 +59,7 @@ export default async function sendResetPwd (
     // and remaining time exceeds half of resetDelay
     isDateAfterNow(user1.resetExpires, resetDelay / 2)
   ) {
-    await notifier(options.notifier, 'sendResetPwd', user1, notifierOptions);
+    await notify(notifier, 'sendResetPwd', user1, notifierOptions);
     return sanitizeUserForClient(user1);
   }
 
@@ -71,7 +75,7 @@ export default async function sendResetPwd (
     resetShortToken: resetShortToken
   });
 
-  await notifier(options.notifier, 'sendResetPwd', user2, notifierOptions);
+  await notify(options.notifier, 'sendResetPwd', user2, notifierOptions);
 
   const [resetToken3, resetShortToken3] = await Promise.all([
     reuseResetToken ? user2.resetToken : hashPassword(app, user2.resetToken, passwordField),

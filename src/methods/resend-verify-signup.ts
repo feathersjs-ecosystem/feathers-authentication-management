@@ -1,9 +1,11 @@
 import makeDebug from 'debug';
-import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
-import getLongToken from '../helpers/get-long-token';
-import getShortToken from '../helpers/get-short-token';
-import getUserData from '../helpers/get-user-data';
-import notifier from '../helpers/notifier';
+import {
+  ensureObjPropsValid,
+  getLongToken,
+  getShortToken,
+  getUserData,
+  notify
+} from '../helpers';
 
 import type {
   IdentifyUser,
@@ -31,7 +33,8 @@ export default async function resendVerifySignup (
     longTokenLen,
     sanitizeUserForClient,
     shortTokenDigits,
-    shortTokenLen
+    shortTokenLen,
+    notifier
   } = options;
 
   const usersService = app.service(service);
@@ -56,6 +59,6 @@ export default async function resendVerifySignup (
     verifyShortToken
   });
 
-  const user3 = await notifier(options.notifier, 'resendVerifySignup', user2, notifierOptions);
+  const user3 = await notify(notifier, 'resendVerifySignup', user2, notifierOptions);
   return sanitizeUserForClient(user3);
 }

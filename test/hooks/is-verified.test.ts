@@ -1,5 +1,5 @@
 import assert from 'assert';
-import isVerified from '../../src/hooks/is-verified';
+import { isVerified } from '../../src/hooks';
 import { timeoutEachTest } from '../test-helpers/config';
 
 describe('is-verified.test.ts', function () {

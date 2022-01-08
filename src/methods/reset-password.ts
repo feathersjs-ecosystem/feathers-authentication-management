@@ -1,12 +1,14 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import comparePasswords from '../helpers/compare-passwords';
-import deconstructId from '../helpers/deconstruct-id';
-import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
-import getUserData from '../helpers/get-user-data';
-import hashPassword from '../helpers/hash-password';
-import notifier from '../helpers/notifier';
+import {
+  comparePasswords,
+  deconstructId,
+  ensureObjPropsValid,
+  ensureValuesAreStrings,
+  getUserData,
+  hashPassword,
+  notify
+} from '../helpers';
 
 import type {
   UsersArrayOrPaginated,
@@ -72,7 +74,8 @@ async function resetPassword (
     skipIsVerifiedCheck,
     reuseResetToken,
     passwordField,
-    sanitizeUserForClient
+    sanitizeUserForClient,
+    notifier
   } = options;
 
   const usersService = app.service(service);
@@ -147,6 +150,6 @@ async function resetPassword (
     resetShortToken: null
   });
 
-  const user3 = await notifier(options.notifier, 'resetPwd', user2, notifierOptions);
+  const user3 = await notify(notifier, 'resetPwd', user2, notifierOptions);
   return sanitizeUserForClient(user3);
 }

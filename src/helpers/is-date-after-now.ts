@@ -1,4 +1,4 @@
-export default function isDateAfterNow (
+export function isDateAfterNow (
   date: number | Date,
   delay = 0
 ): boolean {

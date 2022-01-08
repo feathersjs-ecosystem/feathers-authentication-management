@@ -1,7 +1,7 @@
 import _cloneDeep from 'lodash/cloneDeep';
 import _pick from 'lodash/pick';
 
-import sanitizeUserForClient from './helpers/sanitize-user-for-client';
+import { sanitizeUserForClient } from './helpers/sanitize-user-for-client';
 
 import type {
   NotificationType,

@@ -6,7 +6,7 @@ import type {
   GetUserDataCheckProps
 } from '../types';
 
-export default function getUserData (
+export function getUserData (
   data: UsersArrayOrPaginated,
   checks?: GetUserDataCheckProps
 ): User {

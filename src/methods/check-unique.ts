@@ -1,5 +1,5 @@
 import { BadRequest } from '@feathersjs/errors';
-import isNullsy from '../helpers/is-nullsy';
+import { isNullsy } from '../helpers';
 import makeDebug from 'debug';
 
 import type { Id } from '@feathersjs/feathers';

@@ -3,7 +3,9 @@ import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
-import helpers from '../src/helpers';
+import {
+  sanitizeUserForClient
+} from '../src/helpers';
 
 import {
   AuthenticationManagementService,
@@ -40,7 +42,7 @@ const optionsDefault: AuthenticationManagementServiceOptions = {
   resetAttempts: 0,
   reuseResetToken: false,
   identifyUserProps: ['email'],
-  sanitizeUserForClient: helpers.sanitizeUserForClient,
+  sanitizeUserForClient: sanitizeUserForClient,
   skipIsVerifiedCheck: false,
   passwordField: "password"
 };

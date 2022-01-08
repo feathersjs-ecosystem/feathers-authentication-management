@@ -1,8 +1,10 @@
 import { GeneralError } from '@feathersjs/errors';
 import { checkContext } from 'feathers-hooks-common';
-import getLongToken from '../helpers/get-long-token';
-import getShortToken from '../helpers/get-short-token';
-import ensureFieldHasChanged from '../helpers/ensure-field-has-changed';
+import {
+  getLongToken,
+  getShortToken,
+  ensureFieldHasChanged
+} from '../helpers';
 import { defaultPath } from '../options';
 
 import type { HookContext } from '@feathersjs/feathers';
@@ -13,7 +15,7 @@ import type { AuthenticationManagementService } from '../services';
  * @param [path='authManagement'] the servicePath for your authManagement service
  * @returns
  */
-export default function addVerification (
+export function addVerification (
   path?: string
 ): ((context: HookContext) => Promise<HookContext>) {
   path = path || defaultPath; // default: 'authManagement'

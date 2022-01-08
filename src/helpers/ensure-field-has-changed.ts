@@ -1,4 +1,4 @@
-import isNullsy from './is-nullsy';
+import { isNullsy } from './is-nullsy';
 
 /**
  * Verify that obj1 and obj2 have different 'field' field
@@ -7,7 +7,7 @@ import isNullsy from './is-nullsy';
  * @param obj1
  * @param obj2
  */
-export default function ensureFieldHasChanged (
+export function ensureFieldHasChanged (
   obj1: Record<string, unknown>,
   obj2: Record<string, unknown>
 ): (field: string) => boolean {

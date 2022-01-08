@@ -1,10 +1,12 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
-import getUserData from '../helpers/get-user-data';
-import notifier from '../helpers/notifier';
-import isDateAfterNow from '../helpers/is-date-after-now';
+import {
+  ensureObjPropsValid,
+  ensureValuesAreStrings,
+  getUserData,
+  notify,
+  isDateAfterNow
+} from '../helpers';
 
 import type {
   SanitizedUser,
@@ -63,7 +65,8 @@ async function verifySignup (
   const {
     app,
     sanitizeUserForClient,
-    service
+    service,
+    notifier
   } = options;
 
   const usersService = app.service(service);
@@ -85,7 +88,7 @@ async function verifySignup (
   }
 
   const user2 = await eraseVerifyProps(user1, isDateAfterNow(user1.verifyExpires), user1.verifyChanges || {});
-  const user3 = await notifier(options.notifier, 'verifySignup', user2, notifierOptions);
+  const user3 = await notify(notifier, 'verifySignup', user2, notifierOptions);
   return sanitizeUserForClient(user3);
 
   async function eraseVerifyProps (

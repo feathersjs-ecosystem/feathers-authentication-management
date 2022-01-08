@@ -1,6 +1,6 @@
 import type { Id } from '@feathersjs/feathers';
 
-export default function concatIDAndHash (
+export function concatIDAndHash (
   id: Id,
   token: string
 ): string {

@@ -1,8 +1,10 @@
 import setup from './setupAuthManagement';
 
-import addVerification from './hooks/add-verification';
-import isVerified from './hooks/is-verified';
-import removeVerification from './hooks/remove-verification';
+import {
+  addVerification,
+  isVerified,
+  removeVerification
+} from './hooks';
 
 export default setup;
 

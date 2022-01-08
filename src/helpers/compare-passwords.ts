@@ -1,6 +1,6 @@
 import { compare } from 'bcryptjs';
 
-export default async function comparePasswords (
+export async function comparePasswords (
   oldPassword: string,
   password: string,
   getError?: () => unknown

@@ -1,10 +1,13 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataVerifySignupShort, DataVerifySignupShortWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataVerifySignupShort,
+  DataVerifySignupShortWithAction,
+  VerifySignupShortService
+} from '../../src/index';
 import { SpyOn } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { AuthenticationManagementService, VerifySignupShortService } from '../../src/services';
 
 const withAction = (
   data: DataVerifySignupShort

@@ -1,7 +1,12 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataResetPwdShort, DataResetPwdShortWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataResetPwdShort,
+  DataResetPwdShortWithAction,
+  AuthenticationManagementService,
+  ResetPwdShortService
+} from '../../src/index';
 
 import {
   SpyOn,
@@ -9,7 +14,6 @@ import {
 } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { AuthenticationManagementService, ResetPwdShortService } from '../../src/services';
 
 const fieldToHash = 'resetShortToken';
 

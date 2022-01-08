@@ -1,12 +1,14 @@
 
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
-import comparePasswords from '../helpers/compare-passwords';
-import ensureObjPropsValid from '../helpers/ensure-obj-props-valid';
-import ensureValuesAreStrings from '../helpers/ensure-values-are-strings';
-import getUserData from '../helpers/get-user-data';
-import hashPassword from '../helpers/hash-password';
-import notifier from '../helpers/notifier';
+import {
+  comparePasswords,
+  ensureObjPropsValid,
+  ensureValuesAreStrings,
+  getUserData,
+  hashPassword,
+  notify
+} from '../helpers';
 
 import type {
   IdentifyUser,
@@ -32,7 +34,8 @@ export default async function passwordChange (
     identifyUserProps,
     passwordField,
     sanitizeUserForClient,
-    service
+    service,
+    notifier
   } = options;
 
   const usersService = app.service(service);
@@ -56,6 +59,6 @@ export default async function passwordChange (
     password: await hashPassword(app, password, passwordField)
   });
 
-  const user3 = await notifier(options.notifier, 'passwordChange', user2, notifierOptions);
+  const user3 = await notify(notifier, 'passwordChange', user2, notifierOptions);
   return sanitizeUserForClient(user3);
 }

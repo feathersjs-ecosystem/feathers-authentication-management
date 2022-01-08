@@ -1,4 +1,3 @@
-
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import AuthManagement from '../src/client';

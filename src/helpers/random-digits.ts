@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 
-export default function randomDigits (len: number): string {
+export function randomDigits (len: number): string {
   let str = '';
 
   while (str.length < len) {

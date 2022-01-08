@@ -1,7 +1,11 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataSendResetPwd, DataSendResetPwdWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataSendResetPwd,
+  DataSendResetPwdWithAction,
+  SendResetPwdService
+} from '../../src/index';
 import authService from '../test-helpers/authenticationService';
 
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
@@ -10,7 +14,7 @@ import {
   SpyOn,
   aboutEqualDateTime
 } from '../test-helpers';
-import { AuthenticationManagementService, SendResetPwdService } from '../../src/services';
+import {  } from '../../src/services';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};

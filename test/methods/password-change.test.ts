@@ -2,16 +2,19 @@ import assert from 'assert';
 import bcrypt from 'bcryptjs';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataPasswordChange, DataPasswordChangeWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataPasswordChange,
+  DataPasswordChangeWithAction,
+  PasswordChangeService
+} from '../../src/index';
 import { authentication as authConfig } from '../test-helpers/config';
 
 import {
   SpyOn,
   authenticationService as authService
 } from '../test-helpers';
-import hashPassword from '../../src/helpers/hash-password';
+import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest } from '../test-helpers/config';
-import { AuthenticationManagementService, PasswordChangeService } from '../../src/services';
 
 const withAction = (
   data: DataPasswordChange

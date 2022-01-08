@@ -2,7 +2,16 @@ import assert from 'assert';
 import feathers from '@feathersjs/feathers';
 import feathersMemory from 'feathers-memory';
 import authLocalMgnt from '../src/index';
-import helpers from '../src/helpers';
+import {
+  deconstructId,
+  ensureFieldHasChanged,
+  ensureValuesAreStrings,
+  sanitizeUserForNotifier,
+  getUserData,
+  hashPassword,
+  isDateAfterNow,
+  sanitizeUserForClient
+} from '../src/helpers';
 import { User } from '../src/types';
 import { addSeconds } from "date-fns"
 
@@ -19,17 +28,15 @@ const users_Id = [
 describe('helpers.test.ts', () => {
   describe("sanitization", () => {
     it('allows to stringify sanitized user object', () => {
-      const user: Partial<User> = {
+      const user = {
         id: 1,
         email: 'test@test.test',
         password: '0000000000',
         resetToken: 'aaa'
-      };
+      } as any as User;
 
-      //@ts-ignore
-      const result1 = helpers.sanitizeUserForClient(user);
-      //@ts-ignore
-      const result2 = helpers.sanitizeUserForNotifier(user);
+      const result1 = sanitizeUserForClient(user);
+      const result2 = sanitizeUserForNotifier(user);
 
       assert.doesNotThrow(() => JSON.stringify(result1));
       assert.doesNotThrow(() => JSON.stringify(result2));
@@ -41,15 +48,12 @@ describe('helpers.test.ts', () => {
         email: 'test@test.test',
         password: '0000000000',
         resetToken: 'aaa'
-      };
+      } as any as User
 
-      //@ts-ignore
       user.self = user;
 
-      //@ts-ignore
-      const result1 = helpers.sanitizeUserForClient(user);
-      //@ts-ignore
-      const result2 = helpers.sanitizeUserForNotifier(user);
+      const result1 = sanitizeUserForClient(user);
+      const result2 = sanitizeUserForNotifier(user);
 
       assert.throws(() => JSON.stringify(result1), TypeError);
       assert.throws(() => JSON.stringify(result2), TypeError);
@@ -64,15 +68,12 @@ describe('helpers.test.ts', () => {
         toJSON: function () {
           return Object.assign({}, this, { self: undefined });
         }
-      };
+      } as any as User;
 
-      //@ts-ignore
       user.self = user;
 
-      //@ts-ignore
-      const result1 = helpers.sanitizeUserForClient(user);
-      //@ts-ignore
-      const result2 = helpers.sanitizeUserForNotifier(user);
+      const result1 = sanitizeUserForClient(user);
+      const result2 = sanitizeUserForNotifier(user);
 
       assert.doesNotThrow(() => JSON.stringify(result1));
       assert.doesNotThrow(() => JSON.stringify(result2));
@@ -87,15 +88,12 @@ describe('helpers.test.ts', () => {
         toObject: function () {
           return Object.assign({}, this, { self: undefined });
         }
-      };
+      } as any as User;
 
-      //@ts-ignore
       user.self = user;
 
-      //@ts-ignore
-      const result1 = helpers.sanitizeUserForClient(user);
-      //@ts-ignore
-      const result2 = helpers.sanitizeUserForNotifier(user);
+      const result1 = sanitizeUserForClient(user);
+      const result2 = sanitizeUserForNotifier(user);
 
       assert.doesNotThrow(() => JSON.stringify(result1));
       assert.doesNotThrow(() => JSON.stringify(result2));
@@ -126,39 +124,39 @@ describe('helpers.test.ts', () => {
   })
 
   it("deconstructId", () => {
-    const id = helpers.deconstructId("123___456");
+    const id = deconstructId("123___456");
     assert.strictEqual(id, "123", "extracts id");
 
     assert.throws(
-      () => helpers.deconstructId("this is__a test")
+      () => deconstructId("this is__a test")
     )
   });
 
   it("ensureFieldHasChanges", () => {
-    const ensureForNulls = helpers.ensureFieldHasChanged(null, null);
+    const ensureForNulls = ensureFieldHasChanged(null, null);
     assert.ok(!ensureForNulls('password'), "returns false for nulls");
 
-    const ensureForChanged = helpers.ensureFieldHasChanged({ password: "1" }, { password: "2" });
+    const ensureForChanged = ensureFieldHasChanged({ password: "1" }, { password: "2" });
     assert.ok(ensureForChanged('password'), "changed password");
 
-    const ensureForUnchanged = helpers.ensureFieldHasChanged({ password: "1" }, { password: "1" });
+    const ensureForUnchanged = ensureFieldHasChanged({ password: "1" }, { password: "1" });
     assert.ok(ensureForChanged('password'), "password did not change")
   });
 
   it("ensureValuesAreStrings", () => {
     assert.doesNotThrow(
-      () => helpers.ensureValuesAreStrings(),
+      () => ensureValuesAreStrings(),
       "does not throw on empty array"
     )
 
     assert.doesNotThrow(
-      () => helpers.ensureValuesAreStrings("1", "2", "3"),
+      () => ensureValuesAreStrings("1", "2", "3"),
       "does not throw on string array"
     )
 
     assert.throws(
       // @ts-expect-error anything other than string is not allowed
-      () => helpers.ensureValuesAreStrings("1", "2", 3),
+      () => ensureValuesAreStrings("1", "2", 3),
       "throws on mixed array"
     )
   })
@@ -166,17 +164,17 @@ describe('helpers.test.ts', () => {
   describe("getUserData", () => {
     it("throws with no users", () => {
       assert.throws(
-        () => helpers.getUserData([])
+        () => getUserData([])
       );
 
       assert.throws(
-        () => helpers.getUserData({ data: [], limit: 10, skip: 0, total: 0 })
+        () => getUserData({ data: [], limit: 10, skip: 0, total: 0 })
       )
     })
 
     it("throws with users > 1", () => {
       assert.throws(
-        () => helpers.getUserData([
+        () => getUserData([
           // @ts-expect-error some props missing
           { id: 1, email: "test@test.de" },
           // @ts-expect-error some props missing
@@ -185,7 +183,7 @@ describe('helpers.test.ts', () => {
       )
 
       assert.throws(
-        () => helpers.getUserData({
+        () => getUserData({
           data: [
             // @ts-expect-error some props missing
             { id: 1, email: "test@test.de" },
@@ -203,8 +201,8 @@ describe('helpers.test.ts', () => {
   it("hashPassword", async () => {
     let rejected = false;
     try {
-      // @ts-expect-error field is missing
-      await helpers.hashPassword(feathers(), "123")
+      // @ts-expect-error third argument is not provided
+      await hashPassword(feathers(), "123")
     } catch {
       rejected = true;
     }
@@ -216,19 +214,19 @@ describe('helpers.test.ts', () => {
     const now = new Date();
     const nowPlus1 = addSeconds(now, 1);
 
-    assert.ok(helpers.isDateAfterNow(nowPlus1.getTime()), "unix is after now");
-    assert.ok(helpers.isDateAfterNow(nowPlus1), "date obj is after now");
+    assert.ok(isDateAfterNow(nowPlus1.getTime()), "unix is after now");
+    assert.ok(isDateAfterNow(nowPlus1), "date obj is after now");
 
-    assert.ok(!helpers.isDateAfterNow(now.getTime()), "now as unix returns false")
-    assert.ok(!helpers.isDateAfterNow(now), "now as date obj returns false")
+    assert.ok(!isDateAfterNow(now.getTime()), "now as unix returns false")
+    assert.ok(!isDateAfterNow(now), "now as date obj returns false")
 
-    assert.ok(helpers.isDateAfterNow(now.getTime(), -1000), "now as unix with delay returns true");
-    assert.ok(helpers.isDateAfterNow(now, -1000), "now as date obj with delay returns true");
+    assert.ok(isDateAfterNow(now.getTime(), -1000), "now as unix with delay returns true");
+    assert.ok(isDateAfterNow(now, -1000), "now as date obj with delay returns true");
   })
 });
 
 function customSanitizeUserForClient (user) {
-  const user1 = helpers.sanitizeUserForClient(user);
+  const user1 = sanitizeUserForClient(user);
   delete user1.sensitiveData;
   return user1;
 }

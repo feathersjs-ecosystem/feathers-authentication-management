@@ -1,14 +1,18 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataResendVerifySignup, DataResendVerifySignupWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataResendVerifySignup,
+  DataResendVerifySignupWithAction,
+  AuthenticationManagementService,
+  ResendVerifySignupService
+} from '../../src/index';
 import {
   SpyOn,
   aboutEqualDateTime,
   makeDateTime
 } from '../test-helpers';
 import { timeoutEachTest } from '../test-helpers/config';
-import { AuthenticationManagementService, ResendVerifySignupService } from '../../src/services';
 
 const withAction = (
   data: DataResendVerifySignup

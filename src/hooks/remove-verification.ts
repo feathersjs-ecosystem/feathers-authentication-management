@@ -6,7 +6,7 @@ import type { User } from '../types';
 /**
  * Sanitize users. After-hook for '/users' service.
  */
-export default function removeVerification (
+export function removeVerification (
   ifReturnTokens?: boolean
 ): (context: HookContext) => HookContext {
   return (context: HookContext): HookContext => {

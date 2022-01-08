@@ -1,6 +1,6 @@
 import { BadRequest } from '@feathersjs/errors';
 
-export default function deconstructId (
+export function deconstructId (
   token: string
 ): string {
   if (!token.includes('___')) {

@@ -1,7 +1,7 @@
-import randomBytes from './random-bytes';
-import randomDigits from './random-digits';
+import { randomBytes } from './random-bytes';
+import { randomDigits } from './random-digits';
 
-export default async function getShortToken (
+export async function getShortToken (
   len: number,
   ifDigits: boolean
 ): Promise<string> {

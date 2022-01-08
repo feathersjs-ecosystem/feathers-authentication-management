@@ -1,14 +1,17 @@
 import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
-import authLocalMgnt, { DataIdentityChange, DataIdentityChangeWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataIdentityChange,
+  DataIdentityChangeWithAction,
+  IdentityChangeService
+} from '../../src/index';
 import {
   SpyOn,
   authenticationService as authService
 } from '../test-helpers';
-import hashPassword from '../../src/helpers/hash-password';
+import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest } from '../test-helpers/config';
-import { IdentityChangeService } from '../../src/services';
 
 const withAction = (
   data: DataIdentityChange

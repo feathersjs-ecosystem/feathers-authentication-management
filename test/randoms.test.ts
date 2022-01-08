@@ -1,6 +1,8 @@
 import assert from 'assert';
-import randomDigits from '../src/helpers/random-digits';
-import randomBytes from '../src/helpers/random-bytes';
+import {
+  randomDigits,
+  randomBytes
+} from '../src/helpers';
 
 describe('randoms.test.ts', () => {
   describe('randomDigits', () => {

@@ -1,6 +1,6 @@
 import { BadRequest } from '@feathersjs/errors';
 
-export default function ensureObjPropsValid (
+export function ensureObjPropsValid (
   obj: Record<string, unknown>,
   props: string[],
   allowNone?: boolean

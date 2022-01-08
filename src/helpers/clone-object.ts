@@ -10,7 +10,7 @@
  * @param  obj - Object to clone
  * @returns Cloned object
  */
-export default function cloneObject<T extends Record<string, unknown>> (
+export function cloneObject<T extends Record<string, unknown>> (
   obj: T
 ): T {
   if (typeof obj.toJSON === 'function' || typeof obj.toObject === 'function') {

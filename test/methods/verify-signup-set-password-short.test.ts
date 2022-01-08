@@ -3,13 +3,16 @@ import assert from 'assert';
 import feathers, { Application } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
-import authLocalMgnt, { DataVerifySignupSetPasswordShort, DataVerifySignupSetPasswordShortWithAction } from '../../src/index';
+import authLocalMgnt, {
+  DataVerifySignupSetPasswordShort,
+  DataVerifySignupSetPasswordShortWithAction,
+  VerifySignupSetPasswordShortService
+} from '../../src/index';
 import {
   SpyOn,
   authenticationService as authService
 } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
-import { VerifySignupSetPasswordShortService } from '../../src/services';
 
 const withAction = (
   data: DataVerifySignupSetPasswordShort

@@ -1,6 +1,6 @@
 import { randomBytes as _randomBytes } from 'crypto';
 
-export default async function randomBytes (
+export async function randomBytes (
   len: number
 ): Promise<string> {
   return await new Promise((resolve, reject) => {
