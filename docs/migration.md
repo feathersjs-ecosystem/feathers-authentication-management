@@ -4,18 +4,23 @@ title: Migrating
 
 # {{ $frontmatter.title }}
 
-This guide explains the new features and changes necessary to migrate to `feathers-authentication-management` v4. The migration should be fairly easy. There's no breaking change at all. So just install the pre-release. That should be it. Just continue reading if you're curious what has changed.
+This guide explains the new features and changes necessary to migrate to `feathers-authentication-management` (called `f-a-m` from now on) v4. The migration should be fairly easy. There's no breaking change at all. So just install the pre-release. That should be it. Just continue reading if you're curious what has changed.
 
-## Testing the prerelease:
+### Testing the prerelease
 ```bash
 npm i feathers-authentication-management@pre
 ```
 
-## Features:
+### ❗️❗️❗️ Don't expose `f-a-m` data to socket.io by default
+
+Do you use `socket.io` and [channels](https://docs.feathersjs.com/api/channels.html) with `feathers-authentication-management`? Did you know, that the service  `authManagment` publishes every `create` request to channels? We created a [test](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/illustrate-publish-leak/test/scaffolding.test.js#L108) to illustrate the behavior. See the [test results](https://github.com/feathersjs-ecosystem/feathers-authentication-management/runs/4764626400?check_suite_focus=true).
+If you do not catch that, every client received your `data` from `authManagement`. This is fixed in `f-a-m` v4 and follows the same as the official `@feathersjs/authentication`. If you don't filter the data from `authManagement`, you should upgrade asap or handle data from `authManagement` in your `channels`-file!
+
+This could be a breaking change, if you use the published data of `authManagement` intentionally which is considered bad practice. You should use hooks instead!
 
 ### Typescript
 
-`feathers-authentication-management` (called `f-a-m` from now on) v4 is rewritten in typescript. That means autocompletition in your IDE.
+`feathers-authentication-management`  v4 is rewritten in typescript. That means autocompletition in your IDE.
 
 ### Separate services and custom methods
 
