@@ -15,13 +15,14 @@ export default defineUserConfig<DefaultThemeOptions>({
     editLink: true,
     editLinkText: "Edit this page on GitHub",
     sidebar: [
-      "/overview.md",
-      "/getting-started.md",
-      "/process-flows.md",
-      "/configuration.md",
-      "/service-hooks.md",
-      "/service-calls.md",
-      "/best-practices.md"
+      "/overview",
+      "/getting-started",
+      "/process-flows",
+      "/configuration",
+      "/service-hooks",
+      "/service-calls",
+      "/best-practices",
+      "/migration"
     ],
   },
 });
