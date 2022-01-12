@@ -25,4 +25,9 @@ export default defineUserConfig<DefaultThemeOptions>({
       "/migration"
     ],
   },
+  plugins: [
+    [
+      '@vuepress/plugin-search'
+    ]
+  ]
 });

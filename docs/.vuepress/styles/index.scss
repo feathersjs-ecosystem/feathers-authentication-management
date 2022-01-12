@@ -130,6 +130,10 @@
 
   --search-item-text-color: var(--c-text-lighter);
   --search-item-focus-bg-color: var(--c-bg-light);
+
+  input {
+    width: 14em !important;
+  }
 }
 
 html.dark {
