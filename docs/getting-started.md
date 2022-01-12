@@ -191,34 +191,28 @@ module.exports = (app) => {
 
   async function sendEmail(email) {
     try {
-      const result = app.service("mailer").create(email);
+      const result = await app.service("mailer").create(email);
+      return result;
     } catch (err) {
       console.error(err);
     }
   }
 
-  return (type, user, notifierOptions) => {
-    switch (type) {
-      case "resendVerifySignup":
-        return sendEmail({
-          from: "test@localhost",
-          to: user.email,
-          subject: "Please confirm your e-mail address",
-          text: "Click here: " + getLink("verify", user.verifyToken),
-        });
-        break;
-
-      case "verifySignup":
-        return sendEmail({
-          from: "test@localhost",
-          to: user.email,
-          subject: "E-Mail address verified",
-          text: "Registration process complete. Thanks for joining us!",
-        });
-        break;
-
-      default:
-        break;
+  return (type, user, notifierOptions = {}) => {
+    if (type === "resendVerifySignup") {
+      return sendEmail({
+        from: "test@localhost",
+        to: user.email,
+        subject: "Please confirm your e-mail address",
+        text: "Click here: " + getLink("verify", user.verifyToken),
+      });
+    } else if (type === "verifySignup") {
+      return sendEmail({
+        from: "test@localhost",
+        to: user.email,
+        subject: "E-Mail address verified",
+        text: "Registration process complete. Thanks for joining us!",
+      });
     }
   };
 };
