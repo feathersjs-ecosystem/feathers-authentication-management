@@ -46,7 +46,7 @@ module.exports = {
       iff(
         isProvider('external'),
         preventChanges(
-          false,
+          true,
           'email',
           'isVerified',
           'verifyToken',

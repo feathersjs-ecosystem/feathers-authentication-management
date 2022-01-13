@@ -24,6 +24,7 @@ before: {
   ],
   patch: [
     iff(isProvider('external'), preventChanges(
+      true,
       'isVerified',
       'resetExpires'
       'resetShortToken',

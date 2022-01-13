@@ -137,6 +137,7 @@ module.exports = {
       iff(
         isProvider("external"),
         preventChanges(
+          true,
           "email",
           "isVerified",
           "resetExpires"
