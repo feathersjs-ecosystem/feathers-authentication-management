@@ -28,7 +28,7 @@ This hook is made exclusively for the `/users` service. Creates tokens and sets 
 const { authenticate } = require("@feathersjs/authentication").hooks;
 const { hashPassword, protect } = require("@feathersjs/authentication-local").hooks;
 const { addVerification, removeVerification } = require("feathers-authentication-management");
-const authNotifier = require("path-to/notifier");
+const authNotifier = require("./path-to/your/notifier");
 
 const {
   disallow,
@@ -101,7 +101,7 @@ module.exports = {
 
 ### isVerified
 
-Throws, if requesting user is not verified (`params.user.isVerified`) and passes otherwise.
+Throws, if requesting user is not verified (`params.user.isVerified`) and passes otherwise. Please make sure to call `authenticate('jwt')` before.
 
 | before | after | methods | multi | details    |
 | ------ | ----- | ------- | ----- | ---------- |
