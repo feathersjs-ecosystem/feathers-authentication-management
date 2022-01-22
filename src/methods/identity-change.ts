@@ -38,17 +38,18 @@ export default async function identityChange (
     shortTokenLen,
     shortTokenDigits,
     passwordField,
-    notifier
+    notifier,
+    sanitizeUserForClient
   } = options;
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
   ensureObjPropsValid(changesIdentifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: identifyUser });
-  const user1 = getUserData(users);
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const user = getUserData(users);
 
   try {
-    await comparePasswords(password, user1[passwordField] as string);
+    await comparePasswords(password, user[passwordField] as string);
   } catch (err) {
     throw new BadRequest('Password is incorrect.',
       { errors: { [passwordField]: 'Password is incorrect.', $className: 'badParams' } }
@@ -60,13 +61,13 @@ export default async function identityChange (
     getShortToken(shortTokenLen, shortTokenDigits)
   ]);
 
-  const user2 = await usersService.patch(user1[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId], {
     verifyExpires: Date.now() + delay,
     verifyToken,
     verifyShortToken,
     verifyChanges: changesIdentifyUser
   });
 
-  const user3 = await notify(notifier, 'identityChange', user2, notifierOptions);
-  return options.sanitizeUserForClient(user3);
+  const userResult = await notify(notifier, 'identityChange', patchedUser, notifierOptions);
+  return sanitizeUserForClient(userResult);
 }

@@ -15,7 +15,8 @@ import type {
   Tokens,
   User,
   IdentifyUser,
-  NotifierOptions
+  NotifierOptions,
+  VerifyChanges
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:verifySignup');
@@ -72,31 +73,34 @@ async function verifySignup (
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
 
-  const users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
-  const user1 = getUserData(users, [
+  const users = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
   ]);
 
-  if (!Object.keys(tokens).every(key => tokens[key] === user1[key])) {
-    await eraseVerifyProps(user1, user1.isVerified);
+  let userErasedVerify: User;
+
+  if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
+    userErasedVerify = await eraseVerifyProps(user, user.isVerified);
 
     throw new BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
       { errors: { $className: 'badParam' } }
     );
+  } else {
+    userErasedVerify = await eraseVerifyProps(user, isDateAfterNow(user.verifyExpires), user.verifyChanges || {});
   }
 
-  const user2 = await eraseVerifyProps(user1, isDateAfterNow(user1.verifyExpires), user1.verifyChanges || {});
-  const user3 = await notify(notifier, 'verifySignup', user2, notifierOptions);
-  return sanitizeUserForClient(user3);
+  const userResult = await notify(notifier, 'verifySignup', userErasedVerify, notifierOptions);
+  return sanitizeUserForClient(userResult);
 
   async function eraseVerifyProps (
     user: User,
     isVerified: boolean,
-    verifyChanges?: Record<string, any>
+    verifyChanges?: VerifyChanges
   ): Promise<User> {
-    const patchToUser = Object.assign({}, verifyChanges ?? {}, {
+    const patchData = Object.assign({}, verifyChanges || {}, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,
@@ -104,7 +108,7 @@ async function verifySignup (
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchData, {});
     return result;
   }
 }

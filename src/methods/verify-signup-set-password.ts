@@ -8,6 +8,7 @@ import {
   isDateAfterNow,
   notify
 } from '../helpers';
+import type { VerifyChanges } from '..';
 
 import type {
   IdentifyUser,
@@ -81,14 +82,14 @@ async function verifySignupSetPassword (
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
 
-  const users = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
-  const user1 = getUserData(users, [
+  const users = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
   ]);
 
-  if (!Object.keys(tokens).every((key) => tokens[key] === user1[key])) {
-    await eraseVerifyProps(user1, user1.isVerified, {});
+  if (!Object.keys(tokens).every((key) => tokens[key] === user[key])) {
+    await eraseVerifyProps(user, user.isVerified);
 
     throw new BadRequest(
       'Invalid token. Get for a new one. (authLocalMgnt)',
@@ -96,22 +97,22 @@ async function verifySignupSetPassword (
     );
   }
 
-  const user2 = await eraseVerifyPropsSetPassword(
-    user1,
-    isDateAfterNow(user1.verifyExpires),
-    user1.verifyChanges || {},
+  const userErasedVerify = await eraseVerifyPropsSetPassword(
+    user,
+    isDateAfterNow(user.verifyExpires),
+    user.verifyChanges || {},
     password
   );
 
-  const user3 = await notify(notifier, 'verifySignupSetPassword', user2, notifierOptions);
-  return sanitizeUserForClient(user3);
+  const userResult = await notify(notifier, 'verifySignupSetPassword', userErasedVerify, notifierOptions);
+  return sanitizeUserForClient(userResult);
 
   async function eraseVerifyProps (
     user: User,
     isVerified: boolean,
-    verifyChanges: Record<string, any>
+    verifyChanges?: VerifyChanges
   ): Promise<User> {
-    const patchToUser = Object.assign({}, verifyChanges || {}, {
+    const patchData = Object.assign({}, verifyChanges || {}, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,
@@ -119,28 +120,28 @@ async function verifySignupSetPassword (
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchData);
     return result;
   }
 
   async function eraseVerifyPropsSetPassword (
     user: User,
     isVerified: boolean,
-    verifyChanges: Record<string, any>,
+    verifyChanges: VerifyChanges,
     password: string
   ): Promise<User> {
     const hashedPassword = await hashPassword(app, password, passwordField);
 
-    const patchToUser = Object.assign({}, verifyChanges || {}, {
+    const patchData = Object.assign({}, verifyChanges || {}, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,
       verifyExpires: null,
       verifyChanges: {},
-      password: hashedPassword
+      [passwordField]: hashedPassword
     });
 
-    const result = await usersService.patch(user[usersServiceId], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceId], patchData);
     return result;
   }
 }

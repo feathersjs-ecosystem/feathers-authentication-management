@@ -50,17 +50,17 @@ export default async function sendResetPwd (
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({ $limit: 2 }, identifyUser) });
-  const user1 = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const user = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
     // Use existing token when it's not hashed,
-    reuseResetToken && user1.resetToken && user1.resetToken.includes('___') &&
     // and remaining time exceeds half of resetDelay
-    isDateAfterNow(user1.resetExpires, resetDelay / 2)
+    reuseResetToken && user.resetToken && user.resetToken.includes('___') &&
+    isDateAfterNow(user.resetExpires, resetDelay / 2)
   ) {
-    await notify(notifier, 'sendResetPwd', user1, notifierOptions);
-    return sanitizeUserForClient(user1);
+    await notify(notifier, 'sendResetPwd', user, notifierOptions);
+    return sanitizeUserForClient(user);
   }
 
   const [resetToken, resetShortToken] = await Promise.all([
@@ -68,26 +68,26 @@ export default async function sendResetPwd (
     getShortToken(shortTokenLen, shortTokenDigits)
   ]);
 
-  const user2 = Object.assign(user1, {
+  Object.assign(user, {
     resetExpires: Date.now() + resetDelay,
     resetAttempts: resetAttempts,
-    resetToken: concatIDAndHash(user1[usersServiceId] as Id, resetToken),
+    resetToken: concatIDAndHash(user[usersServiceId] as Id, resetToken),
     resetShortToken: resetShortToken
   });
 
-  await notify(options.notifier, 'sendResetPwd', user2, notifierOptions);
+  await notify(options.notifier, 'sendResetPwd', user, notifierOptions);
 
   const [resetToken3, resetShortToken3] = await Promise.all([
-    reuseResetToken ? user2.resetToken : hashPassword(app, user2.resetToken, passwordField),
-    reuseResetToken ? user2.resetShortToken : hashPassword(app, user2.resetShortToken, passwordField)
+    reuseResetToken ? user.resetToken : hashPassword(app, user.resetToken, passwordField),
+    reuseResetToken ? user.resetShortToken : hashPassword(app, user.resetShortToken, passwordField)
   ]);
 
-  const user3 = await usersService.patch(user2[usersServiceId], {
-    resetExpires: user2.resetExpires,
-    resetAttempts: user2.resetAttempts,
+  const patchedUser = await usersService.patch(user[usersServiceId], {
+    resetExpires: user.resetExpires,
+    resetAttempts: user.resetAttempts,
     resetToken: resetToken3,
     resetShortToken: resetShortToken3
   });
 
-  return sanitizeUserForClient(user3);
+  return sanitizeUserForClient(patchedUser);
 }

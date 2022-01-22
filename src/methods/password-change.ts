@@ -44,21 +44,21 @@ export default async function passwordChange (
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: identifyUser });
-  const user1 = getUserData(users);
+  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const user = getUserData(users);
 
   try {
-    await comparePasswords(oldPassword, user1.password);
+    await comparePasswords(oldPassword, user.password);
   } catch (err) {
     throw new BadRequest('Current password is incorrect.', {
       errors: { oldPassword: 'Current password is incorrect.' }
     });
   }
 
-  const user2 = await usersService.patch(user1[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId], {
     password: await hashPassword(app, password, passwordField)
   });
 
-  const user3 = await notify(notifier, 'passwordChange', user2, notifierOptions);
-  return sanitizeUserForClient(user3);
+  const userResult = await notify(notifier, 'passwordChange', patchedUser, notifierOptions);
+  return sanitizeUserForClient(userResult);
 }
