@@ -6,20 +6,13 @@ import type {
   GetUserDataCheckProps
 } from '../types';
 
-export function getUserData (
-  data: UsersArrayOrPaginated,
-  checks?: GetUserDataCheckProps
-): User {
-  checks ??= [];
-  if (Array.isArray(data) ? data.length === 0 : data.total === 0) {
+function checkOneUser (users: User[]): User {
+  if (users.length === 0) {
     throw new BadRequest(
       'User not found.',
       { errors: { $className: 'badParams' } }
     );
   }
-
-  const users = Array.isArray(data) ? data : data.data;
-  const user = users[0];
 
   if (users.length !== 1) {
     throw new BadRequest(
@@ -27,6 +20,15 @@ export function getUserData (
       { errors: { $className: 'badParams' } }
     );
   }
+
+  return users[0];
+}
+
+function checkUserChecks (
+  user: User,
+  checks?: GetUserDataCheckProps
+): void {
+  checks = checks || [];
 
   if (
     checks.includes('isNotVerified') &&
@@ -78,6 +80,17 @@ export function getUserData (
       { errors: { $className: 'resetExpired' } }
     );
   }
+}
+
+export function getUserData (
+  data: UsersArrayOrPaginated,
+  checks?: GetUserDataCheckProps
+): User {
+  const users = Array.isArray(data) ? data : data.data;
+
+  const user = checkOneUser(users);
+
+  checkUserChecks(user, checks);
 
   return user;
 }

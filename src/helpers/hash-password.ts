@@ -1,5 +1,5 @@
 import { hooks as authLocalHooks } from '@feathersjs/authentication-local';
-import { Application, HookContext } from '@feathersjs/feathers';
+import type { Application, HookContext } from '@feathersjs/feathers';
 
 export async function hashPassword (
   app: Application,
