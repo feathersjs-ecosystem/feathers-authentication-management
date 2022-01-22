@@ -112,7 +112,7 @@ describe('password-change.ts', function () {
               }
               app.use("/users", new Service(optionsUsers))
 
-              app.configure(authLocalMgnt({}));
+              app.configure(authLocalMgnt());
               app.use("authManagement/password-change", new PasswordChangeService(app))
 
               app.setup();

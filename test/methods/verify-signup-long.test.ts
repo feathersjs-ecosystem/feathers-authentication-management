@@ -96,7 +96,7 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
-            app.configure(authLocalMgnt({}));
+            app.configure(authLocalMgnt());
             app.use("authManagement/verify-signup-long", new VerifySignupLongService(app));
             app.setup();
 

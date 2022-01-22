@@ -74,7 +74,7 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
-            app.configure(authLocalMgnt({}));
+            app.configure(authLocalMgnt());
             app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app))
 
             app.setup();

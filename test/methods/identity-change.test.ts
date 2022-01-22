@@ -70,7 +70,7 @@ const withAction = (
               optionsUsers.paginate = { default: 10, max: 50 };
             }
             app.use("/users", new Service(optionsUsers));
-            app.configure(authLocalMgnt({}));
+            app.configure(authLocalMgnt());
             app.use("authManagement/identity-change", new IdentityChangeService(app))
             app.setup();
             usersService = app.service('users');
