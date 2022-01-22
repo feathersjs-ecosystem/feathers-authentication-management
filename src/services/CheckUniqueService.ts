@@ -1,12 +1,12 @@
 import checkUnique from '../methods/check-unique';
-import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from '../options';
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+import type { Application } from '@feathersjs/feathers';
 
 import type {
   DataCheckUnique,
   CheckUniqueServiceOptions
 } from '../types';
-import { Application } from '@feathersjs/feathers';
 
 export class CheckUniqueService
   extends AuthenticationManagementBase<DataCheckUnique, null, CheckUniqueServiceOptions> {

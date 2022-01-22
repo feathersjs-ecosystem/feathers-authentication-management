@@ -1,5 +1,4 @@
 import { BadRequest } from '@feathersjs/errors';
-import { isNullsy } from '../helpers';
 import makeDebug from 'debug';
 
 import type { Id } from '@feathersjs/feathers';
@@ -27,22 +26,19 @@ export default async function checkUnique (
     service
   } = options;
 
-  ownId = ownId || null;
-  meta = meta || {};
-
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
   const errProps = [];
 
   const keys = Object.keys(identifyUser).filter(
-    key => !isNullsy(identifyUser[key])
+    key => identifyUser[key] != null
   );
 
   try {
     for (let i = 0, ilen = keys.length; i < ilen; i++) {
       const prop = keys[i];
       const params = { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 } };
-      if (!isNullsy(ownId)) {
+      if (ownId != null) {
         params.query[usersServiceId] = { $ne: ownId };
       }
       const users: UsersArrayOrPaginated = await usersService.find(params);
@@ -55,7 +51,7 @@ export default async function checkUnique (
     }
   } catch (err) {
     throw new BadRequest(
-      meta.noErrMsg ? null : 'checkUnique unexpected error.',
+      meta?.noErrMsg ? null : 'checkUnique unexpected error.',
       { errors: { msg: err.message, $className: 'unexpected' } }
     );
   }
@@ -65,7 +61,7 @@ export default async function checkUnique (
     errProps.forEach(prop => { errs[prop] = 'Already taken.'; });
 
     throw new BadRequest(
-      meta.noErrMsg ? null : 'Values already taken.',
+      meta?.noErrMsg ? null : 'Values already taken.',
       { errors: errs }
     );
   }

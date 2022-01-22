@@ -1,5 +1,5 @@
-import { HookContext } from '@feathersjs/feathers';
 import { checkContext, getItems, replaceItems } from 'feathers-hooks-common';
+import type { HookContext } from '@feathersjs/feathers';
 
 import type { User } from '../types';
 

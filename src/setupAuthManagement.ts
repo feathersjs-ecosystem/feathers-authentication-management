@@ -1,9 +1,9 @@
 import makeDebug from 'debug';
-import type { Application } from '@feathersjs/feathers';
 
 import { AuthenticationManagementService } from './services/AuthenticationManagementService';
 import { defaultPath, makeDefaultOptions } from './options';
-import { AuthenticationManagementSetupOptions } from './types';
+import type { AuthenticationManagementSetupOptions } from './types';
+import type { Application } from '@feathersjs/feathers';
 
 const debug = makeDebug('authLocalMgnt:service');
 

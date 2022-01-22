@@ -1,12 +1,12 @@
 import { makeDefaultOptions } from '../options';
 import { verifySignupWithShortToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
-
-import {
+import type {
   DataVerifySignupShort,
   SanitizedUser,
   VerifySignupShortServiceOptions
 } from '../types';
+
 import type { Application } from '@feathersjs/feathers';
 
 export class VerifySignupShortService

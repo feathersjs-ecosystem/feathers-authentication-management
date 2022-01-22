@@ -2,13 +2,13 @@ import { makeDefaultOptions } from '../options';
 
 import { verifySignupWithLongToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
+import type { Application } from '@feathersjs/feathers';
 
 import type {
   DataVerifySignupLong,
   SanitizedUser,
   VerifySignupLongServiceOptions
 } from '../types';
-import { Application } from '@feathersjs/feathers';
 
 export class VerifySignupLongService
   extends AuthenticationManagementBase<DataVerifySignupLong, SanitizedUser, VerifySignupLongServiceOptions> {

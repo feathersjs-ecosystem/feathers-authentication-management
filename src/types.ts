@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { Application, Id, Paginated, Query } from '@feathersjs/feathers';
 
 //#region general
@@ -7,7 +9,7 @@ export interface User {
   verifyToken: string
   verifyShortToken: string
   verifyExpires: Date | number // unix
-  verifyChanges: Record<string, any>
+  verifyChanges: VerifyChanges
   resetToken: string
   resetShortToken: string
   resetExpires: Date | number // unix
@@ -21,6 +23,7 @@ export type ArrayOrPaginated<T> = T[] | Paginated<T>;
 
 export type UsersArrayOrPaginated = ArrayOrPaginated<User>;
 export type NotifierOptions = Record<string, any>;
+export type VerifyChanges = Record<string, any>;
 
 export interface Tokens {
   resetToken?: string

@@ -1,7 +1,6 @@
 import makeDebug from 'debug';
 import { BadRequest } from '@feathersjs/errors';
 
-import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 import { makeDefaultOptions } from '../options';
 import checkUnique from '../methods/check-unique';
 import identityChange from '../methods/identity-change';
@@ -17,6 +16,7 @@ import {
   verifySignupSetPasswordWithLongToken,
   verifySignupSetPasswordWithShortToken
 } from '../methods/verify-signup-set-password';
+import { AuthenticationManagementBase } from './AuthenticationManagementBase';
 
 import type {
   AuthenticationManagementData,

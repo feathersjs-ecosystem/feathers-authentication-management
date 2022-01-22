@@ -1,11 +1,11 @@
 // Wrapper for client interface to feathers-authenticate-management
 
+import { defaultPath } from './options';
 import type { AuthenticationClient } from '@feathersjs/authentication-client';
 import type { Application, Id } from '@feathersjs/feathers';
-import { defaultPath } from './options';
 import type { AuthenticationManagementService } from './services';
 
-import {
+import type {
   AuthenticationManagementClient,
   IdentifyUser,
   User,
