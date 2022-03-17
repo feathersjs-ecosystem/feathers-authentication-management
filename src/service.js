@@ -52,8 +52,10 @@ function authenticationLocalManagement (options1 = {}, docs = {}) {
 
 function authLocalMgntMethods (options) {
   return {
-    async create (data) {
+    async create (data, params) {
       debug(`create called. action=${data.action}`);
+
+      let {provider: _, query: __, ...passedParams} = params;
 
       switch (data.action) {
         case 'checkUnique':
@@ -62,7 +64,8 @@ function authLocalMgntMethods (options) {
               options,
               data.value,
               data.ownId || null,
-              data.meta || {}
+              data.meta || {},
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err); // support both async and Promise interfaces
@@ -72,7 +75,8 @@ function authLocalMgntMethods (options) {
             return await resendVerifySignup(
               options,
               data.value,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -82,7 +86,8 @@ function authLocalMgntMethods (options) {
             return await verifySignupWithLongToken(
               options,
               data.value,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -93,7 +98,8 @@ function authLocalMgntMethods (options) {
               options,
               data.value.token,
               data.value.user,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -105,7 +111,8 @@ function authLocalMgntMethods (options) {
               data.value.token,
               data.value.password,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -118,7 +125,8 @@ function authLocalMgntMethods (options) {
               data.value.user,
               data.value.password,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -129,7 +137,8 @@ function authLocalMgntMethods (options) {
               options,
               data.value,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -141,7 +150,8 @@ function authLocalMgntMethods (options) {
               data.value.token,
               data.value.password,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -154,7 +164,8 @@ function authLocalMgntMethods (options) {
               data.value.user,
               data.value.password,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -167,7 +178,8 @@ function authLocalMgntMethods (options) {
               data.value.oldPassword,
               data.value.password,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);
@@ -180,7 +192,8 @@ function authLocalMgntMethods (options) {
               data.value.password,
               data.value.changes,
               passwordField,
-              data.notifierOptions
+              data.notifierOptions,
+              passedParams,
             );
           } catch (err) {
             return Promise.reject(err);

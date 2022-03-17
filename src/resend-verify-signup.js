@@ -10,7 +10,7 @@ const debug = makeDebug('authLocalMgnt:resendVerifySignup');
 
 // {email}, {cellphone}, {verifyToken}, {verifyShortToken},
 // {email, cellphone, verifyToken, verifyShortToken}
-module.exports = async function resendVerifySignup (options, identifyUser, notifierOptions) {
+module.exports = async function resendVerifySignup (options, identifyUser, notifierOptions = {}, params = {}) {
   debug('identifyUser=', identifyUser);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -19,7 +19,7 @@ module.exports = async function resendVerifySignup (options, identifyUser, notif
     options.identifyUserProps.concat('verifyToken', 'verifyShortToken')
   );
 
-  const users = await usersService.find({ query: identifyUser });
+  const users = await usersService.find({ ...params, query: identifyUser });
   const user1 = getUserData(users, ['isNotVerified']);
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
@@ -27,7 +27,7 @@ module.exports = async function resendVerifySignup (options, identifyUser, notif
     verifyExpires: Date.now() + options.delay,
     verifyToken: await getLongToken(options.longTokenLen),
     verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits)
-  });
+  }, params);
 
   const user3 = await notifier(options.notifier, 'resendVerifySignup', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);

@@ -12,7 +12,7 @@ const debug = makeDebug('authLocalMgnt:identityChange');
 
 module.exports = identityChange;
 
-async function identityChange (options, identifyUser, password, changesIdentifyUser, notifierOptions = {}) {
+async function identityChange (options, identifyUser, password, changesIdentifyUser, notifierOptions = {}, params = {}) {
   // note this call does not update the authenticated user info in hooks.params.user.
   debug('identityChange', password, changesIdentifyUser);
   const usersService = options.app.service(options.service);
@@ -21,7 +21,7 @@ async function identityChange (options, identifyUser, password, changesIdentifyU
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
   ensureObjPropsValid(changesIdentifyUser, options.identifyUserProps);
 
-  const users = await usersService.find({ query: identifyUser });
+  const users = await usersService.find({ ...params, query: identifyUser });
   const user1 = getUserData(users);
 
   try {
@@ -37,7 +37,7 @@ async function identityChange (options, identifyUser, password, changesIdentifyU
     verifyToken: await getLongToken(options.longTokenLen),
     verifyShortToken: await getShortToken(options.shortTokenLen, options.shortTokenDigits),
     verifyChanges: changesIdentifyUser
-  });
+  }, params);
 
   const user3 = await notifier(options.notifier, 'identityChange', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);

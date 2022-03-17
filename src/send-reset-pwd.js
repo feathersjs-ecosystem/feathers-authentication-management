@@ -11,14 +11,14 @@ const debug = makeDebug('authLocalMgnt:sendResetPwd');
 
 module.exports = sendResetPwd;
 
-async function sendResetPwd (options, identifyUser, field, notifierOptions = {}) {
+async function sendResetPwd (options, identifyUser, field, notifierOptions = {}, params = {}) {
   debug('sendResetPwd');
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
 
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const users = await usersService.find({ query: identifyUser });
+  const users = await usersService.find({ ...params, query: identifyUser });
   const user1 = getUserData(users, options.skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
@@ -50,7 +50,7 @@ async function sendResetPwd (options, identifyUser, field, notifierOptions = {})
       options.reuseResetToken
         ? user2.resetShortToken
         : await hashPassword(options.app, user2.resetShortToken, field)
-  });
+  }, params);
 
   return options.sanitizeUserForClient(user3);
 }
