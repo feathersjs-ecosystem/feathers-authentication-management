@@ -36,7 +36,11 @@ const optionsDefault = {
   resetAttempts: 0,
   reuseResetToken: false,
   identifyUserProps: ['email'],
-  sanitizeUserForClient
+  sanitizeUserForClient,
+  passParams: async (params) => {
+    let {provider: _, query: __, ...passedParams} = params;
+    return passedParams;
+  }
 };
 
 module.exports = authenticationLocalManagement;
@@ -55,7 +59,7 @@ function authLocalMgntMethods (options) {
     async create (data, params) {
       debug(`create called. action=${data.action}`);
 
-      let {provider: _, query: __, ...passedParams} = params;
+      let passedParams = await options.passParams(params);
 
       switch (data.action) {
         case 'checkUnique':
