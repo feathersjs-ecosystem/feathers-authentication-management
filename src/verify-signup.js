@@ -13,27 +13,27 @@ module.exports = {
   verifySignupWithShortToken
 };
 
-async function verifySignupWithLongToken (options, verifyToken, notifierOptions = {}) {
+async function verifySignupWithLongToken (options, verifyToken, notifierOptions = {}, params = {}) {
   ensureValuesAreStrings(verifyToken);
 
-  const result = await verifySignup(options, { verifyToken }, { verifyToken }, notifierOptions);
+  const result = await verifySignup(options, { verifyToken }, { verifyToken }, notifierOptions, params);
   return result;
 }
 
-async function verifySignupWithShortToken (options, verifyShortToken, identifyUser, notifierOptions = {}) {
+async function verifySignupWithShortToken (options, verifyShortToken, identifyUser, notifierOptions = {}, params = {}) {
   ensureValuesAreStrings(verifyShortToken);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const result = await verifySignup(options, identifyUser, { verifyShortToken }, notifierOptions);
+  const result = await verifySignup(options, identifyUser, { verifyShortToken }, notifierOptions, params);
   return result;
 }
 
-async function verifySignup (options, query, tokens, notifierOptions = {}) {
+async function verifySignup (options, query, tokens, notifierOptions = {}, params = {}) {
   debug('verifySignup', query, tokens);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
 
-  const users = await usersService.find({ query });
+  const users = await usersService.find({ ...params, query });
   const user1 = getUserData(users, ['isNotVerifiedOrHasVerifyChanges', 'verifyNotExpired']);
 
   if (!Object.keys(tokens).every(key => tokens[key] === user1[key])) {
@@ -57,7 +57,7 @@ async function verifySignup (options, query, tokens, notifierOptions = {}) {
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceIdName], patchToUser, {});
+    const result = await usersService.patch(user[usersServiceIdName], patchToUser, params);
     return result;
   }
 }

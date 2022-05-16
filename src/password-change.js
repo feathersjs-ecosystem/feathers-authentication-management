@@ -12,7 +12,7 @@ const debug = makeDebug('authLocalMgnt:passwordChange');
 
 module.exports = passwordChange;
 
-async function passwordChange (options, identifyUser, oldPassword, password, field, notifierOptions = {}) {
+async function passwordChange (options, identifyUser, oldPassword, password, field, notifierOptions = {}, params = {}) {
   debug('passwordChange', oldPassword, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -20,7 +20,7 @@ async function passwordChange (options, identifyUser, oldPassword, password, fie
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
-  const users = await usersService.find({ query: identifyUser });
+  const users = await usersService.find({ ...params, query: identifyUser });
   const user1 = getUserData(users);
 
   try {
@@ -33,7 +33,7 @@ async function passwordChange (options, identifyUser, oldPassword, password, fie
 
   const user2 = await usersService.patch(user1[usersServiceIdName], {
     password: await hashPassword(options.app, password, field)
-  });
+  }, params);
 
   const user3 = await notifier(options.notifier, 'passwordChange', user2, notifierOptions);
   return options.sanitizeUserForClient(user3);
