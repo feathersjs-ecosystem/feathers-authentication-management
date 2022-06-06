@@ -192,7 +192,6 @@ function authLocalMgntMethods (options) {
               data.value.user,
               data.value.password,
               data.value.changes,
-              passwordField,
               data.notifierOptions,
               passedParams,
             );
