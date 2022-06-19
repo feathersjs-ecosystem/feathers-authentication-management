@@ -21,8 +21,9 @@
     "verification"
   ],
   "author": {
-    "name": "John Szwaronek & contributors",
-    "email": "johnsz9999@gmail.com"
+    "name": "Feathers contributors",
+    "email": "hello@feathersjs.com",
+    "url": "https://feathersjs.com"
   },
   "engines": {
     "node": ">= 10"
