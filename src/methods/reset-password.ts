@@ -9,6 +9,7 @@ import {
   hashPassword,
   notify
 } from '../helpers';
+import type { Params } from '@feathersjs/feathers';
 
 import type {
   UsersArrayOrPaginated,
@@ -27,7 +28,8 @@ export async function resetPwdWithLongToken (
   options: ResetPasswordOptions,
   resetToken: string,
   password: string,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetToken, password);
 
@@ -36,7 +38,8 @@ export async function resetPwdWithLongToken (
     { resetToken },
     { resetToken },
     password,
-    notifierOptions
+    notifierOptions,
+    params
   );
 }
 
@@ -45,7 +48,8 @@ export async function resetPwdWithShortToken (
   resetShortToken: string,
   identifyUser: IdentifyUser,
   password: string,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -55,7 +59,8 @@ export async function resetPwdWithShortToken (
     identifyUser,
     { resetShortToken },
     password,
-    notifierOptions
+    notifierOptions,
+    params
   );
 }
 
@@ -64,9 +69,15 @@ async function resetPassword (
   identifyUser: IdentifyUser,
   tokens: Tokens,
   password: string,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   debug('resetPassword', identifyUser, tokens, password);
+
+  if (params && "query" in params) {
+    params = Object.assign({}, params);
+    delete params.query;
+  }
 
   const {
     app,
@@ -84,10 +95,16 @@ async function resetPassword (
 
   if (tokens.resetToken) {
     const id = deconstructId(tokens.resetToken);
-    const user = await usersService.get(id);
+    const user = await usersService.get(id, Object.assign({}, params));
     users = [user];
   } else if (tokens.resetShortToken) {
-    users = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+    users = await usersService.find(
+      Object.assign(
+        {},
+        params,
+      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
+      )
+    );
   } else {
     throw new BadRequest(
       'resetToken and resetShortToken are missing. (authLocalMgnt)',
@@ -127,7 +144,7 @@ async function resetPassword (
     if (user.resetAttempts > 0) {
       await usersService.patch(user[usersServiceId], {
         resetAttempts: user.resetAttempts - 1
-      });
+      }, Object.assign({}, params));
 
       throw err;
     } else {
@@ -136,7 +153,7 @@ async function resetPassword (
         resetAttempts: null,
         resetShortToken: null,
         resetExpires: null
-      });
+      }, Object.assign({}, params));
 
       throw new BadRequest(
         'Invalid token. Get for a new one. (authLocalMgnt)',
@@ -150,7 +167,7 @@ async function resetPassword (
     resetAttempts: null,
     resetToken: null,
     resetShortToken: null
-  });
+  }, Object.assign({}, params));
 
   const userResult = await notify(notifier, 'resetPwd', patchedUser, notifierOptions);
   return sanitizeUserForClient(userResult);

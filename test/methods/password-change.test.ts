@@ -1,6 +1,6 @@
 import assert from 'assert';
 import bcrypt from 'bcryptjs';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataPasswordChange,
@@ -80,18 +80,18 @@ describe('password-change.ts', function () {
     ['paginated', 'non-paginated'].forEach(pagination => {
       [{
         name: "authManagement.create",
-        callMethod: (app: Application, data: DataPasswordChange) => {
-          return app.service("authManagement").create(withAction(data));
+        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+          return app.service("authManagement").create(withAction(data), params);
         }
       }, {
         name: "authManagement.passwordChange",
-        callMethod: (app: Application, data: DataPasswordChange) => {
-          return app.service("authManagement").passwordChange(data);
+        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+          return app.service("authManagement").passwordChange(data, params);
         }
       }, {
         name: "authManagement/password-change",
-        callMethod: (app: Application, data: DataPasswordChange) => {
-          return app.service("authManagement/password-change").create(data);
+        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+          return app.service("authManagement/password-change").create(data, params);
         }
       }].forEach(({ name, callMethod }) => {
         describe(`password-change.test.ts ${idType} ${pagination} ${name}`, () => {
@@ -112,8 +112,24 @@ describe('password-change.ts', function () {
               }
               app.use("/users", new Service(optionsUsers))
 
-              app.configure(authLocalMgnt());
-              app.use("authManagement/password-change", new PasswordChangeService(app))
+              app.service("/users").hooks({
+                before: {
+                  all: [
+                    context => {
+                      if (context.params?.call && "count" in context.params.call) {
+                        context.params.call.count++;
+                      }
+                    }
+                  ]
+                }
+              })
+
+              app.configure(authLocalMgnt({
+                passParams: params => params
+              }));
+              app.use("authManagement/password-change", new PasswordChangeService(app, {
+                passParams: params => params
+              }))
 
               app.setup();
 
@@ -171,6 +187,22 @@ describe('password-change.ts', function () {
               } catch (err) {
                 assert.strictEqual(err.message, 'Current password is incorrect.');
               }
+            });
+
+            it('can use "passParams"', async () => {
+              const userRec = clone(users[1]);
+
+              const params = { call: { count: 0 } };
+
+              const result = await callMethod(app, {
+                user: {
+                  email: userRec.email
+                },
+                oldPassword: userRec.plainPassword,
+                password: userRec.plainNewPassword
+              }, params);
+
+              assert.ok(params.call.count > 0, 'hook not called');
             });
           });
 

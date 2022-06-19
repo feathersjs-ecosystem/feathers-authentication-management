@@ -8,7 +8,7 @@ import type {
   PasswordChangeOptions,
   PasswordChangeServiceOptions
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 export class PasswordChangeService
   extends AuthenticationManagementBase<DataPasswordChange, SanitizedUser, PasswordChangeServiceOptions> {
@@ -20,18 +20,22 @@ export class PasswordChangeService
       'notifier',
       'identifyUserProps',
       'sanitizeUserForClient',
-      'passwordField'
+      'passwordField',
+      'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataPasswordChange): Promise<SanitizedUser> {
+  async _create (data: DataPasswordChange, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await passwordChange(
       this.optionsWithApp,
       data.user,
       data.oldPassword,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

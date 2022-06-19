@@ -1,6 +1,6 @@
 
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
 import authLocalMgnt, {
@@ -40,18 +40,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.verifySignupSetPasswordLong",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
-        return app.service("authManagement").verifySignupSetPasswordLong(data);
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+        return app.service("authManagement").verifySignupSetPasswordLong(data, params);
       }
     }, {
       name: "authManagement/verify-signup-set-password-long",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong) => {
-        return app.service("authManagement/verify-signup-set-password-long").create(data);
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+        return app.service("authManagement/verify-signup-set-password-long").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`verify-signup-set-password-long.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -74,8 +74,24 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
-            app.configure(authLocalMgnt());
-            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app))
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
+
+            app.configure(authLocalMgnt({
+              passParams: params => params
+            }));
+            app.use("authManagement/verify-signup-set-password-long", new VerifySignupSetPasswordLongService(app, {
+              passParams: params => params
+            }))
 
             app.setup();
 
@@ -175,6 +191,18 @@ const withAction = (
             } catch (err) {
               assert.strictEqual(err.message, 'User not found.');
             }
+          });
+
+          it('can use "passParams"', async () => {
+            const password = '123456';
+            const params = { call: { count: 0 } };
+
+            const result = await callMethod(app, {
+              token: '000',
+              password
+            }, params);
+
+            assert.ok(params.call.count > 0, 'params.call.count not incremented');
           });
         });
 

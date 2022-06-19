@@ -25,7 +25,8 @@ export const optionsDefault: AuthenticationManagementServiceOptions = {
   identifyUserProps: ['email'],
   sanitizeUserForClient,
   skipIsVerifiedCheck: false,
-  passwordField: 'password'
+  passwordField: 'password',
+  passParams: undefined
 };
 
 export function makeDefaultOptions<K extends keyof AuthenticationManagementServiceOptions> (

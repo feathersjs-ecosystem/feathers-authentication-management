@@ -11,7 +11,7 @@ import {
   isDateAfterNow
 } from '../helpers';
 
-import type { Id } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 import type {
   IdentifyUser,
   SanitizedUser,
@@ -25,9 +25,15 @@ const debug = makeDebug('authLocalMgnt:sendResetPwd');
 export default async function sendResetPwd (
   options: SendResetPwdOptions,
   identifyUser: IdentifyUser,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   debug('sendResetPwd');
+
+  if (params && "query" in params) {
+    params = Object.assign({}, params);
+    delete params.query;
+  }
 
   const {
     app,
@@ -50,7 +56,13 @@ export default async function sendResetPwd (
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const users: UsersArrayOrPaginated = await usersService.find(
+    Object.assign(
+      {},
+      params,
+      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
+    )
+  );
   const user = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (
@@ -87,7 +99,7 @@ export default async function sendResetPwd (
     resetAttempts: user.resetAttempts,
     resetToken: resetToken3,
     resetShortToken: resetShortToken3
-  });
+  }, Object.assign({}, params));
 
   return sanitizeUserForClient(patchedUser);
 }

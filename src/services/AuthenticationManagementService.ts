@@ -46,7 +46,7 @@ import type {
   DataVerifySignupSetPasswordShort,
   DataVerifySignupShort
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 const debug = makeDebug('authLocalMgnt:service');
 
@@ -64,148 +64,181 @@ export class AuthenticationManagementService
     this.options = Object.assign({}, defaultOptions, options);
   }
 
-  async _checkUnique (data: DataCheckUnique): Promise<unknown> {
+  async _checkUnique (data: DataCheckUnique, params?: Params): Promise<unknown> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await checkUnique(
       this.optionsWithApp,
       data.user,
       data.ownId,
-      data.meta
+      data.meta,
+      passedParams
     );
   }
 
-  async checkUnique (data: DataCheckUnique): Promise<unknown> {
-    return await this._checkUnique(data);
+  async checkUnique (data: DataCheckUnique, params?: Params): Promise<unknown> {
+    return await this._checkUnique(data, params);
   }
 
-  async _identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
+  async _identityChange (data: DataIdentityChange, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await identityChange(
       this.optionsWithApp,
       data.user,
       data.password,
       data.changes,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async identityChange (data: DataIdentityChange): Promise<SanitizedUser> {
-    return await this._identityChange(data);
+  async identityChange (data: DataIdentityChange, params?: Params): Promise<SanitizedUser> {
+    return await this._identityChange(data, params);
   }
 
-  async _passwordChange (data: DataPasswordChange): Promise<SanitizedUser> {
+  async _passwordChange (data: DataPasswordChange, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await passwordChange(
       this.optionsWithApp,
       data.user,
       data.oldPassword,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async passwordChange (data: DataPasswordChange): Promise<SanitizedUser> {
-    return await this._passwordChange(data);
+  async passwordChange (data: DataPasswordChange, params?: Params): Promise<SanitizedUser> {
+    return await this._passwordChange(data, params);
   }
 
-  async _resendVerifySignup (data: DataResendVerifySignup): Promise<SanitizedUser> {
+  async _resendVerifySignup (data: DataResendVerifySignup, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await resendVerifySignup(
       this.optionsWithApp,
       data.user,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async resendVerifySignup (data: DataResendVerifySignup): Promise<SanitizedUser> {
-    return await this._resendVerifySignup(data);
+  async resendVerifySignup (data: DataResendVerifySignup, params?: Params): Promise<SanitizedUser> {
+    return await this._resendVerifySignup(data, params);
   }
 
-  async _resetPasswordLong (data: DataResetPwdLong): Promise<SanitizedUser> {
+  async _resetPasswordLong (data: DataResetPwdLong, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await resetPwdWithLongToken(
       this.optionsWithApp,
       data.token,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async resetPasswordLong (data: DataResetPwdLong): Promise<SanitizedUser> {
-    return await this._resetPasswordLong(data);
+  async resetPasswordLong (data: DataResetPwdLong, params?: Params): Promise<SanitizedUser> {
+    return await this._resetPasswordLong(data, params);
   }
 
-  async _resetPasswordShort (data: DataResetPwdShort): Promise<SanitizedUser> {
+  async _resetPasswordShort (data: DataResetPwdShort, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await resetPwdWithShortToken(
       this.optionsWithApp,
       data.token,
       data.user,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async resetPasswordShort (data: DataResetPwdShort): Promise<SanitizedUser> {
-    return await this._resetPasswordShort(data);
+  async resetPasswordShort (data: DataResetPwdShort, params?: Params): Promise<SanitizedUser> {
+    return await this._resetPasswordShort(data, params);
   }
 
-  async _sendResetPassword (data: DataSendResetPwd): Promise<SanitizedUser> {
+  async _sendResetPassword (data: DataSendResetPwd, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await sendResetPwd(
       this.optionsWithApp,
       data.user,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async sendResetPassword (data: DataSendResetPwd): Promise<SanitizedUser> {
-    return await this._sendResetPassword(data);
+  async sendResetPassword (data: DataSendResetPwd, params?: Params): Promise<SanitizedUser> {
+    return await this._sendResetPassword(data, params);
   }
 
-  async _verifySignupLong (data: DataVerifySignupLong): Promise<SanitizedUser> {
+  async _verifySignupLong (data: DataVerifySignupLong, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupWithLongToken(
       this.optionsWithApp,
       data.token,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async verifySignupLong (data: DataVerifySignupLong): Promise<SanitizedUser> {
-    return await this._verifySignupLong(data);
+  async verifySignupLong (data: DataVerifySignupLong, params?: Params): Promise<SanitizedUser> {
+    return await this._verifySignupLong(data, params);
   }
 
-  async _verifySignupShort (data: DataVerifySignupShort): Promise<SanitizedUser> {
+  async _verifySignupShort (data: DataVerifySignupShort, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupWithShortToken(
       this.optionsWithApp,
       data.token,
       data.user,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async verifySignupShort (data: DataVerifySignupShort): Promise<SanitizedUser> {
-    return await this._verifySignupShort(data);
+  async verifySignupShort (data: DataVerifySignupShort, params?: Params): Promise<SanitizedUser> {
+    return await this._verifySignupShort(data, params);
   }
 
-  async _verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
+  async _verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupSetPasswordWithLongToken(
       this.optionsWithApp,
       data.token,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong): Promise<SanitizedUser> {
-    return await this._verifySignupSetPasswordLong(data);
+  async verifySignupSetPasswordLong (data: DataVerifySignupSetPasswordLong, params?: Params): Promise<SanitizedUser> {
+    return await this._verifySignupSetPasswordLong(data, params);
   }
 
-  async _verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
+  async _verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupSetPasswordWithShortToken(
       this.optionsWithApp,
       data.token,
       data.user,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 
-  async verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
-    return await this._verifySignupSetPasswordShort(data);
+  async verifySignupSetPasswordShort (data: DataVerifySignupSetPasswordShort, params?: Params): Promise<SanitizedUser> {
+    return await this._verifySignupSetPasswordShort(data, params);
   }
 
   /**
@@ -215,84 +248,83 @@ export class AuthenticationManagementService
    * @param data.ownId excludes your current user from the search
    * @param data.meta.noErrMsg if return an error.message if not unique
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async _create ({ action, value, ownId, meta }: DataCheckUniqueWithAction): Promise<null>
+  async _create (data: DataCheckUniqueWithAction, params?: Params): Promise<null>;
   /**
    * change communications
    * @param action action is 'identityChange'
    * @param value { changes, password, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataIdentityChangeWithAction): Promise<SanitizedUser>
+  async _create (data: DataIdentityChangeWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * change password
    * @param action action is 'passwordChange'
    * @param value { oldPassword, password, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataPasswordChangeWithAction): Promise<SanitizedUser>
+  async _create (data: DataPasswordChangeWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * resend sign up verification notification
    * @param action action is 'resendVerifySignup'
    * @param value {IdentifyUser} the user with properties, e.g. {email}, {token: verifyToken}
    * @param notifierOptions options passed to options.notifier
    */
-  async _create ({ action, value, notifierOptions }: DataResendVerifySignupWithAction): Promise<SanitizedUser>
+  async _create (data: DataResendVerifySignupWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * forgotten password verification with long token
    * @param action action is 'resetPwdLong'
    * @param value { password, token, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataResetPwdLongWithAction): Promise<SanitizedUser>
+  async _create (data: DataResetPwdLongWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * forgotten password verification with short token
    * @param action action is 'resetPwdShort'
    * @param value { password, token, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataResetPwdShortWithAction): Promise<SanitizedUser>
+  async _create (data: DataResetPwdShortWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * send forgotten password notification
    * @param action action is 'sendResetPwd'
    * @param value { password, token }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataSendResetPwdWithAction): Promise<SanitizedUser>
+  async _create (data: DataSendResetPwdWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * sign up or identityChange verification with long token
    * @param action action is 'verifySignupLong'
    * @param value // compares to user.verifyToken
    * @param notifierOptions options passed to options.notifier
    */
-  async _create ({ action, value, notifierOptions }: DataVerifySignupLongWithAction): Promise<SanitizedUser>
+  async _create (data: DataVerifySignupLongWithAction): Promise<SanitizedUser>;
   /**
    * sign up or identityChange verification with short token
    * @param action action is 'verifySignupShort'
    * @param value { token, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataVerifySignupShortWithAction): Promise<SanitizedUser>
+  async _create (data: DataVerifySignupShortWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * sign up verification and set password  with long token
    * @param action action is 'verifySignupSetPasswordLong'
    * @param value { password, token }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataVerifySignupSetPasswordLongWithAction): Promise<SanitizedUser>
+  async _create (data: DataVerifySignupSetPasswordLongWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * sign up verification and set password with short token
    * @param action action is 'verifySignupSetPasswordShort'
    * @param value { password, token, user }
    * @param notifierOptions
    */
-  async _create ({ action, value, notifierOptions }: DataVerifySignupSetPasswordShortWithAction): Promise<SanitizedUser>
+  async _create (data: DataVerifySignupSetPasswordShortWithAction, params?: Params): Promise<SanitizedUser>;
   /**
    * get options for AuthenticationManagement
    * @param action action is 'options'
    */
-  async _create ({ action }: DataOptions): Promise<AuthenticationManagementServiceOptions>
-  async _create (data: AuthenticationManagementData): Promise<AllResultTypes> {
+  async _create (data: DataOptions, params?: Params): Promise<AuthenticationManagementServiceOptions>;
+  async _create (data: AuthenticationManagementData, params?: Params): Promise<AllResultTypes> {
     debug(`create called. action=${data.action}`);
 
     try {
@@ -301,68 +333,68 @@ export class AuthenticationManagementService
           user: data.value,
           meta: data.meta,
           ownId: data.ownId
-        });
+        }, params);
       } else if (data.action === 'resendVerifySignup') {
         return await this._resendVerifySignup({
           user: data.value,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'verifySignupLong') {
         return await this._verifySignupLong({
           token: data.value,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'verifySignupShort') {
         return await this._verifySignupShort({
           token: data.value.token,
           user: data.value.user,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'verifySignupSetPasswordLong') {
         return await this._verifySignupSetPasswordLong({
           password: data.value.password,
           token: data.value.token,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'verifySignupSetPasswordShort') {
         return await this._verifySignupSetPasswordShort({
           password: data.value.password,
           token: data.value.token,
           user: data.value.user,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'sendResetPwd') {
         return await this._sendResetPassword({
           user: data.value,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'resetPwdLong') {
         return await this._resetPasswordLong({
           password: data.value.password,
           token: data.value.token,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'resetPwdShort') {
         return await this._resetPasswordShort({
           password: data.value.password,
           token: data.value.token,
           user: data.value.user,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'passwordChange') {
         return await this._passwordChange({
           oldPassword: data.value.oldPassword,
           password: data.value.password,
           user: data.value.user,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'identityChange') {
         return await this._identityChange({
           changes: data.value.changes,
           password: data.value.password,
           user: data.value.user,
           notifierOptions: data.notifierOptions
-        });
+        }, params);
       } else if (data.action === 'options') {
         return this.options;
       }

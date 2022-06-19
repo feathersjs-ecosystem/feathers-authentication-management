@@ -7,6 +7,7 @@ import {
   notify,
   isDateAfterNow
 } from '../helpers';
+import type { Params } from '@feathersjs/feathers';
 
 import type {
   SanitizedUser,
@@ -24,7 +25,8 @@ const debug = makeDebug('authLocalMgnt:verifySignup');
 export async function verifySignupWithLongToken (
   options: VerifySignupOptions,
   verifyToken: string,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyToken);
 
@@ -32,7 +34,8 @@ export async function verifySignupWithLongToken (
     options,
     { verifyToken },
     { verifyToken },
-    notifierOptions
+    notifierOptions,
+    params
   );
   return result;
 }
@@ -41,7 +44,8 @@ export async function verifySignupWithShortToken (
   options: VerifySignupWithShortTokenOptions,
   verifyShortToken: string,
   identifyUser: IdentifyUser,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   ensureValuesAreStrings(verifyShortToken);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
@@ -50,7 +54,8 @@ export async function verifySignupWithShortToken (
     options,
     identifyUser,
     { verifyShortToken },
-    notifierOptions
+    notifierOptions,
+    params
   );
   return result;
 }
@@ -59,9 +64,15 @@ async function verifySignup (
   options: VerifySignupOptions,
   identifyUser: IdentifyUser,
   tokens: Tokens,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   debug('verifySignup', identifyUser, tokens);
+
+  if (params && "query" in params) {
+    params = Object.assign({}, params);
+    delete params.query;
+  }
 
   const {
     app,
@@ -73,7 +84,13 @@ async function verifySignup (
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
 
-  const users = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const users = await usersService.find(
+    Object.assign(
+      {},
+      params,
+      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
+    )
+  );
   const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
@@ -89,7 +106,12 @@ async function verifySignup (
       { errors: { $className: 'badParam' } }
     );
   } else {
-    userErasedVerify = await eraseVerifyProps(user, isDateAfterNow(user.verifyExpires), user.verifyChanges || {});
+    userErasedVerify = await eraseVerifyProps(
+      user,
+      isDateAfterNow(user.verifyExpires),
+      user.verifyChanges || {},
+      params
+    );
   }
 
   const userResult = await notify(notifier, 'verifySignup', userErasedVerify, notifierOptions);
@@ -98,7 +120,8 @@ async function verifySignup (
   async function eraseVerifyProps (
     user: User,
     isVerified: boolean,
-    verifyChanges?: VerifyChanges
+    verifyChanges?: VerifyChanges,
+    params?: Params
   ): Promise<User> {
     const patchData = Object.assign({}, verifyChanges || {}, {
       isVerified,
@@ -108,7 +131,11 @@ async function verifySignup (
       verifyChanges: {}
     });
 
-    const result = await usersService.patch(user[usersServiceId], patchData, {});
+    const result = await usersService.patch(
+      user[usersServiceId],
+      patchData,
+      Object.assign({}, params)
+    );
     return result;
   }
 }

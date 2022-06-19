@@ -30,35 +30,36 @@ Possible `options` are:
 
 | Field                   | Field Type                              | Description                                                                         |
 | ----------------------- | --------------------------------------- | ----------------------------------------------------------------------------------- |
-| `service`               | String                                  | The path of the service for user items, e.g. `/users` (default) or `/organization`. |
-| `skipIsVerifiedCheck`   | Boolean                                 | If `false` (default) it is impossible to reset passwords even if e-mail is not verified. |
+| `service`               | `string`                                  | The path of the service for user items, e.g. `/users` (default) or `/organization`. |
+| `skipIsVerifiedCheck`   | `boolean`                                 | If `false` (default) it is impossible to reset passwords even if e-mail is not verified. |
 | `sanitizeUserForClient` | User object                             | By default, **THE USER OBJECT IS IN THE RESPONSE** e. g. of a password reset request. To reply with empty object use `sanitizeUserForClient: () => ({})`. |
 | `notifier`              | `function(type, user, notifierOptions)` | Returns a Promise with the [notifier function](#notifier-function). |
-| `longTokenLen`          | Number                                  | Half the length of the long token. Default is 15, giving tokens of 30 characters length. |
-| `shortTokenLen`         | Number                                  | Length of short token (default: 6). |
-| `shortTokenDigits`      | Boolean                                 | If `true` (default) short tokens contain only digits. Otherwise also characters. |
-| `delay`                 | Number                                  | Lifetime for e-mail verification tokens in ms. Default is `5*24*60*60*1000 = 432000000` *(5 days)*. |
-| `resetDelay`            | Number                                  | Lifetime for password reset tokens in ms. Default is `2*60*60*1000 = 7200000` *(2 hours)*. |
-| `resetAttempts`         | Number                                  | Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0. |
-| `reuseResetToken`       | Boolean                                 | Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is `false`. |
-| `identifyUserProps`     | String                                  | Property names in the `user` item which uniquely identify the user, e.g. `['username', 'email', 'cellphone']`. The default is `['email']`. Only these properties may be changed with verification by the service. At least one of these properties must be provided whenever a short token is used, as the short token alone is too susceptible to brute force attack. |
-| `passwordField`         | String                                  | Property name of the password field. Default is `password`. |
+| `longTokenLen`          | `number`                                  | Half the length of the long token. Default is 15, giving tokens of 30 characters length. |
+| `shortTokenLen`         | `number`                                  | Length of short token (default: 6). |
+| `shortTokenDigits`      | `boolean`                                 | If `true` (default) short tokens contain only digits. Otherwise also characters. |
+| `delay`                 | `number`                                  | Lifetime for e-mail verification tokens in ms. Default is `5*24*60*60*1000 = 432000000` *(5 days)*. |
+| `resetDelay`            | `number`                                  | Lifetime for password reset tokens in ms. Default is `2*60*60*1000 = 7200000` *(2 hours)*. |
+| `resetAttempts`         | `number`                                  | Amount of times a user can submit an invalid token before the current token gets removed from the database. Default is 0. |
+| `reuseResetToken`       | `boolean`                                 | Use the same reset token if the user resets password twice in a short period. In this case token is not hashed in the database. Default is `false`. |
+| `identifyUserProps`     | `string`                                  | Property names in the `user` item which uniquely identify the user, e.g. `['username', 'email', 'cellphone']`. The default is `['email']`. Only these properties may be changed with verification by the service. At least one of these properties must be provided whenever a short token is used, as the short token alone is too susceptible to brute force attack. |
+| `passwordField`         | `string`                                  | Property name of the password field. Default is `password`. |
+| `passParams`         | `(params) => Params`                       | Pass params from the `f-a-m` service to `/users` service. |
 
 ## User Model Fields
 
 The user model has to be extended with new fields that are used by `feathers-authentication-management`. Not all of these fields are required. Which fields are necessary depend strongly on your use case and the communication channel. Possible fields are:
 
-| Field              | Field Type   | Description                                                           |
-| ------------------ | ------------ | --------------------------------------------------------------------- |
-| `isVerified`       | Boolean      | Indicates if the user's e-mail address has been verified.             |
-| `verifyToken`      | String       | A long verification token generated for verification e-mails.         |
-| `verifyShortToken` | String       | A short verification token generated e. g. for verification SMS.      |
-| `verifyExpires`    | Date\|Number | Expiration date of the verification token.                            |
-| `verifyChanges`    | String[]     | An array that tracks e. g. the change of an e-mail address.           |
-| `resetToken`       | String       | A long reset token generated for password reset e-mails.              |
-| `resetShortToken`  | String       | A short reset token generated e. g. for password reset SMS.           |
-| `resetExpires`     | Date\|Number | Expiration date of the reset token.                                   |
-| `resetAttempts`    | Number       | Amount of incorrect reset submissions left before token invalidation. |
+| Field              | Field Type       | Description                                                           |
+| ------------------ | ---------------- | --------------------------------------------------------------------- |
+| `isVerified`       | `boolean`        | Indicates if the user's e-mail address has been verified.             |
+| `verifyToken`      | `string`         | A long verification token generated for verification e-mails.         |
+| `verifyShortToken` | `string`         | A short verification token generated e. g. for verification SMS.      |
+| `verifyExpires`    | `Date \| number` | Expiration date of the verification token.                            |
+| `verifyChanges`    | `string[]`       | An array that tracks e. g. the change of an e-mail address.           |
+| `resetToken`       | `string`         | A long reset token generated for password reset e-mails.              |
+| `resetShortToken`  | `string`         | A short reset token generated e. g. for password reset SMS.           |
+| `resetExpires`     | `Date \| number` | Expiration date of the reset token.                                   |
+| `resetAttempts`    | `number`         | Amount of incorrect reset submissions left before token invalidation. |
 
 All necessary fields have to be added to the `users` database table and to the `users` model as well.
 
@@ -72,7 +73,7 @@ This hook is made exclusively for the `/users` service. Creates tokens and sets 
 
 | before | after | methods               | multi | details    |
 | ------ | ----- | --------------------- | ----- | ---------- |
-| yes    | no    | create, patch, update | no    | [source]() |
+| yes    | no    | create, patch, update | yes   | [source]() |
 
 - **Arguments:**
   - `path?: string`

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataCheckUnique,
@@ -29,18 +29,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataCheckUnique) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.checkUnique",
-      callMethod: (app: Application, data: DataCheckUnique) => {
-        return app.service("authManagement").checkUnique(data);
+      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+        return app.service("authManagement").checkUnique(data, params);
       }
     }, {
       name: "authManagement/check-unique",
-      callMethod: (app: Application, data: DataCheckUnique) => {
-        return app.service("authManagement/check-unique").create(data);
+      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+        return app.service("authManagement/check-unique").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`check-unique.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -52,8 +52,12 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.configure(authLocalMgnt());
-            app.use("/authManagement/check-unique", new CheckUniqueService(app));
+            app.configure(authLocalMgnt({
+              passParams: params => params
+            }));
+            app.use("/authManagement/check-unique", new CheckUniqueService(app, {
+              passParams: params => params
+            }));
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
               id: idType
@@ -62,6 +66,18 @@ const withAction = (
               optionsUsers.paginate = { default: 10, max: 50 };
             }
             app.use("/users", new Service(optionsUsers))
+
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
 
             usersService = app.service('users');
             await usersService.remove(null);
@@ -72,11 +88,8 @@ const withAction = (
 
           it('returns a promise', async () => {
             let res = callMethod(app, { user: { username: 'john a' }})
-              .then(() => { })
-              .catch(() => { });
 
-            assert.ok(res, `no promise returned`);
-            assert.strictEqual(typeof res.then, 'function', `not a function`);
+            assert.ok(res instanceof Promise, `no promise returned`);
           });
 
           it('handles empty query', async () => {
@@ -164,7 +177,7 @@ const withAction = (
             });
           });
 
-          it('cannot ignore current user on multiple items', async () => {
+          it('can use "passParams"', async () => {
             try {
               await callMethod(app, {
                 user: { username: 'john b' },
@@ -176,6 +189,12 @@ const withAction = (
               assert.strictEqual(err.message, 'Values already taken.');
               assert.strictEqual(err.errors.username, 'Already taken.');
             }
+          });
+
+          it('handles empty query returning nothing', async () => {
+            const params = { call: { count: 0 } };
+            await callMethod(app, { user: { username: 'hjhjhj' }}, params);
+            assert.ok(params.call.count > 0, `${name}: count not incremented`);
           });
         });
       });

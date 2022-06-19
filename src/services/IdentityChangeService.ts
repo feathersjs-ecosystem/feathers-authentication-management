@@ -7,7 +7,7 @@ import type {
   DataIdentityChange,
   IdentityChangeServiceOptions
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 export class IdentityChangeService
   extends AuthenticationManagementBase<DataIdentityChange, SanitizedUser, IdentityChangeServiceOptions> {
@@ -23,19 +23,23 @@ export class IdentityChangeService
       'delay',
       'identifyUserProps',
       'sanitizeUserForClient',
-      'passwordField'
+      'passwordField',
+      'passParams'
     ]);
 
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataIdentityChange): Promise<SanitizedUser> {
+  async _create (data: DataIdentityChange, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await identityChange(
       this.optionsWithApp,
       data.user,
       data.password,
       data.changes,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

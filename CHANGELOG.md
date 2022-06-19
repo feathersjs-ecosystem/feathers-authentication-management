@@ -6,12 +6,24 @@
 
 **Merged pull requests:**
 
+- Pass Params to all service calls. [\#175](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/175) ([dallinbjohnson](https://github.com/dallinbjohnson))
+- Bump pathval from 1.1.0 to 1.1.1 [\#174](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/174) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update verify-signup-set-password.js [\#167](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/167) ([GautierT](https://github.com/GautierT))
 - Bump lodash from 4.17.19 to 4.17.21 [\#166](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/166) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump handlebars from 4.7.6 to 4.7.7 [\#165](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/165) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore: move travis to github actions [\#162](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/162) ([fratzinger](https://github.com/fratzinger))
 - Bump y18n from 4.0.0 to 4.0.1 [\#161](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/161) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update docs.md [\#160](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/160) ([re1ro](https://github.com/re1ro))
+
+## [v3.2.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v3.2.0) (2022-05-16)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v3.1.0...v3.2.0)
+
+**Closed issues:**
+
+- 4.0.0-pre.1 has un declared passport-local dependency [\#173](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/173)
+- skipIsVerifiedCheck  doesn't call custom notifier. [\#172](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/172)
+- identityChange doesn't verify the user's password [\#171](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/171)
 
 ## [v4.0.0-pre.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0-pre.1) (2022-01-08)
 

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataVerifySignupShort,
@@ -76,18 +76,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataVerifySignupShort) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.verifySignupShort",
-      callMethod: (app: Application, data: DataVerifySignupShort) => {
-        return app.service("authManagement").verifySignupShort(data);
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+        return app.service("authManagement").verifySignupShort(data, params);
       }
     }, {
       name: "authManagement/verify-signup-short",
-      callMethod: (app: Application, data: DataVerifySignupShort) => {
-        return app.service("authManagement/verify-signup-short").create(data);
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+        return app.service("authManagement/verify-signup-short").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`verify-signup-short.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -109,13 +109,27 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
+
             app.configure(
               authLocalMgnt({
-                identifyUserProps: ['email', 'username']
+                identifyUserProps: ['email', 'username'],
+                passParams: (params) => params
               })
             );
             app.use("authManagement/verify-signup-short", new VerifySignupShortService(app, {
-              identifyUserProps: ['email', 'username']
+              identifyUserProps: ['email', 'username'],
+              passParams: params => params
             }))
             app.setup();
 
@@ -263,6 +277,16 @@ const withAction = (
             } catch (err) {
               assert.strictEqual(err.message, 'Invalid token. Get for a new one. (authLocalMgnt)');
             }
+          });
+
+          it('can use "passParams"', async () => {
+            const params = { call: { count: 1 } };
+            const result = await callMethod(app, {
+              token: '00099',
+              user: { email: users[0].email }
+            }, params);
+
+            assert.ok(params.call.count > 0, 'call.count not incremented');
           });
         });
 

@@ -7,30 +7,34 @@ import type {
   SanitizedUser,
   VerifySignupSetPasswordShortServiceOptions
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 export class VerifySignupSetPasswordShortService
   extends AuthenticationManagementBase<DataVerifySignupSetPasswordShort, SanitizedUser, VerifySignupSetPasswordShortServiceOptions> {
   constructor (app: Application, options?: Partial<VerifySignupSetPasswordShortServiceOptions>) {
     super(app);
 
-    const defaultOptions = makeDefaultOptions([
+    const defaultOptions: VerifySignupSetPasswordShortServiceOptions = makeDefaultOptions([
       'service',
       'notifier',
       'sanitizeUserForClient',
       'passwordField',
-      'identifyUserProps'
+      'identifyUserProps',
+      'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataVerifySignupSetPasswordShort): Promise<SanitizedUser> {
+  async _create (data: DataVerifySignupSetPasswordShort, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupSetPasswordWithShortToken(
       this.optionsWithApp,
       data.token,
       data.user,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

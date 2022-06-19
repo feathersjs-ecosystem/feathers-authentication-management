@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataResetPwdShort,
@@ -76,18 +76,18 @@ const withAction = (
   ['paginated' /* 'non-paginated' */].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataResetPwdShort) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.resetPasswordShort",
-      callMethod: (app: Application, data: DataResetPwdShort) => {
-        return app.service("authManagement").resetPasswordShort(data);
+      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
+        return app.service("authManagement").resetPasswordShort(data, params);
       }
     }, {
       name: "authManagement/reset-password-short",
-      callMethod: (app: Application, data: DataResetPwdShort) => {
-        return app.service("authManagement/reset-password-short").create(data);
+      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
+        return app.service("authManagement/reset-password-short").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`reset-pwd-short.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -110,13 +110,27 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
+
             app.configure(
               authLocalMgnt({
-                identifyUserProps: ['email', 'username']
+                identifyUserProps: ['email', 'username'],
+                passParams: params => params
               })
             );
             app.use("authManagement/reset-password-short", new ResetPwdShortService(app, {
-              identifyUserProps: ['email', 'username']
+              identifyUserProps: ['email', 'username'],
+              passParams: params => params
             }));
 
             app.setup();
@@ -327,6 +341,19 @@ const withAction = (
             } catch (err) {
               assert.strictEqual(err.message, 'Invalid token. Get for a new one. (authLocalMgnt)');
             }
+          });
+
+          it('can use "passParams"', async () => {
+            const params = { call: { count: 0 }}
+            const result = await callMethod(app, {
+              token: '00099',
+              password: '123456',
+              user: {
+                username: users[0].username
+              }
+            }, params);
+
+            assert.ok(params.call.count > 0, 'passParams not called');
           });
         });
 

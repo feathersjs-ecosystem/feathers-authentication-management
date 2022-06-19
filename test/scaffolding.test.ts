@@ -44,20 +44,32 @@ const optionsDefault: AuthenticationManagementServiceOptions = {
   identifyUserProps: ['email'],
   sanitizeUserForClient: sanitizeUserForClient,
   skipIsVerifiedCheck: false,
-  passwordField: "password"
+  passwordField: "password",
+  passParams: async (params) => {
+    let { provider: _, query: __, ...passedParams } = params;
+    return passedParams;
+  }
 };
 
 const userMgntOptions = {
   service: '/users',
   notifier: () => Promise.resolve(),
-  shortTokenLen: 8
+  shortTokenLen: 8,
+  passParams: async (params) => {
+    let {provider: _, query: __, ...passedParams} = params;
+    return passedParams;
+  }
 };
 
 const orgMgntOptions = {
   service: '/organizations',
   path: 'authManagement/org', // *** specify path for this instance of service
   notifier: () => Promise.resolve(),
-  shortTokenLen: 10
+  shortTokenLen: 10,
+  passParams: async (params) => {
+    let {provider: _, query: __, ...passedParams} = params;
+    return passedParams;
+  }
 };
 
 function services () {

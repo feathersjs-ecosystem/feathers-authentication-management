@@ -1,7 +1,7 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
 
-import type { Id } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 import type {
   CheckUniqueOptions,
   IdentifyUser,
@@ -17,9 +17,15 @@ export default async function checkUnique (
   options: CheckUniqueOptions,
   identifyUser: IdentifyUser,
   ownId?: Id,
-  meta?: { noErrMsg?: boolean}
+  meta?: { noErrMsg?: boolean},
+  params?: Params
 ): Promise<null> {
   debug('checkUnique', identifyUser, ownId, meta);
+
+  if (params && "query" in params) {
+    params = Object.assign({}, params);
+    delete params.query;
+  }
 
   const {
     app,
@@ -37,11 +43,16 @@ export default async function checkUnique (
   try {
     for (let i = 0, ilen = keys.length; i < ilen; i++) {
       const prop = keys[i];
-      const params = { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 } };
+      const _params = Object.assign(
+        {},
+        params,
+        { query: { [prop]: identifyUser[prop].trim(), $limit: 0 }, paginate: { default: 1 }}
+      );
+
       if (ownId != null) {
-        params.query[usersServiceId] = { $ne: ownId };
+        _params.query[usersServiceId] = { $ne: ownId };
       }
-      const users: UsersArrayOrPaginated = await usersService.find(params);
+      const users: UsersArrayOrPaginated = await usersService.find(_params);
       const length = Array.isArray(users) ? users.length : users.total;
       const isNotUnique = length > 0;
 

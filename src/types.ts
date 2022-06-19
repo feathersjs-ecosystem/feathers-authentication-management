@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Application, Id, Paginated, Query } from '@feathersjs/feathers';
+import type { Application, Id, Paginated, Params, Query } from '@feathersjs/feathers';
 
 //#region general
 
@@ -115,6 +115,8 @@ export interface AuthenticationManagementServiceOptions {
   /** Property name of the password field on your `'/users'` service
    * @default 'password' */
   passwordField: string
+  /** Pass params from f-a-m service to `/users` service */
+  passParams: (params) => Params | Promise<Params>
 }
 
 export type AuthenticationManagementSetupOptions = AuthenticationManagementServiceOptions & { path: string };
@@ -122,7 +124,8 @@ export type AuthenticationManagementSetupOptions = AuthenticationManagementServi
 export type VerifySignupLongServiceOptions = Pick<AuthenticationManagementServiceOptions,
 'service' |
 'notifier' |
-'sanitizeUserForClient'>;
+'sanitizeUserForClient' |
+'passParams'>;
 
 export type VerifySignupOptions = VerifySignupLongServiceOptions & { app: Application };
 
@@ -135,7 +138,8 @@ export type VerifySignupSetPasswordLongServiceOptions = Pick<AuthenticationManag
 'service' |
 'sanitizeUserForClient' |
 'notifier' |
-'passwordField'>;
+'passwordField' |
+'passParams'>;
 export type VerifySignupSetPasswordOptions = VerifySignupSetPasswordLongServiceOptions & { app: Application };
 
 export type PasswordChangeServiceOptions = Pick<AuthenticationManagementServiceOptions,
@@ -143,7 +147,8 @@ export type PasswordChangeServiceOptions = Pick<AuthenticationManagementServiceO
 'identifyUserProps' |
 'notifier' |
 'sanitizeUserForClient' |
-'passwordField'>;
+'passwordField' |
+'passParams'>;
 export type PasswordChangeOptions = PasswordChangeServiceOptions & { app: Application };
 
 export type VerifySignupSetPasswordShortServiceOptions = VerifySignupSetPasswordLongServiceOptions
@@ -156,7 +161,8 @@ export type ResetPasswordServiceOptions = Pick<AuthenticationManagementServiceOp
 'reuseResetToken' |
 'notifier' |
 'sanitizeUserForClient' |
-'passwordField'>;
+'passwordField' |
+'passParams'>;
 export type ResetPasswordOptions = ResetPasswordServiceOptions & { app: Application };
 
 export type ResetPwdWithShortServiceOptions = ResetPasswordServiceOptions & {
@@ -172,7 +178,8 @@ export type ResendVerifySignupServiceOptions = Pick<AuthenticationManagementServ
 'shortTokenLen' |
 'shortTokenDigits' |
 'notifier' |
-'sanitizeUserForClient'>;
+'sanitizeUserForClient' |
+'passParams'>;
 export type ResendVerifySignupOptions = ResendVerifySignupServiceOptions & { app: Application };
 
 export type IdentityChangeServiceOptions = Pick<AuthenticationManagementServiceOptions,
@@ -184,10 +191,11 @@ export type IdentityChangeServiceOptions = Pick<AuthenticationManagementServiceO
 'shortTokenDigits' |
 'notifier' |
 'sanitizeUserForClient' |
-'passwordField'>;
+'passwordField' |
+'passParams'>;
 export type IdentityChangeOptions = IdentityChangeServiceOptions & { app: Application };
 
-export type CheckUniqueServiceOptions = Pick<AuthenticationManagementServiceOptions, 'service'>;
+export type CheckUniqueServiceOptions = Pick<AuthenticationManagementServiceOptions, 'service' | 'passParams'>;
 export type CheckUniqueOptions = CheckUniqueServiceOptions & { app: Application };
 
 export type SendResetPwdServiceOptions = Pick<AuthenticationManagementServiceOptions,
@@ -202,7 +210,8 @@ export type SendResetPwdServiceOptions = Pick<AuthenticationManagementServiceOpt
 'longTokenLen' |
 'shortTokenDigits' |
 'notifier' |
-'passwordField'>;
+'passwordField' |
+'passParams'>;
 
 export type SendResetPwdOptions = SendResetPwdServiceOptions & { app: Application };
 

@@ -9,6 +9,7 @@ import {
   hashPassword,
   notify
 } from '../helpers';
+import type { Params } from '@feathersjs/feathers';
 
 import type {
   IdentifyUser,
@@ -25,9 +26,15 @@ export default async function passwordChange (
   identifyUser: IdentifyUser,
   oldPassword: string,
   password: string,
-  notifierOptions: NotifierOptions = {}
+  notifierOptions: NotifierOptions = {},
+  params?: Params
 ): Promise<SanitizedUser> {
   debug('passwordChange', oldPassword, password);
+
+  if (params && "query" in params) {
+    params = Object.assign({}, params);
+    delete params.query;
+  }
 
   const {
     app,
@@ -44,7 +51,13 @@ export default async function passwordChange (
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find({ query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false });
+  const users: UsersArrayOrPaginated = await usersService.find(
+    Object.assign(
+      {},
+      params,
+      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
+    )
+  );
   const user = getUserData(users);
 
   try {
@@ -57,7 +70,7 @@ export default async function passwordChange (
 
   const patchedUser = await usersService.patch(user[usersServiceId], {
     password: await hashPassword(app, password, passwordField)
-  });
+  }, Object.assign({}, params));
 
   const userResult = await notify(notifier, 'passwordChange', patchedUser, notifierOptions);
   return sanitizeUserForClient(userResult);

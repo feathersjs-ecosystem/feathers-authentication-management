@@ -2,7 +2,7 @@ import { makeDefaultOptions } from '../options';
 
 import { verifySignupWithLongToken } from '../methods/verify-signup';
 import { AuthenticationManagementBase } from './AuthenticationManagementBase';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 import type {
   DataVerifySignupLong,
@@ -15,19 +15,23 @@ export class VerifySignupLongService
   constructor (app: Application, options?: Partial<VerifySignupLongServiceOptions>) {
     super(app);
 
-    const defaultOptions = makeDefaultOptions([
+    const defaultOptions: VerifySignupLongServiceOptions = makeDefaultOptions([
       'service',
       'notifier',
-      'sanitizeUserForClient'
+      'sanitizeUserForClient',
+      'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataVerifySignupLong): Promise<SanitizedUser> {
+  async _create (data: DataVerifySignupLong, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await verifySignupWithLongToken(
       this.optionsWithApp,
       data.token,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

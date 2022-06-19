@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataResendVerifySignup,
@@ -57,18 +57,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataResendVerifySignup) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.resendVerifySignup",
-      callMethod: (app: Application, data: DataResendVerifySignup) => {
-        return app.service("authManagement").resendVerifySignup(data);
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+        return app.service("authManagement").resendVerifySignup(data, params);
       }
     }, {
       name: "authManagement/resend-verify-signup",
-      callMethod: (app: Application, data: DataResendVerifySignup) => {
-        return app.service("authManagement/resend-verify-signup").create(data);
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+        return app.service("authManagement/resend-verify-signup").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`resend-verify-signup.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -92,8 +92,24 @@ const withAction = (
               }
               app.use("/users", new Service(optionsUsers))
 
-              app.configure(authLocalMgnt());
-              app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app))
+              app.service("/users").hooks({
+                before: {
+                  all: [
+                    context => {
+                      if (context.params?.call && "count" in context.params.call) {
+                        context.params.call.count++;
+                      }
+                    }
+                  ]
+                }
+              })
+
+              app.configure(authLocalMgnt({
+                passParams: params => params
+              }));
+              app.use("authManagement/resend-verify-signup", new ResendVerifySignupService(app, {
+                passParams: params => params
+              }))
               app.setup();
               authLocalMgntService = app.service('authManagement');
 
@@ -187,6 +203,15 @@ const withAction = (
               } catch (err) {
                 assert.strictEqual(err.message, 'User not found.');
               }
+            });
+
+            it('can use "passParams', async () => {
+              const params = { call: { count: 0 } };
+              const result = await callMethod(app, {
+                user: values[0]
+              }, params);
+
+              assert.ok(params.call.count > 0, 'params.call.count not > 0');
             });
           });
         }

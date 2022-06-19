@@ -7,14 +7,14 @@ import type {
   SanitizedUser,
   SendResetPwdServiceOptions
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 export class SendResetPwdService
   extends AuthenticationManagementBase<DataSendResetPwd, SanitizedUser, SendResetPwdServiceOptions> {
   constructor (app: Application, options?: Partial<SendResetPwdServiceOptions>) {
     super(app);
 
-    const defaultOptions = makeDefaultOptions([
+    const defaultOptions: SendResetPwdServiceOptions = makeDefaultOptions([
       'service',
       'identifyUserProps',
       'skipIsVerifiedCheck',
@@ -26,16 +26,20 @@ export class SendResetPwdService
       'longTokenLen',
       'shortTokenDigits',
       'notifier',
-      'passwordField'
+      'passwordField',
+      'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataSendResetPwd): Promise<SanitizedUser> {
+  async _create (data: DataSendResetPwd, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await sendResetPwd(
       this.optionsWithApp,
       data.user,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

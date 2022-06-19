@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataIdentityChange,
@@ -38,18 +38,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataIdentityChange) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.identityChange",
-      callMethod: (app: Application, data: DataIdentityChange) => {
-        return app.service("authManagement").identityChange(data);
+      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+        return app.service("authManagement").identityChange(data, params);
       }
     }, {
       name: "authManagement/identity-change",
-      callMethod: (app: Application, data: DataIdentityChange) => {
-        return app.service("authManagement/identity-change").create(data);
+      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+        return app.service("authManagement/identity-change").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`identity-change.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -70,8 +70,25 @@ const withAction = (
               optionsUsers.paginate = { default: 10, max: 50 };
             }
             app.use("/users", new Service(optionsUsers));
-            app.configure(authLocalMgnt());
-            app.use("authManagement/identity-change", new IdentityChangeService(app))
+
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
+
+            app.configure(authLocalMgnt({
+              passParams: params => params
+            }));
+            app.use("authManagement/identity-change", new IdentityChangeService(app, {
+              passParams: params => params
+            }))
             app.setup();
             usersService = app.service('users');
 
@@ -136,6 +153,19 @@ const withAction = (
                 return true;
               }
             )
+          });
+
+          it('can use "passParams"', async () => {
+            const userRec = clone(users[0]);
+            const params = { call: { count: 0 } };
+
+            const result = await callMethod(app, {
+              user: { email: userRec.email },
+              password: userRec.plainPassword,
+              changes: { email: 'a@a' }
+            }, params);
+
+            assert.ok(params.call.count > 0, "params.call.count > 0");
           });
         });
 

@@ -7,30 +7,34 @@ import type {
   DataResetPwdLong,
   ResetPasswordServiceOptions
 } from '../types';
-import type { Application } from '@feathersjs/feathers';
+import type { Application, Params } from '@feathersjs/feathers';
 
 export class ResetPwdLongService
   extends AuthenticationManagementBase<DataResetPwdLong, SanitizedUser, ResetPasswordServiceOptions> {
   constructor (app: Application, options?: Partial<ResetPasswordServiceOptions>) {
     super(app);
 
-    const defaultOptions = makeDefaultOptions([
+    const defaultOptions: ResetPasswordServiceOptions = makeDefaultOptions([
       'service',
       'skipIsVerifiedCheck',
       'notifier',
       'reuseResetToken',
       'sanitizeUserForClient',
-      'passwordField'
+      'passwordField',
+      'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
   }
 
-  async _create (data: DataResetPwdLong): Promise<SanitizedUser> {
+  async _create (data: DataResetPwdLong, params?: Params): Promise<SanitizedUser> {
+    const passedParams = this.options.passParams && await this.options.passParams(params);
+
     return await resetPwdWithLongToken(
       this.optionsWithApp,
       data.token,
       data.password,
-      data.notifierOptions
+      data.notifierOptions,
+      passedParams
     );
   }
 }

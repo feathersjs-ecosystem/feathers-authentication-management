@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import feathers, { Application, Params } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataSendResetPwd,
@@ -54,18 +54,18 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataSendResetPwd) => {
-        return app.service("authManagement").create(withAction(data));
+      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+        return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.sendResetPassword",
-      callMethod: (app: Application, data: DataSendResetPwd) => {
-        return app.service("authManagement").sendResetPassword(data);
+      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+        return app.service("authManagement").sendResetPassword(data, params);
       }
     }, {
       name: "authManagement/send-reset-password",
-      callMethod: (app: Application, data: DataSendResetPwd) => {
-        return app.service("authManagement/send-reset-password").create(data);
+      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+        return app.service("authManagement/send-reset-password").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
       describe(`send-reset-pwd.test.ts ${idType} ${pagination} ${name}`, function () {
@@ -88,8 +88,24 @@ const withAction = (
             }
             app.use("/users", new Service(optionsUsers))
 
-            app.configure(authLocalMgnt());
-            app.use("authManagement/send-reset-password", new SendResetPwdService(app))
+            app.service("/users").hooks({
+              before: {
+                all: [
+                  context => {
+                    if (context.params?.call && "count" in context.params.call) {
+                      context.params.call.count++;
+                    }
+                  }
+                ]
+              }
+            })
+
+            app.configure(authLocalMgnt({
+              passParams: params => params
+            }));
+            app.use("authManagement/send-reset-password", new SendResetPwdService(app, {
+              passParams: params => params
+            }))
             app.setup();
 
             usersService = app.service('users');
@@ -145,6 +161,15 @@ const withAction = (
             assert.strictEqual(result.resetToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetShortToken, undefined, 'resetToken not undefined');
             assert.strictEqual(result.resetExpires, undefined, 'resetExpires not undefined');
+          });
+
+          it('can use "passParams"', async function () {
+            const params = { call: { count: 0 } };
+            const result = await callMethod(app, {
+              user: { email: 'b' }
+            }, params);
+
+            assert.ok(params.call.count > 0, 'params.call.count not incremented');
           });
         });
 
