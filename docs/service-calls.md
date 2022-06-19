@@ -19,9 +19,9 @@ There are three ways of calling a method:
 2. Separate services (e.g. `SendResetPwdService`) with `create`
 3. Main service as `AuthenticationManagementService` with custom method (e.g. `sendResetPassword`)
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -35,9 +35,9 @@ app.service("auth-management").create({
 });
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { SendResetPwdService } = require('feathers-authentication-management');
@@ -50,9 +50,9 @@ app.service("auth-management/send-reset-password").create({
 });
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -65,9 +65,9 @@ app.service("auth-management").sendResetPassword({
 });
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 ## List of Service Calls
 
@@ -77,9 +77,9 @@ All service calls return a promise.
 
 Checks if the properties are unique in the users items.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -93,9 +93,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { CheckUniqueService } = require('feathers-authentication-management');
@@ -108,9 +108,9 @@ app.service('auth-management/check-unique').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -123,9 +123,9 @@ app.service('auth-management').checkUnique({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns `null` if the properties are unique (= already existing) in the users items. Otherwise rejects with `BadRequest`.
 
@@ -133,9 +133,9 @@ Returns `null` if the properties are unique (= already existing) in the users it
 
 Changes the communication address of a user, e. g. the e-mail address or a phone number.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -152,9 +152,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { IdentityChangeService } = require('feathers-authentication-management');
@@ -168,9 +168,9 @@ app.service('auth-management/identity-change').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -184,9 +184,9 @@ app.service('auth-management').identityChange({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -194,9 +194,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Changes the password of a user.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -213,9 +213,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { PasswordChangeService } = require('feathers-authentication-management');
@@ -229,9 +229,9 @@ app.service('auth-management/password-change').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -245,9 +245,9 @@ app.service('auth-management').passwordChange({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -255,9 +255,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Recreates a long and/or short verification token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -270,9 +270,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { ResendVerifySignupService } = require('feathers-authentication-management');
@@ -284,9 +284,9 @@ app.service('auth-management/resend-verify-signup').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -298,9 +298,9 @@ app.service('auth-management').resendVerifySignup({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -308,9 +308,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Stores a new password. Requires a valid long `resetToken`.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -328,9 +328,9 @@ app.service('auth-management').create({
 
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { ResetPwdLongService } = require('feathers-authentication-management');
@@ -343,9 +343,9 @@ app.service('auth-management/reset-pwd-long').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -359,9 +359,9 @@ app.service('auth-management').resetPasswordLong({
 
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -369,9 +369,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Stores a new password. Requires a valid short `resetShortToken` and a property of the user object to identify the user.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -388,9 +388,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { ResetPwdShortService } = require('feathers-authentication-management');
@@ -404,9 +404,9 @@ app.service('auth-management/reset-password-short').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -420,9 +420,9 @@ app.service('auth-management').resetPasswordShort({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -430,9 +430,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Creates a short and/or long password reset token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -445,9 +445,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { SendResetPwdService } = require('feathers-authentication-management');
@@ -459,9 +459,9 @@ app.service('auth-management/send-reset-password').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -473,9 +473,9 @@ app.service('auth-management').sendResetPassword({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -483,9 +483,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Verifies a given long verification token.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -498,9 +498,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { VerifySignupLongService } = require('feathers-authentication-management');
@@ -512,9 +512,9 @@ app.service('auth-management/verify-signup-long').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -526,9 +526,9 @@ app.service('auth-management').verifySignupLong({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -536,9 +536,9 @@ Returns the user object or rejects with `BadRequest`.
 
 Verifies a given short verification token.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -555,9 +555,9 @@ app.service('auth-management').create({
 
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { VerifySignupShortService } = require('feathers-authentication-management');
@@ -570,9 +570,9 @@ app.service('auth-management/verify-signup-short').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -585,9 +585,9 @@ app.service('auth-management').verifySignupShort({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -595,9 +595,9 @@ Returns the user object or rejects with `BadRequest`.
 
 This is a combination of `verifySignupLong` and `resetPwdLong`: Verifies a given long verification token and stores the new password.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -613,9 +613,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { VerifySignupSetPasswordLongService } = require('feathers-authentication-management');
@@ -628,9 +628,9 @@ app.service('auth-management/verify-signup-set-password-long').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -643,9 +643,9 @@ app.service('auth-management').verifySignupSetPasswordLong({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.
 
@@ -653,9 +653,9 @@ Returns the user object or rejects with `BadRequest`.
 
 This is a combination of `verifySignupShort` and `resetPwdShort`: Verifies a given short verification token and stores the new password.
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="Main Service" active>
+  <Tab name="Main Service" active>
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -672,9 +672,9 @@ app.service('auth-management').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Separate Service">
+  <Tab name="Separate Service">
 
 ```js
 // const { VerifySignupSetPasswordShortService } = require('feathers-authentication-management');
@@ -688,9 +688,9 @@ app.service('auth-management/verify-signup-set-password-short').create({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="Custom Method">
+  <Tab name="Custom Method">
 
 ```js
 // const { AuthenticationManagementService } = require('feathers-authentication-management');
@@ -704,8 +704,8 @@ app.service('auth-management').verifySignupSetPasswordShort({
 }
 ```
 
-  </CodeGroupItem>
+  </Tab>
   
-</CodeGroup>
+</Tabs>
 
 Returns the user object or rejects with `BadRequest`.

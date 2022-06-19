@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "f-a-m",
+  title: "feathers-auth-mgmt",
   description:
     "Sign up verification, forgotten password reset, and other capabilities for local authentication",
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],

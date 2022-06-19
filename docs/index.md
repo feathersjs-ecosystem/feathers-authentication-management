@@ -1,7 +1,6 @@
 ---
 sidebar: false
 layout: home
-title: feathers-authentication-management
 hero:
   name: f-a-m
   text: feathers-authentication-management
@@ -19,5 +18,4 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/feathersjs-ecosystem/feathers-authentication-management
-features:
 ---

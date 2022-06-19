@@ -31,7 +31,7 @@ Before `f-a-m` v4 there was only a main service, with a lot of `actions` for the
 
 To illustrate the new services and custom methods and its corresponding old fashioned `action`, please see this table:
 
-| `action` | old-fashioned `create` on `AuthenticationManagementService` | separate Service with `create` method | `custom methods` on `AuthenticationManagementService` (feathers v5 preparation) |
+| `action` | old-fashioned `create` on `Service` | separate Service with `create` method | `custom methods` on `Service` (feathers v5 preparation) |
 |---|---|---|---|
 | `checkUnique` | *unchanged* | `CheckUniqueService` | `checkUnique` method |
 | `resendVerifySignup` | *unchanged* | `ResendVerifySignupService` | `resendVerifySignup` method |

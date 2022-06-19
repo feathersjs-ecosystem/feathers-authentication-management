@@ -29,33 +29,33 @@ Not all steps are performed by the service, some parts have to be implemented on
 
 The following command installs `feathers-authentication-management` and `feathers-mailer`:
 
-<CodeGroup>
+<Tabs show-tabs>
 
-  <CodeGroupItem title="npm" active>
+  <Tab name="npm">
 
 ```bash
 npm i feathers-authentication-management@pre feathers-mailer
 ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="yarn">
+  <Tab name="yarn">
 
   ```bash
   yarn add feathers-authentication-management@pre feathers-mailer
   ```
 
-  </CodeGroupItem>
+  </Tab>
 
-  <CodeGroupItem title="pnpm">
+  <Tab name="pnpm">
 
   ```bash
   pnpm install feathers-authentication-management@pre feathers-mailer
   ```
 
-  </CodeGroupItem>
+  </Tab>
 
-</CodeGroup>
+</Tabs>
 
 `feathers-mailer` is used for sending e-mails. See the [feathers-mailer (on GitHub)](https://github.com/feathersjs-ecosystem/feathers-mailer) for details of its configuration. If you want to send notifications via a different channel such as SMS, you may use and configure a different service.
 
