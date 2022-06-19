@@ -1,7 +1,7 @@
 // .vitepress/theme/index.js
+import Theme from 'vitepress/theme'
 import './custom.css'
 import 'uno.css'
-import Theme from 'vitepress/theme'
 import Layout from './Layout.vue'
 
 import Tab from '../components/Tab.vue'
