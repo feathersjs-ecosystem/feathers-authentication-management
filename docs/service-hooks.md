@@ -12,7 +12,7 @@ This hook is made exclusively for the `/users` service. Creates tokens and sets 
 
 | before | after | methods               | multi | details    |
 | ------ | ----- | --------------------- | ----- | ---------- |
-| yes    | no    | create, patch, update | no    | [source]() |
+| yes    | no    | create, patch, update | no    | [source](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/src/hooks/add-verification.ts) |
 
 - **Arguments:**
   - `path?: string`
@@ -106,7 +106,7 @@ Throws, if requesting user is not verified (`params.user.isVerified`) and passes
 
 | before | after | methods | multi | details    |
 | ------ | ----- | ------- | ----- | ---------- |
-| yes    | no    | all     | yes   | [source]() |
+| yes    | no    | all     | yes   | [source](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/src/hooks/is-verified.ts) |
 
 - **Arguments:**
 
@@ -156,7 +156,7 @@ It deletes `verifyExpires`, `resetExpires` and `verifyChanges` and if `ifReturnT
 
 | before | after | methods | multi | details    |
 | ------ | ----- | ------- | ----- | ---------- |
-| no     | yes   | all     | yes   | [source]() |
+| no     | yes   | all     | yes   | [source](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/src/hooks/remove-verification.ts) |
 
 - **Arguments:**
   - `ifReturnToken?: boolean`
