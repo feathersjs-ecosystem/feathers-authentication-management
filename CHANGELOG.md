@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0...HEAD)
+
+**Merged pull requests:**
+
+- Typescript refactoring, seperate services, custom methods and vitepress docs [\#164](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/164) ([fratzinger](https://github.com/fratzinger))
+
+## [v4.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0) (2022-07-28)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0-pre.2...v4.0.0)
+
+**Closed issues:**
+
+- verifyHooks.addVerification  erroring out [\#157](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/157)
+- Rework [\#144](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/144)
+
 ## [v4.0.0-pre.2](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0-pre.2) (2022-06-19)
 
 [Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v3.2.0...v4.0.0-pre.2)
@@ -132,7 +149,7 @@
 - Remove outdated link. [\#123](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/123) ([bartduisters](https://github.com/bartduisters))
 - chore\(\): update feathers libs [\#122](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/122) ([bitflower](https://github.com/bitflower))
 - Update walkthrough on medium [\#118](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/118) ([morenoh149](https://github.com/morenoh149))
-- hashPassword workaround verbage [\#113](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/113) ([rayfoss](https://github.com/rayfoss))
+- hashPassword workaround verbage [\#113](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/113) ([MarsOrBust24](https://github.com/MarsOrBust24))
 
 ## [v2.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v2.0.1) (2018-07-09)
 
