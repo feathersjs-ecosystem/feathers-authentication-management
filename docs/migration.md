@@ -6,9 +6,8 @@ title: Migrating
 
 This guide explains the new features and changes necessary to migrate to `feathers-authentication-management` (called `f-a-m` from now on) v4. The migration should be fairly easy. There's no breaking change at all. So just install the pre-release. That should be it. Just continue reading if you're curious what has changed.
 
-### Testing the prerelease
 ```bash
-npm i feathers-authentication-management@pre
+npm i feathers-authentication-management
 ```
 
 ### ❗️❗️❗️ Don't expose `f-a-m` data to socket.io by default

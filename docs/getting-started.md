@@ -34,7 +34,7 @@ The following command installs `feathers-authentication-management` and `feather
   <Tab name="npm">
 
 ```bash
-npm i feathers-authentication-management@pre feathers-mailer
+npm i feathers-authentication-management feathers-mailer
 ```
 
   </Tab>
@@ -42,7 +42,7 @@ npm i feathers-authentication-management@pre feathers-mailer
   <Tab name="yarn">
 
   ```bash
-  yarn add feathers-authentication-management@pre feathers-mailer
+  yarn add feathers-authentication-management feathers-mailer
   ```
 
   </Tab>
@@ -50,7 +50,7 @@ npm i feathers-authentication-management@pre feathers-mailer
   <Tab name="pnpm">
 
   ```bash
-  pnpm install feathers-authentication-management@pre feathers-mailer
+  pnpm install feathers-authentication-management feathers-mailer
   ```
 
   </Tab>
