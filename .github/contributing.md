@@ -10,13 +10,13 @@ Before creating an issue please make sure you have checked out the docs, specifi
 
 If you haven't found your answer please feel free to join our [slack channel](http://slack.feathersjs.com), create an issue on Github, or post on [Stackoverflow](http://stackoverflow.com) using the `feathers` or `feathersjs` tag. We try our best to monitor Stackoverflow but you're likely to get more immediate responses in Slack and Github.
 
-Issues can be reported in the [issue tracker](https://github.com/feathersjs/feathers/issues).  Since feathers combines many modules it can be hard for us to assess the root cause without knowing which modules are being used and what your configuration looks like, so **it helps us immensely if you can link to a simple example that reproduces your issue**.
+Issues can be reported in the [issue tracker](https://github.com/feathersjs/feathers/issues). Since feathers combines many modules it can be hard for us to assess the root cause without knowing which modules are being used and what your configuration looks like, so **it helps us immensely if you can link to a simple example that reproduces your issue**.
 
 ## Report a Security Concern
 
 We take security very seriously at Feathers. We welcome any peer review of our 100% open source code to ensure nobody's Feathers app is ever compromised or hacked. As a web application developer you are responsible for any security breaches. We do our very best to make sure Feathers is as secure as possible by default.
 
-In order to give the community time to respond and upgrade we strongly urge you report all security issues to us. Send one of the core team members a PM in [Slack](http://slack.feathersjs.com) or email us at hello@feathersjs.com with details and we will respond ASAP.
+In order to give the community time to respond and upgrade we strongly urge you report all security issues to us. Send one of the core team members a PM in [Slack](http://slack.feathersjs.com) or e-mail us at hello@feathersjs.com with details and we will respond ASAP.
 
 For full details refer to our [Security docs](https://docs.feathersjs.com/SECURITY.html).
 
@@ -33,14 +33,6 @@ Although we generally accept many PRs they can be rejected for many reasons. We 
 ### Code style
 
 Before running the tests from the `test/` folder `npm test` will run ESlint. You can check your code changes individually by running `npm run lint`.
-
-### ES6 compilation
-
-Feathers uses [Babel](https://babeljs.io/) to leverage the latest developments of the JavaScript language. All code and samples are currently written in ES2015. To transpile the code in this repository run
-
-> npm run compile
-
-__Note:__ `npm test` will run the compilation automatically before the tests.
 
 ### Tests
 

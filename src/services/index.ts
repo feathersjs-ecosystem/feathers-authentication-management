@@ -1,0 +1,12 @@
+export { AuthenticationManagementService } from './AuthenticationManagementService';
+export { CheckUniqueService } from './CheckUniqueService';
+export { IdentityChangeService } from './IdentityChangeService';
+export { PasswordChangeService } from './PasswordChangeService';
+export { ResendVerifySignupService } from './ResendVerifySignupService';
+export { ResetPwdLongService } from './ResetPwdLongService';
+export { ResetPwdShortService } from './ResetPwdShortService';
+export { SendResetPwdService } from './SendResetPwdService';
+export { VerifySignupLongService } from './VerifySignupLongService';
+export { VerifySignupSetPasswordLongService } from './VerifySignupSetPasswordLongService';
+export { VerifySignupSetPasswordShortService } from './VerifySignupSetPasswordShortService';
+export { VerifySignupShortService } from './VerifySignupShortService';

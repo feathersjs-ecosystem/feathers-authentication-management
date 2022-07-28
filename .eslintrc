@@ -1,0 +1,38 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "rules": {
+    "semi": ["warn", "always"],
+    "@typescript-eslint/semi": ["warn", "always"],
+    "@typescript-eslint/strict-boolean-expressions": ["off"],
+    "spaced-comment": ["off"],
+    "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
+    // import
+    "import/order": ["warn", { "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"] }],
+    "import/no-duplicates": ["warn"]
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": ["off"]
+      }
+    }
+  ]
+}

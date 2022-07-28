@@ -3,19 +3,14 @@
 
 name: Node.js CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [12.x, 14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -26,6 +21,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm test
+
   coverage:
     needs: [ test ]
     name: coverage
@@ -34,10 +30,10 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-node@master
       with:
-        node-version: '12'
-    - run: npm i
-    - uses: paambaati/codeclimate-action@v2.7.5
+        node-version: '14'
+    - run: npm ci
+    - uses: paambaati/codeclimate-action@v3.0.0
       env:
         CC_TEST_REPORTER_ID: ac461a4a35fe5e70a011b20969f4298ad55da3498f1efbe0019d2bc3b99cf885
       with:
-        coverageCommand: npm run test
+        coverageCommand: npm run coverage

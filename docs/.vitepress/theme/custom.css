@@ -1,0 +1,13 @@
+:root {
+  --primary: #64007a;
+  --vp-c-accent: #64007a;
+  --vp-c-brand: var(--primary);
+  --vp-c-brand-light: #9000b0;
+  --vp-c-brand-lighter: #ffffff;
+}
+
+.dark {
+  --vp-c-brand: #b200da;
+  --vp-c-brand-dark: #d000ff;
+  --vp-c-brand-darker: #d000ff;
+}
