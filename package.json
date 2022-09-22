@@ -55,7 +55,8 @@
     "test": "npm run mocha",
     "compile": "shx rm -rf dist/ && tsc",
     "docs": "vitepress dev docs --port 3333 --open",
-    "docs:build": "vitepress build docs"
+    "docs:build": "vitepress build docs",
+    "check-updates": "ncu -u && ncu -u --cwd examples/js"
   },
   "dependencies": {
     "@feathersjs/authentication": "^4.5.15",
