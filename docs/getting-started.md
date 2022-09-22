@@ -1,8 +1,4 @@
----
-title: Getting Started
----
-
-# {{ $frontmatter.title }}
+# Getting Started
 
 ## Introduction
 

@@ -1,8 +1,4 @@
----
-title: Service Calls
----
-
-# {{ $frontmatter.title }}
+# Service Calls
 
 The `feathers-authentication-management` service methods can be called using various ways. These can be external calls from the client as well as internal calls within the server. On client side, you can use the [Feathers client](https://docs.feathersjs.com/api/client.html), plain and simple HTTP requests, or any other request library your frontend framework provides.
 
@@ -69,11 +65,7 @@ app.service("auth-management").sendResetPassword({
   
 </Tabs>
 
-## List of Service Calls
-
-All service calls return a promise.
-
-### checkUnique
+## checkUnique
 
 Checks if the properties are unique in the users items.
 
@@ -129,7 +121,7 @@ app.service('auth-management').checkUnique({
 
 Returns `null` if the properties are unique (= already existing) in the users items. Otherwise rejects with `BadRequest`.
 
-### identityChange
+## identityChange
 
 Changes the communication address of a user, e. g. the e-mail address or a phone number.
 
@@ -190,7 +182,7 @@ app.service('auth-management').identityChange({
 
 Returns the user object or rejects with `BadRequest`.
 
-### passwordChange
+## passwordChange
 
 Changes the password of a user.
 
@@ -251,7 +243,7 @@ app.service('auth-management').passwordChange({
 
 Returns the user object or rejects with `BadRequest`.
 
-### resendVerifySignup
+## resendVerifySignup
 
 Recreates a long and/or short verification token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
@@ -304,7 +296,7 @@ app.service('auth-management').resendVerifySignup({
 
 Returns the user object or rejects with `BadRequest`.
 
-### resetPwdLong
+## resetPwdLong
 
 Stores a new password. Requires a valid long `resetToken`.
 
@@ -365,7 +357,7 @@ app.service('auth-management').resetPasswordLong({
 
 Returns the user object or rejects with `BadRequest`.
 
-### resetPwdShort
+## resetPwdShort
 
 Stores a new password. Requires a valid short `resetShortToken` and a property of the user object to identify the user.
 
@@ -426,7 +418,7 @@ app.service('auth-management').resetPasswordShort({
 
 Returns the user object or rejects with `BadRequest`.
 
-### sendResetPwd
+## sendResetPwd
 
 Creates a short and/or long password reset token, stores it to the user item, and triggers the notifier function to send the token to the user.
 
@@ -479,7 +471,7 @@ app.service('auth-management').sendResetPassword({
 
 Returns the user object or rejects with `BadRequest`.
 
-### verifySignupLong
+## verifySignupLong
 
 Verifies a given long verification token.
 
@@ -532,7 +524,7 @@ app.service('auth-management').verifySignupLong({
 
 Returns the user object or rejects with `BadRequest`.
 
-### verifySignupShort
+## verifySignupShort
 
 Verifies a given short verification token.
 
@@ -591,7 +583,7 @@ app.service('auth-management').verifySignupShort({
 
 Returns the user object or rejects with `BadRequest`.
 
-### verifySignupSetPasswordLong
+## verifySignupSetPasswordLong
 
 This is a combination of `verifySignupLong` and `resetPwdLong`: Verifies a given long verification token and stores the new password.
 
@@ -649,7 +641,7 @@ app.service('auth-management').verifySignupSetPasswordLong({
 
 Returns the user object or rejects with `BadRequest`.
 
-### verifySignupSetPasswordShort
+## verifySignupSetPasswordShort
 
 This is a combination of `verifySignupShort` and `resetPwdShort`: Verifies a given short verification token and stores the new password.
 

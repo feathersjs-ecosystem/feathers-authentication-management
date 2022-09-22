@@ -1,8 +1,4 @@
----
-title: Configuration
----
-
-# {{ $frontmatter.title }}
+# Configuration
 
 The `feathers-authentication-management` service is configured at several positions of a Feathers application:
 

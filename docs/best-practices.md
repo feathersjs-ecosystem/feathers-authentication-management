@@ -2,7 +2,7 @@
 title: Best Practices
 ---
 
-# {{ $frontmatter.title }}
+# Best Practices
 
 ## Security
 
