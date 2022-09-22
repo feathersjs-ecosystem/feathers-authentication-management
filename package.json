@@ -54,7 +54,7 @@
     "coverage": "nyc npm run mocha",
     "test": "npm run mocha",
     "compile": "shx rm -rf dist/ && tsc",
-    "docs": "vitepress dev docs",
+    "docs": "vitepress dev docs --port 3333 --open",
     "docs:build": "vitepress build docs"
   },
   "dependencies": {
@@ -94,6 +94,6 @@
     "typescript": "^4.7.4",
     "unocss": "^0.44.7",
     "unplugin-vue-components": "^0.21.2",
-    "vitepress": "^1.0.0-alpha.4"
+    "vitepress": "^1.0.0-alpha.14"
   }
 }
