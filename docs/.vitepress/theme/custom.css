@@ -11,3 +11,16 @@
   --vp-c-brand-dark: #d000ff;
   --vp-c-brand-darker: #d000ff;
 }
+
+/**
+ * Component: Home
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #64007a 20%,
+    #8e00ad
+  );
+}
