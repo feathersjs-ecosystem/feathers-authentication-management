@@ -2,11 +2,24 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.1...HEAD)
 
 **Merged pull requests:**
 
-- Typescript refactoring, seperate services, custom methods and vitepress docs [\#164](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/164) ([fratzinger](https://github.com/fratzinger))
+- chore: check updates for examples [\#190](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/190) ([fratzinger](https://github.com/fratzinger))
+- chore: update dependencies [\#188](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/188) ([fratzinger](https://github.com/fratzinger))
+- docs: fix heading levels [\#186](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/186) ([fratzinger](https://github.com/fratzinger))
+- Bump moment-timezone from 0.5.33 to 0.5.37 in /examples/js [\#185](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/185) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump vite from 2.9.12 to 2.9.15 [\#184](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/184) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump undici from 5.8.0 to 5.9.1 [\#183](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/183) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v4.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.1) (2022-09-22)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0...v4.0.1)
+
+**Closed issues:**
+
+- Update docs [\#138](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/138)
 
 ## [v4.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0) (2022-07-28)
 
@@ -16,6 +29,10 @@
 
 - verifyHooks.addVerification  erroring out [\#157](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/157)
 - Rework [\#144](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/144)
+
+**Merged pull requests:**
+
+- Typescript refactoring, seperate services, custom methods and vitepress docs [\#164](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/164) ([fratzinger](https://github.com/fratzinger))
 
 ## [v4.0.0-pre.2](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0-pre.2) (2022-06-19)
 
@@ -149,7 +166,7 @@
 - Remove outdated link. [\#123](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/123) ([bartduisters](https://github.com/bartduisters))
 - chore\(\): update feathers libs [\#122](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/122) ([bitflower](https://github.com/bitflower))
 - Update walkthrough on medium [\#118](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/118) ([morenoh149](https://github.com/morenoh149))
-- hashPassword workaround verbage [\#113](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/113) ([MarsOrBust24](https://github.com/MarsOrBust24))
+- hashPassword workaround verbage [\#113](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/113) ([FossPrime](https://github.com/FossPrime))
 
 ## [v2.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v2.0.1) (2018-07-09)
 
