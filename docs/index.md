@@ -2,8 +2,7 @@
 sidebar: false
 layout: home
 hero:
-  name: f-a-m
-  text: feathers-authentication-management
+  name: feathers-authentication-management
   tagline: Sign up verification, forgotten password reset, and other capabilities for local authentication.
   image:
     src: /logo.svg

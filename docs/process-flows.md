@@ -1,8 +1,4 @@
----
-title: Process Flows
----
-
-# {{ $frontmatter.title }}
+# Process Flows
 
 Some of the process flows related to this service are described in this chapter in more detail. They are meant as examples how the service works and what additional implementations are required.
 

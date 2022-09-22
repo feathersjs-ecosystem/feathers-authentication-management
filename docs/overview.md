@@ -1,8 +1,4 @@
----
-title: Overview
----
-
-# {{ $frontmatter.title }}
+# Overview
 
 <p align="center">
   <img src="/logo.svg" width="250">
@@ -21,7 +17,7 @@ This project is built for [Feathers](http://feathersjs.com) – an open source f
 
 The Feathers core provides a [LocalStrategy](https://docs.feathersjs.com/api/authentication/local.html) for authenticating users with a username/e-mail and password combination. However, it does not include methods such as the verification of a user's e-mail address or sending a password reset link. The purpose of `feathers-authentication-management` is to extend Feathers's local authentication with such functionalities.
 
-### Features
+## Features
 
 - User verification by sending a token-based verification URL.
 - Password reset notifications, e. g. for forgotten password functions.
@@ -36,7 +32,7 @@ For most of the actions, `feathers-authentication-management` sends notification
 
 Details about settings and the implementation of a notifier function can be found in chapter [Configuration](./configuration). All possible actions of this service are described in chapter [Service Calls](./service-calls).
 
-### Help
+## Help
 
 - Open an issue or come talk on the Feathers Slack ([slack.feathersjs.com](http://slack.feathersjs.com/)).
 
@@ -46,6 +42,6 @@ Details about settings and the implementation of a notifier function can be foun
 
   - [The how and why of 2FA using Twilio and Feathers.js — Simple 2FA tutorial](https://harryhopalot.medium.com/the-how-and-why-of-2fa-using-twilio-and-feathers-js-simple-2fa-tutorial-e64a930a57a8) – Medium article by Harry Blakiston Houston (06/2018),
 
-### License
+## License
 
 Licensed under the [MIT license](https://github.com/feathersjs-ecosystem/feathers-authentication-management/blob/master/LICENSE).

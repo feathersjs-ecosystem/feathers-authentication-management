@@ -1,12 +1,8 @@
----
-title: Service Hooks
----
-
-# {{ $frontmatter.title }}
+# Service Hooks
 
 The `feathers-authentication-management` service does not handle creation of a new user account nor the sending of the initial sign up verification notification. Instead hooks are provided to be used with the `users` service `create` method. If you set a service path other than the default of `'/authManagement'`, the custom path name must be passed into the hook.
 
-### addVerification
+## addVerification
 
 This hook is made exclusively for the `/users` service. Creates tokens and sets default `authManagement` data for users.
 
@@ -100,7 +96,7 @@ module.exports = {
 };
 ```
 
-### isVerified
+## isVerified
 
 Throws, if requesting user is not verified (`params.user.isVerified`) and passes otherwise. Please make sure to call `authenticate('jwt')` before.
 
@@ -149,7 +145,7 @@ module.exports = {
 };
 ```
 
-### removeVerification
+## removeVerification
 
 This hook is made exclusively for the `/users` service. It deletes data on user items for external requests that was added for `feathers-authentication-management` to work. It is similar to the `protect('password')` hook from `@feathersjs/authentication-local`.
 It deletes `verifyExpires`, `resetExpires` and `verifyChanges` and if `ifReturnToken: true` it also deletes `verifyToken`, `verifyShortToken`, `resetToken` and `resetShortToken`.
