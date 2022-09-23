@@ -89,5 +89,10 @@ export default defineConfig({
         ]
       }
     ],
+    algolia: {
+      appId: 'G92UWK8VPN',
+      apiKey: 'fd13f8200bfdea8667089e1bb7857c1e',
+      indexName: 'feathers-auth-mgmt'
+    }
   }
 });
