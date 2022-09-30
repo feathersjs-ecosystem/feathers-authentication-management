@@ -37,3 +37,16 @@ jobs:
         CC_TEST_REPORTER_ID: ac461a4a35fe5e70a011b20969f4298ad55da3498f1efbe0019d2bc3b99cf885
       with:
         coverageCommand: npm run coverage
+
+  test-compile:
+    needs: [ test ]
+    name: test-compile
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run compile
