@@ -2,7 +2,27 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.1...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.2...HEAD)
+
+**Merged pull requests:**
+
+- chore: add tsconfig commonjs [\#193](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/193) ([fratzinger](https://github.com/fratzinger))
+
+## [v4.0.2](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.2) (2022-09-30)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.1...v4.0.2)
+
+**Closed issues:**
+
+- SyntaxError: Cannot use import statement outside a module [\#191](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/191)
+
+## [v4.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.1) (2022-09-22)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0...v4.0.1)
+
+**Closed issues:**
+
+- Update docs [\#138](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/138)
 
 **Merged pull requests:**
 
@@ -12,14 +32,6 @@
 - Bump moment-timezone from 0.5.33 to 0.5.37 in /examples/js [\#185](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/185) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump vite from 2.9.12 to 2.9.15 [\#184](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/184) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump undici from 5.8.0 to 5.9.1 [\#183](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/183) ([dependabot[bot]](https://github.com/apps/dependabot))
-
-## [v4.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.1) (2022-09-22)
-
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.0...v4.0.1)
-
-**Closed issues:**
-
-- Update docs [\#138](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/138)
 
 ## [v4.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.0) (2022-07-28)
 
