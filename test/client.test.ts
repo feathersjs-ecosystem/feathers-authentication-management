@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import { Application, feathers } from '@feathersjs/feathers';
 import AuthManagement from '../src/client';
 import { AuthenticationManagementClient } from '../src/types';
 
@@ -62,7 +62,7 @@ describe('client.test.ts', () => {
     });
 
     it('checkUnique', async () => {
-      await authManagement.checkUnique({ username: 'john a' }, null, true);
+      await authManagement.checkUnique({ username: 'john a' }, undefined, true);
 
       assert.deepStrictEqual(spyParams, {});
       assert.deepStrictEqual(spyData, {

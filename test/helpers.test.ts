@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import feathersMemory from 'feathers-memory';
 import authLocalMgnt from '../src/index';
 import {

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application, HookContext } from '@feathersjs/feathers';
+import { feathers, Application, HookContext } from '@feathersjs/feathers';
 import authLocalMgnt, { AuthenticationManagementService } from "../../src/index";
 import { addVerification } from '../../src/hooks';
 import { timeoutEachTest } from '../test-helpers/config';
