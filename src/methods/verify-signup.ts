@@ -7,7 +7,7 @@ import {
   notify,
   isDateAfterNow
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
   SanitizedUser,
@@ -132,7 +132,7 @@ async function verifySignup (
     });
 
     const result = await usersService.patch(
-      user[usersServiceId],
+      user[usersServiceId] as Id,
       patchData,
       Object.assign({}, params)
     );

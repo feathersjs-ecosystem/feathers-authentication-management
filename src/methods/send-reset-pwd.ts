@@ -94,7 +94,7 @@ export default async function sendResetPwd (
     reuseResetToken ? user.resetShortToken : hashPassword(app, user.resetShortToken, passwordField)
   ]);
 
-  const patchedUser = await usersService.patch(user[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
     resetExpires: user.resetExpires,
     resetAttempts: user.resetAttempts,
     resetToken: resetToken3,

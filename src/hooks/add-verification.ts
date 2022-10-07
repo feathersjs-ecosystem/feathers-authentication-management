@@ -23,7 +23,7 @@ export function addVerification (
     checkContext(context, 'before', ['create', 'patch', 'update']);
 
     try {
-      const { options } = (context.app.service(path) as AuthenticationManagementService);
+      const { options } = (context.app.service(path) as unknown as AuthenticationManagementService);
 
       const dataArray = (Array.isArray(context.data))
         ? context.data
