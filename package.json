@@ -73,6 +73,7 @@
     "@feathersjs/feathers": "^5.0.0-pre.30",
     "@feathersjs/socketio": "^5.0.0-pre.30",
     "@feathersjs/transport-commons": "^5.0.0-pre.30",
+    "@sinclair/typebox": "^0.24.44",
     "@types/bcryptjs": "^2.4.2",
     "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.185",
