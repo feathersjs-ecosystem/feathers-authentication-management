@@ -59,10 +59,10 @@
     "check-updates": "ncu -u && ncu -u --cwd examples/js"
   },
   "dependencies": {
-    "@feathersjs/authentication": "^5.0.0-pre.19",
-    "@feathersjs/authentication-client": "^5.0.0-pre.19",
-    "@feathersjs/authentication-local": "^5.0.0-pre.19",
-    "@feathersjs/errors": "^5.0.0-pre.19",
+    "@feathersjs/authentication": "^5.0.0-pre.30",
+    "@feathersjs/authentication-client": "^5.0.0-pre.30",
+    "@feathersjs/authentication-local": "^5.0.0-pre.30",
+    "@feathersjs/errors": "^5.0.0-pre.30",
     "bcryptjs": "^2.4.3",
     "debug": "^4.3.4",
     "feathers-hooks-common": "^7.0.0-pre.1",
@@ -70,10 +70,9 @@
     "type-fest": "^3.0.0"
   },
   "devDependencies": {
-    "@feathersjs/feathers": "^5.0.0-pre.19",
-    "@feathersjs/socketio": "^5.0.0-pre.19",
-    "@feathersjs/transport-commons": "^5.0.0-pre.19",
-    "@feathersjs/adapter-commons": "^5.0.0-pre.19",
+    "@feathersjs/feathers": "^5.0.0-pre.30",
+    "@feathersjs/socketio": "^5.0.0-pre.30",
+    "@feathersjs/transport-commons": "^5.0.0-pre.30",
     "@types/bcryptjs": "^2.4.2",
     "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.185",
