@@ -8,7 +8,7 @@ import type { User } from '../types';
  */
 export function removeVerification <H extends HookContext = HookContext> (
   ifReturnTokens?: boolean
-): (context: H) => H {
+) {
   return (context: H): H => {
     checkContext(context, 'after');
     // Retrieve the items from the hook

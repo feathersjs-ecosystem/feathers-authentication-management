@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Application, Id, Paginated, Params, Query } from '@feathersjs/feathers';
+import type { Application, Id, NullableId, Paginated, Params, Query } from '@feathersjs/feathers';
 
 //#region general
 
@@ -219,7 +219,7 @@ export type SendResetPwdOptions = SendResetPwdServiceOptions & { app: Applicatio
 
 //#region client
 export interface AuthenticationManagementClient {
-  checkUnique: (identifyUser: IdentifyUser, ownId?: Id, ifErrMsg?: boolean) => Promise<void>
+  checkUnique: (identifyUser: IdentifyUser, ownId?: NullableId, ifErrMsg?: boolean) => Promise<void>
   resendVerifySignup: (identifyUser: IdentifyUser, notifierOptions: NotifierOptions) => Promise<void>
   verifySignupLong: (verifyToken: string) => Promise<void>
   verifySignupShort: (verifyToken: string, identifyUser: IdentifyUser) => Promise<void>

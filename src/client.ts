@@ -2,7 +2,7 @@
 
 import { defaultPath } from './options';
 import type { AuthenticationClient } from '@feathersjs/authentication-client';
-import type { Application, Id } from '@feathersjs/feathers';
+import type { Application, NullableId } from '@feathersjs/feathers';
 
 import type {
   AuthenticationManagementClient,
@@ -33,7 +33,7 @@ function makeClient (app: Application, _options?: Partial<ClientOptions>): Authe
   const authManagement = app.service(path);
 
   const client: AuthenticationManagementClient = {
-    checkUnique: async (identifyUser: IdentifyUser, ownId?: Id, ifErrMsg?: boolean) => {
+    checkUnique: async (identifyUser: IdentifyUser, ownId: NullableId, ifErrMsg?: boolean) => {
       await authManagement.create({
         action: 'checkUnique',
         value: identifyUser,

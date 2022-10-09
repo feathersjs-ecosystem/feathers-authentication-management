@@ -15,7 +15,9 @@ import type { AuthenticationManagementService } from '../services';
  * @param [path='authManagement'] the servicePath for your authManagement service
  * @returns
  */
- export function addVerification <H extends HookContext = HookContext>(path?: string): ((context: H) => Promise<H>) {
+export function addVerification <H extends HookContext = HookContext>(
+  path?: string
+) {
   path = path || defaultPath; // default: 'authManagement'
   return async (context: H): Promise<H> => {
     checkContext(context, 'before', ['create', 'patch', 'update']);

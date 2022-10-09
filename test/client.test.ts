@@ -62,7 +62,7 @@ describe('client.test.ts', () => {
     });
 
     it('checkUnique', async () => {
-      await authManagement.checkUnique({ username: 'john a' }, undefined, true);
+      await authManagement.checkUnique({ username: 'john a' }, null, true);
 
       assert.deepStrictEqual(spyParams, {});
       assert.deepStrictEqual(spyData, {

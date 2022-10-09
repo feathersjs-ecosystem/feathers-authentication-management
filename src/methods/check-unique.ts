@@ -1,7 +1,7 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
 
-import type { Id, Params } from '@feathersjs/feathers';
+import type { NullableId, Params } from '@feathersjs/feathers';
 import type {
   CheckUniqueOptions,
   IdentifyUser,
@@ -16,7 +16,7 @@ const debug = makeDebug('authLocalMgnt:checkUnique');
 export default async function checkUnique (
   options: CheckUniqueOptions,
   identifyUser: IdentifyUser,
-  ownId?: Id,
+  ownId?: NullableId,
   meta?: { noErrMsg?: boolean},
   params?: Params
 ): Promise<null> {
