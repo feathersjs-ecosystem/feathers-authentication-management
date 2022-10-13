@@ -13,6 +13,6 @@ export async function hashPassword (
     params: { provider: null },
     app
   };
-  const newContext = await authLocalHooks.hashPassword(field)(context as HookContext);
-  return newContext.data[field];
+  await authLocalHooks.hashPassword(field)(context as HookContext);
+  return context.data[field];
 }

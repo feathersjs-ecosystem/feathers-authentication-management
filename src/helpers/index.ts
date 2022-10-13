@@ -46,8 +46,8 @@ export function ensureValuesAreStrings (
  * Returns false if either object is null/undefined
  */
 export function ensureFieldHasChanged (
-  obj1: Record<string, unknown>,
-  obj2: Record<string, unknown>
+  obj1: Record<string, unknown> | null,
+  obj2: Record<string, unknown> | null
 ): (field: string) => boolean {
   return (obj1 == null || obj2 == null)
     ? () => false

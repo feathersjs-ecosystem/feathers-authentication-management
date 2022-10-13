@@ -9,14 +9,15 @@ import {
   getUserData,
   notify
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
   IdentifyUser,
   IdentityChangeOptions,
   SanitizedUser,
   UsersArrayOrPaginated,
-  NotifierOptions
+  NotifierOptions,
+  User,
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:identityChange');
@@ -59,7 +60,7 @@ export default async function identityChange (
       params,
       { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
     )
-  );
+  ) as User[];
   const user = getUserData(users);
 
   try {
@@ -75,12 +76,12 @@ export default async function identityChange (
     getShortToken(shortTokenLen, shortTokenDigits)
   ]);
 
-  const patchedUser = await usersService.patch(user[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
     verifyExpires: Date.now() + delay,
     verifyToken,
     verifyShortToken,
     verifyChanges: changesIdentifyUser
-  }, Object.assign({}, params));
+  }, Object.assign({}, params)) as User;
 
   const userResult = await notify(notifier, 'identityChange', patchedUser, notifierOptions);
   return sanitizeUserForClient(userResult);

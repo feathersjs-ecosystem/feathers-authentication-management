@@ -6,10 +6,10 @@ import type { User } from '../types';
 /**
  * Sanitize users. After-hook for '/users' service.
  */
-export function removeVerification (
+export function removeVerification <H extends HookContext = HookContext> (
   ifReturnTokens?: boolean
-): (context: HookContext) => HookContext {
-  return (context: HookContext): HookContext => {
+) {
+  return (context: H): H => {
     checkContext(context, 'after');
     // Retrieve the items from the hook
     const items: User | User[] = getItems(context);

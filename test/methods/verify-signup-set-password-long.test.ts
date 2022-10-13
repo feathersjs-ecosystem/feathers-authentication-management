@@ -1,11 +1,12 @@
 
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import bcrypt from 'bcryptjs';
 import authLocalMgnt, {
   DataVerifySignupSetPasswordLong,
   DataVerifySignupSetPasswordLongWithAction,
+  User,
   VerifySignupSetPasswordLongService
 } from '../../src/index';
 import {
@@ -13,6 +14,7 @@ import {
   authenticationService as authService
 } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { Application, HookContextTest, ParamsTest } from '../types';
 
 const withAction = (
   data: DataVerifySignupSetPasswordLong
@@ -40,17 +42,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.verifySignupSetPasswordLong",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: ParamsTest) => {
         return app.service("authManagement").verifySignupSetPasswordLong(data, params);
       }
     }, {
       name: "authManagement/verify-signup-set-password-long",
-      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupSetPasswordLong, params?: ParamsTest) => {
         return app.service("authManagement/verify-signup-set-password-long").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -63,7 +65,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -72,12 +74,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -106,7 +108,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '000',
               password
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -124,7 +126,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '800',
               password
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -143,7 +145,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '000',
               password
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -182,7 +184,7 @@ const withAction = (
 
           it('error on token not found', async () => {
             try {
-              const result = await callMethod(app, {
+              await callMethod(app, {
                 token: '999',
                 password: '123456'
               });
@@ -195,9 +197,9 @@ const withAction = (
 
           it('can use "passParams"', async () => {
             const password = '123456';
-            const params = { call: { count: 0 } };
+            const params: ParamsTest = { call: { count: 0 } };
 
-            const result = await callMethod(app, {
+            await callMethod(app, {
               token: '000',
               password
             }, params);
@@ -215,7 +217,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -224,7 +226,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -248,7 +250,7 @@ const withAction = (
               token: '000',
               password,
               notifierOptions: { transport: 'sms' },
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');

@@ -1,12 +1,14 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataCheckUnique,
   DataCheckUniqueWithAction,
-  CheckUniqueService
+  CheckUniqueService,
 } from '../../src/index';
 import { timeoutEachTest } from '../test-helpers/config';
+import { HookContextTest, ParamsTest, Application } from '../types'
+
 
 const withAction = (
   data: DataCheckUnique
@@ -29,17 +31,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+      callMethod: (app: Application, data: DataCheckUnique, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.checkUnique",
-      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+      callMethod: (app: Application, data: DataCheckUnique, params?: ParamsTest) => {
         return app.service("authManagement").checkUnique(data, params);
       }
     }, {
       name: "authManagement/check-unique",
-      callMethod: (app: Application, data: DataCheckUnique, params?: Params) => {
+      callMethod: (app: Application, data: DataCheckUnique, params?: ParamsTest) => {
         return app.service("authManagement/check-unique").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -48,14 +50,14 @@ const withAction = (
 
         describe('standard', () => {
           let app: Application;
-          let usersService: Service;
+          let usersService;
 
           beforeEach(async () => {
             app = feathers();
             app.configure(authLocalMgnt({
               passParams: params => params
             }));
-            app.use("/authManagement/check-unique", new CheckUniqueService(app, {
+            app.use("authManagement/check-unique", new CheckUniqueService(app, {
               passParams: params => params
             }));
             const optionsUsers: Partial<MemoryServiceOptions> = {
@@ -65,12 +67,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }

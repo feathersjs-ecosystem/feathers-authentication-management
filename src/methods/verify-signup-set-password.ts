@@ -8,7 +8,7 @@ import {
   isDateAfterNow,
   notify
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 import type { VerifyChanges } from '..';
 
 import type {
@@ -99,7 +99,7 @@ async function verifySignupSetPassword (
       params,
       { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
     )
-  );
+  ) as User[];
   const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
@@ -139,10 +139,10 @@ async function verifySignupSetPassword (
     });
 
     const result = await usersService.patch(
-      user[usersServiceId],
+      user[usersServiceId] as Id,
       patchData,
       Object.assign({}, params)
-    );
+    ) as User;
     return result;
   }
 
@@ -165,10 +165,10 @@ async function verifySignupSetPassword (
     });
 
     const result = await usersService.patch(
-      user[usersServiceId],
+      user[usersServiceId] as Id,
       patchData,
       Object.assign({}, params)
-    );
+    ) as User;
     return result;
   }
 }

@@ -1,13 +1,15 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataVerifySignupShort,
   DataVerifySignupShortWithAction,
+  User,
   VerifySignupShortService
 } from '../../src/index';
 import { SpyOn } from '../test-helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { Application, HookContextTest, ParamsTest } from '../types';
 
 const withAction = (
   data: DataVerifySignupShort
@@ -76,17 +78,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.verifySignupShort",
-      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: ParamsTest) => {
         return app.service("authManagement").verifySignupShort(data, params);
       }
     }, {
       name: "authManagement/verify-signup-short",
-      callMethod: (app: Application, data: DataVerifySignupShort, params?: Params) => {
+      callMethod: (app: Application, data: DataVerifySignupShort, params?: ParamsTest) => {
         return app.service("authManagement/verify-signup-short").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -107,12 +109,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -142,7 +144,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '00099',
               user: { email: users[0].email }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -158,7 +160,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '80099',
               user: { email: users[4].email }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -176,7 +178,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: '00099',
               user: { username: users[0].username }
-            });
+            }) as User;
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(result.verifyToken, undefined, 'verifyToken not undefined');
@@ -192,7 +194,7 @@ const withAction = (
                 email: users[0].email,
                 username: users[0].username
               }
-            });
+            }) as User;
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(result.verifyToken, undefined, 'verifyToken not undefined');
@@ -308,7 +310,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -331,7 +333,7 @@ const withAction = (
               token: '00099',
               user: { email: users[0].email },
               notifierOptions: { transport: 'sms' },
-            });
+            }) as User;
             const user = await usersService.get(result.id || result._id);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
