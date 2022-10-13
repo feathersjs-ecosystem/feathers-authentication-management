@@ -1,5 +1,5 @@
 import assert from 'assert';
-import errors from '@feathersjs/errors';
+import { BadRequest } from '@feathersjs/errors';
 
 describe('errors-async-await.test.ts', () => {
   describe('1 deep', () => {
@@ -146,9 +146,9 @@ async function service (action, param1?, param2?) {
         return Promise.reject(err);
       }
     case 'throw':
-      throw new errors.BadRequest('service throw');
+      throw new BadRequest('service throw');
     default:
-      throw new errors.BadRequest('service throw default');
+      throw new BadRequest('service throw default');
   }
 }
 
@@ -157,11 +157,11 @@ async function passwordChange (param1, param2) {
     case 'ok':
       return 'passwordChange ok';
     case 'throw':
-      throw new errors.BadRequest('passwordChange throw');
+      throw new BadRequest('passwordChange throw');
     case 'ensureValuesAreStrings':
       return await ensureValuesAreStrings(param2);
     default:
-      throw new errors.BadRequest('passwordChange throw default');
+      throw new BadRequest('passwordChange throw default');
   }
 }
 
@@ -170,8 +170,8 @@ async function ensureValuesAreStrings (param2) {
     case 'ok':
       return 'ensureValuesAreStrings ok';
     case 'throw':
-      throw new errors.BadRequest('ensureValuesAreStrings throw');
+      throw new BadRequest('ensureValuesAreStrings throw');
     default:
-      throw new errors.BadRequest('ensureValuesAreStrings throw default');
+      throw new BadRequest('ensureValuesAreStrings throw default');
   }
 }

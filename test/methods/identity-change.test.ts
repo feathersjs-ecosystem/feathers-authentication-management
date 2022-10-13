@@ -1,10 +1,11 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers, HookContext } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataIdentityChange,
   DataIdentityChangeWithAction,
-  IdentityChangeService
+  IdentityChangeService,
+  User
 } from '../../src/index';
 import {
   SpyOn,
@@ -12,6 +13,7 @@ import {
 } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest } from '../test-helpers/config';
+import { Application, ParamsTest } from '../types';
 
 const withAction = (
   data: DataIdentityChange
@@ -38,17 +40,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+      callMethod: (app: Application, data: DataIdentityChange, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.identityChange",
-      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+      callMethod: (app: Application, data: DataIdentityChange, params?: ParamsTest) => {
         return app.service("authManagement").identityChange(data, params);
       }
     }, {
       name: "authManagement/identity-change",
-      callMethod: (app: Application, data: DataIdentityChange, params?: Params) => {
+      callMethod: (app: Application, data: DataIdentityChange, params?: ParamsTest) => {
         return app.service("authManagement/identity-change").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -61,7 +63,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
               id: idType
@@ -69,12 +71,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers));
+            app.use("users", new Service(optionsUsers));
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContext) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -117,7 +119,7 @@ const withAction = (
               user: { email: userRec.email },
               password: userRec.plainPassword,
               changes: { email: 'b@b' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true);
@@ -127,11 +129,11 @@ const withAction = (
           it('updates unverified user', async () => {
             const userRec = clone(users[0]);
 
-            const result = await callMethod(app, {
+            const result: User = await callMethod(app, {
               user: { email: userRec.email },
               password: userRec.plainPassword,
               changes: { email: 'a@a' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, false);
@@ -163,7 +165,7 @@ const withAction = (
               user: { email: userRec.email },
               password: userRec.plainPassword,
               changes: { email: 'a@a' }
-            }, params);
+            }, params) as User;
 
             assert.ok(params.call.count > 0, "params.call.count > 0");
           });
@@ -179,7 +181,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -188,7 +190,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -209,12 +211,12 @@ const withAction = (
           it('updates verified user', async () => {
             const userRec = clone(users[1]);
 
-            const result = await callMethod(app, {
+            const result: User = await callMethod(app, {
               user: { email: userRec.email },
               password: userRec.plainPassword,
               changes: { email: 'b@b' },
               notifierOptions: { transport: 'sms' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, `'${name}': isVerified not true`);

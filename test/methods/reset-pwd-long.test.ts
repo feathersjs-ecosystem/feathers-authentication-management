@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import authService from '../test-helpers/authenticationService';
 
 import { MemoryServiceOptions, Service } from 'feathers-memory';
@@ -7,8 +7,10 @@ import authLocalMgnt, {
   DataResetPwdLong,
   DataResetPwdLongWithAction,
   AuthenticationManagementService,
-  ResetPwdLongService
+  ResetPwdLongService,
+  User
 } from '../../src/index';
+import { Application, HookContextTest, ParamsTest } from '../types';
 import { SpyOn } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
@@ -30,7 +32,7 @@ const withAction = (
 
 // Tests
 ['_id', 'id'].forEach(idType => {
-  const makeUsers = () => {
+  const makeUsers = (): Partial<User>[] => {
     const now = Date.now();
     return [
     // The added time interval must be longer than it takes to run ALL the tests
@@ -45,8 +47,8 @@ const withAction = (
       [idType]: 'b',
       email: 'b',
       isVerified: true,
-      resetToken: null,
-      resetExpires: null
+      resetToken: undefined,
+      resetExpires: undefined
     },
     {
       [idType]: 'c',
@@ -67,17 +69,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataResetPwdLong, params?: Params) => {
+      callMethod: (app: Application, data: DataResetPwdLong, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.resetPasswordLong",
-      callMethod: (app: Application, data: DataResetPwdLong, params?: Params) => {
+      callMethod: (app: Application, data: DataResetPwdLong, params?: ParamsTest) => {
         return app.service("authManagement").resetPasswordLong(data, params);
       }
     }, {
       name: "authManagement/reset-password-long",
-      callMethod: (app: Application, data: DataResetPwdLong, params?: Params) => {
+      callMethod: (app: Application, data: DataResetPwdLong, params?: ParamsTest) => {
         return app.service("authManagement/reset-password-long").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -91,7 +93,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -100,12 +102,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -124,12 +126,12 @@ const withAction = (
             app.setup();
 
             // Ugly but makes test much faster
-            if (users[0][fieldToHash].length < 15) {
+            if ((users[0][fieldToHash] as string).length < 15) {
               for (let i = 0, ilen = users.length; i < ilen; i++) {
                 if (!users[i][fieldToHash]) continue;
                 const hashed = await hashPassword(
                   app,
-                  users[i][fieldToHash],
+                  (users[i][fieldToHash] as string),
                   'resetToken'
                 );
                 users[i][fieldToHash] = hashed;
@@ -145,7 +147,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: 'a___000',
               password: '123456'
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -174,7 +176,7 @@ const withAction = (
             const result = await callMethod(app, {
               token: 'a___000',
               password: '123456'
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -258,7 +260,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -267,7 +269,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -281,12 +283,12 @@ const withAction = (
             authLocalMgntService = app.service('authManagement');
 
             // Ugly but makes test much faster
-            if (users[0][fieldToHash].length < 15) {
+            if ((users[0][fieldToHash] as string).length < 15) {
               for (let i = 0, ilen = users.length; i < ilen; i++) {
                 if (!users[i][fieldToHash]) continue;
                 const hashed = await hashPassword(
                   app,
-                  users[i][fieldToHash],
+                  users[i][fieldToHash] as string,
                   'resetToken'
                 );
                 users[i][fieldToHash] = hashed;
@@ -303,7 +305,7 @@ const withAction = (
               token: 'a___000',
               password: '123456',
               notifierOptions: {transport: 'sms'},
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -376,7 +378,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -385,7 +387,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -402,12 +404,12 @@ const withAction = (
             authLocalMgntService = app.service('authManagement');
 
             // Ugly but makes test much faster
-            if (users[0][fieldToHash].length < 15) {
+            if ((users[0][fieldToHash] as string).length < 15) {
               for (let i = 0, ilen = users.length; i < ilen; i++) {
                 if (!users[i][fieldToHash]) continue;
                 const hashed = await hashPassword(
                   app,
-                  users[i][fieldToHash],
+                  users[i][fieldToHash] as string,
                   'resetToken'
                 );
                 users[i][fieldToHash] = hashed;
@@ -448,7 +450,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -457,7 +459,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -473,12 +475,12 @@ const withAction = (
             authLocalMgntService = app.service('authManagement');
 
             // Ugly but makes test much faster
-            if (users[0][fieldToHash].length < 15) {
+            if ((users[0][fieldToHash] as string).length < 15) {
               for (let i = 0, ilen = users.length; i < ilen; i++) {
                 if (!users[i][fieldToHash]) continue;
                 const hashed = await hashPassword(
                   app,
-                  users[i][fieldToHash],
+                  users[i][fieldToHash] as string,
                   'resetToken'
                 );
                 users[i][fieldToHash] = hashed;
@@ -490,10 +492,13 @@ const withAction = (
             await usersService.create(clone(users));
           });
 
+          /**
+           * TODO: this test doesn't make any assertions ?
+           */
           it('failed reset not expiring the token', async () => {
             const i = 0;
             let user = await app.service("users").get('a');
-            user = await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: users[i].email } });
+            await authLocalMgntService.create({ action: 'sendResetPwd', value: { email: users[i].email } });
             user = await app.service("users").get('a');
 
             try {

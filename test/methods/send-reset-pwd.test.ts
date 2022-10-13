@@ -1,10 +1,11 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataSendResetPwd,
   DataSendResetPwdWithAction,
-  SendResetPwdService
+  SendResetPwdService,
+  User
 } from '../../src/index';
 import authService from '../test-helpers/authenticationService';
 
@@ -14,7 +15,7 @@ import {
   SpyOn,
   aboutEqualDateTime
 } from '../test-helpers';
-import {  } from '../../src/services';
+import { Application, HookContextTest, ParamsTest } from '../types';
 
 function makeDateTime(options1?) {
   options1 = options1 || {};
@@ -54,17 +55,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+      callMethod: (app: Application, data: DataSendResetPwd, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.sendResetPassword",
-      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+      callMethod: (app: Application, data: DataSendResetPwd, params?: ParamsTest) => {
         return app.service("authManagement").sendResetPassword(data, params);
       }
     }, {
       name: "authManagement/send-reset-password",
-      callMethod: (app: Application, data: DataSendResetPwd, params?: Params) => {
+      callMethod: (app: Application, data: DataSendResetPwd, params?: ParamsTest) => {
         return app.service("authManagement/send-reset-password").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -77,7 +78,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -86,12 +87,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -116,7 +117,7 @@ const withAction = (
           it('updates verified user', async function () {
             const result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
 
@@ -155,7 +156,7 @@ const withAction = (
           it('user is sanitized', async function () {
             const result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
             assert.strictEqual(result.resetToken, undefined, 'resetToken not undefined');
@@ -175,11 +176,11 @@ const withAction = (
 
         describe('length can change (digits)', () => {
           let app: Application;
-          let usersService: Service;
+          let usersService;
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -188,7 +189,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -211,11 +212,11 @@ const withAction = (
           it('token is reusable with options.reuseResetToken', async function () {
             let result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user1 = await usersService.get(result[idType]);
             result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user2 = await usersService.get(result[idType]);
 
             assert.strictEqual(user1.resetToken, user2.resetToken, 'reset token has changed');
@@ -226,13 +227,13 @@ const withAction = (
           it('token is not reused after half reset time', async function () {
             let result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user1 = await usersService.get(result[idType]);
 
             await new Promise(resolve => setTimeout(resolve, 110));
             result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user2 = await usersService.get(result[idType]);
 
             assert.notEqual(user1.resetToken, user2.resetToken, 'reset token has not changed');
@@ -247,7 +248,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -256,7 +257,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -281,7 +282,7 @@ const withAction = (
           it('updates verified user', async function () {
             const result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -301,7 +302,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -310,7 +311,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -335,7 +336,7 @@ const withAction = (
           it('updates verified user', async function () {
             const result = await callMethod(app, {
               user: { email: 'b' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');
@@ -358,7 +359,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -367,7 +368,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -395,7 +396,7 @@ const withAction = (
             const result = await callMethod(app, {
               user: { email: 'b' },
               notifierOptions: { transport: 'sms' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'user.isVerified not true');

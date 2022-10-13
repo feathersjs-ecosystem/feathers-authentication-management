@@ -1,5 +1,5 @@
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import { Application, feathers } from '@feathersjs/feathers';
 import AuthManagement from '../src/client';
 import { AuthenticationManagementClient } from '../src/types';
 

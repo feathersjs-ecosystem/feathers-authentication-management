@@ -1,6 +1,6 @@
 
 import assert from 'assert';
-import feathers, { Application } from '@feathersjs/feathers';
+import { feathers, Application } from '@feathersjs/feathers';
 import socketio from "@feathersjs/socketio";
 import authManagement from '../src/index';
 import {
@@ -147,22 +147,22 @@ describe('scaffolding.test.ts', () => {
     });
 
     it('can call service', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       const { options } = authLocalMgntService;
 
       assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.notifier;
+      // delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
-      delete expected.notifier;
+      // delete expected.notifier;
 
       assert.deepStrictEqual(options, expected);
     });
 
     it('create({ action: "options" }) returns options', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       const { options } = authLocalMgntService;
 
@@ -173,7 +173,7 @@ describe('scaffolding.test.ts', () => {
     });
 
     it('rejects with no action', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       await assert.rejects(
         //@ts-ignore
@@ -199,7 +199,7 @@ describe('scaffolding.test.ts', () => {
     it("does not call publish on authManagement", async () => {
       const usersService = app.service('/users');
 
-      const authManagementService = app.service("authManagement")
+      const authManagementService = (app.service("authManagement") as unknown as AuthenticationManagementService)
 
       assert.ok(authManagementService, "registered the service");
 
@@ -243,22 +243,22 @@ describe('scaffolding.test.ts', () => {
     });
 
     it('can call service', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       const { options } = authLocalMgntService;
 
       assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.notifier;
+      // delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
-      delete expected.notifier;
+      // delete expected.notifier;
 
       assert.deepStrictEqual(options, expected);
     });
 
     it('create({ action: "options" }) returns options', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       const { options } = authLocalMgntService;
 
@@ -269,7 +269,7 @@ describe('scaffolding.test.ts', () => {
     });
 
     it('rejects with no action', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement');
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService;
 
       await assert.rejects(
         //@ts-ignore
@@ -295,7 +295,7 @@ describe('scaffolding.test.ts', () => {
     it("does not call publish on authManagement", async () => {
       const usersService = app.service('/users');
 
-      const authManagementService = app.service("authManagement")
+      const authManagementService = (app.service("authManagement") as unknown as AuthenticationManagementService)
 
       assert.ok(authManagementService, "registered the service");
 
@@ -349,18 +349,18 @@ describe('scaffolding.test.ts', () => {
     });
 
     it('can call services', async () => {
-      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement'); // *** the default
-      const authMgntOrgService: AuthenticationManagementService = app.service('authManagement/org'); // *** which one
+      const authLocalMgntService: AuthenticationManagementService = app.service('authManagement') as unknown as AuthenticationManagementService; // *** the defaul as unknown as AuthenticationManagementServicet
+      const authMgntOrgService: AuthenticationManagementService = app.service('authManagement/org') as unknown as AuthenticationManagementService; // *** which one
 
       // call the user instance
       const { options } = authLocalMgntService;
 
       assert.ok(authLocalMgntService.app);
       assert.ok(options.notifier);
-      delete options.notifier;
+      // delete options.notifier;
 
       const expected = Object.assign({}, optionsDefault, userMgntOptions);
-      delete expected.notifier;
+      // delete expected.notifier;
 
       assert.deepStrictEqual(options, expected);
 
@@ -369,10 +369,10 @@ describe('scaffolding.test.ts', () => {
 
       assert.ok(authMgntOrgService.app);
       assert.ok(options1.notifier);
-      delete options1.notifier;
+      // delete options1.notifier;
 
       const expected1 = Object.assign({}, optionsDefault, orgMgntOptions);
-      delete expected1.notifier;
+      // delete expected1.notifier;
 
       assert.deepStrictEqual(options1, expected1);
     });

@@ -6,14 +6,15 @@ import {
   getUserData,
   notify
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
   IdentifyUser,
   ResendVerifySignupOptions,
   SanitizedUser,
   UsersArrayOrPaginated,
-  NotifierOptions
+  NotifierOptions,
+  User
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resendVerifySignup');
@@ -58,7 +59,7 @@ export default async function resendVerifySignup (
       params,
       { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
     )
-  );
+  ) as User[];
   const user = getUserData(users, ['isNotVerified']);
 
   const [verifyToken, verifyShortToken] = await Promise.all([
@@ -66,12 +67,12 @@ export default async function resendVerifySignup (
     getShortToken(shortTokenLen, shortTokenDigits)
   ]);
 
-  const patchedUser = await usersService.patch(user[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
     isVerified: false,
     verifyExpires: Date.now() + delay,
     verifyToken,
     verifyShortToken
-  }, Object.assign({}, params));
+  }, Object.assign({}, params)) as User;
 
   const userResult = await notify(notifier, 'resendVerifySignup', patchedUser, notifierOptions);
   return sanitizeUserForClient(userResult);
