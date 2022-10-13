@@ -2,11 +2,19 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.2...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0-pre.0...HEAD)
 
 **Merged pull requests:**
 
-- chore: add tsconfig commonjs [\#193](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/193) ([fratzinger](https://github.com/fratzinger))
+- ci: also check compile step [\#194](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/194) ([fratzinger](https://github.com/fratzinger))
+
+## [v5.0.0-pre.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0-pre.0) (2022-10-13)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v4.0.2...v5.0.0-pre.0)
+
+**Closed issues:**
+
+- Error when using with typescript app [\#192](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/192)
 
 ## [v4.0.2](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.2) (2022-09-30)
 
@@ -15,6 +23,10 @@
 **Closed issues:**
 
 - SyntaxError: Cannot use import statement outside a module [\#191](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/191)
+
+**Merged pull requests:**
+
+- chore: add tsconfig commonjs [\#193](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/193) ([fratzinger](https://github.com/fratzinger))
 
 ## [v4.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v4.0.1) (2022-09-22)
 
