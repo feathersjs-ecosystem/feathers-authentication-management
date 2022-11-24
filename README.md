@@ -22,7 +22,7 @@ You need more information? Please have a look at our new docs at [feathers-a-m.n
 
 ### Maintainers
 
-Refer to our [guidelines](./development).
+Refer to our [guidelines](./development.md).
 
 ## License
 
