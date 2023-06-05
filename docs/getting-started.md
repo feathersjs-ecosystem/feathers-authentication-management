@@ -121,7 +121,7 @@ const {
 const authNotifier = require("../auth-management/notifier");
 
 const sendVerify = () => {
-  return (context) => {
+  return async (context) => {
     const notifier = authNotifier(context.app);
 
     const users = Array.isArray(context.result) 
