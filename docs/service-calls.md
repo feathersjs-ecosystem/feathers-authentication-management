@@ -370,8 +370,8 @@ Stores a new password. Requires a valid short `resetShortToken` and a property o
 // app.use('auth-management', new AuthenticationManagementService(app, options));
 
 app.service('auth-management').create({
+  action: 'resetPwdShort',
   value: {
-    action: 'resetPwdShort',
     user: identifyUser, // identify user, e.g. {email: 'a@a.com'}. See options.identifyUserProps.
     token, // compares to .resetShortToken
     password, // new password
