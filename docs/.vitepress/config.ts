@@ -21,7 +21,7 @@ export default defineConfig({
   themeConfig: {
     logo: '/logo.svg',
     editLink: {
-      pattern: 'https://github.com/feathersjs-ecosystem/feathers-authentication-management/edit/main/docs/:path',
+      pattern: 'https://github.com/feathersjs-ecosystem/feathers-authentication-management/edit/master/docs/:path',
       text: 'Edit this page on GitHub'
     },
     socialLinks: [
