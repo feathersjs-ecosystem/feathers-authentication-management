@@ -18,14 +18,14 @@
     "plugin:import/typescript"
   ],
   "rules": {
-    "semi": ["warn", "always"],
-    "@typescript-eslint/semi": ["warn", "always"],
+    "semi": ["error", "always"],
+    "@typescript-eslint/semi": ["error", "always"],
     "@typescript-eslint/strict-boolean-expressions": ["off"],
     "spaced-comment": ["off"],
     "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
     // import
-    "import/order": ["warn", { "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"] }],
-    "import/no-duplicates": ["warn"]
+    "import/order": ["error", { "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"] }],
+    "import/no-duplicates": ["error"]
   },
   "overrides": [
     {
