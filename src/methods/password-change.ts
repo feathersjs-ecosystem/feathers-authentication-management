@@ -15,7 +15,6 @@ import type {
   IdentifyUser,
   PasswordChangeOptions,
   SanitizedUser,
-  UsersArrayOrPaginated,
   NotifierOptions,
   User
 } from '../types';
@@ -52,13 +51,11 @@ export default async function passwordChange (
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  ) as User[];
+  const users = await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  }) as User[];
   const user = getUserData(users);
 
   try {

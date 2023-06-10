@@ -16,7 +16,6 @@ import type {
   IdentifyUser,
   SanitizedUser,
   SendResetPwdOptions,
-  UsersArrayOrPaginated,
   NotifierOptions
 } from '../types';
 
@@ -56,13 +55,11 @@ export default async function sendResetPwd (
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  );
+  const users = await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  });
   const user = getUserData(users, skipIsVerifiedCheck ? [] : ['isVerified']);
 
   if (

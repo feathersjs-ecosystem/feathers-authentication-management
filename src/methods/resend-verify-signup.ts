@@ -12,7 +12,6 @@ import type {
   IdentifyUser,
   ResendVerifySignupOptions,
   SanitizedUser,
-  UsersArrayOrPaginated,
   NotifierOptions,
   User
 } from '../types';
@@ -53,13 +52,11 @@ export default async function resendVerifySignup (
     identifyUserProps.concat('verifyToken', 'verifyShortToken')
   );
 
-  const users: UsersArrayOrPaginated = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  ) as User[];
+  const users = await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  }) as User[];
   const user = getUserData(users, ['isNotVerified']);
 
   const [verifyToken, verifyShortToken] = await Promise.all([

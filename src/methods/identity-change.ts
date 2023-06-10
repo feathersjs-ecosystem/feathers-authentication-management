@@ -1,4 +1,3 @@
-
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
 import {
@@ -11,14 +10,7 @@ import {
 } from '../helpers';
 import type { Id, Params } from '@feathersjs/feathers';
 
-import type {
-  IdentifyUser,
-  IdentityChangeOptions,
-  SanitizedUser,
-  UsersArrayOrPaginated,
-  NotifierOptions,
-  User,
-} from '../types';
+import type { IdentifyUser, IdentityChangeOptions, SanitizedUser, NotifierOptions, User } from '../types';
 
 const debug = makeDebug('authLocalMgnt:identityChange');
 
@@ -54,13 +46,11 @@ export default async function identityChange (
   ensureObjPropsValid(identifyUser, identifyUserProps);
   ensureObjPropsValid(changesIdentifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  ) as User[];
+  const users = (await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false
+  })) as User[];
   const user = getUserData(users);
 
   try {

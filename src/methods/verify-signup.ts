@@ -85,11 +85,11 @@ async function verifySignup (
   const usersServiceId = usersService.id;
 
   const users = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
+    {
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  }
   );
   const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',

@@ -93,13 +93,11 @@ async function verifySignupSetPassword (
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
 
-  const users = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  ) as User[];
+  const users = await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  }) as User[];
   const user = getUserData(users, [
     'isNotVerifiedOrHasVerifyChanges',
     'verifyNotExpired'
