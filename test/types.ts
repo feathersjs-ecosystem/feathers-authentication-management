@@ -1,7 +1,7 @@
 import { AuthenticationService } from "@feathersjs/authentication/lib";
 import { Application as FeathersApplication, HookContext, Params, Query } from "@feathersjs/feathers";
 import { AuthenticationManagementService, CheckUniqueService, IdentityChangeService, PasswordChangeService, ResendVerifySignupService, ResetPwdLongService, ResetPwdShortService, SendResetPwdService, User, VerifySignupLongService, VerifySignupSetPasswordLongService, VerifySignupSetPasswordShortService, VerifySignupShortService } from "../src";
-import type { Service } from 'feathers-memory';
+import { type MemoryService } from '@feathersjs/memory';
 
 /**
  * These typings are for test purpose only
@@ -27,10 +27,10 @@ interface ServiceTypes {
   "authManagement/verify-signup-short": VerifySignupShortService
   "authManagement/verify-signup-set-password-long": VerifySignupSetPasswordLongService
   "authManagement/verify-signup-set-password-short": VerifySignupSetPasswordShortService
-  users: Service<User>
+  users: MemoryService<User>
 }
 
 export type Application = FeathersApplication<ServiceTypes>
 
-export interface HookContextTest extends HookContext<Application, Service> {}
+export interface HookContextTest extends HookContext<Application, MemoryService> {}
 
