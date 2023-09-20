@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { feathers } from '@feathersjs/feathers';
-import feathersMemory from 'feathers-memory';
+import { MemoryService } from '@feathersjs/memory';
 import authLocalMgnt from '../src/index';
 import {
   deconstructId,
@@ -18,7 +18,7 @@ import { addSeconds } from "date-fns"
 const makeUsersService = options =>
   function (app) {
     Object.assign(options, { multi: true });
-    app.use('/users', feathersMemory(options));
+    app.use('/users', new MemoryService(options));
   };
 
 const users_Id = [

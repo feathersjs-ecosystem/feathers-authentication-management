@@ -24,6 +24,13 @@ function checkOneUser (users: User[]): User {
   return users[0];
 }
 
+function dateOrNumberToNumber(dateOrNumber: Date | number | undefined | null): number {
+  if (!dateOrNumber) return 0;
+  return typeof dateOrNumber === 'number'
+    ? dateOrNumber
+    : dateOrNumber.getTime();
+}
+
 function checkUserChecks (
   user: User,
   checks?: GetUserDataCheckProps
@@ -63,7 +70,7 @@ function checkUserChecks (
 
   if (
     checks.includes('verifyNotExpired') &&
-    user.verifyExpires < Date.now()
+    dateOrNumberToNumber(user.verifyExpires) < Date.now()
   ) {
     throw new BadRequest(
       'Verification token has expired.',
@@ -73,7 +80,7 @@ function checkUserChecks (
 
   if (
     checks.includes('resetNotExpired') &&
-    user.resetExpires < Date.now()
+    dateOrNumberToNumber(user.resetExpires) < Date.now()
   ) {
     throw new BadRequest(
       'Password reset token has expired.',

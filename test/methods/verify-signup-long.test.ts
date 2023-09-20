@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { feathers } from '@feathersjs/feathers';
-import { MemoryServiceOptions, Service } from 'feathers-memory';
+import { MemoryService, type MemoryServiceOptions } from '@feathersjs/memory';
 import authLocalMgnt, {
   DataVerifySignupLong,
   DataVerifySignupLongWithAction,
@@ -84,7 +84,7 @@ const withAction = (
 
         describe('basic', () => {
           let app: Application;
-          let usersService: Service;
+          let usersService: MemoryService;
 
           beforeEach(async () => {
             app = feathers();
@@ -96,14 +96,14 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("users", new Service(optionsUsers))
+            app.use("users", new MemoryService(optionsUsers))
 
             app.service("users").hooks({
               before: {
                 all: [
                   (context: HookContextTest) => {
-                    if (context.params?.call && "count" in context.params.call) {
-                      context.params.call.count++;
+                    if ((context.params as any)?.call && "count" in (context.params as any).call) {
+                      (context.params as any).call.count++;
                     }
                   }
                 ]
@@ -205,7 +205,7 @@ const withAction = (
           });
 
           it('can use "passParams"', async () => {
-            const params = { call: { count: 0 } };
+            const params = { call: { count: 0 } };
             const result = await callMethod(app, {
               token: '000'
             }, params);
@@ -216,7 +216,7 @@ const withAction = (
 
         describe('with notification', () => {
           let app: Application;
-          let usersService: Service;
+          let usersService: MemoryService;
           let spyNotifier;
 
           beforeEach(async () => {
@@ -231,7 +231,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("users", new Service(optionsUsers))
+            app.use("users", new MemoryService(optionsUsers))
 
             app.configure(
               authLocalMgnt({

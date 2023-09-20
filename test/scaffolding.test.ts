@@ -427,7 +427,7 @@ describe('scaffolding.test.ts', () => {
 
       classes.forEach(Service => {
         //@ts-expect-error
-        assert.throws(() => new Service());
+        assert.throws(() => new MemoryService());
       });
     })
   });

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { feathers, HookContext } from '@feathersjs/feathers';
-import { MemoryServiceOptions, Service } from 'feathers-memory';
+import { MemoryService, type MemoryServiceOptions } from '@feathersjs/memory';
 import authLocalMgnt, {
   DataIdentityChange,
   DataIdentityChangeWithAction,
@@ -59,7 +59,7 @@ const withAction = (
 
         describe('standard', () => {
           let app: Application;
-          let usersService: Service;
+          let usersService: MemoryService;
 
           beforeEach(async () => {
             app = feathers();
@@ -71,14 +71,14 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("users", new Service(optionsUsers));
+            app.use("users", new MemoryService(optionsUsers));
 
             app.service("users").hooks({
               before: {
                 all: [
                   (context: HookContext) => {
-                    if (context.params?.call && "count" in context.params.call) {
-                      context.params.call.count++;
+                    if ((context.params as any)?.call && "count" in (context.params as any).call) {
+                      (context.params as any).call.count++;
                     }
                   }
                 ]
@@ -175,7 +175,7 @@ const withAction = (
           let spyNotifier;
 
           let app: Application;
-          let usersService: Service;
+          let usersService: MemoryService;
 
           beforeEach(async () => {
             spyNotifier = SpyOn(notifier);
@@ -190,7 +190,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("users", new Service(optionsUsers))
+            app.use("users", new MemoryService(optionsUsers))
 
             app.configure(
               authLocalMgnt({
