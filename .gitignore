@@ -40,5 +40,4 @@ dist/
 #.vscode/
 .prettierrc
 
-docs/.vuepress/.cache
-docs/.vuepress/.temp
+docs/.vitepress/cache
