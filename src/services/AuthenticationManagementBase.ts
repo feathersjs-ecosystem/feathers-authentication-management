@@ -30,7 +30,7 @@ export abstract class AuthenticationManagementBase<T, R, O> {
     return Object.assign({ app: this.app }, this.options);
   }
 
-  setup (): void {
+  async setup (): Promise<void> {
     if (typeof this.publish === 'function') {
       this.publish(() => null);
     }

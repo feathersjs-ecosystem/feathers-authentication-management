@@ -15,15 +15,15 @@ import type { AuthenticationManagementService } from '../services';
  * @param [path='authManagement'] the servicePath for your authManagement service
  * @returns
  */
-export function addVerification (
+export function addVerification <H extends HookContext = HookContext>(
   path?: string
-): ((context: HookContext) => Promise<HookContext>) {
+) {
   path = path || defaultPath; // default: 'authManagement'
-  return async (context: HookContext): Promise<HookContext> => {
+  return async (context: H): Promise<H> => {
     checkContext(context, 'before', ['create', 'patch', 'update']);
 
     try {
-      const { options } = (context.app.service(path) as AuthenticationManagementService);
+      const { options } = (context.app.service(path) as unknown as AuthenticationManagementService);
 
       const dataArray = (Array.isArray(context.data))
         ? context.data

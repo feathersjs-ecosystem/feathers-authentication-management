@@ -1,12 +1,14 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataResendVerifySignup,
   DataResendVerifySignupWithAction,
   AuthenticationManagementService,
-  ResendVerifySignupService
+  ResendVerifySignupService,
+  User
 } from '../../src/index';
+import { Application, ParamsTest } from '../types';
 import {
   SpyOn,
   aboutEqualDateTime,
@@ -57,17 +59,17 @@ const withAction = (
   ['paginated', 'non-paginated'].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: ParamsTest) => {
         return app.service("authManagement").create(withAction(data), params);
       }
     }, {
       name: "authManagement.resendVerifySignup",
-      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: ParamsTest) => {
         return app.service("authManagement").resendVerifySignup(data, params);
       }
     }, {
       name: "authManagement/resend-verify-signup",
-      callMethod: (app: Application, data: DataResendVerifySignup, params?: Params) => {
+      callMethod: (app: Application, data: DataResendVerifySignup, params?: ParamsTest) => {
         return app.service("authManagement/resend-verify-signup").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -90,9 +92,9 @@ const withAction = (
               if (pagination === "paginated") {
                 optionsUsers.paginate = { default: 10, max: 50 };
               }
-              app.use("/users", new Service(optionsUsers))
+              app.use("users", new Service(optionsUsers))
 
-              app.service("/users").hooks({
+              app.service("users").hooks({
                 before: {
                   all: [
                     context => {
@@ -126,7 +128,7 @@ const withAction = (
             it('updates unverified user', async () => {
               const result = await callMethod(app, {
                 user: values[0]
-              });
+              }) as User;
               const user = await usersService.get(result[idType]);
 
               assert.strictEqual(
@@ -157,7 +159,7 @@ const withAction = (
             it('sanitizes user', async () => {
               const result = await callMethod(app, {
                 user: values[1]
-              });
+              }) as User;
 
               assert.strictEqual(
                 result.isVerified,
@@ -251,7 +253,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -274,7 +276,7 @@ const withAction = (
 
             const result = await callMethod(app, {
               user: { verifyToken }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -313,7 +315,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -338,7 +340,7 @@ const withAction = (
 
             const result = await callMethod(app, {
               user: { verifyToken }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -377,7 +379,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -404,7 +406,7 @@ const withAction = (
 
             const result = await callMethod(app, {
               user: { verifyToken }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -443,7 +445,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -473,7 +475,7 @@ const withAction = (
                 verifyToken,
                 email: 'a'
               }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -547,7 +549,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -577,7 +579,7 @@ const withAction = (
             const result = await callMethod(app, {
               user: { email },
               notifierOptions: { transport: 'email' }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(

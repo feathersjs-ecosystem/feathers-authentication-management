@@ -9,14 +9,14 @@ import {
   hashPassword,
   notify
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
   IdentifyUser,
   PasswordChangeOptions,
   SanitizedUser,
-  UsersArrayOrPaginated,
-  NotifierOptions
+  NotifierOptions,
+  User
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:passwordChange');
@@ -51,13 +51,11 @@ export default async function passwordChange (
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);
 
-  const users: UsersArrayOrPaginated = await usersService.find(
-    Object.assign(
-      {},
-      params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-    )
-  );
+  const users = await usersService.find({
+    ...params,
+    query: { ...identifyUser, $limit: 2 },
+    paginate: false,
+  }) as User[];
   const user = getUserData(users);
 
   try {
@@ -68,9 +66,9 @@ export default async function passwordChange (
     });
   }
 
-  const patchedUser = await usersService.patch(user[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
     password: await hashPassword(app, password, passwordField)
-  }, Object.assign({}, params));
+  }, Object.assign({}, params)) as User;
 
   const userResult = await notify(notifier, 'passwordChange', patchedUser, notifierOptions);
   return sanitizeUserForClient(userResult);

@@ -1,11 +1,12 @@
 import assert from 'assert';
 import bcrypt from 'bcryptjs';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataPasswordChange,
   DataPasswordChangeWithAction,
-  PasswordChangeService
+  PasswordChangeService,
+  User
 } from '../../src/index';
 import { authentication as authConfig } from '../test-helpers/config';
 
@@ -15,6 +16,7 @@ import {
 } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest } from '../test-helpers/config';
+import { Application, ParamsTest } from '../types';
 
 const withAction = (
   data: DataPasswordChange
@@ -57,7 +59,7 @@ describe('password-change.ts', function () {
 
       beforeEach(async () => {
         app = feathers();
-        app.use('/auth', authService(app, Object.assign({}, {...authConfig, entity: null})));
+        app.use('authentication', authService(app, Object.assign({}, {...authConfig, entity: null})));
         app.setup();
 
         // Ugly but makes test much faster
@@ -80,17 +82,17 @@ describe('password-change.ts', function () {
     ['paginated', 'non-paginated'].forEach(pagination => {
       [{
         name: "authManagement.create",
-        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+        callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
           return app.service("authManagement").create(withAction(data), params);
         }
       }, {
         name: "authManagement.passwordChange",
-        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+        callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
           return app.service("authManagement").passwordChange(data, params);
         }
       }, {
         name: "authManagement/password-change",
-        callMethod: (app: Application, data: DataPasswordChange, params?: Params) => {
+        callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
           return app.service("authManagement/password-change").create(data, params);
         }
       }].forEach(({ name, callMethod }) => {
@@ -101,7 +103,7 @@ describe('password-change.ts', function () {
 
             beforeEach(async () => {
               app = feathers();
-              app.use('/authentication', authService(app));
+              app.use('authentication', authService(app));
 
               const optionsUsers: Partial<MemoryServiceOptions> = {
                 multi: true,
@@ -110,9 +112,9 @@ describe('password-change.ts', function () {
               if (pagination === "paginated") {
                 optionsUsers.paginate = { default: 10, max: 50 };
               }
-              app.use("/users", new Service(optionsUsers))
+              app.use("users", new Service(optionsUsers))
 
-              app.service("/users").hooks({
+              app.service("users").hooks({
                 before: {
                   all: [
                     context => {
@@ -147,7 +149,7 @@ describe('password-change.ts', function () {
                 },
                 oldPassword: userRec.plainPassword,
                 password: userRec.plainNewPassword
-              });
+              }) as User;
               const user = await usersService.get(result[idType]);
 
               assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -163,7 +165,7 @@ describe('password-change.ts', function () {
                 },
                 oldPassword: userRec.plainPassword,
                 password: userRec.plainNewPassword
-              });
+              }) as User;
               const user = await usersService.get(result[idType]);
 
               assert.strictEqual(result.isVerified, false, 'isVerified not false');
@@ -180,8 +182,8 @@ describe('password-change.ts', function () {
                   },
                   oldPassword: 'fdfgfghghj',
                   password: userRec.plainNewPassword
-                });
-                const user = await usersService.get(result[idType]);
+                }) as User;
+                await usersService.get(result[idType]);
 
                 assert.fail('unexpected succeeded.');
               } catch (err) {
@@ -194,7 +196,7 @@ describe('password-change.ts', function () {
 
               const params = { call: { count: 0 } };
 
-              const result = await callMethod(app, {
+              await callMethod(app, {
                 user: {
                   email: userRec.email
                 },
@@ -216,7 +218,7 @@ describe('password-change.ts', function () {
               spyNotifier = SpyOn(notifier);
 
               app = feathers();
-              app.use('/authentication', authService(app));
+              app.use('authentication', authService(app));
 
               const optionsUsers: Partial<MemoryServiceOptions> = {
                 multi: true,
@@ -225,7 +227,7 @@ describe('password-change.ts', function () {
               if (pagination === "paginated") {
                 optionsUsers.paginate = { default: 10, max: 50 };
               }
-              app.use("/users", new Service(optionsUsers))
+              app.use("users", new Service(optionsUsers))
 
               app.configure(
                 authLocalMgnt({
@@ -254,7 +256,7 @@ describe('password-change.ts', function () {
                 oldPassword: userRec.plainPassword,
                 password: userRec.plainNewPassword,
                 notifierOptions: {transport: 'sms'},
-              });
+              }) as User;
               const user = await usersService.get(result[idType]);
 
               assert.strictEqual(result.isVerified, true, 'isVerified not true');

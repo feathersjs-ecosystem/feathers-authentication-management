@@ -9,17 +9,17 @@ import {
   hashPassword,
   notify
 } from '../helpers';
-import type { Params } from '@feathersjs/feathers';
+import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
-  UsersArrayOrPaginated,
   IdentifyUser,
   ResetPasswordOptions,
   ResetPwdWithShortTokenOptions,
   SanitizedUser,
   Tokens,
   GetUserDataCheckProps,
-  NotifierOptions
+  NotifierOptions,
+  User
 } from '../types';
 
 const debug = makeDebug('authLocalMgnt:resetPassword');
@@ -91,20 +91,18 @@ async function resetPassword (
 
   const usersService = app.service(service);
   const usersServiceId = usersService.id;
-  let users: UsersArrayOrPaginated;
+  let users;
 
   if (tokens.resetToken) {
     const id = deconstructId(tokens.resetToken);
     const user = await usersService.get(id, Object.assign({}, params));
     users = [user];
   } else if (tokens.resetShortToken) {
-    users = await usersService.find(
-      Object.assign(
-        {},
-        params,
-      { query: Object.assign({}, identifyUser, { $limit: 2 }), paginate: false }
-      )
-    );
+    users = await usersService.find({
+        ...params,
+        query: { ...identifyUser, $limit: 2 },
+        paginate: false,
+    }) as User[];
   } else {
     throw new BadRequest(
       'resetToken and resetShortToken are missing. (authLocalMgnt)',
@@ -161,7 +159,7 @@ async function resetPassword (
     }
   }
 
-  const patchedUser = await usersService.patch(user[usersServiceId], {
+  const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
     [passwordField]: await hashPassword(app, password, passwordField),
     resetExpires: null,
     resetAttempts: null,

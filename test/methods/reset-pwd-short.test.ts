@@ -1,11 +1,12 @@
 import assert from 'assert';
-import feathers, { Application, Params } from '@feathersjs/feathers';
+import { feathers } from '@feathersjs/feathers';
 import { MemoryServiceOptions, Service } from 'feathers-memory';
 import authLocalMgnt, {
   DataResetPwdShort,
   DataResetPwdShortWithAction,
   AuthenticationManagementService,
-  ResetPwdShortService
+  ResetPwdShortService,
+  User
 } from '../../src/index';
 
 import {
@@ -14,6 +15,7 @@ import {
 } from '../test-helpers';
 import { hashPassword } from '../../src/helpers';
 import { timeoutEachTest, maxTimeAllTests } from '../test-helpers/config';
+import { Application, HookContextTest, ParamsTest } from '../types';
 
 const fieldToHash = 'resetShortToken';
 
@@ -76,17 +78,17 @@ const withAction = (
   ['paginated' /* 'non-paginated' */].forEach(pagination => {
     [{
       name: "authManagement.create",
-      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
-        return app.service("authManagement").create(withAction(data), params);
+      callMethod: (app: Application, data: DataResetPwdShort, params?: ParamsTest) => {
+        return (app.service("authManagement") as unknown as AuthenticationManagementService).create(withAction(data), params);
       }
     }, {
       name: "authManagement.resetPasswordShort",
-      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
-        return app.service("authManagement").resetPasswordShort(data, params);
+      callMethod: (app: Application, data: DataResetPwdShort, params?: ParamsTest) => {
+        return (app.service("authManagement") as unknown as AuthenticationManagementService).resetPasswordShort(data, params);
       }
     }, {
       name: "authManagement/reset-password-short",
-      callMethod: (app: Application, data: DataResetPwdShort, params?: Params) => {
+      callMethod: (app: Application, data: DataResetPwdShort, params?: ParamsTest) => {
         return app.service("authManagement/reset-password-short").create(data, params);
       }
     }].forEach(({ name, callMethod }) => {
@@ -99,7 +101,7 @@ const withAction = (
 
           beforeEach(async () => {
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -108,12 +110,12 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
-            app.service("/users").hooks({
+            app.service("users").hooks({
               before: {
                 all: [
-                  context => {
+                  (context: HookContextTest) => {
                     if (context.params?.call && "count" in context.params.call) {
                       context.params.call.count++;
                     }
@@ -136,12 +138,12 @@ const withAction = (
             app.setup();
 
             // Ugly but makes test much faster
-            if (users[0][fieldToHash].length < 15) {
+            if ((users[0][fieldToHash] as string).length < 15) {
               for (let i = 0, ilen = users.length; i < ilen; i++) {
                 if (!users[i][fieldToHash]) continue;
                 const hashed = await hashPassword(
                   app,
-                  users[i][fieldToHash],
+                  users[i][fieldToHash] as string,
                   'resetShortToken'
                 );
                 users[i][fieldToHash] = hashed;
@@ -160,7 +162,7 @@ const withAction = (
               user: {
                 username: users[0].username
               }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
@@ -192,7 +194,7 @@ const withAction = (
               user: {
                 username: users[0].username
               }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -224,7 +226,7 @@ const withAction = (
                 email: users[0].email,
                 username: users[0].username
               }
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(result.isVerified, true, 'isVerified not true');
@@ -367,7 +369,7 @@ const withAction = (
             spyNotifier = SpyOn(notifier);
 
             app = feathers();
-            app.use('/authentication', authService(app));
+            app.use('authentication', authService(app));
 
             const optionsUsers: Partial<MemoryServiceOptions> = {
               multi: true,
@@ -376,7 +378,7 @@ const withAction = (
             if (pagination === "paginated") {
               optionsUsers.paginate = { default: 10, max: 50 };
             }
-            app.use("/users", new Service(optionsUsers))
+            app.use("users", new Service(optionsUsers))
 
             app.configure(
               authLocalMgnt({
@@ -404,7 +406,7 @@ const withAction = (
                 email: users[0].email
               },
               notifierOptions: {transport: 'sms'},
-            });
+            }) as User;
             const user = await usersService.get(result[idType]);
 
             assert.strictEqual(
