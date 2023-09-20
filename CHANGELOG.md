@@ -2,11 +2,27 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0-pre.0...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0...HEAD)
 
 **Merged pull requests:**
 
+- chore: update dependencies & replace feathers-memory with @feathersjs… [\#214](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/214) ([fratzinger](https://github.com/fratzinger))
+- Update Library Dependencies and Code for Feathers 5 \(Dove\) [\#210](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/210) ([pdfowler](https://github.com/pdfowler))
+- Update config.ts [\#209](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/209) ([bitflower](https://github.com/bitflower))
+- Update getting-started.md [\#208](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/208) ([bitflower](https://github.com/bitflower))
+- Update service-calls.md [\#207](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/207) ([viapek](https://github.com/viapek))
+- Bump json5 from 1.0.1 to 1.0.2 [\#201](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump engine.io from 3.6.0 to 3.6.1 [\#199](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/199) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump socket.io-parser from 3.3.2 to 3.3.3 [\#198](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/198) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ci: also check compile step [\#194](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/194) ([fratzinger](https://github.com/fratzinger))
+
+## [v5.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0) (2023-09-20)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0-pre.0...v5.0.0)
+
+**Closed issues:**
+
+- \[dove\] TypeScript issue when using hook addVerification [\#195](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/195)
 
 ## [v5.0.0-pre.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0-pre.0) (2022-10-13)
 
@@ -283,7 +299,7 @@
 **Implemented enhancements:**
 
 - Make randomDigits use crypto.randomBytes [\#63](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/63) ([micaksica2](https://github.com/micaksica2))
-- Allow hook.addVerification on Patch and Update hooks [\#62](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/62) ([amaurym](https://github.com/amaurym))
+- Allow hook.addVerification on Patch and Update hooks [\#62](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/62) ([amaury1729](https://github.com/amaury1729))
 - Add skipIsVerifiedCheck option for sendResetPwd [\#61](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/61) ([marbemac](https://github.com/marbemac))
 - Updated URL to docs in doc.feathersjs.com [\#57](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/57) ([eddyystop](https://github.com/eddyystop))
 - fix docs [\#56](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/56) ([sylvainlap](https://github.com/sylvainlap))
