@@ -97,6 +97,10 @@ export function getUserData (
 
   const user = checkOneUser(users);
 
+  if (typeof user.verifyChanges === "string" && user.verifyChanges[0] === "{") {
+    user.verifyChanges = JSON.parse(user.verifyChanges);
+  }
+
   checkUserChecks(user, checks);
 
   return user;
