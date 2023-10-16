@@ -91,11 +91,13 @@ The notifier function is used to create the contents various e-mails and send th
 
 `feathers-authentication-management` requires several additional fields in the `user` model:
 
-| Field           | Field Type   | Description                                                |
-| --------------- | ------------ | ---------------------------------------------------------- |
-| `isVerified`    | Boolean      | Indicates if the user's e-mail address has been verified.  |
-| `verifyToken`   | String       | The verification token generated for verification e-mails. |
-| `verifyExpires` | Date\|Number | Expiration date of the verification token.                 |
+| Field              | Field Type       | Description                                                           |
+| ------------------ | ---------------- | --------------------------------------------------------------------- |
+| `isVerified`       | `boolean`        | Indicates if the user's e-mail address has been verified.             |
+| `verifyToken`      | `string`         | A long verification token generated for verification e-mails.         |
+| `verifyShortToken` | `string`         | A short verification token generated e. g. for verification SMS.      |
+| `verifyExpires`    | `Date \| number` | Expiration date of the verification token.                            |
+| `verifyChanges`    | `string[]`       | An array that tracks e. g. the change of an e-mail address.           |
 
 The table contains only the necessary fields for our example with verification e-mails. A full list of fields is described in chapter [Configuration](./configuration#user-model-fields).
 
