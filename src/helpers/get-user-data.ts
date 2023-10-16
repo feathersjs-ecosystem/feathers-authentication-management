@@ -97,8 +97,14 @@ export function getUserData (
 
   const user = checkOneUser(users);
 
-  if (typeof user.verifyChanges === "string" && user.verifyChanges[0] === "{") {
-    user.verifyChanges = JSON.parse(user.verifyChanges);
+  if (typeof user.verifyChanges === "string") {
+    try {
+      user.verifyChanges = JSON.parse(user.verifyChanges);
+    } catch (e) {
+      throw new Error(
+        "Cannot parse user.verifyChanges string field. Incorrect JSON string provided: " + user.verifyChanges
+      );
+    }
   }
 
   checkUserChecks(user, checks);
