@@ -2,7 +2,31 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.1...HEAD)
+
+**Merged pull requests:**
+
+- chore: update dependencies [\#221](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/221) ([fratzinger](https://github.com/fratzinger))
+- fix: dateOrNumberToNumber with BigInt String & ISOString [\#220](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/220) ([fratzinger](https://github.com/fratzinger))
+- Update required fields list [\#217](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/217) ([closertotheend](https://github.com/closertotheend))
+
+## [v5.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.1) (2023-11-04)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0...v5.0.1)
+
+**Closed issues:**
+
+- action "resetPwdLong" does result in error "dateOrNumber.getTime\(\) is not a function" [\#219](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/219)
+- feathers 5 BadRequest: validation failed [\#213](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/213)
+- Does auth-management work with feathers v5? [\#211](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/211)
+
+## [v5.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0) (2023-09-20)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0-pre.0...v5.0.0)
+
+**Closed issues:**
+
+- \[dove\] TypeScript issue when using hook addVerification [\#195](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/195)
 
 **Merged pull requests:**
 
@@ -15,14 +39,6 @@
 - Bump engine.io from 3.6.0 to 3.6.1 [\#199](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/199) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump socket.io-parser from 3.3.2 to 3.3.3 [\#198](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/198) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ci: also check compile step [\#194](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/194) ([fratzinger](https://github.com/fratzinger))
-
-## [v5.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0) (2023-09-20)
-
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.0-pre.0...v5.0.0)
-
-**Closed issues:**
-
-- \[dove\] TypeScript issue when using hook addVerification [\#195](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/195)
 
 ## [v5.0.0-pre.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0-pre.0) (2022-10-13)
 
