@@ -10,6 +10,14 @@ describe('date-or-number-to-number', () => {
     assert(dateOrNumberToNumber(null) === 0);
   });
 
+  it('should return default for undefined', () => {
+    assert(dateOrNumberToNumber(undefined, 1) === 1);
+  });
+
+  it('should return default for null', () => {
+    assert(dateOrNumberToNumber(null, 1) === 1);
+  });
+
   it('should return 0 for 0', () => {
     assert(dateOrNumberToNumber(0) === 0);
   });
