@@ -1,5 +1,5 @@
 import { BadRequest } from '@feathersjs/errors';
-
+import { dateOrNumberToNumber } from './date-or-number-to-number';
 import type {
   UsersArrayOrPaginated,
   User,
@@ -22,13 +22,6 @@ function checkOneUser (users: User[]): User {
   }
 
   return users[0];
-}
-
-function dateOrNumberToNumber(dateOrNumber: Date | number | undefined | null): number {
-  if (!dateOrNumber) return 0;
-  return typeof dateOrNumber === 'number'
-    ? dateOrNumber
-    : dateOrNumber.getTime();
 }
 
 function checkUserChecks (
