@@ -40,6 +40,7 @@ export default async function passwordChange (
     app,
     identifyUserProps,
     passwordField,
+    skipPasswordHash,
     sanitizeUserForClient,
     service,
     notifier
@@ -67,7 +68,7 @@ export default async function passwordChange (
   }
 
   const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
-    password: await hashPassword(app, password, passwordField)
+    password: skipPasswordHash ? password : await hashPassword(app, password, passwordField)
   }, Object.assign({}, params)) as User;
 
   const userResult = await notify(notifier, 'passwordChange', patchedUser, notifierOptions);

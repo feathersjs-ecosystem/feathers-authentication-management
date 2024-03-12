@@ -19,6 +19,7 @@ export class VerifySignupSetPasswordShortService
       'notifier',
       'sanitizeUserForClient',
       'passwordField',
+      'skipPasswordHash',
       'identifyUserProps',
       'passParams'
     ]);

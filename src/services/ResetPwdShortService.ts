@@ -22,6 +22,7 @@ export class ResetPwdShortService
       'reuseResetToken',
       'sanitizeUserForClient',
       'passwordField',
+      'skipPasswordHash',
       'identifyUserProps',
       'passParams'
     ]);

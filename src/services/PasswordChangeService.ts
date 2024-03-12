@@ -21,6 +21,7 @@ export class PasswordChangeService
       'identifyUserProps',
       'sanitizeUserForClient',
       'passwordField',
+      'skipPasswordHash',
       'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);

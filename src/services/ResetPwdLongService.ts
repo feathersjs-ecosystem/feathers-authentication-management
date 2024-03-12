@@ -21,6 +21,7 @@ export class ResetPwdLongService
       'reuseResetToken',
       'sanitizeUserForClient',
       'passwordField',
+      'skipPasswordHash',
       'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);

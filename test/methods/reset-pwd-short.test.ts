@@ -443,6 +443,89 @@ const withAction = (
             });
           });
         });
+
+        describe('with skipPasswordHash', () => {
+          let app: Application;
+          let usersService: MemoryService;
+          let authLocalMgntService: AuthenticationManagementService; 
+
+          beforeEach(async () => { 
+            app = feathers();
+            app.use('authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("users", new MemoryService(optionsUsers))
+
+            app.setup();
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it("hashes password when skipPasswordHash is false", async () => {
+            app.configure(
+              authLocalMgnt({
+                skipPasswordHash: false,
+              })
+            );
+            app.use("authManagement/reset-password-short", new ResetPwdShortService(app, {
+              skipPasswordHash: false,
+            }));
+            authLocalMgntService = app.service('authManagement');
+
+
+            const result = await callMethod(app, {
+              token: '00099',
+              password: '123456',
+              user: {
+                email: users[0].email
+              },
+              notifierOptions: {transport: 'sms'},
+            }) as User;
+            const user = await usersService.get(result[idType]);
+
+            assert.notStrictEqual(
+              user.password,
+              '123456',
+              'password was not hashed'
+            );
+          });
+
+          it("does not hash password when skipPasswordHash is true", async () => {
+            app.configure(
+              authLocalMgnt({
+                skipPasswordHash: true,
+              })
+            );
+            app.use("authManagement/reset-password-short", new ResetPwdShortService(app, {
+              skipPasswordHash: true,
+            }));
+            authLocalMgntService = app.service('authManagement');
+
+            const result = await callMethod(app, {
+              token: '00099',
+              password: '123456',
+              user: {
+                email: users[0].email
+              },
+              notifierOptions: {transport: 'sms'},
+            }) as User;
+            const user = await usersService.get(result[idType]);
+
+            assert.strictEqual(
+              user.password,
+              '123456',
+              'password was hashed'
+            );
+          });
+        });
       });
     });
   });

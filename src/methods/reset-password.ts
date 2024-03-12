@@ -85,6 +85,7 @@ async function resetPassword (
     skipIsVerifiedCheck,
     reuseResetToken,
     passwordField,
+    skipPasswordHash,
     sanitizeUserForClient,
     notifier
   } = options;
@@ -160,7 +161,7 @@ async function resetPassword (
   }
 
   const patchedUser = await usersService.patch(user[usersServiceId] as Id, {
-    [passwordField]: await hashPassword(app, password, passwordField),
+    [passwordField]: skipPasswordHash ? password : await hashPassword(app, password, passwordField),
     resetExpires: null,
     resetAttempts: null,
     resetToken: null,
