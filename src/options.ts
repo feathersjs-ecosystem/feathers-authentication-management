@@ -26,6 +26,7 @@ export const optionsDefault: AuthenticationManagementServiceOptions = {
   sanitizeUserForClient,
   skipIsVerifiedCheck: false,
   passwordField: 'password',
+  skipPasswordHash: false,
   passParams: undefined
 };
 

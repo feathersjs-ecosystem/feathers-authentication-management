@@ -45,6 +45,7 @@ const optionsDefault: AuthenticationManagementServiceOptions = {
   sanitizeUserForClient: sanitizeUserForClient,
   skipIsVerifiedCheck: false,
   passwordField: "password",
+  skipPasswordHash: false,
   passParams: async (params) => {
     let { provider: _, query: __, ...passedParams } = params;
     return passedParams;

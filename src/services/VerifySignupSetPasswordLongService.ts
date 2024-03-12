@@ -18,6 +18,7 @@ export class VerifySignupSetPasswordLongService
       'notifier',
       'sanitizeUserForClient',
       'passwordField',
+      'skipPasswordHash',
       'passParams'
     ]);
     this.options = Object.assign(defaultOptions, options);
