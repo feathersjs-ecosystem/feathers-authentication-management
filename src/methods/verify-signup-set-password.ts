@@ -8,6 +8,7 @@ import {
   isDateAfterNow,
   notify
 } from '../helpers';
+import { typedObjectKeys } from '../helpers/typescript';
 import type { Id, Params } from '@feathersjs/feathers';
 import type { VerifyChanges } from '..';
 
@@ -91,7 +92,7 @@ async function verifySignupSetPassword (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
 
   const users = await usersService.find({
     ...params,
@@ -103,7 +104,7 @@ async function verifySignupSetPassword (
     'verifyNotExpired'
   ]);
 
-  if (!Object.keys(tokens).every((key) => tokens[key] === user[key])) {
+  if (!typedObjectKeys(tokens).every((key) => tokens[key] === user[key])) {
     await eraseVerifyProps(user, user.isVerified, params);
 
     throw new BadRequest(

@@ -51,7 +51,7 @@ export default async function sendResetPwd (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
 
   ensureObjPropsValid(identifyUser, identifyUserProps);
 

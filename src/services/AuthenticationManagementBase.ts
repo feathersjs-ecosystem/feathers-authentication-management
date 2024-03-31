@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MethodNotAllowed } from '@feathersjs/errors';
 import type { Application, Params } from '@feathersjs/feathers';
 
 export abstract class AuthenticationManagementBase<T, R, O> {
-  publish: unknown;
+  publish: undefined | ((fn: ((...any: any[]) => unknown)) => void);
   app: Application;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore not defined in constructor but is used.
   options: O;
 
   abstract _create (data: T, params?: Params): Promise<R>;
@@ -31,7 +34,7 @@ export abstract class AuthenticationManagementBase<T, R, O> {
   }
 
   async setup (): Promise<void> {
-    if (typeof this.publish === 'function') {
+    if (typeof this.publish === 'function') { 
       this.publish(() => null);
     }
   }

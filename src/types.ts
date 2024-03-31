@@ -116,7 +116,7 @@ export interface AuthenticationManagementServiceOptions {
    * @default 'password' */
   passwordField: string
   /** Pass params from f-a-m service to `/users` service */
-  passParams: (params) => Params | Promise<Params>
+  passParams?: (params: any) => Params | Promise<Params>
 }
 
 export type AuthenticationManagementSetupOptions = AuthenticationManagementServiceOptions & { path: string };

@@ -55,8 +55,9 @@ export function addVerification <H extends HookContext = HookContext>(
       );
 
       return context;
-    } catch (err) {
-      throw new GeneralError(err);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      throw new GeneralError(err?.message);
     }
   };
 }

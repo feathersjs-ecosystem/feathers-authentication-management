@@ -12,8 +12,8 @@ export function removeVerification <H extends HookContext = HookContext> (
   return (context: H): H => {
     checkContext(context, 'after');
     // Retrieve the items from the hook
-    const items: User | User[] = getItems(context);
-    if (!items) return;
+    const items: Partial<User> | Partial<User>[] = getItems(context);
+    if (!items) return context;
     const isArray = Array.isArray(items);
     const users = (isArray ? items : [items]);
 
