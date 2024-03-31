@@ -60,10 +60,11 @@ export default async function checkUnique (
         errProps.push(prop);
       }
     }
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     throw new BadRequest(
       meta?.noErrMsg ? null : 'checkUnique unexpected error.',
-      { errors: { msg: err.message, $className: 'unexpected' } }
+      { errors: { msg: err?.message, $className: 'unexpected' } }
     );
   }
 
