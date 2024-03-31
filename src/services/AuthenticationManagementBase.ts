@@ -5,6 +5,8 @@ import type { Application, Params } from '@feathersjs/feathers';
 export abstract class AuthenticationManagementBase<T, R, O> {
   publish: undefined | ((fn: ((...any: any[]) => unknown)) => void);
   app: Application;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore not defined in constructor but is used.
   options: O;
 
   abstract _create (data: T, params?: Params): Promise<R>;

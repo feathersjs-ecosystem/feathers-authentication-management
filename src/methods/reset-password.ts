@@ -91,7 +91,7 @@ async function resetPassword (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
   let users;
 
   if (tokens.resetToken) {
@@ -125,7 +125,7 @@ async function resetPassword (
       }
     } else {
       return await comparePasswords(
-        tokens[key],
+        tokens[key]!,
         user[key] as string,
         () =>
           new BadRequest(

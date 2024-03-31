@@ -31,7 +31,7 @@ export default async function identityChange (
   }
 
   const usersService = options.app.service(options.service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
   const {
     delay,
     identifyUserProps,

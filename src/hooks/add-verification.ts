@@ -56,7 +56,7 @@ export function addVerification <H extends HookContext = HookContext>(
 
       return context;
     } catch (err) {
-      throw new GeneralError(err);
+      throw new GeneralError(err?.message);
     }
   };
 }
