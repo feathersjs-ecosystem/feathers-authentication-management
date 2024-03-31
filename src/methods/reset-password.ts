@@ -9,6 +9,7 @@ import {
   hashPassword,
   notify
 } from '../helpers';
+import { typedObjectKeys } from '../helpers/typescript';
 import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
@@ -114,7 +115,7 @@ async function resetPassword (
   const user = getUserData(users, checkProps);
 
   // compare all tokens (hashed)
-  const tokenChecks = Object.keys(tokens).map(async key => {
+  const tokenChecks = typedObjectKeys(tokens).map(async key => {
     if (reuseResetToken) {
       // Comparing token directly as reused resetToken is not hashed
       if (tokens[key] !== user[key]) {

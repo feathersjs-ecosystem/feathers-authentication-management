@@ -7,6 +7,7 @@ import {
   notify,
   isDateAfterNow
 } from '../helpers';
+import { typedObjectKeys } from '../helpers/typescript';
 import type { Id, Params } from '@feathersjs/feathers';
 
 import type {
@@ -98,7 +99,7 @@ async function verifySignup (
 
   let userErasedVerify: User;
 
-  if (!Object.keys(tokens).every(key => tokens[key] === user[key])) {
+  if (!typedObjectKeys(tokens).every((key) => tokens[key] === user[key])) {
     userErasedVerify = await eraseVerifyProps(user, user.isVerified);
 
     throw new BadRequest(
