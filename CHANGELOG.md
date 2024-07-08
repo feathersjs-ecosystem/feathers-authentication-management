@@ -2,13 +2,23 @@
 
 ## [Unreleased](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/HEAD)
 
-[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.1...HEAD)
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.1.0...HEAD)
 
 **Merged pull requests:**
 
-- chore: update dependencies [\#221](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/221) ([fratzinger](https://github.com/fratzinger))
-- fix: dateOrNumberToNumber with BigInt String & ISOString [\#220](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/220) ([fratzinger](https://github.com/fratzinger))
-- Update required fields list [\#217](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/217) ([closertotheend](https://github.com/closertotheend))
+- chore\(deps-dev\): bump vite from 4.5.2 to 4.5.3 [\#229](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/229) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps-dev\): bump braces from 3.0.2 to 3.0.3 [\#228](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/228) ([dependabot[bot]](https://github.com/apps/dependabot))
+- feat: add skipPasswordHash option [\#226](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/226) ([jd1378](https://github.com/jd1378))
+- chore\(deps-dev\): bump vite from 4.5.0 to 4.5.2 [\#223](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/223) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v5.1.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.1.0) (2024-07-08)
+
+[Full Changelog](https://github.com/feathersjs-ecosystem/feathers-authentication-management/compare/v5.0.1...v5.1.0)
+
+**Closed issues:**
+
+- Provide a way to let resolvers hash the password [\#225](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/225)
+- ensureObjPropsValid throws when an object with more props is passed in [\#224](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/224)
 
 ## [v5.0.1](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.1) (2023-11-04)
 
@@ -19,6 +29,12 @@
 - action "resetPwdLong" does result in error "dateOrNumber.getTime\(\) is not a function" [\#219](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/219)
 - feathers 5 BadRequest: validation failed [\#213](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/213)
 - Does auth-management work with feathers v5? [\#211](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/211)
+
+**Merged pull requests:**
+
+- chore: update dependencies [\#221](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/221) ([fratzinger](https://github.com/fratzinger))
+- fix: dateOrNumberToNumber with BigInt String & ISOString [\#220](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/220) ([fratzinger](https://github.com/fratzinger))
+- Update required fields list [\#217](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/217) ([closertotheend](https://github.com/closertotheend))
 
 ## [v5.0.0](https://github.com/feathersjs-ecosystem/feathers-authentication-management/tree/v5.0.0) (2023-09-20)
 
@@ -188,7 +204,7 @@
 - v4 support [\#124](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/124)
 - pwReset should not be case sensitive [\#121](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/121)
 - Notifier wont work with other opitions like 'identifyUserProps' [\#120](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/120)
-- Distinguishing between identityChange and initial vericication in notifier [\#119](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/119)
+- Distinguishing between identityChange and initial verification in notifier [\#119](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/119)
 - Cannot read property 'id' of undefined [\#117](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/117)
 - Discussing enhancements and changes for V3 rewrite [\#114](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/114)
 - Create TypeScript typings for this package [\#112](https://github.com/feathersjs-ecosystem/feathers-authentication-management/issues/112)
@@ -315,7 +331,7 @@
 **Implemented enhancements:**
 
 - Make randomDigits use crypto.randomBytes [\#63](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/63) ([micaksica2](https://github.com/micaksica2))
-- Allow hook.addVerification on Patch and Update hooks [\#62](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/62) ([amaury1729](https://github.com/amaury1729))
+- Allow hook.addVerification on Patch and Update hooks [\#62](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/62) ([amaury1093](https://github.com/amaury1093))
 - Add skipIsVerifiedCheck option for sendResetPwd [\#61](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/61) ([marbemac](https://github.com/marbemac))
 - Updated URL to docs in doc.feathersjs.com [\#57](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/57) ([eddyystop](https://github.com/eddyystop))
 - fix docs [\#56](https://github.com/feathersjs-ecosystem/feathers-authentication-management/pull/56) ([sylvainlap](https://github.com/sylvainlap))
