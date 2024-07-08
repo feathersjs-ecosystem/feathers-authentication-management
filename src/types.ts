@@ -115,6 +115,8 @@ export interface AuthenticationManagementServiceOptions {
   /** Property name of the password field on your `'/users'` service
    * @default 'password' */
   passwordField: string
+  /** Should we skip hashing password for `passwordField` ? If `true`, password won't be hashed by feathers-authentication-management when patching the user. This must be set to `true` if you are hashing your password field using resolvers. */
+  skipPasswordHash: boolean
   /** Pass params from f-a-m service to `/users` service */
   passParams: (params) => Params | Promise<Params>
 }
@@ -139,6 +141,7 @@ export type VerifySignupSetPasswordLongServiceOptions = Pick<AuthenticationManag
 'sanitizeUserForClient' |
 'notifier' |
 'passwordField' |
+'skipPasswordHash' |
 'passParams'>;
 export type VerifySignupSetPasswordOptions = VerifySignupSetPasswordLongServiceOptions & { app: Application };
 
@@ -148,6 +151,7 @@ export type PasswordChangeServiceOptions = Pick<AuthenticationManagementServiceO
 'notifier' |
 'sanitizeUserForClient' |
 'passwordField' |
+'skipPasswordHash' |
 'passParams'>;
 export type PasswordChangeOptions = PasswordChangeServiceOptions & { app: Application };
 
@@ -162,6 +166,7 @@ export type ResetPasswordServiceOptions = Pick<AuthenticationManagementServiceOp
 'notifier' |
 'sanitizeUserForClient' |
 'passwordField' |
+'skipPasswordHash' |
 'passParams'>;
 export type ResetPasswordOptions = ResetPasswordServiceOptions & { app: Application };
 

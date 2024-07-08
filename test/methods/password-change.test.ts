@@ -271,6 +271,101 @@ describe('password-change.ts', function () {
         });
       })
     });
+
+    [{
+      name: "authManagement.create",
+      callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
+        return app.service("authManagement").create(withAction(data), params);
+      }
+    }, {
+      name: "authManagement.passwordChange",
+      callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
+        return app.service("authManagement").passwordChange(data, params);
+      }
+    }, {
+      name: "authManagement/password-change",
+      callMethod: (app: Application, data: DataPasswordChange, params?: ParamsTest) => {
+        return app.service("authManagement/password-change").create(data, params);
+      }
+    }].forEach(({ name, callMethod }) => {
+      describe(`password-change.test.ts ${idType} skipPasswordHash ${name}`, () => {
+        describe('standard', () => {
+          let app: Application;
+          let usersService: MemoryService;
+
+          beforeEach(async () => {
+            app = feathers();
+            app.use('authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            }; 
+
+            app.use("users", new MemoryService(optionsUsers))
+
+            app.setup();
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('with skipPasswordHash false', async () => {
+            app.configure(authLocalMgnt({
+              passParams: params => params,
+              skipPasswordHash: false,
+            }));
+            app.use("authManagement/password-change", new PasswordChangeService(app, {
+              passParams: params => params,
+              skipPasswordHash: false,
+            }))
+
+
+            const userRec = clone(users[1]);
+
+            const result = await callMethod(app, {
+              user: {
+                email: userRec.email
+              },
+              oldPassword: userRec.plainPassword,
+              password: userRec.plainNewPassword
+            }) as User;
+            const user = await usersService.get(result[idType]);
+
+            assert.strictEqual(result.isVerified, true, 'isVerified not true'); 
+            assert.notStrictEqual(user.password, result.plainNewPassword, 'password was not hashed');
+          });
+
+          it('with skipPasswordHash true', async () => {
+            app.configure(authLocalMgnt({
+              passParams: params => params,
+              skipPasswordHash: true,
+            }));
+            app.use("authManagement/password-change", new PasswordChangeService(app, {
+              passParams: params => params,
+              skipPasswordHash: true,
+            }))
+
+
+            const userRec = clone(users[1]);
+
+            const result = await callMethod(app, {
+              user: {
+                email: userRec.email
+              },
+              oldPassword: userRec.plainPassword,
+              password: userRec.plainNewPassword
+            }) as User;
+            const user = await usersService.get(result[idType]);
+
+            assert.strictEqual(result.isVerified, true, 'isVerified not true');
+            assert.strictEqual(user.password, result.plainNewPassword, 'password was hashed');
+          });
+ 
+        });
+      });
+    })
   });
 });
 

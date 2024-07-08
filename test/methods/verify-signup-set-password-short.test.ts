@@ -345,6 +345,76 @@ const withAction = (
             ]);
           });
         });
+
+        describe('with skipPasswordHash', () => { 
+          let app: Application;
+          let usersService: MemoryService;
+
+          beforeEach(async () => { 
+
+            app = feathers();
+            app.use('authentication', authService(app));
+
+            const optionsUsers: Partial<MemoryServiceOptions> = {
+              multi: true,
+              id: idType
+            };
+            if (pagination === "paginated") {
+              optionsUsers.paginate = { default: 10, max: 50 };
+            }
+            app.use("users", new MemoryService(optionsUsers))
+
+            app.setup();
+
+            usersService = app.service('users');
+            await usersService.remove(null);
+            await usersService.create(clone(users));
+          });
+
+          it('doesnt hash password when skipPasswordHash is true', async () => {
+            app.configure(
+              authLocalMgnt({
+                skipPasswordHash: true,
+              })
+            );
+            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, {
+              skipPasswordHash: true,
+            }));
+
+            const password = '123456';
+            const result = await callMethod(app, {
+              token: '00099',
+              user: { email: users[0].email },
+              password,
+              notifierOptions: { transport: 'sms' },
+            }) as User;
+            const user = await usersService.get(result.id || result._id);  
+
+            assert.deepStrictEqual(password, user.password, 'password is hashed value'); 
+          });
+
+          it('hashes password when skipPasswordHash is false', async () => {
+            app.configure(
+              authLocalMgnt({
+                skipPasswordHash: false,
+              })
+            );
+            app.use("authManagement/verify-signup-set-password-short", new VerifySignupSetPasswordShortService(app, {
+              skipPasswordHash: false,
+            }));
+
+            const password = '123456';
+            const result = await callMethod(app, {
+              token: '00099',
+              user: { email: users[0].email },
+              password,
+              notifierOptions: { transport: 'sms' },
+            }) as User;
+            const user = await usersService.get(result.id || result._id);  
+
+            assert.notDeepStrictEqual(password, user.password, 'password is not hashed value'); 
+          });
+        });
       });
     });
   });

@@ -85,6 +85,7 @@ async function verifySignupSetPassword (
   const {
     app,
     passwordField,
+    skipPasswordHash,
     sanitizeUserForClient,
     service,
     notifier
@@ -117,6 +118,7 @@ async function verifySignupSetPassword (
     isDateAfterNow(user.verifyExpires),
     user.verifyChanges || {},
     password,
+    skipPasswordHash,
     params
   );
 
@@ -149,17 +151,17 @@ async function verifySignupSetPassword (
     isVerified: boolean,
     verifyChanges: VerifyChanges,
     password: string,
+    skipPasswordHash: boolean,
     params?: Params
   ): Promise<User> {
-    const hashedPassword = await hashPassword(app, password, passwordField);
-
+    
     const patchData = Object.assign({}, verifyChanges || {}, {
       isVerified,
       verifyToken: null,
       verifyShortToken: null,
       verifyExpires: null,
       verifyChanges: {},
-      [passwordField]: hashedPassword
+      [passwordField]: skipPasswordHash ? password : await hashPassword(app, password, passwordField)
     });
 
     const result = await usersService.patch(
