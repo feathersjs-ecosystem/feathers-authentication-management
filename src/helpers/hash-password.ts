@@ -7,7 +7,7 @@ export async function hashPassword (
   field: string
 ): Promise<string> {
   if (!field) throw new Error('Field is missing');
-  const context = {
+  const context: Partial<HookContext> = {
     type: 'before',
     data: { [field]: password },
     params: { provider: null },

@@ -14,7 +14,7 @@ export const defaultPath = 'authManagement';
 export const optionsDefault: AuthenticationManagementServiceOptions = {
   service: '/users', // need exactly this for test suite
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  notifier: async (type: NotificationType, user: User, notifierOptions) => {},
+  notifier: async (type: NotificationType, user: Partial<User>, notifierOptions) => {},
   longTokenLen: 15, // token's length will be twice this
   shortTokenLen: 6,
   shortTokenDigits: true,

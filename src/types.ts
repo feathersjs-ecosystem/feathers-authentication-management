@@ -118,7 +118,7 @@ export interface AuthenticationManagementServiceOptions {
   /** Should we skip hashing password for `passwordField` ? If `true`, password won't be hashed by feathers-authentication-management when patching the user. This must be set to `true` if you are hashing your password field using resolvers. */
   skipPasswordHash: boolean
   /** Pass params from f-a-m service to `/users` service */
-  passParams: (params) => Params | Promise<Params>
+  passParams?: (params: any) => Params | Promise<Params>
 }
 
 export type AuthenticationManagementSetupOptions = AuthenticationManagementServiceOptions & { path: string };

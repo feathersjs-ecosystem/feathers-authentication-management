@@ -33,7 +33,7 @@ function makeClient (app: Application, _options?: Partial<ClientOptions>): Authe
   const authManagement = app.service(path);
 
   const client: AuthenticationManagementClient = {
-    checkUnique: async (identifyUser: IdentifyUser, ownId: NullableId, ifErrMsg?: boolean) => {
+    checkUnique: async (identifyUser: IdentifyUser, ownId?: NullableId, ifErrMsg?: boolean) => {
       await authManagement.create({
         action: 'checkUnique',
         value: identifyUser,
@@ -129,7 +129,7 @@ function makeClient (app: Application, _options?: Partial<ClientOptions>): Authe
       try {
         if (!user || !user.isVerified) {
           await app.logout();
-          return cb(new Error(user ? 'User\'s email is not verified.' : 'No user returned.'));
+          return cb && cb(new Error(user ? 'User\'s email is not verified.' : 'No user returned.'));
         }
 
         if (cb) {
@@ -140,7 +140,7 @@ function makeClient (app: Application, _options?: Partial<ClientOptions>): Authe
         return user;
       } catch (err) {
         if (!cbCalled && cb) {
-          cb(err);
+          cb(err as Error);
         }
       }
     }

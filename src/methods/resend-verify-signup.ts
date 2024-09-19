@@ -23,7 +23,7 @@ const debug = makeDebug('authLocalMgnt:resendVerifySignup');
 export default async function resendVerifySignup (
   options: ResendVerifySignupOptions,
   identifyUser: IdentifyUser,
-  notifierOptions: NotifierOptions,
+  notifierOptions?: NotifierOptions,
   params?: Params
 ): Promise<SanitizedUser> {
   debug('identifyUser=', identifyUser);
@@ -46,7 +46,7 @@ export default async function resendVerifySignup (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
 
   ensureObjPropsValid(identifyUser,
     identifyUserProps.concat('verifyToken', 'verifyShortToken')

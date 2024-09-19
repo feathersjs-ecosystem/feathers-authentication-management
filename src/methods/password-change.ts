@@ -47,7 +47,7 @@ export default async function passwordChange (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
 
   ensureValuesAreStrings(oldPassword, password);
   ensureObjPropsValid(identifyUser, identifyUserProps);

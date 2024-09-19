@@ -1,6 +1,7 @@
 import { BadRequest } from '@feathersjs/errors';
 import makeDebug from 'debug';
 
+import { typedObjectKeys } from '../helpers/typescript';
 import type { NullableId, Params } from '@feathersjs/feathers';
 import type {
   CheckUniqueOptions,
@@ -33,10 +34,10 @@ export default async function checkUnique (
   } = options;
 
   const usersService = app.service(service);
-  const usersServiceId = usersService.id;
+  const usersServiceId = usersService.id!;
   const errProps = [];
 
-  const keys = Object.keys(identifyUser).filter(
+  const keys = typedObjectKeys(identifyUser).filter(
     key => identifyUser[key] != null
   );
 
@@ -59,16 +60,17 @@ export default async function checkUnique (
         errProps.push(prop);
       }
     }
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     throw new BadRequest(
       meta?.noErrMsg ? null : 'checkUnique unexpected error.',
-      { errors: { msg: err.message, $className: 'unexpected' } }
+      { errors: { msg: err?.message, $className: 'unexpected' } }
     );
   }
 
   if (errProps.length) {
-    const errs = {};
-    errProps.forEach(prop => { errs[prop] = 'Already taken.'; });
+    const errs: Record<string, string> = {};
+    errProps.forEach((prop ) => { errs[prop] = 'Already taken.'; });
 
     throw new BadRequest(
       meta?.noErrMsg ? null : 'Values already taken.',
